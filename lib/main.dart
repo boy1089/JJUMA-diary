@@ -11,12 +11,12 @@ import 'dart:async';
 import 'package:df/df.dart';
 
 import 'package:flutter_file_manager/flutter_file_manager.dart';
-
+import 'package:test_location_2nd/SensorData.dart';
+import 'package:test_location_2nd/SensorLogger.dart';
 
 // TODO: read data, plot it
 // --> class of data --> read data of specific date. make it organize.
 // TODO: read dates, make it selectable.
-
 
 
 void main() {
@@ -48,57 +48,24 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-class sensorData {
-  DateTime time = DateTime.now();
-  double? latitude;
-  double? longitude;
-  double? accelX;
-  double? accelY;
-  double? accelZ;
-
-  sensorData(time, latitude, longitude, accelX, accelY, accelZ) {
-    this.time = time;
-    this.latitude = latitude;
-    this.longitude = longitude;
-    this.accelX = accelX;
-    this.accelY = accelY;
-    this.accelZ = accelZ;
-  }
-}
-
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
-
-  Location location = new Location();
-
-  var _serviceEnabled;
-  var _permissionGranted;
-  var _locationData;
-
-  List<sensorData> _cacheData = [];
-
-  var _cacheCount = 0;
-  var _cacheCount2 = 0;
-  final _audioRecorder = Record();
-
-  var _streamAccel;
-  var _streamLight;
-  var _accelSubscription;
-  var _accelData;
-
   var _filesSensor;
-
-  final heatmapChannel = StreamController<Selected?>.broadcast();
-
   var data;
   var longitudes;
   var latitudes;
   var accelXs;
   var accelYs;
+  final heatmapChannel = StreamController<Selected?>.broadcast();
+
+  var sensorLogger = new SensorLogger();
+
   List<List<num>> heatmapData2 = [];
+
   _MyHomePageState(){
     updateState();
   }
+
   void updateState() async {
     _filesSensor = await getFiles();
     print(_filesSensor);
@@ -111,7 +78,6 @@ class _MyHomePageState extends State<MyHomePage> {
     accelXs = data.colRecords<double>(data.columnsNames[3]);
     accelYs = data.colRecords<double>(data.columnsNames[4]);
 
-
     for(int i = 0; i<longitudes.length; i++){
       heatmapData2.add([0, i, longitudes[i]]);
       heatmapData2.add([1, i, latitudes[i]]);
@@ -122,106 +88,11 @@ class _MyHomePageState extends State<MyHomePage> {
   print(heatmapData2);
   }
 
-  void setStream() async {
-
-    _streamAccel = await SensorManager().sensorUpdates(
-        sensorId: Sensors.ACCELEROMETER, interval: Sensors.SENSOR_DELAY_NORMAL);
-
-    _accelSubscription = _streamAccel.listen((sensorEvent) {
-      setState(() {
-        _accelData = sensorEvent.data;
-      });
-    });
-  }
-
-  void checkStatus() async {
-    _serviceEnabled = await location.serviceEnabled();
-    if (!_serviceEnabled) {
-      _serviceEnabled = await location.requestService();
-      if (!_serviceEnabled) {
-        return;
-      }
-    }
-
-    _permissionGranted = await location.hasPermission();
-    if (_permissionGranted == PermissionStatus.denied) {
-      _permissionGranted = await location.requestPermission();
-      if (_permissionGranted != PermissionStatus.granted) {
-        return;
-      }
-    }
-
-    // Check and request permission
-
-    _locationData = await location.getLocation();
-    debugPrint(_locationData.toString());
-
-    location.onLocationChanged.listen((LocationData currentLocation) {
-      _cacheCount = _cacheCount + 1;
-      _cacheData.add(sensorData(
-          DateTime.now(),
-          currentLocation.latitude,
-          currentLocation.longitude,
-          _accelData[0],
-          _accelData[1],
-          _accelData[2]));
-      if (_cacheCount > 1000) {
-        _writeCache(_cacheData);
-        _cacheData = [];
-        _cacheCount = 0;
-        record();
-      }
-    });
-  }
-
-  void _writeCache(List<sensorData> _cache) async {
-    final Directory directory = await getApplicationDocumentsDirectory();
-    final File file = File(
-        '${directory.path}/${DateTime.now().year}${DateTime.now().month}${DateTime.now().day}_sensor.txt');
-    bool isExists = await file.exists();
-    if(!isExists) await file.writeAsString('time, longitude, latitude, accelX, accelY, accelZ \n', mode : FileMode.append);
-
-    for (int i = 0; i < _cache.length; i++) {
-      var line = _cache[i];
-      await file.writeAsString(
-          '${line.time.toString()}, ${line.longitude.toString()}, ${line.latitude.toString()}, ${line.accelX.toString()}'
-          ',${line.accelY.toString()}, ${line.accelZ.toString()}  \n',
-          mode: FileMode.append);
-    }
-  }
-
-  void record() async {
-    final Directory directory = await getApplicationDocumentsDirectory();
-    if (await _audioRecorder.hasPermission() == false) return;
-    bool isRecording = await _audioRecorder.isRecording();
-    if (isRecording) await _audioRecorder.stop();
-    await _audioRecorder.start(
-      path:
-          '${directory.path}/${_getCurrentTimestamp()}_audio.m4a',
-      encoder: AudioEncoder.aacLc, // by default
-      bitRate: 128000, // by default
-      samplingRate: 44100, // by default
-    );
-  }
-  String _getCurrentTimestamp(){
-    return DateTime.now().toString().replaceAll('-', '').replaceAll(':', '').replaceAll(' ', '_').substring(0, 15);
-  }
 
   void _incrementCounter() {
     setState(() {
-      print(heatmapData2[0]);
-      print(heatmapData2.runtimeType);
-      print(heatmapData.runtimeType);
-
-      _counter++;
-      print(DateTime.now().toString().replaceAll('-', '').replaceAll(':', '').replaceAll(' ', '_').substring(0, 15));
-      checkStatus();
-      record();
-      location.enableBackgroundMode(enable: true);
-      setStream();
-
-      _writeCache(_cacheData);
-      _cacheData = [];
+      sensorLogger.writeAudio();
+      sensorLogger.writeCache();
     });
   }
 
@@ -239,7 +110,6 @@ class _MyHomePageState extends State<MyHomePage> {
   Future<List<File>> getFiles() async {
     var a = await _localPath;
     var kRoot = a;
-    print("local path : $_localPath");
     var fm = FileManager(root: Directory(kRoot)); //
     var b;
     b = fm.filesTree(extensions: ["txt"]);

@@ -56,7 +56,7 @@ packages:
       name: df
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.3.0"
+    version: "0.4.0-nullsafety.0"
   extra_pedantic:
     dependency: transitive
     description:
@@ -135,27 +135,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.0.1"
-  injector:
-    dependency: transitive
-    description:
-      name: injector
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.9"
   intl:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: intl
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.16.1"
+    version: "0.17.0"
   jiffy:
     dependency: transitive
     description:
       name: jiffy
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.0.1"
+    version: "4.1.0"
   js:
     dependency: transitive
     description:
@@ -212,13 +205,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.7.0"
-  ml_linalg:
-    dependency: transitive
-    description:
-      name: ml_linalg
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "12.17.10"
   path:
     dependency: transitive
     description:
@@ -317,13 +303,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.2.4"
-  quiver:
-    dependency: transitive
-    description:
-      name: quiver
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.1.5"
   record:
     dependency: "direct main"
     description:
@@ -462,13 +441,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.2.0+1"
-  xrange:
-    dependency: transitive
-    description:
-      name: xrange
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.0"
 sdks:
   dart: ">=2.17.3 <3.0.0"
   flutter: ">=3.0.0"

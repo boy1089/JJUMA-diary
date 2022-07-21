@@ -7,7 +7,7 @@ import 'package:flutter/foundation.dart';
 import 'package:record/record.dart';
 import 'package:flutter_sensors/flutter_sensors.dart';
 import 'package:test_location_2nd/SensorData.dart';
-
+import 'package:intl/intl.dart';
 class SensorLogger {
   Location location = new Location();
 
@@ -90,7 +90,7 @@ class SensorLogger {
   void writeCache() async {
     final Directory directory = await getApplicationDocumentsDirectory();
     final File file = File(
-        '${directory.path}/${DateTime.now().year}${DateTime.now().month}${DateTime.now().day}_sensor.txt');
+        '${directory.path}/${DateFormat('yyyyMMdd').format(DateTime.now())}_sensor.txt');
     bool isExists = await file.exists();
     debugPrint("writing Cache to Local..");
 
@@ -107,6 +107,7 @@ class SensorLogger {
           mode: FileMode.append);
     }
     _cacheData = [];
+    _cacheCount = 0;
   }
 
   void writeAudio() async {
@@ -115,19 +116,12 @@ class SensorLogger {
     bool isRecording = await _audioRecorder.isRecording();
     if (isRecording) await _audioRecorder.stop();
     await _audioRecorder.start(
-      path: '${directory.path}/${_getCurrentTimestamp()}_audio.m4a',
+      path: '${directory.path}/${DateFormat('yyyyMMdd_hhmmss').format(DateTime.now())}_audio.m4a',
       encoder: AudioEncoder.aacLc, // by default
       bitRate: 128000, // by default
       samplingRate: 44100, // by default
     );
   }
 
-  String _getCurrentTimestamp() {
-    return DateTime.now()
-        .toString()
-        .replaceAll('-', '')
-        .replaceAll(':', '')
-        .replaceAll(' ', '_')
-        .substring(0, 15);
-  }
+
 }

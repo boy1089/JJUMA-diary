@@ -25,7 +25,6 @@ class DataReader{
 
   void readData(date) async {
 
-    debugPrint(DateFormat('yyyyMMdd_hhmmss').format(DateTime.now()));
     _data = await readCsv(date);
     // print(data.columnsNames);
     longitudes = _data.colRecords<double>(_data.columnsNames[1]);

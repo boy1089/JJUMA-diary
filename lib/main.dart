@@ -57,10 +57,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _incrementCounter() {
     setState(() {
-      dataReader.readData('20220722');
+      dataReader.readData('20220721');
       print(dataReader.heatmapData2);
-      sensorLogger.writeCache();
-      sensorLogger.writeAudio();
+      // sensorLogger.writeCache();
+      // sensorLogger.writeAudio();
     });
   }
 
@@ -68,8 +68,9 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, fo
     // print("building widget : $heatmapData2");
+    List<List<num>> heatmapData3 = [];
     print("building widget, ${dataReader.heatmapData2}");
-    setState((){});
+    setState((){heatmapData3 = dataReader.heatmapData2;});
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
@@ -83,11 +84,11 @@ class _MyHomePageState extends State<MyHomePage> {
                   margin: const EdgeInsets.only(top: 10),
                   width: 100,
                   height: 1 * 500,
-                  child: dataReader.heatmapData2 == []
-                      ? Text("processing files")
+                  child: heatmapData3.isEmpty
+                      ? Text("processing files, ${heatmapData3}")
                       : Chart(
                           padding: (_) => EdgeInsets.zero,
-                          data: dataReader.heatmapData2,
+                          data: heatmapData3,
                           // data: heatmapData,
 
                         variables: {
@@ -106,9 +107,9 @@ class _MyHomePageState extends State<MyHomePage> {
                               color: ColorAttr(
                                 variable: 'sales',
                                 values: [
-                                  const Color(0xffbae7ff),
-                                  const Color(0xff1890ff),
-                                  const Color(0xff0050b3)
+                                  const Color(0xffbae7af),
+                                  const Color(0xff1890af),
+                                  const Color(0xffc5553d)
                                 ],
                                 updaters: {
                                   'tap': {false: (color) => color.withAlpha(70)}
@@ -134,6 +135,9 @@ class _MyHomePageState extends State<MyHomePage> {
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
+
+
+
 }
 
 const heatmapData = [

@@ -116,7 +116,7 @@ class SensorLogger {
     bool isRecording = await _audioRecorder.isRecording();
     if (isRecording) await _audioRecorder.stop();
     await _audioRecorder.start(
-      path: '${directory.path}/${DateFormat('yyyyMMdd_hhmmss').format(DateTime.now())}_audio.m4a',
+      path: '${directory.path}/${DateFormat('yyyyMMdd_HHmmss').format(DateTime.now())}_audio.m4a',
       encoder: AudioEncoder.aacLc, // by default
       bitRate: 128000, // by default
       samplingRate: 44100, // by default

@@ -14,9 +14,11 @@ import 'package:flutter_file_manager/flutter_file_manager.dart';
 import 'package:test_location_2nd/SensorLogger.dart';
 import 'package:test_location_2nd/DataReader.dart';
 
-// TODO: read data, plot it
-// --> class of data --> read data of specific date. make it organize.
-// TODO: read dates, make it selectable.
+
+//TODO : reduce the amount of data
+//TODO : manage audio files.
+//TODO : make timeslot descrete.
+//TODO : get files from google.
 
 void main() {
   runApp(const MyApp());
@@ -50,17 +52,24 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
   final heatmapChannel = StreamController<Selected?>.broadcast();
-  var sensorLogger = new SensorLogger();
-  var dataReader = DataReader('a');
+  var sensorLogger;
+  var dataReader;
 
-  _MyHomePageState() {}
+  _MyHomePageState() {
+    sensorLogger = SensorLogger();
+    dataReader = DataReader('20220721');
+
+  }
 
   void _incrementCounter() {
     setState(() {
-      dataReader.readData('20220721');
+      // dataReader.readData('20220721');
       print(dataReader.heatmapData2);
       // sensorLogger.writeCache();
       // sensorLogger.writeAudio();
+
+      // print("findTimestamp : ${dataReader.findIndicesOf('21')}");
+
     });
   }
 
@@ -78,12 +87,13 @@ class _MyHomePageState extends State<MyHomePage> {
       body: SingleChildScrollView(
         child: Row(
           children: [
+            SizedBox(width: 10),
             Column(
               children: <Widget>[
                 Container(
                   margin: const EdgeInsets.only(top: 10),
-                  width: 100,
-                  height: 1 * 500,
+                  width: 50,
+                  height: 1 * 700,
                   child: heatmapData3.isEmpty
                       ? Text("processing files, ${heatmapData3}")
                       : Chart(
@@ -139,18 +149,3 @@ class _MyHomePageState extends State<MyHomePage> {
 
 
 }
-
-const heatmapData = [
-  [0, 0, 126.7207535],
-  [1, 0, 37.3628223],
-  [2, 0, 0.7446194887161255],
-  [3, 0, 0.1532335877418518],
-  [0, 1, 126.7207554],
-  [1, 1, 37.3628241],
-  [2, 1, 0.7757450342178345],
-  [3, 1, 0.17478206753730774],
-  [0, 2, 126.7207526],
-  [1, 2, 37.3628222],
-  [2, 2, 0.7446194887161255],
-  [3, 2, 0.1484450399875641]
-];

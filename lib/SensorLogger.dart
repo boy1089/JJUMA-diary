@@ -90,7 +90,7 @@ class SensorLogger {
   void writeCache() async {
     final Directory directory = await getApplicationDocumentsDirectory();
     final File file = File(
-        '${directory.path}/${DateFormat('yyyyMMdd').format(DateTime.now())}_sensor.txt');
+        '${directory.path}/${DateFormat('yyyyMMdd').format(DateTime.now())}_sensor.csv');
     bool isExists = await file.exists();
     debugPrint("writing Cache to Local..");
 

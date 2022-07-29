@@ -76,8 +76,8 @@ class DataReader{
   Future<DataFrame> readCsv(String date) async {
 
     var localPath = await _localPath;
-    debugPrint("Data Reader : readCSV : ${localPath}/${date}_sensor.txt");
-    final df = await DataFrame.fromCsv("${localPath}/${date}_sensor.txt");
+    debugPrint("Data Reader : readCSV : ${localPath}/sensorData/${date}_sensor.csv");
+    final df = await DataFrame.fromCsv("${localPath}/sensorData/${date}_sensor.csv");
     return df;
   }
 
@@ -87,6 +87,7 @@ class DataReader{
     var fm = FileManager(root: Directory(kRoot)); //
     var b;
     b = fm.filesTree(extensions: ["txt"]);
+
     return b;
   }
 }

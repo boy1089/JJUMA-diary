@@ -17,6 +17,7 @@ class ImageReader {
   var filesAll;
   var files_date;
   var filesSortByHour = [];
+  var filesSortBy2Hour = [];
   var images_date;
   var _date;
 
@@ -31,6 +32,7 @@ class ImageReader {
     sortFilesByDate(date);
     debugPrint("ImageReader : updateState : filesDate: $files_date");
     sortFilesByHour();
+    sortFilesBy2Hour();
   }
 
 
@@ -60,6 +62,19 @@ class ImageReader {
       filesSortByHour.add(files_temp);
     }
   }
+  void sortFilesBy2Hour(){
+    var files_temp = [];
+    var files_temp2  = [];
+    filesSortBy2Hour = [];
+    for(int i = 0; i < kTimeStamps.length; i++){
+      if( i%2==0){
+        files_temp = files_date.where((item) => item.toString().contains('${_date}_${kTimeStamps[i]}')).toList();
+        files_temp2 = files_date.where((item) => item.toString().contains('${_date}_${kTimeStamps[i+1]}')).toList();
+        print("${files_temp + files_temp2}");
+        filesSortBy2Hour.add(files_temp + files_temp2);
+      }
 
+    }
+  }
 
 }

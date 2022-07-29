@@ -22,11 +22,9 @@ class DataReader{
   var date;
   DataReader(date){
     readData(date);
-
   }
 
   void readData(date) async {
-
     _data = await readCsv(date);
     // print(data.columnsNames);
     longitudes = _data.colRecords<double>(_data.columnsNames[1]);
@@ -44,8 +42,9 @@ class DataReader{
         heatmapData2.add([2, i, accelXs[indices[i]]]);
         heatmapData2.add([3, i, accelYs[indices[i]]]);
       }
-    print(heatmapData2);
+    print("DataReader read data $heatmapData2");
   }
+
 
   int findIndexOf(day, hour) {
     // print(times[0].day.toString());

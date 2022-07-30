@@ -27,8 +27,8 @@ class ImageReader {
     }
 
   void updateState(date) async{
+    _date = date;
     filesAll = await getFiles();
-
     sortFilesByDate(date);
     debugPrint("ImageReader : updateState : filesDate: $files_date");
     sortFilesByHour();
@@ -51,12 +51,15 @@ class ImageReader {
   }
 
   void sortFilesByDate(date) {
+    debugPrint("imageReader, sortby date, filesAll : $filesAll");
     files_date = filesAll.where((item) => item.toString().contains('$date')).toList();
   }
 
   void sortFilesByHour(){
     var files_temp = [];
     filesSortByHour = [];
+    debugPrint("imageReader, sortbyHour, filesdate : $files_date");
+
     for(int i = 0; i < kTimeStamps.length; i++){
       files_temp = files_date.where((item) => item.toString().contains('${_date}_${kTimeStamps[i]}')).toList();
       filesSortByHour.add(files_temp);
@@ -65,15 +68,20 @@ class ImageReader {
   void sortFilesBy2Hour(){
     var files_temp = [];
     var files_temp2  = [];
+    // var timestamp = kTimeStamps_filtered;
+    var timestamp = kTimeStamps;
+
     filesSortBy2Hour = [];
-    for(int i = 0; i < kTimeStamps.length; i++){
+
+    debugPrint("imageReader, sortby2Hour, filesdate : $files_date");
+    for(int i = 0; i < timestamp.length; i++){
       if( i%2==0){
-        files_temp = files_date.where((item) => item.toString().contains('${_date}_${kTimeStamps[i]}')).toList();
-        files_temp2 = files_date.where((item) => item.toString().contains('${_date}_${kTimeStamps[i+1]}')).toList();
-        print("${files_temp + files_temp2}");
+        files_temp = files_date.where((item) => item.toString().contains('${_date}_${timestamp[i]}')).toList();
+        files_temp2 = files_date.where((item) => item.toString().contains('${_date}_${timestamp[i+1]}')).toList();
         filesSortBy2Hour.add(files_temp + files_temp2);
       }
 
+      debugPrint("imageReader, sortby2Hour, filesdate : $filesSortBy2Hour");
     }
   }
 

@@ -35,6 +35,9 @@ class DataReader{
     debugPrint(date.substring(6, 8));
     List<int> indices = findIndicesOf(date.substring(6, 8));
     debugPrint("datareader : readData: indices: $indices");
+
+
+    heatmapData2 = [];
     for(int i = 0; i<indices.length; i++){
         print(indices[i]);
         heatmapData2.add([0, i, longitudes[indices[i]]]);

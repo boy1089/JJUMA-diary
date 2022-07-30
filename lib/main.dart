@@ -1,20 +1,15 @@
 import 'package:flutter/material.dart';
-// import 'package:image/image.dart' as Image;
 import 'package:flutter/foundation.dart';
 import 'package:graphic/graphic.dart';
 import 'dart:async';
-import 'package:df/df.dart';
 
-import 'package:flutter_file_manager/flutter_file_manager.dart';
 import 'package:test_location_2nd/SensorLogger.dart';
 import 'package:test_location_2nd/DataReader.dart';
 import 'package:test_location_2nd/ImageReader.dart';
 import 'package:test_location_2nd/Util.dart';
-import 'package:test_location_2nd/LoadingPage.dart';
 
+import 'package:intl/intl.dart';
 //TODO : finalize calendar view, photo view
-//TODO : make application working. - try future builder
-//TODO :
 
 //TODO : manage audio files.
 
@@ -34,22 +29,13 @@ class MyApp extends StatelessWidget {
       initialRoute: '/home',
       routes: {
         '/home': (context) => MyHomePage(),
-        // '/loading': (context) => SplashScreen(myHomePage: myHomePage),
-        // '/loading' : (context) => SplashScreen(),
+
       },
       onGenerateRoute: (routeSettings) {
-        // if (routeSettings.name == '/loading') {
-        //   final args = routeSettings.arguments;
-        //   return MaterialPageRoute(builder: (context) {
-        //     return SplashScreen(myHomePage: myHomePage);
-        //     // return SplashScreen();
-        //   });
-        // }
         if (routeSettings.name == '/home') {
           final args = routeSettings.arguments;
           return MaterialPageRoute(builder: (context) {
             return myHomePage;
-            // return SplashScreen();
           });
         }
       },
@@ -57,7 +43,6 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      // home: myHomePage
     );
   }
 }
@@ -80,25 +65,26 @@ class _MyHomePageState extends State<MyHomePage> {
   var dataReader;
   var imageReader;
   var sensorLogger;
+  String _selectedIndex = "20220605";
 
   _MyHomePageState() {
-    this.dataReader = DataReader('20220606');
-    this.imageReader = ImageReader('20220606');
+    this.dataReader = DataReader(_selectedIndex);
+    this.imageReader = ImageReader(_selectedIndex);
     this.sensorLogger = SensorLogger();
   }
 
   void _incrementCounter() {
     setState(() {
-      // sensorLogger.writeCache();
-      // sensorLogger.writeAudio();
+      sensorLogger.writeCache();
+      sensorLogger.writeAudio();
     });
   }
-
-  //
   Future<List<List<num>>> _getHeatmapData2() {
     return Future<List<List<num>>>.delayed(
         Duration(seconds: 1), () => dataReader.heatmapData2);
   }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -181,16 +167,21 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           Stack(children: [
             SizedBox(height: 700, width: 300),
-            ...List.generate((kTimeStamps.length / 2).toInt(), (index1) {
+            ...List.generate(kTimeStamps2hour.length.toInt(), (index1) {
+
+              debugPrint("stack, ${imageReader.filesSortBy2Hour}");
+              debugPrint("stack, ${imageReader.filesSortBy2Hour}");
+
               return Positioned(
                 top: (index1 * 58).toDouble(),
                 left: 0,
                 right: 0,
-                bottom: 0,
+                // bottom: (index1 * 58 + 100).toDouble(),
                 child: Container(
                   width: 300,
-                  height: 29,
+                  height: 100,
                   child: ListView(
+                    physics : const AlwaysScrollableScrollPhysics(),
                     scrollDirection: Axis.horizontal,
                     children: imageReader.filesSortBy2Hour.isEmpty
                         ? [Text('processing')]
@@ -199,7 +190,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             (index) {
                             return Image.file(
                               imageReader.filesSortBy2Hour[index1][index],
-                              height: 50,
+                              height: 100,
                               width: 40,
                             );
                           }),
@@ -211,6 +202,65 @@ class _MyHomePageState extends State<MyHomePage> {
         ],
       ),
 
+      bottomNavigationBar: Row(
+        children: [
+          Material(
+            color: const Color(0xffff8989),
+            child: InkWell(
+              onTap: () {
+                var parsedDate = DateTime.parse(_selectedIndex);
+
+                setState((){
+                  _selectedIndex = DateFormat('yyyyMMdd').format(parsedDate.subtract(Duration(days : 1)));
+                  dataReader.readData(_selectedIndex);
+                  imageReader.updateState(_selectedIndex);
+                });
+
+              },
+              child: const SizedBox(
+                height: kToolbarHeight,
+                width: 200,
+                child: Center(
+                  child: Text(
+                    'previous',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          Expanded(
+            child: Material(
+              color: const Color(0xffff8906),
+              child: InkWell(
+                onTap: () {
+                  var parsedDate = DateTime.parse(_selectedIndex);
+                  setState((){
+                    _selectedIndex = DateFormat('yyyyMMdd').format(parsedDate.add(Duration(days : 1)));
+                    dataReader.readData(_selectedIndex);
+                    imageReader.updateState(_selectedIndex);
+                  });                },
+                child: const SizedBox(
+                  height: kToolbarHeight,
+                  width: double.infinity,
+                  child: Center(
+                    child: Text(
+                      "next",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+
       floatingActionButton: FloatingActionButton(
         onPressed: _incrementCounter,
         tooltip: 'Increment',
@@ -218,4 +268,11 @@ class _MyHomePageState extends State<MyHomePage> {
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
+
+  void _onTap(){
+    var parsedDate = DateTime.parse(_selectedIndex);
+    setState((){});
+
+  }
+
 }

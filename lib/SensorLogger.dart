@@ -78,7 +78,7 @@ class SensorLogger {
           _accelData[1],
           _accelData[2]));
 
-      if (_cacheCount > 1000) {
+      if (_cacheCount > 500) {
         writeCache();
         _cacheCount = 0;
         writeAudio();

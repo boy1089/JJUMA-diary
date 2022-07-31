@@ -20,6 +20,7 @@ class DataReader{
   var times;
   List<List<num>> heatmapData2 = [];
   var date;
+
   DataReader(date){
     readData(date);
   }

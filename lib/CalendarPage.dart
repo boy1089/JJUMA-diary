@@ -14,10 +14,8 @@ class CalendarPage extends StatefulWidget {
 class _CalendarPageState extends State<CalendarPage> {
   var imageReader;
 
-
-  _CalendarPageState(){
+  _CalendarPageState() {
     init();
-
   }
 
   void initState() {
@@ -27,7 +25,7 @@ class _CalendarPageState extends State<CalendarPage> {
   void init() async {
     imageReader = ImageReader('all');
     debugPrint("CalendarPage, init, ${imageReader.datesRange}");
-    setState(() {});
+    // setState(() {});
   }
 
   Future<ImageReader> _getImageReader() {
@@ -40,26 +38,29 @@ class _CalendarPageState extends State<CalendarPage> {
 
     var color = '2F1BDB';
     return Container(
-      // flex: 2,
-      width: 50,
-      height: 50,
-      decoration: BoxDecoration(
-        color: Color.fromARGB(
-                min(255, int.parse(numberOfFiles) * 3), 200, 100, 100),
-        shape: BoxShape.rectangle,
-        borderRadius: BorderRadius.all(Radius.circular(10.0)),
-      ),
-      child: FlatButton(
-        padding: EdgeInsets.all(5),
-        height: 20,
-        child: Text("$date, $numberOfFiles", style: TextStyle(fontSize: 8)),
-        onPressed: () {
-          debugPrint("buttonPressed");
-          Navigator.pushNamed(context, '/day', arguments: {
-            'date': text,
-          },
-          );
-        }));
+        // flex: 2,
+        width: 50,
+        height: 50,
+        decoration: BoxDecoration(
+          color: Color.fromARGB(
+              min(255, int.parse(numberOfFiles) * 3), 200, 100, 100),
+          shape: BoxShape.rectangle,
+          borderRadius: BorderRadius.all(Radius.circular(10.0)),
+        ),
+        child: FlatButton(
+            padding: EdgeInsets.all(5),
+            height: 20,
+            child: Text("$date, $numberOfFiles", style: TextStyle(fontSize: 8)),
+            onPressed: () {
+              debugPrint("buttonPressed");
+              Navigator.pushNamed(
+                context,
+                '/day',
+                arguments: {
+                  'date': text,
+                },
+              );
+            }));
   }
 
   @override

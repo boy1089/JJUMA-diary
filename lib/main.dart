@@ -16,10 +16,17 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  MyApp({Key? key}) : super(key: key);
+  var dayPage;
+  var calendarPage;
 
-  final dayPage = DayPage();
-  final calendarPage = CalendarPage();
+  MyApp({Key? key}) : super(key: key){
+    dayPage = DayPage();
+    calendarPage = CalendarPage();
+
+  }
+
+
+
   @override
   Widget build(BuildContext context) {
 

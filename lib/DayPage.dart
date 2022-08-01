@@ -13,9 +13,17 @@ class DayPage extends StatefulWidget {
   var title;
   bool isInitializationDone = false;
 
+
   DayPage({Key? key}) : super(key: key) {
+    debugPrint("daypage constructed");
     title = 'test';
+    // return _dayPageInstance;
   }
+  // final _dayPageInstance = DayPage._internal();
+  // factory DayPage() =>_instance;
+
+  // DayPage._internal();
+
 
   @override
   State<DayPage> createState() => _DayPageState();

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
+import 'package:test_location_2nd/Event.dart';
+import 'package:test_location_2nd/EventList.dart';
 import 'package:test_location_2nd/NoteData.dart';
 
 //TODO : identify events
@@ -37,6 +39,11 @@ class _MyAppState extends State<MyApp> {
     setState(() {});
   }
 
+  Future<EventList> _fetch1() async {
+    await Future.delayed(Duration(seconds: 20));
+    return dataAnalyzer.eventList;
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -44,13 +51,28 @@ class _MyAppState extends State<MyApp> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-
-          // Text(dataAnalyzer.eventList[0].time.toString()),
-          // Expanded(
+          // FutureBuilder(
+          //   future: _fetch1(),
+          //   builder: (BuildContext context, AsyncSnapshot snapshot) {
+          //   //해당 부분은 data를 아직 받아 오지 못했을때 실행되는 부분을 의미한다.
+          //   if (snapshot.hasData == false) {
+          //   return CircularProgressIndicator();
+          //   }//error가 발생하게 될 경우 반환하게 되는 부분
+          //   else if (snapshot.hasError) {
+          //   return Padding(
+          //   padding: const EdgeInsets.all(8.0),
+          //   child: Text(
+          //   'Error: ${snapshot.error}',
+          //   style: TextStyle(fontSize: 30),
+          //   ),
+          //   );
+          //   }
+          // else {
+          // return Expanded(
           //   child: ListView.builder(
           //       // padding: const EdgeInsets.all(8),
-          //       // itemCount: dataAnalyzer.eventList.length(),
-          //       itemCount: 10,
+          //       itemCount: dataAnalyzer.eventList.length(),
+          //       // itemCount: 10,
           //
           //       itemBuilder: (BuildContext context, int index) {
           //         print(dataAnalyzer.eventList.eventList);
@@ -77,7 +99,7 @@ class _MyAppState extends State<MyApp> {
           //           onPressed: ()=> null,
           //         );
           //       }),
-          // ),
+          // );}}),
           TextField(controller: myTextController,),
 
           Row(mainAxisAlignment: MainAxisAlignment.center, children: [
@@ -99,6 +121,7 @@ class _MyAppState extends State<MyApp> {
           sensorLogger.forceWrite();
           // dataAnalyzer.readFiles();
           // dataAnalyzer.printData();
+          // print(dataAnalyzer.eventList.eventList);
         },
       ),
     ));

@@ -21,7 +21,9 @@ class EventList{
       return 0;
     }
   }
-  void sortEvent(){}
+  void sortEvent(){
+    eventList.sort((a, b) => b.time.compareTo(a.time));
+  }
 
   void clear(){
     eventList = [];

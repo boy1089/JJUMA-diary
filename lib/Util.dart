@@ -29,3 +29,4 @@ const distance_threshold_home = 0.02;
 
 const event_color_goingOut = Colors.red;
 const event_color_backHome = Colors.blue;
+const path_phonecall = '/sdcard/Music/TPhoneCallRecords';

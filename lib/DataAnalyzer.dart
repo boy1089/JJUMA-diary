@@ -14,13 +14,17 @@ class DataAnalyzer{
 
   var directory;
   EventList eventList = EventList();
-  List<File> files = [];
+  List<File> files2 = [];
   var data;
   List<DataFrame> dataAll = [];
   var summary;
 
   DataAnalyzer(){
     readFiles();
+    print('a');
+
+    printData();
+    print(eventList.eventList);
   }
 
   Future<String> get _localPath async {
@@ -32,18 +36,20 @@ class DataAnalyzer{
   Future<List<File>> getFiles() async {
     var a = await _localPath;
     var kRoot = a;
-    var fm = FileManager(root: Directory(kRoot)); //
+    var fm = FileManager(root: Directory('${kRoot}/sensorData')); //
     var b;
     b = fm.filesTree(extensions: [".csv"]);
 
 
     return b;
   }
+
   void readFiles() async {
     var files = await getFiles();
     dataAll = [];
     print("files:  ${files}");
     print("files: ${files.length}");
+    files2 = files;
     for(int i=0; i< files.length; i++){
       data = await readFile(files.elementAt(i).path);
       dataAll.add(data);
@@ -57,14 +63,17 @@ class DataAnalyzer{
     return data;
   }
 
-  void analyzeData(){
-
-    print('a');
-    for(int i = 0; i < dataAll.length; i++){
-      print('processing ${i} th data...');
+  Future<EventList> analyzeData() async {
+    eventList.clear();
+    print('aaa ${dataAll.length}');
+    for(int i = 0; i < files2.length; i++){
+      print('processing ${i}/${files2.length} th data...${files2[i]}');
       data = dataAll[i];
       analyzeIsHome();
     }
+    eventList.sortEvent();
+
+    return eventList;
 
   }
   void subsampleData(int subsampleFactor){
@@ -78,6 +87,7 @@ class DataAnalyzer{
     int isHome = 0;
 
     int length = data.shape[0];
+    print(data['time'].data.elementAt(0));
     print(data.header);
     for( int i =0; i< data['longitude'].data.length; i++ ){
       longitude_diff = (data['longitude'].data[i] - longitude_home).abs();
@@ -119,9 +129,9 @@ class DataAnalyzer{
     summary = await fromCsv('${directory.path}/summary.csv');
   }
 
-  void printData() {
+  void printData() async {
     print(dataAll);
-    analyzeData();
+    var a = await analyzeData();
 
   }
 }

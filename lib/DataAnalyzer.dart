@@ -6,14 +6,14 @@ import 'package:ml_dataframe/ml_dataframe.dart';
 import 'dart:io';
 import 'package:test_location_2nd/Util.dart';
 import 'package:test_location_2nd/Event.dart';
-import 'package:test_location_2nd/DataReader.dart';
+import 'package:test_location_2nd/EventList.dart';
 
 import 'package:flutter_file_manager/flutter_file_manager.dart';
 
 class DataAnalyzer{
 
   var directory;
-  List<Event> eventList = [];
+  EventList eventList = EventList();
   List<File> files = [];
   var data;
   List<DataFrame> dataAll = [];
@@ -58,7 +58,7 @@ class DataAnalyzer{
   }
 
   void analyzeData(){
-    eventList = [];
+
     print('a');
     for(int i = 0; i < dataAll.length; i++){
       print('processing ${i} th data...');
@@ -96,8 +96,6 @@ class DataAnalyzer{
       if(inoutData == 1) eventList.add(Event(DateTime.parse(data['time'].data[i]), 'back home' ));
       if(inoutData == -1) eventList.add(Event(DateTime.parse(data['time'].data[i]), 'going out'));
     }
-    print(eventList[0].time);
-    print(eventList[1].time);
     final series = Series('isHome', isHomeList);
     data = data.addSeries(series);
 

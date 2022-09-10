@@ -6,31 +6,31 @@ import 'package:path_provider/path_provider.dart';
 import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
 
-import 'package:test_location_2nd/HappinessData.dart';
+import 'package:test_location_2nd/NoteData.dart';
 
 
-class HappinessLogger {
+class NoteLogger {
 
   var _cacheCount = 0;
 
-  HappinessLogger() {
+  NoteLogger() {
     debugPrint("sensorLogger instance created");
   }
 
-  void writeCache(HappinessData happinessData) async {
+  void writeCache(NoteData noteData) async {
     final Directory directory = await getApplicationDocumentsDirectory();
     final File file = File(
-        '${directory.path}/${DateFormat('yyyyMMdd').format(DateTime.now())}_happiness.csv');
+        '${directory.path}/noteData/${DateFormat('yyyyMMdd').format(DateTime.now())}_note.csv');
     bool isExists = await file.exists();
-    debugPrint("writing happiness to Local..");
+    debugPrint("writing note to Local..");
 
     if (!isExists)
       await file.writeAsString(
-          'time, happiness, note \n',
+          'time, note \n',
           mode: FileMode.append);
 
     await file.writeAsString(
-        '${happinessData.time.toString()}, ${happinessData.happiness.toString()}, ${happinessData.note.toString()}  \n',
+        '${noteData.time.toString()},  ${noteData.note.toString()}  \n',
         mode: FileMode.append);
 
 

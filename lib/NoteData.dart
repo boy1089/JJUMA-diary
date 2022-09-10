@@ -1,10 +1,11 @@
 
 
-class Event {
+class NoteData {
   DateTime time = DateTime.now();
-  String? note = '';
+  String? note;
 
-  Event(time, note) {
+
+  NoteData(time, note) {
     this.time = time;
     this.note = note;
   }

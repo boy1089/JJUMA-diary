@@ -8,6 +8,8 @@ import 'package:record/record.dart';
 import 'package:flutter_sensors/flutter_sensors.dart';
 import 'package:test_location_2nd/SensorData.dart';
 import 'package:intl/intl.dart';
+
+
 class SensorLogger {
   Location location = new Location();
 
@@ -90,7 +92,7 @@ class SensorLogger {
   void writeCache() async {
     final Directory directory = await getApplicationDocumentsDirectory();
     final File file = File(
-        '${directory.path}/${DateFormat('yyyyMMdd').format(DateTime.now())}_sensor.csv');
+        '${directory.path}/sensorData/${DateFormat('yyyyMMdd').format(DateTime.now())}_sensor.csv');
     bool isExists = await file.exists();
     debugPrint("writing Cache to Local..");
 
@@ -121,6 +123,10 @@ class SensorLogger {
       bitRate: 128000, // by default
       samplingRate: 44100, // by default
     );
+  }
+
+  void forceWrite(){
+    _cacheCount = 1000;
   }
 
 

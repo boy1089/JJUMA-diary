@@ -1,7 +1,5 @@
 
-
-
-
+import 'package:flutter/material.dart';
 
 
 List<String> kTimeStamps = [
@@ -24,3 +22,10 @@ List<String> kTimeStamps2hour_filtered = [
   '06', '08', '10', '12', '14', '16',
   '18', '20', '22',
 ];
+
+const longitude_home = 126.7209;
+const latitude_home = 37.3627;
+const distance_threshold_home = 0.02;
+
+const event_color_goingOut = Colors.red;
+const event_color_backHome = Colors.blue;

@@ -52,6 +52,7 @@ class _DayPageState extends State<DayPage> with AutomaticKeepAliveClientMixin {
   }
 
   void _incrementCounter() {
+    debugPrint("daypage - button clicked");
     setState(() {});
   }
 

@@ -40,7 +40,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<EventList> _fetch1() async {
-    await Future.delayed(Duration(seconds: 20));
+    await Future.delayed(Duration(seconds: 25));
     return dataAnalyzer.eventList;
   }
 
@@ -51,55 +51,55 @@ class _MyAppState extends State<MyApp> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // FutureBuilder(
-          //   future: _fetch1(),
-          //   builder: (BuildContext context, AsyncSnapshot snapshot) {
-          //   //해당 부분은 data를 아직 받아 오지 못했을때 실행되는 부분을 의미한다.
-          //   if (snapshot.hasData == false) {
-          //   return CircularProgressIndicator();
-          //   }//error가 발생하게 될 경우 반환하게 되는 부분
-          //   else if (snapshot.hasError) {
-          //   return Padding(
-          //   padding: const EdgeInsets.all(8.0),
-          //   child: Text(
-          //   'Error: ${snapshot.error}',
-          //   style: TextStyle(fontSize: 30),
-          //   ),
-          //   );
-          //   }
-          // else {
-          // return Expanded(
-          //   child: ListView.builder(
-          //       // padding: const EdgeInsets.all(8),
-          //       itemCount: dataAnalyzer.eventList.length(),
-          //       // itemCount: 10,
-          //
-          //       itemBuilder: (BuildContext context, int index) {
-          //         print(dataAnalyzer.eventList.eventList);
-          //         DateTime date = dataAnalyzer.eventList.eventList[index].time;
-          //         String note = dataAnalyzer.eventList.eventList[index].note.toString();
-          //         Color color = (note == 'back home') ? event_color_backHome : event_color_goingOut;
-          //         return TextButton(
-          //           child: Align(
-          //             alignment : Alignment.topLeft,
-          //             child: Text(
-          //                 '${DateTime(date.year, date.month, date.day, date.hour, date.minute).toString().substring(0, 16)}:'
-          //                 ' ${note}'),
-          //           ),
-          //           style: ButtonStyle(
-          //               padding: MaterialStateProperty.all<EdgeInsets>(EdgeInsets.all(15)),
-          //               foregroundColor: MaterialStateProperty.all<Color>(color),
-          //               shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-          //                   RoundedRectangleBorder(
-          //                       borderRadius: BorderRadius.circular(18.0),
-          //                       side: BorderSide(color: color)
-          //                   )
-          //               )
-          //           ),
-          //           onPressed: ()=> null,
-          //         );
-          //       }),
-          // );}}),
+          FutureBuilder(
+            future: _fetch1(),
+            builder: (BuildContext context, AsyncSnapshot snapshot) {
+            //해당 부분은 data를 아직 받아 오지 못했을때 실행되는 부분을 의미한다.
+            if (snapshot.hasData == false) {
+            return CircularProgressIndicator();
+            }//error가 발생하게 될 경우 반환하게 되는 부분
+            else if (snapshot.hasError) {
+            return Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+            'Error: ${snapshot.error}',
+            style: TextStyle(fontSize: 30),
+            ),
+            );
+            }
+          else {
+          return Expanded(
+            child: ListView.builder(
+                // padding: const EdgeInsets.all(8),
+                itemCount: dataAnalyzer.eventList.length(),
+                // itemCount: 10,
+
+                itemBuilder: (BuildContext context, int index) {
+                  print(dataAnalyzer.eventList.eventList);
+                  DateTime date = dataAnalyzer.eventList.eventList[index].time;
+                  String note = dataAnalyzer.eventList.eventList[index].note.toString();
+                  Color color = (note == 'back home') ? event_color_backHome : event_color_goingOut;
+                  return TextButton(
+                    child: Align(
+                      alignment : Alignment.topLeft,
+                      child: Text(
+                          '${DateTime(date.year, date.month, date.day, date.hour, date.minute).toString().substring(0, 16)}:'
+                          ' ${note}'),
+                    ),
+                    style: ButtonStyle(
+                        padding: MaterialStateProperty.all<EdgeInsets>(EdgeInsets.all(15)),
+                        foregroundColor: MaterialStateProperty.all<Color>(color),
+                        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(18.0),
+                                side: BorderSide(color: color)
+                            )
+                        )
+                    ),
+                    onPressed: ()=> null,
+                  );
+                }),
+          );}}),
           TextField(controller: myTextController,),
 
           Row(mainAxisAlignment: MainAxisAlignment.center, children: [
@@ -110,18 +110,17 @@ class _MyAppState extends State<MyApp> {
               child: Text("leave note", style: TextStyle(color: Colors.grey)),
             ),
           ]),
-
         ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          text = "data saved at: " +
-              DateFormat('yyyyMMdd_HHmmss').format(DateTime.now());
-          setState(() {});
-          sensorLogger.forceWrite();
+          // text = "data saved at: " +
+          //     DateFormat('yyyyMMdd_HHmmss').format(DateTime.now());
+          // setState(() {});
+          // sensorLogger.forceWrite();
           // dataAnalyzer.readFiles();
           // dataAnalyzer.printData();
-          // print(dataAnalyzer.eventList.eventList);
+          print(dataAnalyzer.eventList.eventList);
         },
       ),
     ));

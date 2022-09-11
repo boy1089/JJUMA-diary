@@ -20,10 +20,10 @@ class DataAnalyzer{
   var summary;
 
   DataAnalyzer(){
-    readFiles();
+    var a = readFiles();
     print('a');
 
-    printData();
+    printData(a);
     print(eventList.eventList);
   }
 
@@ -44,7 +44,7 @@ class DataAnalyzer{
     return b;
   }
 
-  void readFiles() async {
+  Future<List<DataFrame>> readFiles() async {
     var files = await getFiles();
     dataAll = [];
     print("files:  ${files}");
@@ -52,9 +52,10 @@ class DataAnalyzer{
     files2 = files;
     for(int i=0; i< files.length; i++){
       data = await readFile(files.elementAt(i).path);
+      print('reaFiles, $i th data');
       dataAll.add(data);
     }
-
+    return dataAll;
   }
 
   Future<DataFrame> readFile(path) async {
@@ -63,12 +64,14 @@ class DataAnalyzer{
     return data;
   }
 
-  Future<EventList> analyzeData() async {
+  Future<EventList> analyzeData(a) async {
+    var b = await _localPath;
+    dataAll = await a;
     eventList.clear();
     print('aaa ${dataAll.length}');
     for(int i = 0; i < files2.length; i++){
       print('processing ${i}/${files2.length} th data...${files2[i]}');
-      data = dataAll[i];
+      data = await dataAll[i];
       analyzeIsHome();
     }
     eventList.sortEvent();
@@ -129,9 +132,10 @@ class DataAnalyzer{
     summary = await fromCsv('${directory.path}/summary.csv');
   }
 
-  void printData() async {
+  void printData(a) async {
+    var b = await _localPath;
     print(dataAll);
-    var a = await analyzeData();
+    var c = await analyzeData(a);
 
   }
 }

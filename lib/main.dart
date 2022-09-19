@@ -5,15 +5,25 @@ import 'package:test_location_2nd/Event.dart';
 import 'package:test_location_2nd/EventList.dart';
 import 'package:test_location_2nd/NoteData.dart';
 
-//TODO : identify events
-//TODO : shot events in the UI
-
 import 'package:test_location_2nd/SensorLogger.dart';
 import 'package:test_location_2nd/NoteLogger.dart';
 import 'package:test_location_2nd/Util.dart';
 import 'package:test_location_2nd/DataAnalyzer.dart';
 import 'package:test_location_2nd/NoteData.dart';
-void main() {
+
+import 'package:flutter_logs/flutter_logs.dart';
+
+
+//TODO : add more channels to sensor ( light, motion, temp, humidity, battery)
+//TODO : get all log from all application ( chrome - web page, events )
+//TODO : note to label the situation.
+//TODO : fix bug in usagestat
+
+
+void main()  {
+  WidgetsFlutterBinding.ensureInitialized();
+
+
   runApp(MyApp());
 }
 
@@ -31,6 +41,8 @@ class _MyAppState extends State<MyApp> {
   final dataAnalyzer = DataAnalyzer();
   final myTextController = TextEditingController();
 
+
+
   void saveNote() {
     noteLogger
         .writeCache(NoteData(DateTime.now(),myTextController.text));
@@ -46,6 +58,7 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+
     return MaterialApp(
         home: Scaffold(
       body: Column(
@@ -103,6 +116,7 @@ class _MyAppState extends State<MyApp> {
           TextField(controller: myTextController,),
 
           Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+            Text(text),
             OutlinedButton(
               onPressed: () {
                 saveNote();
@@ -114,13 +128,15 @@ class _MyAppState extends State<MyApp> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // text = "data saved at: " +
-          //     DateFormat('yyyyMMdd_HHmmss').format(DateTime.now());
-          // setState(() {});
-          // sensorLogger.forceWrite();
-          // dataAnalyzer.readFiles();
-          // dataAnalyzer.printData();
-          print(dataAnalyzer.eventList.eventList);
+          print(DateTime.parse(DateFormat('yyyyMMdd').format(DateTime.now())));
+          text = "data saved at: " +
+              DateFormat('yyyyMMdd_HHmmss').format(DateTime.now());
+          setState(() {});
+          sensorLogger.forceWrite();
+
+          // print(DateTime.now().toString());
+
+          // print(DateTime.now());
         },
       ),
     ));

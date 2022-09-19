@@ -20,11 +20,10 @@ class DataAnalyzer{
   var summary;
 
   DataAnalyzer(){
-    var a = readFiles();
-    print('a');
-
-    printData(a);
-    print(eventList.eventList);
+    eventList.load();
+    // var a = readFiles();
+    //
+    // printData(a);
   }
 
   Future<String> get _localPath async {

@@ -9,9 +9,12 @@ import 'package:flutter_sensors/flutter_sensors.dart';
 import 'package:test_location_2nd/SensorData.dart';
 import 'package:intl/intl.dart';
 
+import 'package:test_location_2nd/UsageLogger.dart';
 
 class SensorLogger {
   Location location = new Location();
+
+  UsageLogger usageLogger = new UsageLogger();
 
   var _serviceEnabled;
   var _permissionGranted;
@@ -80,10 +83,22 @@ class SensorLogger {
           _accelData[1],
           _accelData[2]));
 
-      if (_cacheCount > 500) {
-        writeCache();
+      if (_cacheCount > 100) {
+        writeCache2();
         _cacheCount = 0;
-        writeAudio();
+        writeAudio2();
+        usageLogger.getEvents(DateTime.parse(DateFormat('yyyyMMdd').format(DateTime.now())), DateTime.now());
+        usageLogger.getEventInfo(DateTime.parse(DateFormat('yyyyMMdd').format(DateTime.now())), DateTime.now());
+        usageLogger.getUsageStat(DateTime.parse(DateFormat('yyyyMMdd').format(DateTime.now())), DateTime.now());
+
+        // usageLogger.getUsage(DateTime.parse(DateFormat('yyyyMMdd').format(DateTime.now())), DateTime.now());
+        // usageLogger.getUsage(DateTime.parse('20220101'), DateTime.now());
+        usageLogger.writeCache2();
+        usageLogger.writeCache3();
+        usageLogger.writeCache4();
+
+
+        // usageLogger.writeCache();
       }
       debugPrint("SensorLogger _cacheCount $_cacheCount");
     });
@@ -112,11 +127,43 @@ class SensorLogger {
     _cacheCount = 0;
   }
 
+  void writeCache2() async {
+    final Directory? directory = await getExternalStorageDirectory();
+    final String folder = '${directory?.path}/sensorData';
+    bool isFolderExists = await Directory(folder).exists();
+
+    final File file = File(
+        '${folder}/${DateFormat('yyyyMMdd').format(DateTime.now())}_sensor.csv');
+
+    if (!isFolderExists){
+      Directory(folder).create(recursive : true);
+    }
+
+    bool isExists = await file.exists();
+    debugPrint("writing Cache to Local..");
+
+    if (!isExists)
+      await file.writeAsString(
+          'time, longitude, latitude, accelX, accelY, accelZ \n',
+          mode: FileMode.append);
+
+    for (int i = 0; i < _cacheData.length; i++) {
+      var line = _cacheData[i];
+      await file.writeAsString(
+          '${line.time.toString()}, ${line.longitude.toString()}, ${line.latitude.toString()}, ${line.accelX.toString()}'
+              ',${line.accelY.toString()}, ${line.accelZ.toString()}  \n',
+          mode: FileMode.append);
+    }
+    _cacheData = [];
+    _cacheCount = 0;
+  }
+
   void writeAudio() async {
     final Directory directory = await getApplicationDocumentsDirectory();
     if (await _audioRecorder.hasPermission() == false) return;
     bool isRecording = await _audioRecorder.isRecording();
     if (isRecording) await _audioRecorder.stop();
+
     await _audioRecorder.start(
       path: '${directory.path}/${DateFormat('yyyyMMdd_HHmmss').format(DateTime.now())}_audio.m4a',
       encoder: AudioEncoder.aacLc, // by default
@@ -124,7 +171,27 @@ class SensorLogger {
       samplingRate: 44100, // by default
     );
   }
+  void writeAudio2() async {
+    final Directory? directory = await getExternalStorageDirectory();
+    final String folder = '${directory?.path}/audioData';
+    bool isFolderExists = await Directory(folder).exists();
 
+    if (!isFolderExists){
+      Directory(folder).create(recursive : true);
+    }
+
+    if (await _audioRecorder.hasPermission() == false) return;
+    bool isRecording = await _audioRecorder.isRecording();
+    if (isRecording) await _audioRecorder.stop();
+
+
+    await _audioRecorder.start(
+      path: '${folder}/${DateFormat('yyyyMMdd_HHmmss').format(DateTime.now())}_audio.m4a',
+      encoder: AudioEncoder.aacLc, // by default
+      bitRate: 128000, // by default
+      samplingRate: 44100, // by default
+    );
+  }
   void forceWrite(){
     _cacheCount = 1000;
   }

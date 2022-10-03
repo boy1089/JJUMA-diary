@@ -45,6 +45,9 @@ dependencies:
   image: ^3.2.0
   flutter_logs:
   usage_stats: ^1.2.0
+  permission_handler:
+  matrix2d:
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -42,7 +42,7 @@ class _DayPageState extends State<DayPage> with AutomaticKeepAliveClientMixin {
 
   _DayPageState() {
     debugPrint("dayPage constructed");
-    this.dataReader = DataReader(_selectedIndex);
+    // this.dataReader = DataReader(_selectedIndex);
     this.imageReader = ImageReader(_selectedIndex);
   }
   @override

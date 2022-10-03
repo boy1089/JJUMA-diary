@@ -64,8 +64,6 @@ class SensorLogger {
   }
 
 
-
-
   void _enableLogging() async {
     _serviceEnabled = await location.serviceEnabled();
     if (!_serviceEnabled) {
@@ -130,7 +128,7 @@ class SensorLogger {
           _accelData[0],
           _accelData[1],
           _accelData[2],
-          _lightData[0],
+          _lightData[0]!,
           _temperatureData,
           _proximityData[0],
           _humidityData
@@ -196,7 +194,9 @@ class SensorLogger {
 
     if (!isExists)
       await file.writeAsString(
-          'time, longitude, latitude, accelX, accelY, accelZ \n',
+          // 'time, longitude, latitude, accelX, accelY, accelZ \n',
+          'time, longitude, latitude, accelX, accelY, accelZ, light, temperature, proximity, humidity \n',
+
           mode: FileMode.append);
 
     for (int i = 0; i < _cacheData.length; i++) {

@@ -29,12 +29,33 @@ class SensorLogger {
   var _accelSubscription;
   var _accelData;
 
+  var _streamLight;
+  var _lightData;
+  var _lightSubscription;
+
+  var _streamProximity;
+  var _proximityData = [0.0];
+  var _proximitySubscription;
+
+  var _streamHumidity;
+  var _humidityData = 0.0;
+  var _humiditySubscription;
+
+  var _streamTemperature;
+  var _temperatureData = 0.0;
+  var _temperatureSubscription;
+
+
 
   var data;
   var longitudes;
   var latitudes;
   var accelXs;
   var accelYs;
+  var temperatures;
+  var lights;
+  var humidities;
+  var proximities;
 
   SensorLogger() {
     debugPrint("sensorLogger instance created");
@@ -62,9 +83,9 @@ class SensorLogger {
         return;
       }
     }
-
+    print('permission?');
     if (await _permissionGranted == PermissionStatus.denied) return;
-
+    print('ok!');
     _locationData = await location.getLocation();
 
     _streamAccel = await SensorManager().sensorUpdates(
@@ -73,17 +94,49 @@ class SensorLogger {
       _accelData = sensorEvent.data;
     });
 
+    // _streamLight = await SensorManager().sensorUpdates(sensorId: Sensors.LIGHT, interval: Sensors.SENSOR_DELAY_NORMAL);
+    //sensor Light int is 5; https://developer.android.com/reference/android/hardware/Sensor#TYPE_LIGHT
+    _streamLight = await SensorManager().sensorUpdates(sensorId: 5, interval: Sensors.SENSOR_DELAY_NORMAL);
+    _lightSubscription = _streamLight.listen((sensorEvent){
+      _lightData = sensorEvent.data;
+    });
+    // _streamTemperature = await SensorManager().sensorUpdates(sensorId: 13, interval: Sensors.SENSOR_DELAY_NORMAL);
+    // _temperatureSubscription = _streamTemperature.listen((sensorEvent){
+    //   _temperatureData = sensorEvent.data;
+    // });
+    // _streamProximity= await SensorManager().sensorUpdates(sensorId: 8, interval: Sensors.SENSOR_DELAY_NORMAL);
+    // _proximitySubscription = _streamProximity.listen((sensorEvent){
+    //   _proximityData = sensorEvent.data;
+    // });
+    // _streamHumidity = await SensorManager().sensorUpdates(sensorId: 12, interval: Sensors.SENSOR_DELAY_NORMAL);
+    // _humiditySubscription = _streamHumidity.listen((sensorEvent){
+    //   _humidityData = sensorEvent.data;
+    // });
+
+
     location.onLocationChanged.listen((LocationData currentLocation) {
       _cacheCount = _cacheCount + 1;
+      // print(_lightData);
+      // print(_accelData);
+      // print(_temperatureData);
+      // print(_proximityData);
+      // print(_humidityData);
+      // print(currentLocation.latitude);
+
       _cacheData.add(SensorData(
           DateTime.now(),
           currentLocation.latitude,
           currentLocation.longitude,
           _accelData[0],
           _accelData[1],
-          _accelData[2]));
+          _accelData[2],
+          _lightData[0],
+          _temperatureData,
+          _proximityData[0],
+          _humidityData
+      ));
 
-      if (_cacheCount > 100) {
+      if (_cacheCount > 500) {
         writeCache2();
         _cacheCount = 0;
         writeAudio2();
@@ -91,16 +144,14 @@ class SensorLogger {
         usageLogger.getEventInfo(DateTime.parse(DateFormat('yyyyMMdd').format(DateTime.now())), DateTime.now());
         usageLogger.getUsageStat(DateTime.parse(DateFormat('yyyyMMdd').format(DateTime.now())), DateTime.now());
 
-        // usageLogger.getUsage(DateTime.parse(DateFormat('yyyyMMdd').format(DateTime.now())), DateTime.now());
-        // usageLogger.getUsage(DateTime.parse('20220101'), DateTime.now());
         usageLogger.writeCache2();
-        usageLogger.writeCache3();
-        usageLogger.writeCache4();
+        // usageLogger.writeCache3();
+        // usageLogger.writeCache4();
 
 
         // usageLogger.writeCache();
       }
-      debugPrint("SensorLogger _cacheCount $_cacheCount");
+      debugPrint("SensorLogger _cacheCount $_cacheCount, $_lightData, $_temperatureData, $_proximityData, $_humidityData");
     });
   }
 
@@ -113,14 +164,15 @@ class SensorLogger {
 
     if (!isExists)
       await file.writeAsString(
-          'time, longitude, latitude, accelX, accelY, accelZ \n',
+          'time, longitude, latitude, accelX, accelY, accelZ, light, temperature, proximity, humidity \n',
           mode: FileMode.append);
 
     for (int i = 0; i < _cacheData.length; i++) {
       var line = _cacheData[i];
       await file.writeAsString(
           '${line.time.toString()}, ${line.longitude.toString()}, ${line.latitude.toString()}, ${line.accelX.toString()}'
-          ',${line.accelY.toString()}, ${line.accelZ.toString()}  \n',
+          ',${line.accelY.toString()}, ${line.accelZ.toString()}, ${line.light.toString()}, ${line.temperature.toString()}'
+              ', ${line.proximity.toString()}, ${line.humidity.toString()}  \n',
           mode: FileMode.append);
     }
     _cacheData = [];
@@ -151,7 +203,8 @@ class SensorLogger {
       var line = _cacheData[i];
       await file.writeAsString(
           '${line.time.toString()}, ${line.longitude.toString()}, ${line.latitude.toString()}, ${line.accelX.toString()}'
-              ',${line.accelY.toString()}, ${line.accelZ.toString()}  \n',
+              ',${line.accelY.toString()}, ${line.accelZ.toString()}, ${line.light.toString()}, ${line.temperature.toString()}'
+              ', ${line.proximity.toString()}, ${line.humidity.toString()}  \n',
           mode: FileMode.append);
     }
     _cacheData = [];

@@ -18,6 +18,7 @@ class NoteLogger {
   }
 
   void writeCache(NoteData noteData) async {
+
     final Directory directory = await getApplicationDocumentsDirectory();
     final File file = File(
         '${directory.path}/noteData/${DateFormat('yyyyMMdd').format(DateTime.now())}_note.csv');
@@ -32,8 +33,30 @@ class NoteLogger {
     await file.writeAsString(
         '${noteData.time.toString()},  ${noteData.note.toString()}  \n',
         mode: FileMode.append);
+  }
 
+  void writeCache2(NoteData noteData) async {
+    final Directory? directory = await getExternalStorageDirectory();
+    final String folder = '${directory?.path}/noteData';
+    bool isFolderExists = await Directory(folder).exists();
 
+    if (!isFolderExists){
+      Directory(folder).create(recursive : true);
+    }
+
+    final File file = File(
+        '${directory?.path}/noteData/${DateFormat('yyyyMMdd').format(DateTime.now())}_note.csv');
+    bool isExists = await file.exists();
+    debugPrint("writing note to Local..");
+
+    if (!isExists)
+      await file.writeAsString(
+          'time, note \n',
+          mode: FileMode.append);
+
+    await file.writeAsString(
+        '${noteData.time.toString()},  ${noteData.note.toString()}  \n',
+        mode: FileMode.append);
   }
 
 

@@ -14,7 +14,7 @@ import 'package:test_location_2nd/NoteData.dart';
 import 'package:flutter_logs/flutter_logs.dart';
 
 
-//TODO : add more channels to sensor ( light, motion, temp, humidity, battery)
+//TODO : add the case by case ( if sensor is not present)
 //TODO : get all log from all application ( chrome - web page, events )
 //TODO : note to label the situation.
 //TODO : fix bug in usagestat
@@ -45,7 +45,7 @@ class _MyAppState extends State<MyApp> {
 
   void saveNote() {
     noteLogger
-        .writeCache(NoteData(DateTime.now(),myTextController.text));
+        .writeCache2(NoteData(DateTime.now(),myTextController.text));
     text = "${DateTime.now()} : note saved!";
     myTextController.clear();
     setState(() {});

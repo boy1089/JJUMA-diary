@@ -3,7 +3,6 @@ import 'package:flutter/foundation.dart';
 import 'package:graphic/graphic.dart';
 import 'dart:async';
 
-import 'package:test_location_2nd/DataReader.dart';
 import 'package:test_location_2nd/ImageReader.dart';
 import 'package:test_location_2nd/Util.dart';
 
@@ -12,7 +11,6 @@ import 'package:intl/intl.dart';
 class DayPage extends StatefulWidget {
   var title;
   bool isInitializationDone = false;
-
 
   DayPage({Key? key}) : super(key: key) {
     debugPrint("daypage constructed");
@@ -24,7 +22,6 @@ class DayPage extends StatefulWidget {
 
   // DayPage._internal();
 
-
   @override
   State<DayPage> createState() => _DayPageState();
 }
@@ -33,7 +30,6 @@ class _DayPageState extends State<DayPage> with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
 
-  int _counter = 0;
   final heatmapChannel = StreamController<Selected?>.broadcast();
   var dataReader;
   var imageReader;
@@ -77,20 +73,20 @@ class _DayPageState extends State<DayPage> with AutomaticKeepAliveClientMixin {
     _selectedIndex = date;
     _moveToSelectedDate(date);
 
-    return new WillPopScope(
+    return WillPopScope(
       onWillPop: () async => false,
       child: Scaffold(
         appBar: AppBar(
-          title: Text(widget.title),
-          leading : IconButton(
-            icon: new Icon(Icons.ac_unit),
-            onPressed:(){
-              // Navigator.of(context).pop();
-              Navigator.pushNamed(context, '/calendar',
-              );
-            }
-          )
-        ),
+            title: Text(widget.title),
+            leading: IconButton(
+                icon: new Icon(Icons.ac_unit),
+                onPressed: () {
+                  // Navigator.of(context).pop();
+                  Navigator.pushNamed(
+                    context,
+                    '/calendar',
+                  );
+                })),
         body: Row(
           children: [
             SizedBox(width: 10),

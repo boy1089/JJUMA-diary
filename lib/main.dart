@@ -1,17 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
-import 'package:intl/intl.dart';
-import 'package:test_location_2nd/Event.dart';
-import 'package:test_location_2nd/EventList.dart';
 import 'package:test_location_2nd/NoteData.dart';
 
 import 'package:test_location_2nd/SensorLogger.dart';
 import 'package:test_location_2nd/NoteLogger.dart';
-import 'package:test_location_2nd/Util.dart';
 import 'package:test_location_2nd/DataAnalyzer.dart';
-import 'package:test_location_2nd/NoteData.dart';
-
-import 'package:flutter_logs/flutter_logs.dart';
 import 'package:test_location_2nd/DataReader.dart';
 
 import 'package:test_location_2nd/daily_page.dart';
@@ -36,6 +29,19 @@ class _MyAppState extends State<MyApp> {
   final myTextController = TextEditingController();
   final dataReader = DataReader();
 
+  Future readData = Future.delayed(Duration(seconds : 1));
+
+  Future<List<List<List<dynamic>>>> _fetchData() async{
+    await Future.delayed(Duration(seconds : 10));
+    return [[['Data']]];
+  }
+
+  @override
+  void initState(){
+    readData = _fetchData();
+    super.initState();
+  }
+
   void saveNote() {
     noteLogger.writeCache2(NoteData(DateTime.now(), myTextController.text));
     text = "${DateTime.now()} : note saved!";
@@ -47,16 +53,36 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: FutureBuilder(
-          future: dataReader.readFiles(),
+          future: readData,
           builder: (BuildContext context, AsyncSnapshot snapshot) {
+            print("snapshot : ${snapshot.data}");
+
             if (snapshot.hasData == false) {
-              return CircularProgressIndicator();
+              return Scaffold(
+                backgroundColor: Colors.white,
+                body: Center(
+                  child: Column(
+                    children: [
+                      CircularProgressIndicator(
+                        backgroundColor: Colors.blue,
+                        color : Colors.orange,
+                        strokeWidth: 4.0,
+                      ),
+
+                    ],
+                  ),
+                ),
+              );
             } else if (snapshot.hasError) {
               return Text('error');
             } else {
               print("snap shot data : ${snapshot.data}");
               print("snap shot data : ${snapshot.data.isEmpty}");
-              if (snapshot.data.isEmpty) return Center(child : Text('no data found'));
+              if (snapshot.data.isEmpty) {
+                // sensorLogger.forceWrite();
+                return Center(child: Text('no data found'));
+              }
+
               return TestPolarPage(dataReader);
             }
           }),

@@ -13,7 +13,6 @@ import 'package:test_location_2nd/UsageLogger.dart';
 
 class SensorLogger {
   Location location = new Location();
-
   UsageLogger usageLogger = new UsageLogger();
 
   var _serviceEnabled;
@@ -61,6 +60,7 @@ class SensorLogger {
     debugPrint("sensorLogger instance created");
     location.enableBackgroundMode(enable: true);
     _enableLogging();
+    // forceWrite();
   }
 
 

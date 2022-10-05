@@ -10,8 +10,6 @@ final _monthDayFormat = DateFormat('MM-dd');
 //TODO : put scrol wheel to select the date.
 //TODO : get images from google album
 
-
-
 class TestPolarPage extends StatefulWidget {
   DataReader dataReader;
   TestPolarPage(DataReader dataReader, {Key? key})
@@ -19,11 +17,15 @@ class TestPolarPage extends StatefulWidget {
         super(key: key);
 
   @override
-  State<TestPolarPage> createState() => _TestPolarPageState();
+  State<TestPolarPage> createState() => _TestPolarPageState(dataReader: this.dataReader);
+
 }
 
 class _TestPolarPageState extends State<TestPolarPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  DataReader dataReader;
+  _TestPolarPageState({required dataReader})
+    : this.dataReader = dataReader;
 
   int dataIndex = 0;
 
@@ -128,7 +130,7 @@ class _TestPolarPageState extends State<TestPolarPage> {
                 // child : Text('aaa'),
 
                 //reference : https://www.youtube.com/watch?v=wnTYKJEJ7f4&t=167s
-                child : ListWheelScrollView(
+                child : ListWheelScrollView.useDelegate(
                   magnification: 1,
                   physics : FixedExtentScrollPhysics(),
                   diameterRatio: 0.2,
@@ -136,18 +138,14 @@ class _TestPolarPageState extends State<TestPolarPage> {
                     setState((){dataIndex = index;}),
                   itemExtent: 80,
 
-                  children: [
-                    Text('a', style: DefaultTextStyle.of(context).style.apply(fontSizeFactor: 1.0),),
-                    Text('b'),
-                    Text('c'),
-                    Text('c'),
-                    Text('c'),
-                    Text('c'),
-                    Text('c'),
-                    Text('c'),
-                    Text('c'),
+                  childDelegate: ListWheelChildBuilderDelegate(
+                    builder : (context, index) => Container(
+                      child : Center(child : Text('${dataReader.dates[index]}')),
 
-                  ]
+                    ),
+                    // childCount: dataReader.dataAll.length
+                    childCount: 20,
+                  )
                 ),
               ),
             )
@@ -165,5 +163,6 @@ class _TestPolarPageState extends State<TestPolarPage> {
       ),
     );
   }
+
 }
 

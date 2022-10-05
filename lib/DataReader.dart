@@ -59,10 +59,20 @@ class DataReader {
       //     .path);
       data = await openFile(files.elementAt(i).path);
       print('reaFiles, $i th data');
-
+      data = subsampleList(data, 10);
       dataAll.add(data);
     }
     return dataAll;
+  }
+
+  List<dynamic> subsampleList(List list, int factor){
+    if(factor == null) factor = 10;
+
+    List<List<dynamic>> newList = [];
+    for(int i = 0; i< list.length; i++){
+      if(i%factor == 0) newList.add(list[i]);
+    }
+    return newList;
   }
 
   Future<DataFrame> readFile(path) async {

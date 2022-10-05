@@ -47,6 +47,7 @@ dependencies:
   usage_stats: ^1.2.0
   permission_handler:
   matrix2d:
+  fluttertoast: ^8.0.9
 
 dev_dependencies:
   flutter_test:

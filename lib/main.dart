@@ -16,7 +16,7 @@ import 'package:test_location_2nd/DataReader.dart';
 
 import 'package:test_location_2nd/daily_page.dart';
 
-void main()  {
+void main() {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(MyApp());
 }
@@ -36,43 +36,30 @@ class _MyAppState extends State<MyApp> {
   final myTextController = TextEditingController();
   final dataReader = DataReader();
 
-
-
   void saveNote() {
-    noteLogger
-        .writeCache2(NoteData(DateTime.now(),myTextController.text));
+    noteLogger.writeCache2(NoteData(DateTime.now(), myTextController.text));
     text = "${DateTime.now()} : note saved!";
     myTextController.clear();
     setState(() {});
   }
 
-  Future<EventList> _fetch1() async {
-    await Future.delayed(Duration(seconds: 25));
-    return dataAnalyzer.eventList;
-  }
-
   @override
   Widget build(BuildContext context) {
-
     return MaterialApp(
-        home : TestPolarPage(dataReader),
-
-        // floatingActionButton: FloatingActionButton(
-        // onPressed: () {
-        //   // print(DateTime.parse(DateFormat('yyyyMMdd').format(DateTime.now())));
-        //   // text = "data saved at: " +
-        //   //     DateFormat('yyyyMMdd_HHmmss').format(DateTime.now());
-        //   // setState(() {});
-        //   // sensorLogger.forceWrite();
-        //   dataReader.readFiles();
-        //   print(dataReader.dataAll);
-        //   print(dataReader.files2);
-
-          // print(DateTime.now().toString());
-
-          // print(DateTime.now());
-        // },
-      );
-
+      home: FutureBuilder(
+          future: dataReader.readFiles(),
+          builder: (BuildContext context, AsyncSnapshot snapshot) {
+            if (snapshot.hasData == false) {
+              return CircularProgressIndicator();
+            } else if (snapshot.hasError) {
+              return Text('error');
+            } else {
+              print("snap shot data : ${snapshot.data}");
+              print("snap shot data : ${snapshot.data.isEmpty}");
+              if (snapshot.data.isEmpty) return Center(child : Text('no data found'));
+              return TestPolarPage(dataReader);
+            }
+          }),
+    );
   }
 }

@@ -97,6 +97,7 @@ class SensorLogger {
     _streamLight = await SensorManager().sensorUpdates(sensorId: 5, interval: Sensors.SENSOR_DELAY_NORMAL);
     _lightSubscription = _streamLight.listen((sensorEvent){
       _lightData = sensorEvent.data;
+
     });
     // _streamTemperature = await SensorManager().sensorUpdates(sensorId: 13, interval: Sensors.SENSOR_DELAY_NORMAL);
     // _temperatureSubscription = _streamTemperature.listen((sensorEvent){
@@ -114,7 +115,9 @@ class SensorLogger {
 
     location.onLocationChanged.listen((LocationData currentLocation) {
       _cacheCount = _cacheCount + 1;
-      // print(_lightData);
+      _lightData = _lightData ?? [0.0];
+      _accelData = _accelData ?? [0.0, 0.0, 0.0,];
+
       // print(_accelData);
       // print(_temperatureData);
       // print(_proximityData);
@@ -128,7 +131,7 @@ class SensorLogger {
           _accelData[0],
           _accelData[1],
           _accelData[2],
-          _lightData[0]!,
+          _lightData[0],
           _temperatureData,
           _proximityData[0],
           _humidityData
@@ -149,7 +152,7 @@ class SensorLogger {
 
         // usageLogger.writeCache();
       }
-      debugPrint("SensorLogger _cacheCount $_cacheCount, $_lightData, $_temperatureData, $_proximityData, $_humidityData");
+      debugPrint("SensorLogger _cacheCount $_cacheCount, ${_accelData.toString()} $_lightData, $_temperatureData, $_proximityData, $_humidityData");
     });
   }
 

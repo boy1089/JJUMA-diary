@@ -9,13 +9,23 @@ final _monthDayFormat = DateFormat('MM-dd');
 
 //TODO : put scrol wheel to select the date.
 //TODO : get images from google album
-class TestPolarPage extends StatelessWidget {
+
+
+
+class TestPolarPage extends StatefulWidget {
   DataReader dataReader;
   TestPolarPage(DataReader dataReader, {Key? key})
       : this.dataReader = dataReader,
         super(key: key);
 
+  @override
+  State<TestPolarPage> createState() => _TestPolarPageState();
+}
+
+class _TestPolarPageState extends State<TestPolarPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  int dataIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -26,32 +36,25 @@ class TestPolarPage extends StatelessWidget {
       ),
       backgroundColor: Colors.white,
       body: Container(
-        height : 400,
+        height : 800,
         width : 500,
 
         child : Column(
-          mainAxisSize: MainAxisSize.min,
+          // mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
 
           children: <Widget>[
             SizedBox(
-              child: FutureBuilder(
-                  future : dataReader.readFiles(),
-                  builder : (BuildContext context, AsyncSnapshot snapshot){
-                    if (snapshot.hasData == false){
-                      return CircularProgressIndicator();
-                    }
-                    else if (snapshot.hasError){
-                      return Text('error');
-                    }
-                    else {
-                      return Container(
+              width : 300,
+              height : 300,
+              child:
+                       Container(
                         margin: const EdgeInsets.only(top: 10),
                         width: 400,
                         height: 300,
                         child: Chart(
-                          data: dataReader.dataAll[1],
+                          data: widget.dataReader.dataAll[dataIndex],
                           variables: {
                             '0': Variable(
                               accessor: (List datum) => datum[0] as num,
@@ -116,13 +119,38 @@ class TestPolarPage extends StatelessWidget {
                           ),
 
                         ),
-                      );
-                    }
+                      ),),
 
+            Center(
+              child: SizedBox(
+                width : 300,
+                height : 100,
+                // child : Text('aaa'),
 
-                  }
+                //reference : https://www.youtube.com/watch?v=wnTYKJEJ7f4&t=167s
+                child : ListWheelScrollView(
+                  magnification: 1,
+                  physics : FixedExtentScrollPhysics(),
+                  diameterRatio: 0.2,
+                  onSelectedItemChanged: (index) =>
+                    setState((){dataIndex = index;}),
+                  itemExtent: 80,
+
+                  children: [
+                    Text('a', style: DefaultTextStyle.of(context).style.apply(fontSizeFactor: 1.0),),
+                    Text('b'),
+                    Text('c'),
+                    Text('c'),
+                    Text('c'),
+                    Text('c'),
+                    Text('c'),
+                    Text('c'),
+                    Text('c'),
+
+                  ]
+                ),
               ),
-            ),
+            )
 
           ],
           // )
@@ -131,8 +159,8 @@ class TestPolarPage extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed : ((){
-          print(dataReader.dataAll[0].first);
-          print(dataReader.dataAll[0].last);
+          print(widget.dataReader.dataAll[0].first);
+          print(widget.dataReader.dataAll[0].last);
         }),
       ),
     );

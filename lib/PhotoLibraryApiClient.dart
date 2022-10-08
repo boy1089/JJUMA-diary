@@ -20,32 +20,36 @@ import 'dart:io';
 import 'package:http/http.dart';
 import 'package:http/http.dart' as http;
 import 'package:path/path.dart' as path;
-
+import 'package:test_location_2nd/GoogleAccountManager.dart';
 
 class PhotosLibraryApiClient {
-  final Future<Map<String, String>> _authHeaders;
+  // final Future<Map<String, String>> _authHeaders;
+  GoogleAccountManager googleAccountManager;
 
-  PhotosLibraryApiClient(this._authHeaders);
+  PhotosLibraryApiClient(this.googleAccountManager);
 
-  Future<String> uploadMediaItem(File image) async {
+
+  Future<String> testPhoto() async {
     // Get the filename of the image
-    final filename = path.basename(image.path);
+    var request = {};
+    request['pageSize'] = 100;
+    // request['pageToken'] = "1";
+    var request_json = json.encode(request);
 
-    // Set up the headers required for this request.
-    final headers = <String, String>{};
-    headers.addAll(await _authHeaders);
-    headers['Content-type'] = 'application/octet-stream';
-    headers['X-Goog-Upload-Protocol'] = 'raw';
-    headers['X-Goog-Upload-File-Name'] = filename;
-
-    // Make the HTTP request to upload the image. The file is sent in the body.
     final response = await http.post(
-      Uri.parse('https://photoslibrary.googleapis.com/v1/uploads'),
-      body: image.readAsBytesSync(),
-      headers: await _authHeaders,
+      Uri.parse("https://photoslibrary.googleapis.com/v1/mediaItems:search"),
+      body : request_json,
+      headers: await googleAccountManager.currentUser!.authHeaders,
     );
 
-    printError(response);
+    List<String> responseToString = json.decode(response.body)['mediaItems'].toString().split(',');
+    List<String> links = [];
+    for(int i = 0; i< responseToString.length; i++){
+      if( responseToString[i].contains("https://lh3.googleusercontent.com/")){
+        links.add(responseToString[i].substring(10));
+        // print(responseToString[i].substring(10));
+      }
+    }
 
     return response.body;
   }

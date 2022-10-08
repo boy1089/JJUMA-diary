@@ -1,15 +1,14 @@
 import 'package:location/location.dart';
-// import 'package:permission_handler/permission_handler.dart';
 
 import 'package:record/record.dart';
 
 class PermissionManager{
 
+
   void getLocationPermission() async {
     var location = Location();
     var _serviceEnabled;
     var _permissionGranted;
-
 
       _serviceEnabled = await location.serviceEnabled();
       if (!_serviceEnabled) {
@@ -18,6 +17,7 @@ class PermissionManager{
           return;
         }
       }
+
       if (!(await _serviceEnabled)) return;
 
       _permissionGranted = await location.hasPermission();

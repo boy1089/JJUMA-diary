@@ -8,7 +8,7 @@ import '../DataReader.dart';
 import 'navigation.dart';
 import 'package:test_location_2nd/SettingPage.dart';
 import 'package:test_location_2nd/PermissionManager.dart';
-
+import 'package:test_location_2nd/PhotoLibraryApiClient.dart';
 //TODO : put scrol wheel to select the date.
 //TODO : get images from google album
 
@@ -17,22 +17,25 @@ class TestPolarPage extends StatefulWidget {
 
   var googleAccountManager;
   var permissionManager;
+  var photoLibraryApiClient;
 
   TestPolarPage(
       DataReader dataReader,
       GoogleAccountManager googleAccountManager,
-      PermissionManager permissionManager,
+      PermissionManager permissionManager, photoLibraryClient,
       {Key? key})
       : this.dataReader = dataReader,
         this.googleAccountManager = googleAccountManager,
         this.permissionManager = permissionManager,
+        this.photoLibraryApiClient = photoLibraryClient,
         super(key: key);
 
   @override
   State<TestPolarPage> createState() => _TestPolarPageState(
       dataReader: this.dataReader,
       googleAccountManager: this.googleAccountManager,
-      permissionManager: this.permissionManager);
+      permissionManager: this.permissionManager,
+      photoLibraryApiClient: this.photoLibraryApiClient);
 }
 
 class _TestPolarPageState extends State<TestPolarPage> {
@@ -40,13 +43,16 @@ class _TestPolarPageState extends State<TestPolarPage> {
   DataReader dataReader;
   GoogleAccountManager googleAccountManager;
   PermissionManager permissionManager;
+  PhotosLibraryApiClient photoLibraryApiClient;
   _TestPolarPageState(
       {required dataReader,
       required googleAccountManager,
-      required permissionManager})
+      required permissionManager,
+      required photoLibraryApiClient})
       : this.dataReader = dataReader,
         this.googleAccountManager = googleAccountManager,
-        this.permissionManager = permissionManager;
+        this.permissionManager = permissionManager,
+        this.photoLibraryApiClient = photoLibraryApiClient;
 
   int dataIndex = 0;
 
@@ -237,6 +243,7 @@ class _TestPolarPageState extends State<TestPolarPage> {
                   floatingActionButton: FloatingActionButton(
                     onPressed: (() {
                       print(permissionManager);
+                      print(photoLibraryApiClient.testPhoto());
                       print(
                           "googleAccount manager : ${googleAccountManager.currentUser}");
                       // print(widget.dataReader.dataAll.last);

@@ -1,4 +1,5 @@
 import 'package:test_location_2nd/GoogleAccountManager.dart';
+import 'package:test_location_2nd/PermissionManager.dart';
 
 import 'GoogleAccountManager.dart';
 import 'android_notifications_screen.dart';
@@ -6,15 +7,18 @@ import 'navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:settings_ui/settings_ui.dart';
 import 'package:test_location_2nd/GoogleAccountManager.dart';
+import "package:test_location_2nd/PermissionManager.dart";
 
 class AndroidSettingsScreen extends StatelessWidget {
   // final GoogleAccountManager = googleAccountManager;
   //
   // static var googleAccountManager;
   var googleAccountManager;
-  AndroidSettingsScreen(GoogleAccountManager googleAccountManager, {
+  var permissionManager;
+  AndroidSettingsScreen(GoogleAccountManager googleAccountManager, PermissionManager permissionManager, {
     Key? key,
   }) : this.googleAccountManager = googleAccountManager,
+      this.permissionManager = permissionManager,
        super(key: key);
 
 
@@ -34,36 +38,17 @@ class AndroidSettingsScreen extends StatelessWidget {
                 leading: Icon(Icons.login),
               ),
               SettingsTile(
-                onPressed: (context) => toNotificationsScreen(context),
-                title: Text('Connected devices'),
-                description: Text('Bluetooth, pairing'),
-                leading: Icon(Icons.devices_other),
+                onPressed: (context) => permissionManager.getLocationPermission(),
+                title: Text('Location'),
+                description: Text('Location permission'),
+                leading: Icon(Icons.location_on),
               ),
               SettingsTile(
-                onPressed: (context) => toNotificationsScreen(context),
-                title: Text('Apps'),
-                description: Text('Assistant, recent apps, default apps'),
-                leading: Icon(Icons.apps),
+                onPressed: (context) => permissionManager.getAudioPermission(),
+                title: Text('Audio'),
+                description: Text('Audio Record permission'),
+                leading: Icon(Icons.audio_file),
               ),
-              SettingsTile(
-                onPressed: (context) => toNotificationsScreen(context),
-                title: Text('Notifications'),
-                description: Text('Notification history, conversations'),
-                leading: Icon(Icons.notifications_none),
-              ),
-              SettingsTile(
-                onPressed: (context) => toNotificationsScreen(context),
-                title: Text('Battery'),
-                description: Text('100%'),
-                leading: Icon(Icons.battery_full),
-              ),
-              SettingsTile(
-                onPressed: (context) => toNotificationsScreen(context),
-                title: Text('Storage'),
-                description: Text('30% used - 5.60 GB free'),
-                leading: Icon(Icons.storage),
-              ),
-
             ],
           ),
         ],

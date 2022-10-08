@@ -14,6 +14,7 @@ import 'package:test_location_2nd/GoogleAccountManager.dart';
 
 import 'SettingPage.dart';
 import 'navigation.dart';
+import 'package:test_location_2nd/PermissionManager.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -35,7 +36,7 @@ class _MyAppState extends State<MyApp> {
   final myTextController = TextEditingController();
   final dataReader = DataReader();
   final googleAccountManager = GoogleAccountManager();
-
+  final permissionManager = PermissionManager();
 
   void saveNote() {
     noteLogger.writeCache2(NoteData(DateTime.now(), myTextController.text));
@@ -49,8 +50,8 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       initialRoute : '/daily',
       routes : {
-        '/daily' : (context) => TestPolarPage(dataReader, googleAccountManager),
-        '/settings' : (context) => AndroidSettingsScreen(googleAccountManager),
+        '/daily' : (context) => TestPolarPage(dataReader, googleAccountManager, permissionManager),
+        '/settings' : (context) => AndroidSettingsScreen(googleAccountManager, permissionManager),
       },
 
     );

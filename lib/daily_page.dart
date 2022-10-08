@@ -2,33 +2,51 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:graphic/graphic.dart';
 import 'package:intl/intl.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:test_location_2nd/GoogleAccountManager.dart';
 import '../DataReader.dart';
 import 'navigation.dart';
 import 'package:test_location_2nd/SettingPage.dart';
+import 'package:test_location_2nd/PermissionManager.dart';
 
 //TODO : put scrol wheel to select the date.
 //TODO : get images from google album
 
 class TestPolarPage extends StatefulWidget {
   DataReader dataReader;
+
   var googleAccountManager;
-  TestPolarPage(DataReader dataReader, GoogleAccountManager googleAccountManager, {Key? key})
+  var permissionManager;
+
+  TestPolarPage(
+      DataReader dataReader,
+      GoogleAccountManager googleAccountManager,
+      PermissionManager permissionManager,
+      {Key? key})
       : this.dataReader = dataReader,
         this.googleAccountManager = googleAccountManager,
+        this.permissionManager = permissionManager,
         super(key: key);
 
   @override
-  State<TestPolarPage> createState() =>
-      _TestPolarPageState(dataReader: this.dataReader,
-                          googleAccountManager: this.googleAccountManager);
+  State<TestPolarPage> createState() => _TestPolarPageState(
+      dataReader: this.dataReader,
+      googleAccountManager: this.googleAccountManager,
+      permissionManager: this.permissionManager);
 }
 
 class _TestPolarPageState extends State<TestPolarPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   DataReader dataReader;
-  var googleAccountManager;
-  _TestPolarPageState({required dataReader, required googleAccountManager}) : this.dataReader = dataReader;
+  GoogleAccountManager googleAccountManager;
+  PermissionManager permissionManager;
+  _TestPolarPageState(
+      {required dataReader,
+      required googleAccountManager,
+      required permissionManager})
+      : this.dataReader = dataReader,
+        this.googleAccountManager = googleAccountManager,
+        this.permissionManager = permissionManager;
 
   int dataIndex = 0;
 
@@ -36,11 +54,12 @@ class _TestPolarPageState extends State<TestPolarPage> {
 
   Future<List<List<List<dynamic>>>> _fetchData() async {
     await Future.delayed(Duration(seconds: 10));
-    return [
-      [
-        ['Data']
-      ]
-    ];
+    return dataReader.readFiles();
+    // return [
+    //   [
+    //     ['Data']
+    //   ]
+    // ];
   }
 
   @override
@@ -52,6 +71,17 @@ class _TestPolarPageState extends State<TestPolarPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        appBar: AppBar(title: Text("test application"), actions: [
+          PopupMenuButton<int>(
+            onSelected: (item) => onSelected(context, item),
+            itemBuilder: (context) => [
+              PopupMenuItem(
+                value: 0,
+                child: Text("Settings"),
+              )
+            ],
+          )
+        ]),
         body: FutureBuilder(
             future: readData,
             builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -81,20 +111,13 @@ class _TestPolarPageState extends State<TestPolarPage> {
                 if (snapshot.data.isEmpty) {
                   // sensorLogger.forceWrite();
                   return Center(child: Text('no data found'));
+                } else if (snapshot.data.toString() =='[[[Data]]]'){
+                  return Center(child: Text('no permission is allowed. \n'
+                  'please restart the application and allow the permissions. '));
                 }
                 return Scaffold(
                   key: _scaffoldKey,
-                  appBar: AppBar(title: Text("test application"), actions: [
-                    PopupMenuButton<int>(
-                      onSelected: (item) => onSelected(context, item),
-                      itemBuilder: (context) => [
-                        PopupMenuItem(
-                          value: 0,
-                          child: Text("Settings"),
-                        )
-                      ],
-                    )
-                  ]),
+
                   backgroundColor: Colors.white,
                   body: Container(
                     height: 800,
@@ -213,7 +236,9 @@ class _TestPolarPageState extends State<TestPolarPage> {
                   ),
                   floatingActionButton: FloatingActionButton(
                     onPressed: (() {
-                      print("googleAccount manager : ${googleAccountManager.currentUser}");
+                      print(permissionManager);
+                      print(
+                          "googleAccount manager : ${googleAccountManager.currentUser}");
                       // print(widget.dataReader.dataAll.last);
                       // print(widget.dataReader.dates);
                       // print(widget.dataReader.dataAll.last.last);
@@ -233,7 +258,8 @@ class _TestPolarPageState extends State<TestPolarPage> {
         // );
         Navigation.navigateTo(
             context: context,
-            screen: AndroidSettingsScreen(googleAccountManager),
+            screen:
+                AndroidSettingsScreen(googleAccountManager, permissionManager),
             style: NavigationRouteStyle.material);
         break;
     }

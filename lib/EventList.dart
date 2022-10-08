@@ -8,8 +8,7 @@ import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 class EventList{
   List<Event> eventList = [];
-  EventList(){
-  }
+  EventList(){}
 
   void getEventList(List<Event> list){
     eventList = list;

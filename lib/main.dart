@@ -16,6 +16,7 @@ import 'SettingPage.dart';
 import 'navigation.dart';
 import 'package:test_location_2nd/PermissionManager.dart';
 import 'PhotoLibraryApiClient.dart';
+import 'PhotoManager.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -39,6 +40,7 @@ class _MyAppState extends State<MyApp> {
   final googleAccountManager = GoogleAccountManager();
   final permissionManager = PermissionManager();
   late final photoLibraryApiClient = PhotosLibraryApiClient(googleAccountManager);
+  final photoManager = PhotoManager();
 
   void saveNote() {
     noteLogger.writeCache2(NoteData(DateTime.now(), myTextController.text));

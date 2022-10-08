@@ -21,6 +21,11 @@ import 'package:http/http.dart';
 import 'package:http/http.dart' as http;
 import 'package:path/path.dart' as path;
 import 'package:test_location_2nd/GoogleAccountManager.dart';
+import 'responseParser.dart';
+import 'package:intl/intl.dart';
+import 'dart:io';
+import 'package:test_location_2nd/responseParser.dart';
+import 'package:path_provider/path_provider.dart';
 
 class PhotosLibraryApiClient {
   // final Future<Map<String, String>> _authHeaders;
@@ -28,30 +33,66 @@ class PhotosLibraryApiClient {
 
   PhotosLibraryApiClient(this.googleAccountManager);
 
+  Future<String> getPhotosOfDate(String year, String month, String day) async {
 
-  Future<String> testPhoto() async {
-    // Get the filename of the image
+
     var request = {};
     request['pageSize'] = 100;
-    // request['pageToken'] = "1";
+    request['filters'] = {"dateFilter" : {'dates':{'year' : year, 'month' : month, 'day' : day}}};
+
     var request_json = json.encode(request);
+    var nextPageToken;
+
+    var responseList;
 
     final response = await http.post(
       Uri.parse("https://photoslibrary.googleapis.com/v1/mediaItems:search"),
-      body : request_json,
+      // mediaItem : [...],
+      body: request_json,
       headers: await googleAccountManager.currentUser!.authHeaders,
     );
 
-    List<String> responseToString = json.decode(response.body)['mediaItems'].toString().split(',');
-    List<String> links = [];
-    for(int i = 0; i< responseToString.length; i++){
-      if( responseToString[i].contains("https://lh3.googleusercontent.com/")){
-        links.add(responseToString[i].substring(10));
-        // print(responseToString[i].substring(10));
-      }
-    }
+    nextPageToken = jsonDecode(response.body)['nextPageToken'];
+    print("page token : ${jsonDecode(response.body)['nextPageToken']}");
+    request['nextPageToken'] = nextPageToken;
+    request_json = json.encode(request);
+
+    // var response2 = await http.post(
+    //   Uri.parse("https://photoslibrary.googleapis.com/v1/mediaItems:search"),
+    //   body: request_json,
+    //   headers: await googleAccountManager.currentUser!.authHeaders,
+    // );
+    //
+    // nextPageToken = jsonDecode(response2.body)['nextPageToken'];
+    // print("page token : ${jsonDecode(response2.body)['nextPageToken']}");
+    // request['pageToken'] = nextPageToken;
+
+    // responseList.add(response2);
+    // if(jsonDecode(response.body)['nextPageToken'] != null)
 
     return response.body;
+  }
+
+
+
+  void writeCache3(List<String> listString, String name) async {
+    final Directory? directory = await getExternalStorageDirectory();
+    final String folder = '${directory?.path}';
+    bool isFolderExists = await Directory(folder).exists();
+
+    final File file = File(
+        '${folder}/${DateFormat('yyyyMMdd').format(DateTime.now())}_${name}.csv');
+
+    if (!isFolderExists) {
+      Directory(folder).create(recursive: true);
+    }
+    file.writeAsString("writing..", mode : FileMode.write);
+    print("lenght : ${listString.length}");
+    for(int i = 0; i < listString.length; i++){
+      print(listString[i]);
+      await file.writeAsString("${listString[i].toString()}\n", mode: FileMode.append);
+    }
+
   }
 
   static void printError(final Response response) {

@@ -68,39 +68,7 @@ class UsageLogger {
     this.networkInfo = networkInfo;
   }
 
-  void writeCache2() async {
-    final Directory? directory = await getExternalStorageDirectory();
-    final String folder = '${directory?.path}/usageData';
-    bool isFolderExists = await Directory(folder).exists();
 
-    final File file = File(
-        '${folder}/${DateFormat('yyyyMMdd').format(DateTime.now())}_usage.csv');
-
-    if (!isFolderExists){
-      Directory(folder).create(recursive : true);
-    }
-
-    bool isExists = await file.exists();
-    debugPrint("writing note to Local..");
-
-    // if (!isExists)
-    await file.writeAsString(
-        'time, packageName, eventType, className \n',
-        mode: FileMode.write);
-
-    for (int i = 0; i < this.events.length; i++) {
-      var line = this.events.elementAt(i);
-      await file.writeAsString(
-          '${DateTime.fromMicrosecondsSinceEpoch(int.parse(line.timeStamp.toString())*1000)},'
-              ' ${line.packageName.toString()},'
-              ' ${line.eventType.toString()},'
-              ' ${line.className.toString()} \n',
-          mode: FileMode.append);
-    }
-
-    this.events = [];
-
-  }
   void writeCache3() async {
     final Directory? directory = await getExternalStorageDirectory();
     final String folder = '${directory?.path}/usageData';

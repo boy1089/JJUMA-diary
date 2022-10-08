@@ -9,6 +9,9 @@ import 'navigation.dart';
 import 'package:test_location_2nd/SettingPage.dart';
 import 'package:test_location_2nd/PermissionManager.dart';
 import 'package:test_location_2nd/PhotoLibraryApiClient.dart';
+import 'package:test_location_2nd/responseParser.dart';
+import 'package:url_launcher/url_launcher.dart';
+
 //TODO : put scrol wheel to select the date.
 //TODO : get images from google album
 
@@ -22,7 +25,8 @@ class TestPolarPage extends StatefulWidget {
   TestPolarPage(
       DataReader dataReader,
       GoogleAccountManager googleAccountManager,
-      PermissionManager permissionManager, photoLibraryClient,
+      PermissionManager permissionManager,
+      photoLibraryClient,
       {Key? key})
       : this.dataReader = dataReader,
         this.googleAccountManager = googleAccountManager,
@@ -44,6 +48,7 @@ class _TestPolarPageState extends State<TestPolarPage> {
   GoogleAccountManager googleAccountManager;
   PermissionManager permissionManager;
   PhotosLibraryApiClient photoLibraryApiClient;
+
   _TestPolarPageState(
       {required dataReader,
       required googleAccountManager,
@@ -55,11 +60,11 @@ class _TestPolarPageState extends State<TestPolarPage> {
         this.photoLibraryApiClient = photoLibraryApiClient;
 
   int dataIndex = 0;
-
+  List<List<String>> responseResult = [];
   Future readData = Future.delayed(Duration(seconds: 1));
 
   Future<List<List<List<dynamic>>>> _fetchData() async {
-    await Future.delayed(Duration(seconds: 10));
+    await Future.delayed(Duration(seconds: 5));
     return dataReader.readFiles();
     // return [
     //   [
@@ -117,13 +122,13 @@ class _TestPolarPageState extends State<TestPolarPage> {
                 if (snapshot.data.isEmpty) {
                   // sensorLogger.forceWrite();
                   return Center(child: Text('no data found'));
-                } else if (snapshot.data.toString() =='[[[Data]]]'){
-                  return Center(child: Text('no permission is allowed. \n'
-                  'please restart the application and allow the permissions. '));
+                } else if (snapshot.data.toString() == '[[[Data]]]') {
+                  return Center(
+                      child: Text('no permission is allowed. \n'
+                          'please restart the application and allow the permissions. '));
                 }
                 return Scaffold(
                   key: _scaffoldKey,
-
                   backgroundColor: Colors.white,
                   body: Container(
                     height: 800,
@@ -137,78 +142,153 @@ class _TestPolarPageState extends State<TestPolarPage> {
                         SizedBox(
                           width: 300,
                           height: 300,
-                          child: Container(
-                            margin: const EdgeInsets.only(top: 10),
-                            width: 400,
-                            height: 300,
-                            child: Chart(
-                              data: widget.dataReader.dataAll[dataIndex],
-                              variables: {
-                                '0': Variable(
-                                  accessor: (List datum) => datum[0] as num,
-                                  scale: LinearScale(
-                                      min: 0, max: 24, tickCount: 5),
-                                ),
-                                '1': Variable(
-                                  accessor: (List datum) => datum[1] as num,
-                                ),
-                                '2': Variable(
-                                  accessor: (List datum) => datum[2] as num,
-                                ),
-                                '3': Variable(
-                                  accessor: (List datum) => datum[3] as num,
-                                ),
-                                '4': Variable(
-                                  accessor: (List datum) => datum[4] as num,
-                                ),
-                              },
-                              elements: [
-                                PointElement(
-                                  size: SizeAttr(variable: '3', values: [1, 2]),
-                                  color: ColorAttr(
-                                    variable: '3',
-                                    values: Defaults.colors20,
-                                    updaters: {
-                                      'choose': {true: (_) => Colors.red}
-                                    },
+                          child: Stack(children: [
+                            Positioned(
+                              top: 10,
+                                left : -50,
+                                child: Container(
+                              margin: const EdgeInsets.only(top: 10),
+                              width: 400,
+                              height: 300,
+                              child: Chart(
+                                  data: widget.dataReader.dataAll[dataIndex],
+                                  variables: {
+                                    '0': Variable(
+                                      accessor: (List datum) => datum[0] as num,
+                                      scale: LinearScale(
+                                          min: 0, max: 24, tickCount: 5),
+                                    ),
+                                    '1': Variable(
+                                      accessor: (List datum) => datum[1] as num,
+                                    ),
+                                    '2': Variable(
+                                      accessor: (List datum) => datum[2] as num,
+                                    ),
+                                    '3': Variable(
+                                      accessor: (List datum) => datum[3] as num,
+                                    ),
+                                    '4': Variable(
+                                      accessor: (List datum) => datum[4] as num,
+                                    ),
+                                  },
+                                axes: [
+                                  Defaults.circularAxis
+                                    ..labelMapper = (_, index, total) {
+                                      if (index == total - 1) {
+                                        return null;
+                                      }
+                                      return LabelStyle(
+                                          style: Defaults.textStyle);
+                                    }
+                                    ..label = null,
+                                  Defaults.radialAxis
+                                    ..labelMapper = (_, index, total) {
+                                      if (index == total - 1) {
+                                        return null;
+                                      }
+                                      return LabelStyle(
+                                          style: Defaults.textStyle);
+                                    }
+                                    ..label = null,
+                                ],
+                                  elements: [
+                                    PointElement(
+                                      size: SizeAttr(
+                                          variable: '3', values: [1, 2]),
+                                      color: ColorAttr(
+                                        variable: '3',
+                                        values: Defaults.colors20,
+                                        updaters: {
+                                          'choose': {true: (_) => Colors.red}
+                                        },
+                                      ),
+                                    ),
+                                  ],    coord: PolarCoord(),),
+                            )),
+                            Positioned(
+                              top: 60,
+                              child: Container(
+                                margin: const EdgeInsets.only(top: 10),
+                                width: 300,
+                                height: 200,
+                                child: Chart(
+                                  data: widget.dataReader.dataAll[dataIndex],
+                                  variables: {
+                                    '0': Variable(
+                                      accessor: (List datum) => datum[0] as num,
+                                      scale: LinearScale(
+                                          min: 0, max: 24, tickCount: 5),
+                                    ),
+                                    '1': Variable(
+                                      accessor: (List datum) => datum[1] as num,
+                                    ),
+                                    '2': Variable(
+                                      accessor: (List datum) => datum[2] as num,
+                                    ),
+                                    '3': Variable(
+                                      accessor: (List datum) => datum[3] as num,
+                                    ),
+                                    '4': Variable(
+                                      accessor: (List datum) => datum[4] as num,
+                                    ),
+                                  },
+                                  elements: [
+                                    PointElement(
+                                      size: SizeAttr(
+                                          variable: '3', values: [1, 2]),
+                                      color: ColorAttr(
+                                        variable: '3',
+                                        values: Defaults.colors20,
+                                        updaters: {
+                                          'choose': {true: (_) => Colors.red}
+                                        },
+                                      ),
+                                    ),
+                                    // PointElement(
+                                    //   size: SizeAttr(variable: '4', values: [1, 3]),
+                                    //   color: ColorAttr(
+                                    //     variable: '1',
+                                    //     values: Defaults.colors10,
+                                    //     updaters: {
+                                    //       'choose': {true: (_) => Colors.red}
+                                    //     },
+                                    //   ),
+                                    //
+                                    // )
+                                  ],
+                                  axes: [
+                                    // Defaults.circularAxis
+                                    //   ..labelMapper = (_, index, total) {
+                                    //     if (index == total - 1) {
+                                    //       return null;
+                                    //     }
+                                    //     return LabelStyle(
+                                    //         style: Defaults.textStyle);
+                                    //   }
+                                    //   ..label = null,
+                                    // Defaults.radialAxis
+                                    //   ..labelMapper = (_, index, total) {
+                                    //     if (index == total - 1) {
+                                    //       return null;
+                                    //     }
+                                    //     return LabelStyle(
+                                    //         style: Defaults.textStyle);
+                                    //   }
+                                    //   ..label = null,
+                                  ],
+                                  coord: PolarCoord(),
+                                  selections: {
+                                    'choose': PointSelection(toggle: true)
+                                  },
+                                  tooltip: TooltipGuide(
+                                    anchor: (_) => Offset.zero,
+                                    align: Alignment.bottomRight,
+                                    multiTuples: true,
                                   ),
-                                  // shape: ShapeAttr(variable: '3', values: [
-                                  //   CircleShape(hollow: true),
-                                  //   SquareShape(hollow: true),
-                                  // ]),
-                                )
-                              ],
-                              axes: [
-                                Defaults.circularAxis
-                                  ..labelMapper = (_, index, total) {
-                                    if (index == total - 1) {
-                                      return null;
-                                    }
-                                    return LabelStyle(
-                                        style: Defaults.textStyle);
-                                  }
-                                  ..label = null,
-                                Defaults.radialAxis
-                                  ..labelMapper = (_, index, total) {
-                                    if (index == total - 1) {
-                                      return null;
-                                    }
-                                    return LabelStyle(
-                                        style: Defaults.textStyle);
-                                  }
-                                  ..label = null,
-                              ],
-                              coord: PolarCoord(),
-                              selections: {
-                                'choose': PointSelection(toggle: true)
-                              },
-                              tooltip: TooltipGuide(
-                                anchor: (_) => Offset.zero,
-                                align: Alignment.bottomRight,
-                                multiTuples: true,
+                                ),
                               ),
                             ),
-                          ),
+                          ]),
                         ),
                         Center(
                           child: SizedBox(
@@ -223,6 +303,7 @@ class _TestPolarPageState extends State<TestPolarPage> {
                                 diameterRatio: 0.2,
                                 onSelectedItemChanged: (index) => setState(() {
                                       dataIndex = index;
+                                      updatePhoto();
                                     }),
                                 itemExtent: 80,
                                 childDelegate: ListWheelChildBuilderDelegate(
@@ -235,15 +316,44 @@ class _TestPolarPageState extends State<TestPolarPage> {
                                     // childCount: 20,
                                     )),
                           ),
-                        )
+                        ),
+                        Center(
+                            child: SizedBox(
+                                width: 500,
+                                height: 200,
+                                child: responseResult.isEmpty
+                                    ? Text('no links')
+                                    : ListView.builder(
+                                        scrollDirection: Axis.horizontal,
+                                        itemBuilder:
+                                            (BuildContext context, int index) {
+                                          return Image.network(
+                                              responseResult[0][index]);
+                                        },
+                                        itemCount: responseResult[0].length,
+                                      )
+                                // Image.network(responseResult[0][0],
+                                ))
                       ],
                       // )
                     ),
                   ),
                   floatingActionButton: FloatingActionButton(
-                    onPressed: (() {
+                    onPressed: (() async {
                       print(permissionManager);
-                      print(photoLibraryApiClient.testPhoto());
+                      String date = dataReader.dates[dataIndex];
+                      print(date.substring(4, 6));
+                      var response =
+                          await photoLibraryApiClient.getPhotosOfDate(
+                              date.substring(0, 4),
+                              date.substring(4, 6),
+                              date.substring(6, 8));
+                      responseResult = parseResponse(response);
+                      photoLibraryApiClient.writeCache3(
+                          responseResult[0], 'links');
+                      photoLibraryApiClient.writeCache3(
+                          responseResult[1], 'filename');
+                      setState(() {});
                       print(
                           "googleAccount manager : ${googleAccountManager.currentUser}");
                       // print(widget.dataReader.dataAll.last);
@@ -254,6 +364,21 @@ class _TestPolarPageState extends State<TestPolarPage> {
                 );
               }
             }));
+  }
+
+  void updatePhoto() async {
+    String date = dataReader.dates[dataIndex];
+    print(date.substring(4, 6));
+    var response = await photoLibraryApiClient.getPhotosOfDate(
+        date.substring(0, 4), date.substring(4, 6), date.substring(6, 8));
+    responseResult = parseResponse(response);
+    photoLibraryApiClient.writeCache3(responseResult[0], 'links');
+    photoLibraryApiClient.writeCache3(responseResult[1], 'filename');
+    setState(() {});
+    print("googleAccount manager : ${googleAccountManager.currentUser}");
+    // print(widget.dataReader.dataAll.last);
+    // print(widget.dataReader.dates);
+    // print(widget.dataReader.dataAll.last.last);
   }
 
   void onSelected(BuildContext context, int item) {

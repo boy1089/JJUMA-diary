@@ -26,8 +26,7 @@ class GoogleAccountManager {
       if (user == null) {
       } else {}
     });
-
-    // await signInWithGoogle();
+    await signInWithGoogle();
   }
 
   Future<UserCredential> signInWithGoogle() async {

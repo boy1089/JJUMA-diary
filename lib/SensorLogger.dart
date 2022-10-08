@@ -12,6 +12,7 @@ import 'package:intl/intl.dart';
 import 'package:test_location_2nd/UsageLogger.dart';
 
 class SensorLogger {
+
   Location location = new Location();
   UsageLogger usageLogger = new UsageLogger();
 
@@ -44,8 +45,6 @@ class SensorLogger {
   var _temperatureData = 0.0;
   var _temperatureSubscription;
 
-
-
   var data;
   var longitudes;
   var latitudes;
@@ -62,7 +61,6 @@ class SensorLogger {
     _enableLogging();
     writeCache2();
   }
-
 
   void _enableLogging() async {
     _serviceEnabled = await location.serviceEnabled();
@@ -94,10 +92,10 @@ class SensorLogger {
 
     // _streamLight = await SensorManager().sensorUpdates(sensorId: Sensors.LIGHT, interval: Sensors.SENSOR_DELAY_NORMAL);
     //sensor Light int is 5; https://developer.android.com/reference/android/hardware/Sensor#TYPE_LIGHT
-    _streamLight = await SensorManager().sensorUpdates(sensorId: 5, interval: Sensors.SENSOR_DELAY_NORMAL);
-    _lightSubscription = _streamLight.listen((sensorEvent){
+    _streamLight = await SensorManager()
+        .sensorUpdates(sensorId: 5, interval: Sensors.SENSOR_DELAY_NORMAL);
+    _lightSubscription = _streamLight.listen((sensorEvent) {
       _lightData = sensorEvent.data;
-
     });
     // _streamTemperature = await SensorManager().sensorUpdates(sensorId: 13, interval: Sensors.SENSOR_DELAY_NORMAL);
     // _temperatureSubscription = _streamTemperature.listen((sensorEvent){
@@ -112,11 +110,15 @@ class SensorLogger {
     //   _humidityData = sensorEvent.data;
     // });
 
-
     location.onLocationChanged.listen((LocationData currentLocation) {
       _cacheCount = _cacheCount + 1;
       _lightData = _lightData ?? [0.0];
-      _accelData = _accelData ?? [0.0, 0.0, 0.0,];
+      _accelData = _accelData ??
+          [
+            0.0,
+            0.0,
+            0.0,
+          ];
 
       // print(_accelData);
       // print(_temperatureData);
@@ -134,25 +136,30 @@ class SensorLogger {
           _lightData[0],
           _temperatureData,
           _proximityData[0],
-          _humidityData
-      ));
+          _humidityData));
 
       if (_cacheCount > 500) {
         writeCache2();
         _cacheCount = 0;
         writeAudio2();
-        usageLogger.getEvents(DateTime.parse(DateFormat('yyyyMMdd').format(DateTime.now())), DateTime.now());
-        usageLogger.getEventInfo(DateTime.parse(DateFormat('yyyyMMdd').format(DateTime.now())), DateTime.now());
-        usageLogger.getUsageStat(DateTime.parse(DateFormat('yyyyMMdd').format(DateTime.now())), DateTime.now());
+        usageLogger.getEvents(
+            DateTime.parse(DateFormat('yyyyMMdd').format(DateTime.now())),
+            DateTime.now());
+        usageLogger.getEventInfo(
+            DateTime.parse(DateFormat('yyyyMMdd').format(DateTime.now())),
+            DateTime.now());
+        usageLogger.getUsageStat(
+            DateTime.parse(DateFormat('yyyyMMdd').format(DateTime.now())),
+            DateTime.now());
 
-        usageLogger.writeCache2();
+        usageLogger.writeCache3();
         // usageLogger.writeCache3();
         // usageLogger.writeCache4();
 
-
         // usageLogger.writeCache();
       }
-      debugPrint("SensorLogger _cacheCount $_cacheCount, ${_accelData.toString()} $_lightData, $_temperatureData, $_proximityData, $_humidityData");
+      debugPrint(
+          "SensorLogger _cacheCount $_cacheCount, ${_accelData.toString()} $_lightData, $_temperatureData, $_proximityData, $_humidityData");
     });
   }
 
@@ -173,7 +180,7 @@ class SensorLogger {
       await file.writeAsString(
           '${line.time.toString()}, ${line.longitude.toString()}, ${line.latitude.toString()}, ${line.accelX.toString()}'
           ',${line.accelY.toString()}, ${line.accelZ.toString()}, ${line.light.toString()}, ${line.temperature.toString()}'
-              ', ${line.proximity.toString()}, ${line.humidity.toString()}  \n',
+          ', ${line.proximity.toString()}, ${line.humidity.toString()}  \n',
           mode: FileMode.append);
     }
     _cacheData = [];
@@ -188,8 +195,8 @@ class SensorLogger {
     final File file = File(
         '${folder}/${DateFormat('yyyyMMdd').format(DateTime.now())}_sensor.csv');
 
-    if (!isFolderExists){
-      Directory(folder).create(recursive : true);
+    if (!isFolderExists) {
+      Directory(folder).create(recursive: true);
     }
 
     bool isExists = await file.exists();
@@ -199,16 +206,15 @@ class SensorLogger {
       await file.writeAsString(
           // 'time, longitude, latitude, accelX, accelY, accelZ \n',
           'time, longitude, latitude, accelX, accelY, accelZ, light, temperature, proximity, humidity \n'
-              '${DateTime.now().toString()}, 0, 0, 0, 0, 0, 0, 0, 0, 0 \n',
-
+          '${DateTime.now().toString()}, 0, 0, 0, 0, 0, 0, 0, 0, 0 \n',
           mode: FileMode.append);
 
     for (int i = 0; i < _cacheData.length; i++) {
       var line = _cacheData[i];
       await file.writeAsString(
           '${line.time.toString()}, ${line.longitude.toString()}, ${line.latitude.toString()}, ${line.accelX.toString()}'
-              ',${line.accelY.toString()}, ${line.accelZ.toString()}, ${line.light.toString()}, ${line.temperature.toString()}'
-              ', ${line.proximity.toString()}, ${line.humidity.toString()}  \n',
+          ',${line.accelY.toString()}, ${line.accelZ.toString()}, ${line.light.toString()}, ${line.temperature.toString()}'
+          ', ${line.proximity.toString()}, ${line.humidity.toString()}  \n',
           mode: FileMode.append);
     }
     _cacheData = [];
@@ -222,36 +228,37 @@ class SensorLogger {
     if (isRecording) await _audioRecorder.stop();
 
     await _audioRecorder.start(
-      path: '${directory.path}/${DateFormat('yyyyMMdd_HHmmss').format(DateTime.now())}_audio.m4a',
+      path:
+          '${directory.path}/${DateFormat('yyyyMMdd_HHmmss').format(DateTime.now())}_audio.m4a',
       encoder: AudioEncoder.aacLc, // by default
       bitRate: 128000, // by default
       samplingRate: 44100, // by default
     );
   }
+
   void writeAudio2() async {
     final Directory? directory = await getExternalStorageDirectory();
     final String folder = '${directory?.path}/audioData';
     bool isFolderExists = await Directory(folder).exists();
 
-    if (!isFolderExists){
-      Directory(folder).create(recursive : true);
+    if (!isFolderExists) {
+      Directory(folder).create(recursive: true);
     }
 
     if (await _audioRecorder.hasPermission() == false) return;
     bool isRecording = await _audioRecorder.isRecording();
     if (isRecording) await _audioRecorder.stop();
 
-
     await _audioRecorder.start(
-      path: '${folder}/${DateFormat('yyyyMMdd_HHmmss').format(DateTime.now())}_audio.m4a',
+      path:
+          '${folder}/${DateFormat('yyyyMMdd_HHmmss').format(DateTime.now())}_audio.m4a',
       encoder: AudioEncoder.aacLc, // by default
       bitRate: 128000, // by default
       samplingRate: 44100, // by default
     );
   }
-  void forceWrite(){
+
+  void forceWrite() {
     _cacheCount = 1000;
   }
-
-
 }

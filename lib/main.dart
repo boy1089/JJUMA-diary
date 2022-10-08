@@ -36,20 +36,6 @@ class _MyAppState extends State<MyApp> {
   final dataReader = DataReader();
   final googleAccountManager = GoogleAccountManager();
 
-  Future readData = Future.delayed(Duration(seconds : 1));
-
-
-
-  Future<List<List<List<dynamic>>>> _fetchData() async{
-    await Future.delayed(Duration(seconds : 10));
-    return [[['Data']]];
-  }
-
-  @override
-  void initState(){
-    readData = _fetchData();
-    super.initState();
-      }
 
   void saveNote() {
     noteLogger.writeCache2(NoteData(DateTime.now(), myTextController.text));
@@ -58,81 +44,15 @@ class _MyAppState extends State<MyApp> {
     setState(() {});
   }
 
-  // @override
-  // Widget build(BuildContext context){
-  //   return MaterialApp(
-  //     home :  AndroidSettingsScreen(),
-  //     );
-  //
-  // }
-
-
-  void onSelected(BuildContext context, int item){
-    print(item);
-    switch (item){
-      case 0 :
-        // Navigator.of(context).push(
-        //   MaterialPageRoute(builder: (context) => AndroidSettingsScreen()),
-        // );
-        Navigation.navigateTo(context: context, screen: AndroidSettingsScreen(), style: NavigationRouteStyle.material);
-       break;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(
-        appBar : AppBar(
-          title : Text("test application"),
-          actions : [
-            PopupMenuButton<int> (
-              onSelected: (item) => onSelected(context, item),
-              itemBuilder: (context) => [
-                PopupMenuItem(
-                  value : 0,
-                  child : Text("Settings"),
-                )
-              ],
-            )
-          ]
-        ),
-        body: FutureBuilder(
-            future: readData,
-            builder: (BuildContext context, AsyncSnapshot snapshot) {
-              print("snapshot : ${snapshot.data}");
+      initialRoute : '/daily',
+      routes : {
+        '/daily' : (context) => TestPolarPage(dataReader),
+        '/settings' : (context) => AndroidSettingsScreen(),
+      },
 
-              if (snapshot.hasData == false) {
-                return Scaffold(
-
-                  backgroundColor: Colors.white,
-                  body: Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        CircularProgressIndicator(
-                          backgroundColor: Colors.blue,
-                          color : Colors.orange,
-                          strokeWidth: 4.0,
-                        ),
-
-                      ],
-                    ),
-                  ),
-                );
-              } else if (snapshot.hasError) {
-                return Text('error');
-              } else {
-                print("snap shot data : ${snapshot.data}");
-                print("snap shot data : ${snapshot.data.isEmpty}");
-                if (snapshot.data.isEmpty) {
-                  // sensorLogger.forceWrite();
-                  return Center(child: Text('no data found'));
-                }
-                return TestPolarPage(dataReader);
-              }
-            }),
-      ),
     );
   }
 }

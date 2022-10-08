@@ -19,8 +19,8 @@ class AndroidSettingsScreen extends StatelessWidget {
             tiles: [
               SettingsTile(
                 onPressed: (context) => toNotificationsScreen(context),
-                title: Text('Network & internet'),
-                description: Text('Mobile, Wi-Fi, hotspot'),
+                title: Text('Google Account'),
+                description: Text('Log-in/out Google Account'),
                 leading: Icon(Icons.wifi),
               ),
               SettingsTile(

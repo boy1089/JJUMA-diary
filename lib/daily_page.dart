@@ -33,9 +33,7 @@ class _TestPolarPageState extends State<TestPolarPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      appBar: AppBar(
-        title: const Text('Line and Area Element'),
-      ),
+
       backgroundColor: Colors.white,
       body: Container(
         height : 800,
@@ -157,9 +155,10 @@ class _TestPolarPageState extends State<TestPolarPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed : ((){
-          print(widget.dataReader.dataAll.last);
-          print(widget.dataReader.dates);
-          print(widget.dataReader.dataAll.last.last);
+
+          // print(widget.dataReader.dataAll.last);
+          // print(widget.dataReader.dates);
+          // print(widget.dataReader.dataAll.last.last);
         }),
       ),
     );

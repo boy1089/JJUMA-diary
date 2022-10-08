@@ -1,0 +1,98 @@
+{
+  "project_info": {
+    "project_number": "135403068198",
+    "project_id": "river-data-741",
+    "storage_bucket": "river-data-741.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:135403068198:android:938de9f853920dca5a3fe7",
+        "android_client_info": {
+          "package_name": "com.example.test_get_images_from_album"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "135403068198-k2d8begq1ajmle3msn5p5guat0n75h4k.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.test_get_images_from_album",
+            "certificate_hash": "6cd51aef67811808b06f073660216416bc9b31f5"
+          }
+        },
+        {
+          "client_id": "135403068198-19dhk9do0if7qnt4k88n7h8eu2909spn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAyvNLNZRPAb3EATTVFByzXtDjuUr6s1hg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "135403068198-19dhk9do0if7qnt4k88n7h8eu2909spn.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "135403068198-stafu46h925vunardmbdcpsvj9eflic5.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.testGetImagesFromAlbum"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:135403068198:android:94889a7c7b0a21b35a3fe7",
+        "android_client_info": {
+          "package_name": "com.example.test_location_2nd"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "135403068198-rgepgis72gfs4oph6n2e7pv4jjss66cd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.test_location_2nd",
+            "certificate_hash": "6cd51aef67811808b06f073660216416bc9b31f5"
+          }
+        },
+        {
+          "client_id": "135403068198-19dhk9do0if7qnt4k88n7h8eu2909spn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAyvNLNZRPAb3EATTVFByzXtDjuUr6s1hg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "135403068198-19dhk9do0if7qnt4k88n7h8eu2909spn.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "135403068198-stafu46h925vunardmbdcpsvj9eflic5.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.testGetImagesFromAlbum"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

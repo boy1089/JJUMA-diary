@@ -49,8 +49,8 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       initialRoute : '/daily',
       routes : {
-        '/daily' : (context) => TestPolarPage(dataReader),
-        '/settings' : (context) => AndroidSettingsScreen(),
+        '/daily' : (context) => TestPolarPage(dataReader, googleAccountManager),
+        '/settings' : (context) => AndroidSettingsScreen(googleAccountManager),
       },
 
     );

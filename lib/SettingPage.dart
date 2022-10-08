@@ -1,12 +1,22 @@
+import 'package:test_location_2nd/GoogleAccountManager.dart';
+
+import 'GoogleAccountManager.dart';
 import 'android_notifications_screen.dart';
 import 'navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:settings_ui/settings_ui.dart';
+import 'package:test_location_2nd/GoogleAccountManager.dart';
 
 class AndroidSettingsScreen extends StatelessWidget {
-  const AndroidSettingsScreen({
+  // final GoogleAccountManager = googleAccountManager;
+  //
+  // static var googleAccountManager;
+  var googleAccountManager;
+  AndroidSettingsScreen(GoogleAccountManager googleAccountManager, {
     Key? key,
-  }) : super(key: key);
+  }) : this.googleAccountManager = googleAccountManager,
+       super(key: key);
+
 
   @override
   Widget build(BuildContext context) {
@@ -18,10 +28,10 @@ class AndroidSettingsScreen extends StatelessWidget {
           SettingsSection(
             tiles: [
               SettingsTile(
-                onPressed: (context) => toNotificationsScreen(context),
+                onPressed: (context) => googleAccountManager.signInWithGoogle(),
                 title: Text('Google Account'),
                 description: Text('Log-in/out Google Account'),
-                leading: Icon(Icons.wifi),
+                leading: Icon(Icons.login),
               ),
               SettingsTile(
                 onPressed: (context) => toNotificationsScreen(context),

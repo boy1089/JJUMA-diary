@@ -60,7 +60,7 @@ class SensorLogger {
     debugPrint("sensorLogger instance created");
     location.enableBackgroundMode(enable: true);
     _enableLogging();
-    // forceWrite();
+    writeCache2();
   }
 
 
@@ -198,7 +198,8 @@ class SensorLogger {
     if (!isExists)
       await file.writeAsString(
           // 'time, longitude, latitude, accelX, accelY, accelZ \n',
-          'time, longitude, latitude, accelX, accelY, accelZ, light, temperature, proximity, humidity \n',
+          'time, longitude, latitude, accelX, accelY, accelZ, light, temperature, proximity, humidity \n'
+              '${DateTime.now().toString()}, 0, 0, 0, 0, 0, 0, 0, 0, 0 \n',
 
           mode: FileMode.append);
 

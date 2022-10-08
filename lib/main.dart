@@ -62,6 +62,7 @@ class _MyAppState extends State<MyApp> {
                 backgroundColor: Colors.white,
                 body: Center(
                   child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       CircularProgressIndicator(
                         backgroundColor: Colors.blue,

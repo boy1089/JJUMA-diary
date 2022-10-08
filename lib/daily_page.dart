@@ -143,8 +143,8 @@ class _TestPolarPageState extends State<TestPolarPage> {
                       child : Center(child : Text('${dataReader.dates[index]}')),
 
                     ),
-                    // childCount: dataReader.dataAll.length
-                    childCount: 20,
+                    childCount: dataReader.dataAll.length
+                    // childCount: 20,
                   )
                 ),
               ),
@@ -157,8 +157,9 @@ class _TestPolarPageState extends State<TestPolarPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed : ((){
-          print(widget.dataReader.dataAll[0].first);
-          print(widget.dataReader.dataAll[0].last);
+          print(widget.dataReader.dataAll.last);
+          print(widget.dataReader.dates);
+          print(widget.dataReader.dataAll.last.last);
         }),
       ),
     );

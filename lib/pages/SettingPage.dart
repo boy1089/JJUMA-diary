@@ -1,13 +1,13 @@
-import 'package:test_location_2nd/GoogleAccountManager.dart';
-import 'package:test_location_2nd/PermissionManager.dart';
+import 'package:test_location_2nd/Permissions/GoogleAccountManager.dart';
+import 'package:test_location_2nd/Permissions/PermissionManager.dart';
 
-import 'GoogleAccountManager.dart';
+import '../Permissions/GoogleAccountManager.dart';
 import 'android_notifications_screen.dart';
-import 'navigation.dart';
+import '../navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:settings_ui/settings_ui.dart';
-import 'package:test_location_2nd/GoogleAccountManager.dart';
-import "package:test_location_2nd/PermissionManager.dart";
+import 'package:test_location_2nd/Permissions/GoogleAccountManager.dart';
+import 'package:test_location_2nd/Permissions/PermissionManager.dart';
 
 class AndroidSettingsScreen extends StatelessWidget {
   // final GoogleAccountManager = googleAccountManager;

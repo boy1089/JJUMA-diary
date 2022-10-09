@@ -4,23 +4,19 @@ import 'package:path_provider/path_provider.dart';
 
 import 'package:ml_dataframe/ml_dataframe.dart';
 import 'dart:io';
-import 'package:test_location_2nd/Util.dart';
-import 'package:test_location_2nd/Event.dart';
-import 'package:test_location_2nd/EventList.dart';
+import 'package:test_location_2nd/Util/Util.dart';
 
 import 'package:flutter_file_manager/flutter_file_manager.dart';
 
 class DataAnalyzer{
 
   var directory;
-  EventList eventList = EventList();
   List<File> files2 = [];
   var data;
   List<DataFrame> dataAll = [];
   var summary;
 
   DataAnalyzer(){
-    eventList.load();
     // var a = readFiles();
     //
     // printData(a);
@@ -62,22 +58,22 @@ class DataAnalyzer{
     data = await fromCsv(path);
     return data;
   }
-
-  Future<EventList> analyzeData(a) async {
-    var b = await _localPath;
-    dataAll = await a;
-    eventList.clear();
-    print('aaa ${dataAll.length}');
-    for(int i = 0; i < files2.length; i++){
-      print('processing ${i}/${files2.length} th data...${files2[i]}');
-      data = await dataAll[i];
-      analyzeIsHome();
-    }
-    eventList.sortEvent();
-
-    return eventList;
-
-  }
+  //
+  // Future<EventList> analyzeData(a) async {
+  //   var b = await _localPath;
+  //   dataAll = await a;
+  //   eventList.clear();
+  //   print('aaa ${dataAll.length}');
+  //   for(int i = 0; i < files2.length; i++){
+  //     print('processing ${i}/${files2.length} th data...${files2[i]}');
+  //     data = await dataAll[i];
+  //     analyzeIsHome();
+  //   }
+  //   eventList.sortEvent();
+  //
+  //   return eventList;
+  //
+  // }
   void subsampleData(int subsampleFactor){
     data = data.setRange();
   }
@@ -102,12 +98,12 @@ class DataAnalyzer{
       }
       isHomeList.add(isHome);
     }
-
-    for( int i = 0; i < length-1; i++){
-      var inoutData = isHomeList[i+1] - isHomeList[i];
-      if(inoutData == 1) eventList.add(Event(DateTime.parse(data['time'].data[i]), 'back home' ));
-      if(inoutData == -1) eventList.add(Event(DateTime.parse(data['time'].data[i]), 'going out'));
-    }
+    //
+    // for( int i = 0; i < length-1; i++){
+    //   var inoutData = isHomeList[i+1] - isHomeList[i];
+    //   if(inoutData == 1) eventList.add(Event(DateTime.parse(data['time'].data[i]), 'back home' ));
+    //   if(inoutData == -1) eventList.add(Event(DateTime.parse(data['time'].data[i]), 'going out'));
+    // }
     final series = Series('isHome', isHomeList);
     data = data.addSeries(series);
 
@@ -131,10 +127,4 @@ class DataAnalyzer{
     summary = await fromCsv('${directory.path}/summary.csv');
   }
 
-  void printData(a) async {
-    var b = await _localPath;
-    print(dataAll);
-    var c = await analyzeData(a);
-
-  }
 }

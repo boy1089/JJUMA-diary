@@ -6,7 +6,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
 
-import 'package:test_location_2nd/NoteData.dart';
+import 'package:test_location_2nd/Note/NoteData.dart';
 
 
 class NoteLogger {

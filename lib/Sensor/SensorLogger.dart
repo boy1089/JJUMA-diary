@@ -6,10 +6,10 @@ import 'package:path_provider/path_provider.dart';
 import 'package:flutter/foundation.dart';
 import 'package:record/record.dart';
 import 'package:flutter_sensors/flutter_sensors.dart';
-import 'package:test_location_2nd/SensorData.dart';
+import 'package:test_location_2nd/Sensor/SensorData.dart';
 import 'package:intl/intl.dart';
 
-import 'package:test_location_2nd/UsageLogger.dart';
+import 'package:test_location_2nd/Usage/UsageLogger.dart';
 
 class SensorLogger {
 

@@ -3,15 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:graphic/graphic.dart';
 import 'package:intl/intl.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:test_location_2nd/GoogleAccountManager.dart';
-import '../DataReader.dart';
-import 'navigation.dart';
-import 'package:test_location_2nd/SettingPage.dart';
-import 'package:test_location_2nd/PermissionManager.dart';
-import 'package:test_location_2nd/PhotoLibraryApiClient.dart';
-import 'package:test_location_2nd/responseParser.dart';
+import 'package:test_location_2nd/Permissions/GoogleAccountManager.dart';
+import '../Data/DataReader.dart';
+import '../navigation.dart';
+import 'package:test_location_2nd/pages/SettingPage.dart';
+import 'package:test_location_2nd/Permissions/PermissionManager.dart';
+import 'package:test_location_2nd/Api/PhotoLibraryApiClient.dart';
+import 'package:test_location_2nd/Util/responseParser.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:test_location_2nd/Util.dart';
+import 'package:test_location_2nd/Util/Util.dart';
 
 //TODO : put scrol wheel to select the date.
 //TODO : get images from google album

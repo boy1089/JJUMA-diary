@@ -20,11 +20,11 @@ import 'dart:io';
 import 'package:http/http.dart';
 import 'package:http/http.dart' as http;
 import 'package:path/path.dart' as path;
-import 'package:test_location_2nd/GoogleAccountManager.dart';
-import 'responseParser.dart';
+import 'package:test_location_2nd/Permissions/GoogleAccountManager.dart';
+import '../Util/responseParser.dart';
 import 'package:intl/intl.dart';
 import 'dart:io';
-import 'package:test_location_2nd/responseParser.dart';
+import 'package:test_location_2nd/Util/responseParser.dart';
 import 'package:path_provider/path_provider.dart';
 
 class PhotosLibraryApiClient {

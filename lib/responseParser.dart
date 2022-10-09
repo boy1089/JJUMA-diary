@@ -19,6 +19,9 @@ List<List<String>> parseResponse(response) {
     }
     if (responseToString[i].contains("filename")) {
       filenames.add(responseToString[i].substring(11).split('}').first);
+      print(responseToString[i].length);
+      filenames.add(responseToString[i].substring(11).split('}').first);
+
     }
   }
   List<List<String>> result = [links, filenames];

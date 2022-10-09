@@ -4,6 +4,9 @@ import 'package:record/record.dart';
 
 class PermissionManager{
 
+  PermissionManager(){
+    print("permission Manager created");
+  }
 
   void getLocationPermission() async {
     var location = Location();

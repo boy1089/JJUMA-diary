@@ -21,6 +21,7 @@ class GoogleAccountManager {
   }
 
   void init() async {
+    WidgetsFlutterBinding.ensureInitialized();
     await Firebase.initializeApp();
     await FirebaseAuth.instance.authStateChanges().listen((user) {
       if (user == null) {

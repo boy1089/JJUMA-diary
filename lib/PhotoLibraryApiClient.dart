@@ -41,22 +41,19 @@ class PhotosLibraryApiClient {
     request['filters'] = {"dateFilter" : {'dates':{'year' : year, 'month' : month, 'day' : day}}};
 
     var request_json = json.encode(request);
-    var nextPageToken;
-
-    var responseList;
 
     final response = await http.post(
       Uri.parse("https://photoslibrary.googleapis.com/v1/mediaItems:search"),
-      // mediaItem : [...],
       body: request_json,
       headers: await googleAccountManager.currentUser!.authHeaders,
     );
 
-    nextPageToken = jsonDecode(response.body)['nextPageToken'];
     print("page token : ${jsonDecode(response.body)['nextPageToken']}");
-    request['nextPageToken'] = nextPageToken;
     request_json = json.encode(request);
 
+    var nextPageToken;
+    request['nextPageToken'] = nextPageToken;
+    nextPageToken = jsonDecode(response.body)['nextPageToken'];
     // var response2 = await http.post(
     //   Uri.parse("https://photoslibrary.googleapis.com/v1/mediaItems:search"),
     //   body: request_json,

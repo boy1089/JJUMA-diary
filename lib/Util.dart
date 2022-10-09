@@ -30,3 +30,17 @@ const distance_threshold_home = 0.02;
 const event_color_goingOut = Colors.red;
 const event_color_backHome = Colors.blue;
 const path_phonecall = '/sdcard/Music/TPhoneCallRecords';
+
+int a = 10;
+List<Color> get colorsHotCold => [
+  Color.fromARGB(a, 50, 0, 0),
+  Color.fromARGB(a, 40, 0, 0),
+  Color.fromARGB(a, 30, 0, 0),
+  Color.fromARGB(a, 20, 0, 0),
+  Color.fromARGB(a, 10, 0, 0),
+  Color.fromARGB(a, 0, 0, 0),
+  Color.fromARGB(a, 0, 0, 10),
+  Color.fromARGB(a, 0, 0, 20),
+  Color.fromARGB(a, 0, 0, 30),
+  Color.fromARGB(a, 0, 0, 40),
+];

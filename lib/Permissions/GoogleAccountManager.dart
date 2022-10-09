@@ -1,29 +1,23 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-// import 'firebase_options.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-
 import 'package:flutter/material.dart';
-
-import 'package:html/dom.dart' as dom;
-// import 'package:html/dom_parsing.dart';
-import 'package:html/parser.dart' as parse;
-import 'package:http/http.dart' as http;
+import 'package:flutter/foundation.dart';
 
 class GoogleAccountManager {
   GoogleSignInAccount? currentUser;
 
   GoogleAccountManager() {
-    print("creating googleAccountManager");
+    debugPrint("creating googleAccountManager");
     init();
-    print("created googleAccountManager");
+    debugPrint("created googleAccountManager");
 
   }
 
   void init() async {
     WidgetsFlutterBinding.ensureInitialized();
     await Firebase.initializeApp();
-    await FirebaseAuth.instance.authStateChanges().listen((user) {
+    FirebaseAuth.instance.authStateChanges().listen((user) {
       if (user == null) {
       } else {}
     });
@@ -32,7 +26,6 @@ class GoogleAccountManager {
 
   Future<UserCredential> signInWithGoogle() async {
     // Trigger the authentication flow
-    // final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
     currentUser = await GoogleSignIn(scopes: <String>[
       'profile',
       'https://www.googleapis.com/auth/photoslibrary',

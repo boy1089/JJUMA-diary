@@ -1,8 +1,5 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:graphic/graphic.dart';
-import 'package:intl/intl.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:test_location_2nd/Permissions/GoogleAccountManager.dart';
 import '../Data/DataReader.dart';
 import '../navigation.dart';
@@ -10,81 +7,59 @@ import 'package:test_location_2nd/pages/SettingPage.dart';
 import 'package:test_location_2nd/Permissions/PermissionManager.dart';
 import 'package:test_location_2nd/Api/PhotoLibraryApiClient.dart';
 import 'package:test_location_2nd/Util/responseParser.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:test_location_2nd/Util/Util.dart';
 
-//TODO : put scrol wheel to select the date.
+//TODO : put scroll wheel to select the date.
 //TODO : get images from google album
 
 class TestPolarPage extends StatefulWidget {
   DataReader dataReader;
 
-  var googleAccountManager;
-  var permissionManager;
-  var photoLibraryApiClient;
+  GoogleAccountManager googleAccountManager;
+  PermissionManager permissionManager;
+  PhotosLibraryApiClient photoLibraryApiClient;
 
-  TestPolarPage(
-      DataReader dataReader,
-      GoogleAccountManager googleAccountManager,
-      PermissionManager permissionManager,
-      photoLibraryClient,
+  TestPolarPage(this.dataReader, this.googleAccountManager,
+      this.permissionManager, this.photoLibraryApiClient,
       {Key? key})
-      : this.dataReader = dataReader,
-        this.googleAccountManager = googleAccountManager,
-        this.permissionManager = permissionManager,
-        this.photoLibraryApiClient = photoLibraryClient,
-        super(key: key);
+      : super(key: key);
 
   @override
-  State<TestPolarPage> createState() => _TestPolarPageState(
-      dataReader: this.dataReader,
-      googleAccountManager: this.googleAccountManager,
-      permissionManager: this.permissionManager,
-      photoLibraryApiClient: this.photoLibraryApiClient);
+  State<TestPolarPage> createState() => _TestPolarPageState();
 }
 
 class _TestPolarPageState extends State<TestPolarPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  DataReader dataReader;
-  GoogleAccountManager googleAccountManager;
-  PermissionManager permissionManager;
-  PhotosLibraryApiClient photoLibraryApiClient;
+  // DataReader dataReader = dataReader;
   var response;
-  _TestPolarPageState(
-      {required dataReader,
-      required googleAccountManager,
-      required permissionManager,
-      required photoLibraryApiClient})
-      : this.dataReader = dataReader,
-        this.googleAccountManager = googleAccountManager,
-        this.permissionManager = permissionManager,
-        this.photoLibraryApiClient = photoLibraryApiClient;
+  late DataReader dataReader;
+  late GoogleAccountManager googleAccountManager;
+  late PermissionManager permissionManager;
+  late PhotosLibraryApiClient photoLibraryApiClient;
 
   int dataIndex = 0;
   List<List<String>> responseResult = [];
-  Future readData = Future.delayed(Duration(seconds: 1));
-
-  Future<List<List<List<dynamic>>>> _fetchData() async {
-    await Future.delayed(Duration(seconds: 5));
-    return dataReader.readFiles();
-    // return [
-    //   [
-    //     ['Data']
-    //   ]
-    // ];
-  }
+  Future readData = Future.delayed(const Duration(seconds: 1));
 
   @override
   void initState() {
     readData = _fetchData();
     super.initState();
+    dataReader = widget.dataReader;
+    googleAccountManager = widget.googleAccountManager;
+    permissionManager = widget.permissionManager;
+    photoLibraryApiClient = widget.photoLibraryApiClient;
+  }
+
+  Future<List<List<List<dynamic>>>> _fetchData() async {
+    await Future.delayed(const Duration(seconds: 5));
+    return dataReader.readFiles();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Center(
+          title: const Center(
             child: Text(
               "         Auto Diary",
               style: TextStyle(color: Colors.black54),
@@ -93,17 +68,17 @@ class _TestPolarPageState extends State<TestPolarPage> {
           backgroundColor: Colors.white,
           actions: [
             Padding(
-                padding: EdgeInsets.only(right: 20.0),
+                padding: const EdgeInsets.only(right: 20.0),
                 child: GestureDetector(
                     onTap: () {},
-                    child:
-                        Icon(Icons.settings_outlined, color: Colors.black54)))
+                    child: const Icon(Icons.settings_outlined,
+                        color: Colors.black54)))
           ],
         ),
         body: FutureBuilder(
             future: readData,
             builder: (BuildContext context, AsyncSnapshot snapshot) {
-              print("snapshot : ${snapshot.data}");
+              debugPrint("snapshot : ${snapshot.data}");
 
               if (snapshot.hasData == false) {
                 return Scaffold(
@@ -111,7 +86,7 @@ class _TestPolarPageState extends State<TestPolarPage> {
                   body: Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
+                      children: const [
                         CircularProgressIndicator(
                           backgroundColor: Colors.blue,
                           color: Colors.orange,
@@ -122,26 +97,25 @@ class _TestPolarPageState extends State<TestPolarPage> {
                   ),
                 );
               } else if (snapshot.hasError) {
-                return Text('error');
+                return const Text('error');
               } else {
-                print("snap shot data : ${snapshot.data}");
-                print("snap shot data : ${snapshot.data.isEmpty}");
+                debugPrint("snap shot data : ${snapshot.data}");
+                debugPrint("snap shot data : ${snapshot.data.isEmpty}");
                 if (snapshot.data.isEmpty) {
                   // sensorLogger.forceWrite();
-                  return Center(child: Text('no data found'));
+                  return const Center(child: Text('no data found'));
                 } else if (snapshot.data.toString() == '[[[Data]]]') {
-                  return Center(
+                  return const Center(
                       child: Text('no permission is allowed. \n'
                           'please restart the application and allow the permissions. '));
                 }
                 return Scaffold(
                   key: _scaffoldKey,
                   backgroundColor: Colors.white,
-                  body: Container(
+                  body: SizedBox(
                     height: 800,
                     width: 500,
                     child: Column(
-                      // mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.center,
 
@@ -226,7 +200,6 @@ class _TestPolarPageState extends State<TestPolarPage> {
                                       scale: LinearScale(
                                           min: 0, max: 24, tickCount: 5),
                                     ),
-
                                     '3': Variable(
                                       accessor: (List datum) => datum[3] as num,
                                     ),
@@ -264,7 +237,7 @@ class _TestPolarPageState extends State<TestPolarPage> {
                                     //
                                     // )
                                   ],
-                                  axes: [
+                                  axes: const [
                                     // Defaults.circularAxis
                                     //   ..labelMapper = (_, index, total) {
                                     //     if (index == total - 1) {
@@ -308,7 +281,7 @@ class _TestPolarPageState extends State<TestPolarPage> {
                               child: ListWheelScrollView.useDelegate(
                                   magnification: 1,
                                   squeeze: 1.8,
-                                  physics: FixedExtentScrollPhysics(),
+                                  physics: const FixedExtentScrollPhysics(),
                                   diameterRatio: 0.7,
                                   onSelectedItemChanged: (index) =>
                                       setState(() {
@@ -318,14 +291,14 @@ class _TestPolarPageState extends State<TestPolarPage> {
                                   itemExtent: 80,
                                   childDelegate: ListWheelChildBuilderDelegate(
                                       builder: (context, index) => Center(
-                                              child:
-                                            // color : Colors.blue,
-                                             Text(
-                                                '${dataReader.dates[index]}',
-                                                style: TextStyle(fontSize: 20, color: Colors.black54)),
+                                            child:
+                                                // color : Colors.blue,
+                                                Text(dataReader.dates[index],
+                                                    style: const TextStyle(
+                                                        fontSize: 20,
+                                                        color: Colors.black54)),
                                           ),
                                       childCount: dataReader.dataAll.length)
-                                  // childCount: 20,
                                   )),
                         ),
                         Center(
@@ -333,7 +306,7 @@ class _TestPolarPageState extends State<TestPolarPage> {
                                 width: 500,
                                 height: 200,
                                 child: responseResult.isEmpty
-                                    ? Text('no links')
+                                    ? const Text('no links')
                                     : ListView.builder(
                                         scrollDirection: Axis.horizontal,
                                         itemBuilder:
@@ -343,17 +316,15 @@ class _TestPolarPageState extends State<TestPolarPage> {
                                         },
                                         itemCount: responseResult[0].length,
                                       )
-                                // Image.network(responseResult[0][0],
                                 ))
                       ],
-                      // )
                     ),
                   ),
                   floatingActionButton: FloatingActionButton(
                     onPressed: (() async {
-                      print(permissionManager);
+                      debugPrint(permissionManager.toString());
                       String date = dataReader.dates[dataIndex];
-                      print(date.substring(4, 6));
+                      debugPrint(date.substring(4, 6));
                       var response =
                           await photoLibraryApiClient.getPhotosOfDate(
                               date.substring(0, 4),
@@ -365,11 +336,8 @@ class _TestPolarPageState extends State<TestPolarPage> {
                       photoLibraryApiClient.writeCache3(
                           responseResult[1], 'filename');
                       setState(() {});
-                      print(
+                      debugPrint(
                           "googleAccount manager : ${googleAccountManager.currentUser}");
-                      // print(widget.dataReader.dataAll.last);
-                      // print(widget.dataReader.dates);
-                      // print(widget.dataReader.dataAll.last.last);
                     }),
                   ),
                 );
@@ -380,26 +348,20 @@ class _TestPolarPageState extends State<TestPolarPage> {
   void updatePhoto() async {
     String date = dataReader.dates[dataIndex];
     // if(response
-    print(date.substring(4, 6));
+    debugPrint(date.substring(4, 6));
     response = await photoLibraryApiClient.getPhotosOfDate(
         date.substring(0, 4), date.substring(4, 6), date.substring(6, 8));
     responseResult = parseResponse(response);
     photoLibraryApiClient.writeCache3(responseResult[0], 'links');
     photoLibraryApiClient.writeCache3(responseResult[1], 'filename');
     setState(() {});
-    print("googleAccount manager : ${googleAccountManager.currentUser}");
-    // print(widget.dataReader.dataAll.last);
-    // print(widget.dataReader.dates);
-    // print(widget.dataReader.dataAll.last.last);
+    debugPrint("googleAccount manager : ${googleAccountManager.currentUser}");
   }
 
   void onSelected(BuildContext context, int item) {
-    print(item);
+    debugPrint(item.toString());
     switch (item) {
       case 0:
-        // Navigator.of(context).push(
-        //   MaterialPageRoute(builder: (context) => AndroidSettingsScreen()),
-        // );
         Navigation.navigateTo(
             context: context,
             screen:

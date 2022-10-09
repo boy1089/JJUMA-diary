@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
-import 'package:googleapis/shared.dart';
-import 'package:test_location_2nd/Note/NoteData.dart';
 
 import 'package:test_location_2nd/Sensor/SensorLogger.dart';
 import 'package:test_location_2nd/Loggers/NoteLogger.dart';
@@ -9,18 +6,19 @@ import 'package:test_location_2nd/Data/DataAnalyzer.dart';
 import 'package:test_location_2nd/Data/DataReader.dart';
 
 import 'package:test_location_2nd/pages/daily_page.dart';
-import 'package:test_location_2nd/Api/PhotoLibraryApiClient.dart';
-import 'package:test_location_2nd/Permissions/GoogleAccountManager.dart';
-
 import 'pages/SettingPage.dart';
-import 'navigation.dart';
+
+import 'package:test_location_2nd/Api/PhotoLibraryApiClient.dart';
 import 'package:test_location_2nd/Permissions/PermissionManager.dart';
+import 'package:test_location_2nd/Permissions/GoogleAccountManager.dart';
 import 'Api/PhotoLibraryApiClient.dart';
 import 'PhotoManager.dart';
 
+import 'package:test_location_2nd/Note/NoteData.dart';
+
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatefulWidget {
@@ -31,7 +29,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  var text = "logging";
+
   final sensorLogger = SensorLogger();
   final noteLogger = NoteLogger();
   final dataAnalyzer = DataAnalyzer();
@@ -44,7 +42,6 @@ class _MyAppState extends State<MyApp> {
 
   void saveNote() {
     noteLogger.writeCache2(NoteData(DateTime.now(), myTextController.text));
-    text = "${DateTime.now()} : note saved!";
     myTextController.clear();
     setState(() {});
   }

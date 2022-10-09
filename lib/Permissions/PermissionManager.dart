@@ -1,48 +1,47 @@
 import 'package:location/location.dart';
-
+import 'package:flutter/foundation.dart';
+// import 'package:permission_handler/permission_handler.dart';
 import 'package:record/record.dart';
 
-class PermissionManager{
-
-  PermissionManager(){
-    print("permission Manager created");
+class PermissionManager {
+  PermissionManager() {
+    debugPrint("permission Manager created");
   }
 
   void getLocationPermission() async {
     var location = Location();
-    var _serviceEnabled;
-    var _permissionGranted;
+    bool serviceEnabled;
+    PermissionStatus permissionGranted;
 
-      _serviceEnabled = await location.serviceEnabled();
-      if (!_serviceEnabled) {
-        _serviceEnabled = await location.requestService();
-        if (!_serviceEnabled) {
-          return;
-        }
+    serviceEnabled = await location.serviceEnabled();
+    if (!serviceEnabled) {
+      serviceEnabled = await location.requestService();
+      if (!serviceEnabled) {
+        return;
       }
+    }
 
-      if (!(await _serviceEnabled)) return;
+    if (!(serviceEnabled)) return;
 
-      _permissionGranted = await location.hasPermission();
-      if (_permissionGranted == PermissionStatus.denied) {
-        _permissionGranted = await location.requestPermission();
-        if (_permissionGranted != PermissionStatus.granted) {
-          return;
-        }
+    permissionGranted = await location.hasPermission();
+    if (permissionGranted == PermissionStatus.denied) {
+      permissionGranted = await location.requestPermission();
+      if (permissionGranted != PermissionStatus.granted) {
+        return;
       }
-      print('permission?');
-      if (await _permissionGranted == PermissionStatus.denied) return;
-      print('ok!');
+    }
+    debugPrint('permission?');
+    if (permissionGranted == PermissionStatus.denied) return;
+    debugPrint('ok!');
   }
 
-  void getAudioPermission() async{
-    final _audioRecorder = Record();
-    if (await _audioRecorder.hasPermission() == false) return;
-  }
-  void getStoragePermission() async{
-    final _audioRecorder = Record();
-    if (await _audioRecorder.hasPermission() == false) return;
+  void getAudioPermission() async {
+    final audioRecorder = Record();
+    if (await audioRecorder.hasPermission() == false) return;
   }
 
-
+  void getStoragePermission() async {
+    final audioRecorder = Record();
+    if (await audioRecorder.hasPermission() == false) return;
+  }
 }

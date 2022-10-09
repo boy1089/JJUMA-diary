@@ -13,8 +13,8 @@ import 'package:test_location_2nd/Permissions/PermissionManager.dart';
 import 'package:test_location_2nd/Permissions/GoogleAccountManager.dart';
 import 'Api/PhotoLibraryApiClient.dart';
 import 'PhotoManager.dart';
-
 import 'package:test_location_2nd/Note/NoteData.dart';
+import 'package:test_location_2nd/Data/DataManager.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,7 +29,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-
   final sensorLogger = SensorLogger();
   final noteLogger = NoteLogger();
   final dataAnalyzer = DataAnalyzer();
@@ -37,8 +36,10 @@ class _MyAppState extends State<MyApp> {
   final dataReader = DataReader();
   final googleAccountManager = GoogleAccountManager();
   final permissionManager = PermissionManager();
-  late final photoLibraryApiClient = PhotosLibraryApiClient(googleAccountManager);
+  late final photoLibraryApiClient =
+      PhotosLibraryApiClient(googleAccountManager);
   final photoManager = PhotoManager();
+  final dataManager = DataManager();
 
   void saveNote() {
     noteLogger.writeCache2(NoteData(DateTime.now(), myTextController.text));
@@ -49,12 +50,13 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      initialRoute : '/daily',
-      routes : {
-        '/daily' : (context) => TestPolarPage(dataReader, googleAccountManager, permissionManager, photoLibraryApiClient),
-        '/settings' : (context) => AndroidSettingsScreen(googleAccountManager, permissionManager),
+      initialRoute: '/daily',
+      routes: {
+        '/daily': (context) => TestPolarPage(dataReader, googleAccountManager,
+            permissionManager, photoLibraryApiClient, dataManager),
+        '/settings': (context) =>
+            AndroidSettingsScreen(googleAccountManager, permissionManager),
       },
-
     );
   }
 }

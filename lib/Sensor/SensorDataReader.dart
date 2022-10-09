@@ -7,6 +7,8 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:test_location_2nd/Util/Util.dart';
 
+
+//Reads one *_sensor.csv and put in dataAll variable.
 class DataReader {
   List<File> files2 = [];
   var data;
@@ -67,7 +69,6 @@ class DataReader {
   }
 
   List<dynamic> subsampleList(List list, int factor) {
-    factor ??= 10;
     List<List<dynamic>> newList = [];
     for (int i = 0; i < list.length; i++) {
       if (i % factor == 0) newList.add(list[i]);

@@ -10,6 +10,7 @@ import 'package:test_location_2nd/Api/PhotoLibraryApiClient.dart';
 import 'package:test_location_2nd/Util/responseParser.dart';
 import 'package:test_location_2nd/PolarSensorDataPlot.dart';
 import 'package:test_location_2nd/PolarPhotoDataPlot.dart';
+import 'package:test_location_2nd/Data/DataManager.dart';
 
 //TODO : put scroll wheel to select the date.
 //TODO : get images from google album
@@ -23,9 +24,10 @@ class TestPolarPage extends StatefulWidget {
   GoogleAccountManager googleAccountManager;
   PermissionManager permissionManager;
   PhotosLibraryApiClient photoLibraryApiClient;
+  DataManager dataManager;
 
   TestPolarPage(this.dataReader, this.googleAccountManager,
-      this.permissionManager, this.photoLibraryApiClient,
+      this.permissionManager, this.photoLibraryApiClient, this.dataManager,
       {Key? key})
       : super(key: key);
 
@@ -41,6 +43,7 @@ class _TestPolarPageState extends State<TestPolarPage> {
   late GoogleAccountManager googleAccountManager;
   late PermissionManager permissionManager;
   late PhotosLibraryApiClient photoLibraryApiClient;
+  late DataManager dataManager;
 
   int dataIndex = 0;
   List<List<String>> responseResult = [];
@@ -54,6 +57,7 @@ class _TestPolarPageState extends State<TestPolarPage> {
     googleAccountManager = widget.googleAccountManager;
     permissionManager = widget.permissionManager;
     photoLibraryApiClient = widget.photoLibraryApiClient;
+    dataManager = widget.dataManager;
   }
 
   Future<List<List<List<dynamic>>>> _fetchData() async {

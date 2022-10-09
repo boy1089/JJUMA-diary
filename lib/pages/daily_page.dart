@@ -1,17 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:graphic/graphic.dart';
 import 'package:test_location_2nd/Permissions/GoogleAccountManager.dart';
-import '../Data/DataReader.dart';
+import 'package:test_location_2nd/Util/Util.dart';
+import '../Sensor/SensorDataReader.dart';
 import '../navigation.dart';
 import 'package:test_location_2nd/pages/SettingPage.dart';
 import 'package:test_location_2nd/Permissions/PermissionManager.dart';
 import 'package:test_location_2nd/Api/PhotoLibraryApiClient.dart';
 import 'package:test_location_2nd/Util/responseParser.dart';
+import 'package:test_location_2nd/PolarSensorDataPlot.dart';
+import 'package:test_location_2nd/PolarPhotoDataPlot.dart';
 
 //TODO : put scroll wheel to select the date.
 //TODO : get images from google album
 
+
+
 class TestPolarPage extends StatefulWidget {
+
   DataReader dataReader;
 
   GoogleAccountManager googleAccountManager;
@@ -57,6 +63,10 @@ class _TestPolarPageState extends State<TestPolarPage> {
 
   @override
   Widget build(BuildContext context) {
+
+    final deviceWidth = MediaQuery.of(context).size.width;
+    final deviceHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
         appBar: AppBar(
           title: const Center(
@@ -113,170 +123,44 @@ class _TestPolarPageState extends State<TestPolarPage> {
                   key: _scaffoldKey,
                   backgroundColor: Colors.white,
                   body: SizedBox(
-                    height: 800,
-                    width: 500,
+                    height: deviceHeight,
+                    width: deviceWidth,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.center,
-
                       children: <Widget>[
                         SizedBox(
-                          width: 300,
-                          height: 300,
+                          width: deviceWidth,
+                          height: deviceHeight/2,
                           child: Stack(children: [
-                            // Positioned(
-                            //   top: 10,
-                            //     left : -50,
-                            //     child: Container(
-                            //   margin: const EdgeInsets.only(top: 10),
-                            //   width: 400,
-                            //   height: 300,
-                            //   child: Chart(
-                            //       data: widget.dataReader.dataAll[dataIndex],
-                            //       variables: {
-                            //         '0': Variable(
-                            //           accessor: (List datum) => datum[0] as num,
-                            //           scale: LinearScale(
-                            //               min: 0, max: 24, tickCount: 5),
-                            //         ),
-                            //         '1': Variable(
-                            //           accessor: (List datum) => datum[1] as num,
-                            //         ),
-                            //         '2': Variable(
-                            //           accessor: (List datum) => datum[2] as num,
-                            //         ),
-                            //         '3': Variable(
-                            //           accessor: (List datum) => datum[3] as num,
-                            //         ),
-                            //         '4': Variable(
-                            //           accessor: (List datum) => datum[4] as num,
-                            //         ),
-                            //       },
-                            //     axes: [
-                            //       Defaults.circularAxis
-                            //         ..labelMapper = (_, index, total) {
-                            //           if (index == total - 1) {
-                            //             return null;
-                            //           }
-                            //           return LabelStyle(
-                            //               style: Defaults.textStyle);
-                            //         }
-                            //         ..label = null,
-                            //       // Defaults.radialAxis
-                            //       //   ..labelMapper = (_, index, total) {
-                            //       //     if (index == total - 1) {
-                            //       //       return null;
-                            //       //     }
-                            //       //     return LabelStyle(
-                            //       //         style: Defaults.textStyle);
-                            //       //   }
-                            //       //   ..label = null,
-                            //     ],
-                            //       elements: [
-                            //         PointElement(
-                            //           size: SizeAttr(
-                            //               variable: '3', values: [1, 2]),
-                            //           color: ColorAttr(
-                            //             variable: '3',
-                            //             values: Defaults.colors20,
-                            //             updaters: {
-                            //               'choose': {true: (_) => Colors.red}
-                            //             },
-                            //           ),
-                            //         ),
-                            //       ],    coord: PolarCoord(),),
-                            // )),
                             Positioned(
-                              top: 60,
+                              left : deviceWidth/2-defaultPolarPlotSize/2,
+                              top : deviceHeight/4 - defaultPolarPlotSize/2,
                               child: Container(
                                 margin: const EdgeInsets.only(top: 10),
-                                width: 300,
-                                height: 200,
-                                child: Chart(
-                                  data: widget.dataReader.dataAll[dataIndex],
-                                  variables: {
-                                    '0': Variable(
-                                      accessor: (List datum) => datum[0] as num,
-                                      scale: LinearScale(
-                                          min: 0, max: 24, tickCount: 5),
-                                    ),
-                                    '3': Variable(
-                                      accessor: (List datum) => datum[3] as num,
-                                    ),
-                                    '1': Variable(
-                                      accessor: (List datum) => datum[1] as num,
-                                    ),
-                                    '2': Variable(
-                                      accessor: (List datum) => datum[2] as num,
-                                    ),
-                                    '4': Variable(
-                                      accessor: (List datum) => datum[4] as num,
-                                    ),
-                                  },
-                                  elements: [
-                                    PointElement(
-                                      size: SizeAttr(
-                                          variable: '1', values: [1, 2]),
-                                      color: ColorAttr(
-                                        variable: '1',
-                                        values: Defaults.colors20,
-                                        updaters: {
-                                          'choose': {true: (_) => Colors.red}
-                                        },
-                                      ),
-                                    ),
-                                    // PointElement(
-                                    //   size: SizeAttr(variable: '4', values: [1, 3]),
-                                    //   color: ColorAttr(
-                                    //     variable: '1',
-                                    //     values: Defaults.colors10,
-                                    //     updaters: {
-                                    //       'choose': {true: (_) => Colors.red}
-                                    //     },
-                                    //   ),
-                                    //
-                                    // )
-                                  ],
-                                  axes: const [
-                                    // Defaults.circularAxis
-                                    //   ..labelMapper = (_, index, total) {
-                                    //     if (index == total - 1) {
-                                    //       return null;
-                                    //     }
-                                    //     return LabelStyle(
-                                    //         style: Defaults.textStyle);
-                                    //   }
-                                    //   ..label = null,
-                                    // Defaults.radialAxis
-                                    //   ..labelMapper = (_, index, total) {
-                                    //     if (index == total - 1) {
-                                    //       return null;
-                                    //     }
-                                    //     return LabelStyle(
-                                    //         style: Defaults.textStyle);
-                                    //   }
-                                    //   ..label = null,
-                                  ],
-                                  coord: PolarCoord(),
-                                  selections: {
-                                    'choose': PointSelection(toggle: true)
-                                  },
-                                  tooltip: TooltipGuide(
-                                    anchor: (_) => Offset.zero,
-                                    align: Alignment.bottomRight,
-                                    multiTuples: true,
-                                  ),
-                                ),
+                                width: defaultPolarPlotSize,
+                                height: defaultPolarPlotSize,
+                                child: PolarSensorDataPlot(
+                                        widget.dataReader.dataAll[dataIndex])
+                                    .build(context),
                               ),
                             ),
+                            Positioned(
+                                left : deviceWidth/2 - secondPolarPlotSize/2,
+                                top : deviceHeight/4 - secondPolarPlotSize/2,
+                                child: Container(
+                                  margin: const EdgeInsets.only(top: 10),
+                                  width: secondPolarPlotSize,
+                                  height: secondPolarPlotSize,
+                                  child: PolarPhotoDataPlot(dummyPhotoData)
+                                      .build(context),
+                                )),
                           ]),
                         ),
                         Center(
                           child: SizedBox(
-                              width: 300,
-                              height: 100,
-                              // child : Text('aaa'),
-
+                              width: deviceWidth,
+                              height: 50,
                               //reference : https://www.youtube.com/watch?v=wnTYKJEJ7f4&t=167s
                               child: ListWheelScrollView.useDelegate(
                                   magnification: 1,
@@ -298,12 +182,11 @@ class _TestPolarPageState extends State<TestPolarPage> {
                                                         fontSize: 20,
                                                         color: Colors.black54)),
                                           ),
-                                      childCount: dataReader.dataAll.length)
-                                  )),
+                                      childCount: dataReader.dataAll.length))),
                         ),
                         Center(
                             child: SizedBox(
-                                width: 500,
+                                width: deviceWidth,
                                 height: 200,
                                 child: responseResult.isEmpty
                                     ? const Text('no links')
@@ -315,30 +198,37 @@ class _TestPolarPageState extends State<TestPolarPage> {
                                               responseResult[0][index]);
                                         },
                                         itemCount: responseResult[0].length,
-                                      )
-                                ))
+                                      )))
                       ],
                     ),
                   ),
                   floatingActionButton: FloatingActionButton(
                     onPressed: (() async {
-                      debugPrint(permissionManager.toString());
-                      String date = dataReader.dates[dataIndex];
-                      debugPrint(date.substring(4, 6));
-                      var response =
-                          await photoLibraryApiClient.getPhotosOfDate(
-                              date.substring(0, 4),
-                              date.substring(4, 6),
-                              date.substring(6, 8));
-                      responseResult = parseResponse(response);
-                      photoLibraryApiClient.writeCache3(
-                          responseResult[0], 'links');
-                      photoLibraryApiClient.writeCache3(
-                          responseResult[1], 'filename');
+                      var a = PolarSensorDataPlot(widget.dataReader.data);
+                      // a.addDummyDataForPlot();
+                      a.printData();
                       setState(() {});
-                      debugPrint(
-                          "googleAccount manager : ${googleAccountManager.currentUser}");
-                    }),
+                    }
+
+                        //code for testing api
+                        //   debugPrint(permissionManager.toString());
+                        //   String date = dataReader.dates[dataIndex];
+                        //   debugPrint(date.substring(4, 6));
+                        //   var response =
+                        //       await photoLibraryApiClient.getPhotosOfDate(
+                        //           date.substring(0, 4),
+                        //           date.substring(4, 6),
+                        //           date.substring(6, 8));
+                        //   responseResult = parseResponse(response);
+                        //   photoLibraryApiClient.writeCache3(
+                        //       responseResult[0], 'links');
+                        //   photoLibraryApiClient.writeCache3(
+                        //       responseResult[1], 'filename');
+                        //   setState(() {});
+                        //   debugPrint(
+                        //       "googleAccount manager : ${googleAccountManager.currentUser}");
+                        // }),
+                        ),
                   ),
                 );
               }

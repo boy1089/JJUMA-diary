@@ -1,11 +1,9 @@
 import 'package:path_provider/path_provider.dart';
-import 'package:ml_dataframe/ml_dataframe.dart';
 import 'dart:io';
 import 'package:flutter_file_manager/flutter_file_manager.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:csv/csv.dart';
 import 'dart:convert';
-import 'package:matrix2d/matrix2d.dart';
 import 'package:flutter/foundation.dart';
 import 'package:test_location_2nd/Util/Util.dart';
 
@@ -18,7 +16,7 @@ class DataReader {
   String status = "";
   DataReader() {
     debugPrint('DataReader is reading Files');
-    readFiles();
+    // readFiles();
   }
 
   Future<String?> get _localPath async {
@@ -59,7 +57,7 @@ class DataReader {
     for (int i = 0; i < files.length; i++) {
       data = await openFile(files.elementAt(i).path);
       debugPrint('readFiles, $i th data');
-      data = subsampleList(data, 10);
+      data = subsampleList(data, kDataReaderSubsampleFactor);
       String date = files[i].path.split('/').last.substring(0, 8);
       dates.add(date);
       dataAll.add(data);
@@ -77,11 +75,6 @@ class DataReader {
     return newList;
   }
 
-  Future<DataFrame> readFile(path) async {
-    data = await fromCsv(path);
-    return data;
-  }
-
   Future<List> openFile(filepath) async {
     File f = File(filepath);
     debugPrint("CSV to List");
@@ -90,7 +83,9 @@ class DataReader {
         .transform(utf8.decoder)
         .transform(const CsvToListConverter(eol: '\n'))
         .toList();
-    List list = convertStringTimeToInt(fields);
+    List list = modifySensorDataForPlot(fields);
+    // List list = convertStringTimeToInt(fields);
+
     return list;
   }
 }

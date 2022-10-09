@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:test_location_2nd/Sensor/SensorLogger.dart';
 import 'package:test_location_2nd/Loggers/NoteLogger.dart';
 import 'package:test_location_2nd/Data/DataAnalyzer.dart';
-import 'package:test_location_2nd/Data/DataReader.dart';
+import 'package:test_location_2nd/Sensor/SensorDataReader.dart';
 
 import 'package:test_location_2nd/pages/daily_page.dart';
 import 'pages/SettingPage.dart';

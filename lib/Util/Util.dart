@@ -1,63 +1,142 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 
 import 'package:matrix2d/matrix2d.dart';
+
 const bool kDebugMode = !kReleaseMode && !kProfileMode;
 
 List<String> kTimeStamps = [
-  '00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17',
-'18', '19', '20', '21', '22', '23'
+  '00',
+  '01',
+  '02',
+  '03',
+  '04',
+  '05',
+  '06',
+  '07',
+  '08',
+  '09',
+  '10',
+  '11',
+  '12',
+  '13',
+  '14',
+  '15',
+  '16',
+  '17',
+  '18',
+  '19',
+  '20',
+  '21',
+  '22',
+  '23'
 ];
-
 
 List<String> kTimeStamps2hour = [
-  '00', '02',  '04',  '06', '08', '10', '12', '14', '16',
-  '18', '20', '22',
+  '00',
+  '02',
+  '04',
+  '06',
+  '08',
+  '10',
+  '12',
+  '14',
+  '16',
+  '18',
+  '20',
+  '22',
 ];
 List<String> kTimeStamps_filtered = [
-  '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17',
-  '18', '19', '20', '21', '22', '23'
+  '06',
+  '07',
+  '08',
+  '09',
+  '10',
+  '11',
+  '12',
+  '13',
+  '14',
+  '15',
+  '16',
+  '17',
+  '18',
+  '19',
+  '20',
+  '21',
+  '22',
+  '23'
 ];
-
 
 List<String> kTimeStamps2hour_filtered = [
-  '06', '08', '10', '12', '14', '16',
-  '18', '20', '22',
+  '06',
+  '08',
+  '10',
+  '12',
+  '14',
+  '16',
+  '18',
+  '20',
+  '22',
 ];
+
+const kSensorPlotRadius = 1.0;
+const kPhotoPlotRadius = 2.0;
+const kDataReaderSubsampleFactor = 50;
 
 const longitude_home = 126.7209;
 const latitude_home = 37.3627;
 const distance_threshold_home = 0.02;
 
+const defaultPolarPlotSize = 250.0;
+const secondPolarPlotSize = defaultPolarPlotSize*1.3;
+const thirdPolarPlotSize = defaultPolarPlotSize*1.5;
+
 const event_color_goingOut = Colors.red;
 const event_color_backHome = Colors.blue;
 const path_phonecall = '/sdcard/Music/TPhoneCallRecords';
 
-int a = 10;
+int a = 50;
 List<Color> get colorsHotCold => [
-  Color.fromARGB(a, 50, 0, 0),
-  Color.fromARGB(a, 40, 0, 0),
-  Color.fromARGB(a, 30, 0, 0),
-  Color.fromARGB(a, 20, 0, 0),
-  Color.fromARGB(a, 10, 0, 0),
-  Color.fromARGB(a, 0, 0, 0),
-  Color.fromARGB(a, 0, 0, 10),
-  Color.fromARGB(a, 0, 0, 20),
-  Color.fromARGB(a, 0, 0, 30),
-  Color.fromARGB(a, 0, 0, 40),
+      Color.fromARGB(a, 100, 20, 0),
+      Color.fromARGB(a, 80, 20, 0),
+      Color.fromARGB(a, 60, 20, 0),
+      Color.fromARGB(a, 40, 20, 0),
+      Color.fromARGB(a, 20, 20, 0),
+      Color.fromARGB(a, 0, 20, 0),
+      Color.fromARGB(a, 0, 20, 20),
+      Color.fromARGB(a, 0, 20, 40),
+      Color.fromARGB(a, 0, 20, 60),
+      Color.fromARGB(a, 0, 20, 80),
+    ];
+
+List<List<double>> dummyPhotoData =
+[[0, kPhotoPlotRadius],
+[8, kPhotoPlotRadius],
+  [10, kPhotoPlotRadius],
+  [18, kPhotoPlotRadius],
+  [21, kPhotoPlotRadius],
 ];
 
-List<dynamic> convertStringTimeToInt(List fields) {
-  debugPrint(fields.toString());
-  List listTime = slice(fields, [1, fields.shape[0]], [0, 1]).flatten;
 
+
+
+List<dynamic> modifySensorDataForPlot(List fields) {
+  List listTimeConverted = convertStringTimeToInt(fields);
+  print("listTimeConverted Shape : ${listTimeConverted.shape[0]}");
+  List listRadial = List<List<double>>.generate(
+      listTimeConverted.shape[0], (int index) => [kSensorPlotRadius]);
+  List listMerged =
+      Matrix2d().concatenate(listTimeConverted, listRadial, axis: 1);
+  return listMerged;
+}
+
+List<dynamic> convertStringTimeToInt(List fields) {
+  List listTime = slice(fields, [1, fields.shape[0]], [0, 1]).flatten;
   listTime = List<List<double>>.generate(listTime.length,
-          (int index) => [convertStringTimeToDouble(listTime[index])]);
-  List listSensor = slice(fields, [1, fields.shape[0]], [1, 5]);
-  debugPrint(listTime.shape.toString());
-  debugPrint(listSensor.shape.toString());
+      (int index) => [convertStringTimeToDouble(listTime[index])]);
+  List listSensor = slice(fields, [1, fields.shape[0]], [1, 6]);
   List list = const Matrix2d().concatenate(listTime, listSensor, axis: 1);
+  debugPrint(list.toString());
 
   return list;
 }

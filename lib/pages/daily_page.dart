@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:graphic/graphic.dart';
 import 'package:test_location_2nd/Permissions/GoogleAccountManager.dart';
 import 'package:test_location_2nd/Util/Util.dart';
 import '../Sensor/SensorDataReader.dart';
@@ -19,7 +18,7 @@ import 'package:test_location_2nd/Data/DataManager.dart';
 
 class TestPolarPage extends StatefulWidget {
 
-  DataReader dataReader;
+  SensorDataReader dataReader;
 
   GoogleAccountManager googleAccountManager;
   PermissionManager permissionManager;
@@ -39,7 +38,7 @@ class _TestPolarPageState extends State<TestPolarPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   // DataReader dataReader = dataReader;
   var response;
-  late DataReader dataReader;
+  late SensorDataReader dataReader;
   late GoogleAccountManager googleAccountManager;
   late PermissionManager permissionManager;
   late PhotosLibraryApiClient photoLibraryApiClient;
@@ -48,7 +47,7 @@ class _TestPolarPageState extends State<TestPolarPage> {
   int dataIndex = 0;
   List<List<String>> responseResult = [];
   Future readData = Future.delayed(const Duration(seconds: 1));
-
+  int _selectedIndex = 0;
   @override
   void initState() {
     readData = _fetchData();
@@ -60,10 +59,13 @@ class _TestPolarPageState extends State<TestPolarPage> {
     dataManager = widget.dataManager;
   }
 
-  Future<List<List<List<dynamic>>>> _fetchData() async {
+  Future<List<List<dynamic>>> _fetchData() async {
     await Future.delayed(const Duration(seconds: 5));
     return dataReader.readFiles();
   }
+
+  List<Widget> _widgetOptions = <Widget>[];
+
 
   @override
   Widget build(BuildContext context) {
@@ -88,6 +90,19 @@ class _TestPolarPageState extends State<TestPolarPage> {
                     child: const Icon(Icons.settings_outlined,
                         color: Colors.black54)))
           ],
+        ),
+        bottomNavigationBar: BottomNavigationBar(
+          items : const <BottomNavigationBarItem>[
+            BottomNavigationBarItem(icon: Icon(Icons.calendar_today),
+            label : "Day"),
+            BottomNavigationBarItem(icon: Icon(Icons.calendar_view_week),
+                label : "Week"),
+            BottomNavigationBarItem(icon: Icon(Icons.calendar_view_month),
+                label : "Month"),
+          ],
+          currentIndex : _selectedIndex,
+          onTap: _onBottomNavigationBarTapped,
+
         ),
         body: FutureBuilder(
             future: readData,
@@ -145,7 +160,7 @@ class _TestPolarPageState extends State<TestPolarPage> {
                                 width: defaultPolarPlotSize,
                                 height: defaultPolarPlotSize,
                                 child: PolarSensorDataPlot(
-                                        widget.dataReader.dataAll[dataIndex])
+                                        widget.dataReader.dailyDataAll[dataIndex])
                                     .build(context),
                               ),
                             ),
@@ -186,7 +201,7 @@ class _TestPolarPageState extends State<TestPolarPage> {
                                                         fontSize: 20,
                                                         color: Colors.black54)),
                                           ),
-                                      childCount: dataReader.dataAll.length))),
+                                      childCount: dataReader.dailyDataAll.length))),
                         ),
                         Center(
                             child: SizedBox(
@@ -208,35 +223,21 @@ class _TestPolarPageState extends State<TestPolarPage> {
                   ),
                   floatingActionButton: FloatingActionButton(
                     onPressed: (() async {
-                      var a = PolarSensorDataPlot(widget.dataReader.data);
-                      // a.addDummyDataForPlot();
-                      a.printData();
-                      setState(() {});
+                      print(dataReader.dailyDataAll[0]);
+                      // dataManager.processAllSensorFiles();
+                      // setState(() {});
                     }
 
-                        //code for testing api
-                        //   debugPrint(permissionManager.toString());
-                        //   String date = dataReader.dates[dataIndex];
-                        //   debugPrint(date.substring(4, 6));
-                        //   var response =
-                        //       await photoLibraryApiClient.getPhotosOfDate(
-                        //           date.substring(0, 4),
-                        //           date.substring(4, 6),
-                        //           date.substring(6, 8));
-                        //   responseResult = parseResponse(response);
-                        //   photoLibraryApiClient.writeCache3(
-                        //       responseResult[0], 'links');
-                        //   photoLibraryApiClient.writeCache3(
-                        //       responseResult[1], 'filename');
-                        //   setState(() {});
-                        //   debugPrint(
-                        //       "googleAccount manager : ${googleAccountManager.currentUser}");
-                        // }),
                         ),
                   ),
                 );
               }
             }));
+  }
+  void _onBottomNavigationBarTapped(int index){
+    setState((){
+      _selectedIndex = index;
+    });
   }
 
   void updatePhoto() async {

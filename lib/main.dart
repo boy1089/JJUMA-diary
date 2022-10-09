@@ -33,7 +33,7 @@ class _MyAppState extends State<MyApp> {
   final noteLogger = NoteLogger();
   final dataAnalyzer = DataAnalyzer();
   final myTextController = TextEditingController();
-  final dataReader = DataReader();
+  final dataReader = SensorDataReader();
   final googleAccountManager = GoogleAccountManager();
   final permissionManager = PermissionManager();
   late final photoLibraryApiClient =

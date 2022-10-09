@@ -85,11 +85,11 @@ class DataAnalyzer{
     int isHome = 0;
 
     int length = data.shape[0];
-    print(data['time'].data.elementAt(0));
+    print(data['time'].dailyData.elementAt(0));
     print(data.header);
-    for( int i =0; i< data['longitude'].data.length; i++ ){
-      longitude_diff = (data['longitude'].data[i] - longitude_home).abs();
-      latitude_diff = (data['latitude'].data[i] - latitude_home).abs();
+    for( int i =0; i< data['longitude'].dailyData.length; i++ ){
+      longitude_diff = (data['longitude'].dailyData[i] - longitude_home).abs();
+      latitude_diff = (data['latitude'].dailyData[i] - latitude_home).abs();
 
       if ((longitude_diff + latitude_diff)< distance_threshold_home){
         isHome = 1;

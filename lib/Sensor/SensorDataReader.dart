@@ -9,14 +9,16 @@ import 'package:test_location_2nd/Util/Util.dart';
 
 
 //Reads one *_sensor.csv and put in dataAll variable.
-class DataReader {
+class SensorDataReader {
   List<File> files2 = [];
-  var data;
-  List<List<List<dynamic>>> dataAll = [];
+  List<dynamic> dailyData = [];
+  List<List<dynamic>> dailyDataAll = [];
+  List<List<dynamic>> processedData = [];
+
   List<String> dates = [];
   bool permissionGranted = false;
   String status = "";
-  DataReader() {
+  SensorDataReader() {
     debugPrint('DataReader is reading Files');
     // readFiles();
   }
@@ -50,25 +52,27 @@ class DataReader {
     return files;
   }
 
-  Future<List<List<List<dynamic>>>> readFiles() async {
+  Future<List<List<dynamic>>> readFiles() async {
     List<File> files = await getFiles();
     debugPrint("dataReader, readFiles : $files");
-    dataAll = [];
+    dailyDataAll = [];
     dates = [];
     files2 = files; //assigning files to class variable to later use.
     for (int i = 0; i < files.length; i++) {
-      data = await openFile(files.elementAt(i).path);
+      dailyData = await openFile(files.elementAt(i).path);
       debugPrint('readFiles, $i th data');
-      data = subsampleList(data, kDataReaderSubsampleFactor);
+      dailyData = subsampleList(dailyData, kDataReaderSubsampleFactor);
       String date = files[i].path.split('/').last.substring(0, 8);
       dates.add(date);
-      dataAll.add(data);
+      dailyDataAll.add(dailyData);
     }
     debugPrint("DataReader, readFiles done");
-    return dataAll;
+    print(dailyDataAll);
+    return dailyDataAll;
+
   }
 
-  List<dynamic> subsampleList(List list, int factor) {
+  List<List<dynamic>> subsampleList(List list, int factor) {
     List<List<dynamic>> newList = [];
     for (int i = 0; i < list.length; i++) {
       if (i % factor == 0) newList.add(list[i]);

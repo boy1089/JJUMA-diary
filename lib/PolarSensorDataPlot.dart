@@ -6,7 +6,7 @@ import 'package:matrix2d/matrix2d.dart';
 import 'package:test_location_2nd/Util/Util.dart';
 
 class PolarSensorDataPlot {
-  late List<List<dynamic>> data;
+  late dynamic data;
   PolarSensorDataPlot(this.data, {Key? key}); // {data = ['a'];}
 
   void addDummyDataForPlot() {

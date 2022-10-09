@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 
+import 'package:path_provider/path_provider.dart';
 import 'package:matrix2d/matrix2d.dart';
 
 const bool kDebugMode = !kReleaseMode && !kProfileMode;
@@ -120,12 +121,12 @@ List<List<double>> dummyPhotoData =
 
 
 
-List<dynamic> modifySensorDataForPlot(List fields) {
+List modifySensorDataForPlot(List fields) {
   List listTimeConverted = convertStringTimeToInt(fields);
   print("listTimeConverted Shape : ${listTimeConverted.shape[0]}");
   List listRadial = List<List<double>>.generate(
       listTimeConverted.shape[0], (int index) => [kSensorPlotRadius]);
-  List listMerged =
+  List<dynamic> listMerged =
       Matrix2d().concatenate(listTimeConverted, listRadial, axis: 1);
   return listMerged;
 }

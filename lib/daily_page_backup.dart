@@ -94,7 +94,7 @@ class _TestPolarPageState extends State<TestPolarPage> {
         bottomNavigationBar: BottomNavigationBar(
           items : const <BottomNavigationBarItem>[
             BottomNavigationBarItem(icon: Icon(Icons.calendar_today),
-            label : "Day"),
+                label : "Day"),
             BottomNavigationBarItem(icon: Icon(Icons.calendar_view_week),
                 label : "Week"),
             BottomNavigationBarItem(icon: Icon(Icons.calendar_view_month),
@@ -160,7 +160,7 @@ class _TestPolarPageState extends State<TestPolarPage> {
                                 width: defaultPolarPlotSize,
                                 height: defaultPolarPlotSize,
                                 child: PolarSensorDataPlot(
-                                        widget.dataReader.dailyDataAll[dataIndex])
+                                    widget.dataReader.dailyDataAll[dataIndex])
                                     .build(context),
                               ),
                             ),
@@ -194,13 +194,13 @@ class _TestPolarPageState extends State<TestPolarPage> {
                                   itemExtent: 80,
                                   childDelegate: ListWheelChildBuilderDelegate(
                                       builder: (context, index) => Center(
-                                            child:
-                                                // color : Colors.blue,
-                                                Text(dataReader.dates[index],
-                                                    style: const TextStyle(
-                                                        fontSize: 20,
-                                                        color: Colors.black54)),
-                                          ),
+                                        child:
+                                        // color : Colors.blue,
+                                        Text(dataReader.dates[index],
+                                            style: const TextStyle(
+                                                fontSize: 20,
+                                                color: Colors.black54)),
+                                      ),
                                       childCount: dataReader.dailyDataAll.length))),
                         ),
                         Center(
@@ -210,14 +210,14 @@ class _TestPolarPageState extends State<TestPolarPage> {
                                 child: responseResult.isEmpty
                                     ? const Text('no links')
                                     : ListView.builder(
-                                        scrollDirection: Axis.horizontal,
-                                        itemBuilder:
-                                            (BuildContext context, int index) {
-                                          return Image.network(
-                                              responseResult[0][index]);
-                                        },
-                                        itemCount: responseResult[0].length,
-                                      )))
+                                  scrollDirection: Axis.horizontal,
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    return Image.network(
+                                        responseResult[0][index]);
+                                  },
+                                  itemCount: responseResult[0].length,
+                                )))
                       ],
                     ),
                   ),
@@ -228,7 +228,7 @@ class _TestPolarPageState extends State<TestPolarPage> {
                       // setState(() {});
                     }
 
-                        ),
+                    ),
                   ),
                 );
               }
@@ -260,7 +260,7 @@ class _TestPolarPageState extends State<TestPolarPage> {
         Navigation.navigateTo(
             context: context,
             screen:
-                AndroidSettingsScreen(googleAccountManager, permissionManager),
+            AndroidSettingsScreen(googleAccountManager, permissionManager),
             style: NavigationRouteStyle.material);
         break;
     }

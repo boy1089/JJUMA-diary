@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart';
 
 import 'package:path_provider/path_provider.dart';
 import 'package:matrix2d/matrix2d.dart';
-
+import 'dart:ui';
 const bool kDebugMode = !kReleaseMode && !kProfileMode;
 
 List<String> kTimeStamps = [
@@ -141,6 +141,11 @@ List<dynamic> convertStringTimeToInt(List fields) {
 
   return list;
 }
+
+var physicalScreenSize = window.physicalSize / window.devicePixelRatio;
+var physicalWidth = physicalScreenSize.width;
+var physicalHeight = physicalScreenSize.height;
+
 
 double convertStringTimeToDouble(String time) {
   List<String> timeSplit = time.substring(11, 19).split(':');

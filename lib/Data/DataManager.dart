@@ -28,8 +28,15 @@ class DataManager {
 
   List<String> fileList = [];
   List<dynamic> dataAll = [];
+  List<dynamic> processedSensorData = [];
 
   String processedFileName = "sensor_processed.csv";
+
+
+  DataManager(){
+    processAllSensorFiles();
+    getProcessedSensorFile();
+  }
 
   Future<List> getSensorFileList() async {
     var directory = await getExternalStorageDirectories();
@@ -62,6 +69,15 @@ class DataManager {
       //
       // }
     }
+  }
+  Future<List> getProcessedSensorFile() async{
+    final Directory? directory = await getExternalStorageDirectory();
+    final File file = File('${directory?.path}/$processedFileName');
+
+    List data = await openFile(file.path);
+    processedSensorData = data;
+    return data;
+
   }
 
   Future<int> writeDataToProcessedFile(List data) async {

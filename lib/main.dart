@@ -5,7 +5,7 @@ import 'package:test_location_2nd/Loggers/NoteLogger.dart';
 import 'package:test_location_2nd/Data/DataAnalyzer.dart';
 import 'package:test_location_2nd/Sensor/SensorDataReader.dart';
 
-import 'package:test_location_2nd/pages/daily_page.dart';
+import 'package:test_location_2nd/pages/MainPage.dart';
 import 'pages/SettingPage.dart';
 
 import 'package:test_location_2nd/Api/PhotoLibraryApiClient.dart';
@@ -52,7 +52,7 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       initialRoute: '/daily',
       routes: {
-        '/daily': (context) => TestPolarPage(dataReader, googleAccountManager,
+        '/daily': (context) => MainPage(dataReader, googleAccountManager,
             permissionManager, photoLibraryApiClient, dataManager),
         '/settings': (context) =>
             AndroidSettingsScreen(googleAccountManager, permissionManager),

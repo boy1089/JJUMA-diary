@@ -9,6 +9,7 @@ import 'package:test_location_2nd/Sensor/SensorDataReader.dart';
 import 'package:glob/glob.dart';
 import 'package:test_location_2nd/Util/Util.dart';
 import 'package:matrix2d/matrix2d.dart';
+import 'package:test_location_2nd/DateHandler.dart';
 
 enum sensorType {
   longitude,
@@ -32,8 +33,10 @@ class DataManager {
 
   String processedFileName = "sensor_processed.csv";
 
+  List<DateTime> datesOfYear = [];
 
   DataManager(){
+    datesOfYear = getDaysInBetween(DateTime.parse("20220101"), DateTime.now());
     processAllSensorFiles();
     getProcessedSensorFile();
   }

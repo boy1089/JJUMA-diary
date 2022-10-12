@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:googleapis/cloudbuild/v1.dart';
 import 'package:test_location_2nd/Permissions/GoogleAccountManager.dart';
 import 'package:test_location_2nd/Util/Util.dart';
 import '../Sensor/SensorDataReader.dart';
@@ -13,6 +14,7 @@ import 'package:test_location_2nd/Data/DataManager.dart';
 import 'dart:ui';
 import 'WeekPage.dart';
 import 'MonthPage.dart';
+import 'DayPage.dart';
 
 //TODO : put scroll wheel to select the date.
 //TODO : get images from google album
@@ -45,10 +47,12 @@ class _MainPageState extends State<MainPage> {
   int dataIndex = 0;
   List<List<String>> responseResult = [];
   Future readData = Future.delayed(const Duration(seconds: 1));
+  // Future<List<List<dynamic>>> readData;
   int _selectedIndex = 0;
   List<Widget> _widgetOptions = [];
   int a = 0;
   late MonthPage monthPage;
+  late DayPage dayPage;
 
   @override
   void initState() {
@@ -59,198 +63,68 @@ class _MainPageState extends State<MainPage> {
     permissionManager = widget.permissionManager;
     photoLibraryApiClient = widget.photoLibraryApiClient;
     dataManager = widget.dataManager;
+
+    DayPage dayPage = DayPage(dataReader, googleAccountManager,
+        permissionManager, photoLibraryApiClient, dataManager);
     WeekPage weekPage = WeekPage(dataReader, googleAccountManager,
         permissionManager, photoLibraryApiClient, dataManager);
+
     monthPage = MonthPage(a);
     _widgetOptions = <Widget>[
-      Text('aaa'),
-      // FutureBuilder(
-      //     future: readData,
-      //     builder: (BuildContext context, AsyncSnapshot snapshot) {
-      //       debugPrint("snapshot : ${snapshot.data}");
-      //
-      //       if (snapshot.hasData == false) {
-      //         return Scaffold(
-      //           backgroundColor: Colors.white,
-      //           body: Center(
-      //             child: Column(
-      //               mainAxisAlignment: MainAxisAlignment.center,
-      //               children: const [
-      //                 CircularProgressIndicator(
-      //                   backgroundColor: Colors.blue,
-      //                   color: Colors.orange,
-      //                   strokeWidth: 4.0,
-      //                 ),
-      //               ],
-      //             ),
-      //           ),
-      //         );
-      //       } else if (snapshot.hasError) {
-      //         return const Text('error');
-      //       } else {
-      //         debugPrint("snap shot data : ${snapshot.data}");
-      //         debugPrint("snap shot data : ${snapshot.data.isEmpty}");
-      //         if (snapshot.data.isEmpty) {
-      //           // sensorLogger.forceWrite();
-      //           return const Center(child: Text('no data found'));
-      //         } else if (snapshot.data.toString() == '[[[Data]]]') {
-      //           return const Center(
-      //               child: Text('no permission is allowed. \n'
-      //                   'please restart the application and allow the permissions. '));
-      //         }
-      //         return Scaffold(
-      //           key: _scaffoldKey,
-      //           backgroundColor: Colors.white,
-      //           body: SizedBox(
-      //             height: physicalHeight,
-      //             width: physicalWidth,
-      //             child: Column(
-      //               mainAxisAlignment: MainAxisAlignment.start,
-      //               crossAxisAlignment: CrossAxisAlignment.center,
-      //               children: <Widget>[
-      //                 SizedBox(
-      //                   width: physicalWidth,
-      //                   height: physicalHeight / 2,
-      //                   child: Stack(children: [
-      //                     Positioned(
-      //                       left: physicalWidth / 2 - defaultPolarPlotSize / 2,
-      //                       top: physicalHeight / 4 - defaultPolarPlotSize / 2,
-      //                       child: Container(
-      //                         margin: const EdgeInsets.only(top: 10),
-      //                         width: defaultPolarPlotSize,
-      //                         height: defaultPolarPlotSize,
-      //                         child: PolarSensorDataPlot(
-      //                                 widget.dataReader.dailyDataAll[dataIndex])
-      //                             .build(context),
-      //                       ),
-      //                     ),
-      //                     Positioned(
-      //                         left: physicalWidth / 2 - secondPolarPlotSize / 2,
-      //                         top: physicalHeight / 4 - secondPolarPlotSize / 2,
-      //                         child: Container(
-      //                           margin: const EdgeInsets.only(top: 10),
-      //                           width: secondPolarPlotSize,
-      //                           height: secondPolarPlotSize,
-      //                           child: PolarPhotoDataPlot(dummyPhotoData)
-      //                               .build(context),
-      //                         )),
-      //                   ]),
-      //                 ),
-      //                 Center(
-      //                   child: SizedBox(
-      //                       width: physicalWidth,
-      //                       height: 50,
-      //                       //reference : https://www.youtube.com/watch?v=wnTYKJEJ7f4&t=167s
-      //                       child: ListWheelScrollView.useDelegate(
-      //                           magnification: 1,
-      //                           squeeze: 1.8,
-      //                           physics: const FixedExtentScrollPhysics(),
-      //                           diameterRatio: 0.7,
-      //                           onSelectedItemChanged: (index) => setState(() {
-      //                                 dataIndex = index;
-      //                                 // updatePhoto();
-      //                               }),
-      //                           itemExtent: 80,
-      //                           childDelegate: ListWheelChildBuilderDelegate(
-      //                               builder: (context, index) => Center(
-      //                                     child:
-      //                                         // color : Colors.blue,
-      //                                         Text(dataReader.dates[index],
-      //                                             style: const TextStyle(
-      //                                                 fontSize: 20,
-      //                                                 color: Colors.black54)),
-      //                                   ),
-      //                               childCount:
-      //                                   dataReader.dailyDataAll.length))),
-      //                 ),
-      //                 Center(
-      //                     child: SizedBox(
-      //                         width: physicalWidth,
-      //                         height: 200,
-      //                         child: responseResult.isEmpty
-      //                             ? const Text('no links')
-      //                             : ListView.builder(
-      //                                 scrollDirection: Axis.horizontal,
-      //                                 itemBuilder:
-      //                                     (BuildContext context, int index) {
-      //                                   return Image.network(
-      //                                       responseResult[0][index]);
-      //                                 },
-      //                                 itemCount: responseResult[0].length,
-      //                               )))
-      //               ],
-      //             ),
-      //           ),
-      //           // floatingActionButton: FloatingActionButton(
-      //           //   onPressed: (() async {
-      //           //     a += 1;
-      //           //     print(physicalHeight);
-      //           //     // print(dataReader.dailyDataAll[0]);
-      //           //   }),
-      //           // ),
-      //         );
-      //       }
-      //     }),
+      dayPage,
       weekPage,
-      // Text("week Page"),
       monthPage,
     ];
   }
 
   Future<List<List<dynamic>>> _fetchData() async {
-    await Future.delayed(const Duration(seconds: 5));
+    await Future.delayed(const Duration(seconds: 2));
     return dataReader.readFiles();
   }
 
   @override
   Widget build(BuildContext context) {
-
-    final deviceWidth = MediaQuery.of(context).size.width;
-    final deviceHeight = MediaQuery.of(context).size.height;
-
     return Scaffold(
-
-      appBar: AppBar(
-        title: const Center(
-          child: Text(
-            "         Auto Diary",
-            style: TextStyle(color: Colors.black54),
+        appBar: AppBar(
+          title: const Center(
+            child: Text(
+              "         Auto Diary",
+              style: TextStyle(color: Colors.black54),
+            ),
           ),
+          backgroundColor: Colors.white,
+          actions: [
+            Padding(
+                padding: const EdgeInsets.only(right: 20.0),
+                child: GestureDetector(
+                    onTap: () {},
+                    child: const Icon(Icons.settings_outlined,
+                        color: Colors.black54)))
+          ],
         ),
 
-        backgroundColor: Colors.white,
-        actions: [
-          Padding(
-              padding: const EdgeInsets.only(right: 20.0),
-              child: GestureDetector(
-                  onTap: () {},
-                  child: const Icon(Icons.settings_outlined,
-                      color: Colors.black54)))
-        ],
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-              icon: Icon(Icons.calendar_today), label: "Day"),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.calendar_view_week), label: "Week"),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.calendar_view_month), label: "Month"),
-        ],
-        currentIndex: _selectedIndex,
-        onTap: _onBottomNavigationBarTapped,
-      ),
-      body: _widgetOptions[_selectedIndex],
+        bottomNavigationBar: BottomNavigationBar(
+          items: const <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+                icon: Icon(Icons.calendar_today), label: "Day"),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.calendar_view_week), label: "Week"),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.calendar_view_month), label: "Month"),
+          ],
+          currentIndex: _selectedIndex,
+          onTap: _onBottomNavigationBarTapped,
+        ),
 
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: (() async {
-      //     a += 1;
-      //
-      //     setState((){monthPage.index = a;});
-      //     // print(dataReader.dailyDataAll[0]);
-      //   }),
-      // ),
-    );
+        body: FutureBuilder(
+            future: readData,
+            builder: (BuildContext context, AsyncSnapshot snapshot) {
+              if (snapshot.hasData == false) {
+                return Center(child: CircularProgressIndicator());
+              } else {
+                return _widgetOptions[_selectedIndex];
+              }
+            }));
   }
 
   void _onBottomNavigationBarTapped(int index) {

@@ -18,6 +18,7 @@ class SensorDataReader {
   List<String> dates = [];
   bool permissionGranted = false;
   String status = "";
+
   SensorDataReader() {
     debugPrint('DataReader is reading Files');
     // readFiles();

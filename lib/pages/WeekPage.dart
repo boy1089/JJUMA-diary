@@ -42,9 +42,7 @@ class _WeekPageState extends State<WeekPage> {
   late DataManager dataManager;
   int dataIndex = 0;
   List<List<String>> responseResult = [];
-  var dataTime = [DateTime.now(), DateTime.now()];
-  List<dynamic> data2 = [0.0, 0.0];
-  var dataTime2 = ["2022-08-01", "2022-08-02", "2022-08-03"];
+
   @override
   void initState() {
     super.initState();
@@ -65,85 +63,69 @@ class _WeekPageState extends State<WeekPage> {
 
   @override
   Widget build(BuildContext context) {
-    dataTime = [DateTime.parse("2021-08-01"), DateTime.parse("2021-08-02"), DateTime.parse("2021-08-03")];
-
-    data2 = [1, 2, 3];
+    // dataTime = [DateTime.parse("2021-08-01"), DateTime.parse("2021-08-02"), DateTime.parse("2021-08-03")];
     return Scaffold(
       key: _scaffoldKey,
       backgroundColor: Colors.white,
-      body: SizedBox(
-          height: physicalHeight,
-          width: physicalWidth,
-          child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                SizedBox(
-                  width: physicalWidth,
-                  height: physicalHeight / 2,
-                  child: Stack(children: [
-                    Positioned(
-                      left: physicalWidth / 2 - defaultPolarPlotSize / 2,
-                      top: physicalHeight / 4 - defaultPolarPlotSize / 2,
-                      child: Container(
-                          margin: const EdgeInsets.only(top: 10),
-                          width: defaultPolarPlotSize,
-                          height: defaultPolarPlotSize,
-                          child: Chart(
-                            data: [dataTime2, data2],
-                            variables: {
-                              '0': Variable(
-                                accessor: (List datum) => datum[0].toString(),
-                                scale:
-                                    // TimeScale(min: dataTime[0], max: dataTime.last)
-                                   OrdinalScale(),
-                              ),
-                              'dummy': Variable(
-                                accessor: (List datum) => datum[1] as num,
-                              ),
-                            },
-                            elements: [
-                              PointElement(
-                                size: SizeAttr(
-                                    variable: 'dummy', values: [6, 7]),
-                                // shape : ShapeAttr(value : []),
-                                color: ColorAttr(
-                                  variable: 'dummy',
-                                  values: colorsHotCold,
-                                  // updaters: {
-                                  //   'choose': {true: (_) => Colors.red}
-                                  // },
-                                ),
-                              ),
-                            ],
-                          )),
+      body: Column(
+        children: [
+          SizedBox(
+              height: physicalHeight / 2,
+              width: physicalWidth,
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    SizedBox(
+                      width: physicalWidth,
+                      height: physicalHeight / 2,
+                      child: Stack(children: [
+                        Positioned(
+                          left: physicalWidth / 2 - defaultPolarPlotSize / 2,
+                          top: physicalHeight / 4 - defaultPolarPlotSize / 2,
+                          child: Container(
+                            margin: const EdgeInsets.only(top: 10),
+                            width: defaultPolarPlotSize,
+                            height: defaultPolarPlotSize,
+                            child:
+                            PolarSensorDataPlot(dataReader.dailyDataAll[dataIndex])
+                                .build(context),
+                          ),
+                        )
+                      ]),
                     ),
-
-                    // Positioned(
-                    //     left: physicalWidth / 2 - secondPolarPlotSize / 2,
-                    //     top: physicalHeight / 4 - secondPolarPlotSize / 2,
-                    //     child: Container(
-                    //       margin: const EdgeInsets.only(top: 10),
-                    //       width: secondPolarPlotSize,
-                    //       height: secondPolarPlotSize,
-                    //       child: PolarPhotoDataPlot(dummyPhotoData)
-                    //           .build(context),
-                    //     )),
-                  ]),
-                ),
-              ])),
+                  ])),
+          Center(
+            child: SizedBox(
+                width: physicalWidth,
+                height: 50,
+                //reference : https://www.youtube.com/watch?v=wnTYKJEJ7f4&t=167s
+                child: ListWheelScrollView.useDelegate(
+                    magnification: 1,
+                    squeeze: 1.8,
+                    physics: const FixedExtentScrollPhysics(),
+                    diameterRatio: 0.7,
+                    onSelectedItemChanged: (index) => setState(() {
+                      dataIndex = index;
+                      // updatePhoto();
+                    }),
+                    itemExtent: 80,
+                    childDelegate: ListWheelChildBuilderDelegate(
+                        builder: (context, index) => Center(
+                          child:
+                          // color : Colors.blue,
+                          Text(dataReader.dates[index],
+                              style: const TextStyle(
+                                  fontSize: 20, color: Colors.black54)),
+                        ),
+                        childCount: dataReader.dailyDataAll.length))),
+          ),
+        ],
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: (() async {
-          var data = await dataManager.getProcessedSensorFile();
-          print("processed data : ${slice(data, [0, data.shape[0]], [0, 1]).sublist(1).flatten}");
-          var dataConverted = slice(data, [0, data.shape[0]], [0, 1]).sublist(1).flatten;
-          var dataConverted2 = slice(data, [0, data.shape[0]], [1, 2]).sublist(1).flatten;
-
-          dataTime = List.generate(data.shape[0]-1, (index) => DateTime.parse(dataConverted[index]));
-          data2 = dataConverted2;
-          print("datetime : $dataTime");
-          print("data2 : $data2");
-          setState((){});
+          // print(dataReader.dailyDataAll[0].transpose[0]);
+          print(dataReader.dailyDataAll[0]);
           // print(dataReader.dailyDataAll[0]);
         }),
       ),

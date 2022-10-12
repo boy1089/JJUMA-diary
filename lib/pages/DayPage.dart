@@ -145,6 +145,7 @@ class _DayPageState extends State<DayPage> {
         onPressed: (() async {
           // print(dataReader.dailyDataAll[0].transpose[0]);
           print(DateFormat("yyyyMMdd").format(DateTime.now()));
+          print('bb');
           // print(dataManager.datesOfYear);
           // print(dataReader.dates);
           // print(dataReader.dailyDataAll[0]);

@@ -120,13 +120,25 @@ List<List<double>> dummyPhotoData =
 
 
 
+List modifyPhotoResponseForPlot(List fields){
+  List listTimeConverted = convertStringTimeToInt2(fields);
+  print(listTimeConverted);
+  print(listTimeConverted.shape[1]);
+
+  List listRadial = List<double>.generate(
+    listTimeConverted.shape[1], (int index) => kSensorPlotRadius);
+  print("type of List Time converted : ${listTimeConverted.runtimeType}");
+  listTimeConverted.add(listRadial);
+  List listMerged = listTimeConverted;
+  return listMerged;
+}
+
 
 List modifySensorDataForPlot(List fields) {
   List listTimeConverted = convertStringTimeToInt(fields);
-  print("listTimeConverted Shape : ${listTimeConverted.shape[0]}");
   List listRadial = List<List<double>>.generate(
       listTimeConverted.shape[0], (int index) => [kSensorPlotRadius]);
-  List<dynamic> listMerged =
+  List listMerged =
       Matrix2d().concatenate(listTimeConverted, listRadial, axis: 1);
   return listMerged;
 }
@@ -135,11 +147,20 @@ List<dynamic> convertStringTimeToInt(List fields) {
   List listTime = slice(fields, [1, fields.shape[0]], [0, 1]).flatten;
   listTime = List<List<double>>.generate(listTime.length,
       (int index) => [convertStringTimeToDouble(listTime[index])]);
-  List listSensor = slice(fields, [1, fields.shape[0]], [1, 6]);
-  List list = const Matrix2d().concatenate(listTime, listSensor, axis: 1);
-  debugPrint(list.toString());
 
+  List listSensor = slice(fields, [1, fields.shape[0]], [1, fields.shape[1]]);
+  List list = const Matrix2d().concatenate(listTime, listSensor, axis: 1);
   return list;
+}
+
+List convertStringTimeToInt2(List fields) {
+  List listTime = fields[0];
+  listTime = List<List<double>>.generate(listTime.length,
+          (int index) => [convertStringTimeToDouble(listTime[index])]).flatten;
+
+  List listPhotoLinks = fields[1];
+  List<List<dynamic>> result = [listTime, listPhotoLinks];
+  return result;
 }
 
 var physicalScreenSize = window.physicalSize / window.devicePixelRatio;
@@ -148,7 +169,13 @@ var physicalHeight = physicalScreenSize.height;
 
 
 double convertStringTimeToDouble(String time) {
-  List<String> timeSplit = time.substring(11, 19).split(':');
+  var timeSplit;
+  if (time.contains(":")) {
+    timeSplit = time.substring(11, 19).split(':');
+  } else{
+    timeSplit = [time.substring(9, 11), time.substring(11, 13),time.substring(13, 15)];
+  }
+  print(timeSplit);
   double timeDouble = double.parse(timeSplit[0]) +
       double.parse(timeSplit[1]) / 60.0 +
       double.parse(timeSplit[2]) / 3600.0;

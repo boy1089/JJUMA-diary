@@ -43,9 +43,15 @@ class _DayPageState extends State<DayPage> {
   late PhotosLibraryApiClient photoLibraryApiClient;
   late DataManager dataManager;
   int dataIndex = 0;
-  List<List<String>> responseResult = [];
+  int indexOfDate2 = 0;
+  List<List<String>> photoResponse = [];
+  dynamic photoResponseModified = [];
+  var c = [];
 
-  List<DateTime> datesOfYear = getDaysInBetween(DateTime.parse("20220101"), DateTime.now()).reversed.toList();
+  List<DateTime> datesOfYear =
+      getDaysInBetween(DateTime.parse("20220101"), DateTime.now())
+          .reversed
+          .toList();
 
   @override
   void initState() {
@@ -65,17 +71,18 @@ class _DayPageState extends State<DayPage> {
     // data2 = dataConverted2;
   }
 
-  List<List<dynamic>> dummyData =
-  [[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-    [2.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-    [4.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-    [6.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-    [8.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-    [10.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-    [12.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-    [14.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-    [16.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-    [18.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+  List<List<dynamic>> dummyData = [
+    [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [0.0, 1.5, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [2.0, 1.5, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [4.0, 1.5, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [6.0, 1.5, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [8.0, 1.5, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [10.0, 1.5, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [12.0, 1.5, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [14.0, 1.5, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [16.0, 1.5, 0.0, 0.0, 0.0, 0.0, 0.0],
+    [18.0, 1.5, 0.0, 0.0, 0.0, 0.0, 0.0],
   ];
 
   @override
@@ -104,11 +111,45 @@ class _DayPageState extends State<DayPage> {
                             margin: const EdgeInsets.only(top: 10),
                             width: defaultPolarPlotSize,
                             height: defaultPolarPlotSize,
-                            child:
-                                PolarSensorDataPlot( dataIndex == -1? dummyData: dataReader.dailyDataAll[dataIndex])
-                                    .build(context),
+                            child: PolarSensorDataPlot(dataIndex == -1
+                                    ? dummyData
+                                    : dataReader.dailyDataAll[dataIndex])
+                                .build(context),
                           ),
-                        )
+                        ),
+                        Positioned(
+                            left: physicalWidth / 2 - defaultPolarPlotSize / 2,
+                            top: physicalHeight / 4 - defaultPolarPlotSize / 2,
+                            child: Container(
+                                margin: const EdgeInsets.only(top: 10),
+                                width: defaultPolarPlotSize,
+                                height: defaultPolarPlotSize,
+                                child: Chart(
+                                  data: photoResponseModified.length == 0?
+                                  dummyData:
+                                      c,
+                                  // [photoResponseModified[0], photoResponseModified[2]],
+                                  // photoResponseModified,
+                                  // data : dummyData,
+
+                                  elements: [
+                                    PointElement(
+                                      size: SizeAttr(variable: 'dummy', values: [6, 7]),
+                                      // shape : ShapeAttr(value : []),
+                                    ),
+                                  ],
+                                  variables: {
+                                    '0': Variable(
+                                      accessor: (List datum) => datum[0] as num,
+                                      scale: LinearScale(
+                                          min: 0, max: 24, tickCount: 5),
+                                    ),
+                                    'dummy': Variable(
+                                      accessor: (List datum) => datum[2] as num,
+                                    ),
+                                  },
+                                  coord: PolarCoord(),
+                                )))
                       ]),
                     ),
                   ])),
@@ -123,29 +164,46 @@ class _DayPageState extends State<DayPage> {
                     physics: const FixedExtentScrollPhysics(),
                     diameterRatio: 0.7,
                     onSelectedItemChanged: (index) => setState(() {
-                          String currentDateString = DateFormat("yyyyMMdd").format(datesOfYear[index]);
-                          int indexOfDate = dataReader.dates.indexOf(currentDateString);
+                          String currentDateString =
+                              DateFormat("yyyyMMdd").format(datesOfYear[index]);
+                          indexOfDate2 = index;
+                          int indexOfDate =
+                              dataReader.dates.indexOf(currentDateString);
                           dataIndex = indexOfDate;
-                          // updatePhoto();
+                          updatePhoto();
                         }),
                     itemExtent: 80,
                     childDelegate: ListWheelChildBuilderDelegate(
                         builder: (context, index) => Center(
-                              child:
-                                  Text(DateFormat("yyyyMMdd").format(datesOfYear[index]),
+                              child: Text(
+                                  DateFormat("yyyyMMdd")
+                                      .format(datesOfYear[index]),
                                   // Text(dataReader.dates[index],
-                                      style: const TextStyle(
-                                          fontSize: 20, color: Colors.black54)),
+                                  style: const TextStyle(
+                                      fontSize: 20, color: Colors.black54)),
                             ),
                         childCount: datesOfYear.length))),
           ),
+          Center(
+              child: SizedBox(
+                  width: physicalWidth,
+                  height: physicalHeight / 4,
+                  child: photoResponse.isEmpty
+                      ? const Text('no links')
+                      : ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemBuilder: (BuildContext context, int index) {
+                            return Image.network(photoResponse[1][index]);
+                          },
+                          itemCount: photoResponse[1].length,
+                        )))
         ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: (() async {
           // print(dataReader.dailyDataAll[0].transpose[0]);
-          print(DateFormat("yyyyMMdd").format(DateTime.now()));
-          print('bb');
+
+          updatePhoto();
           // print(dataManager.datesOfYear);
           // print(dataReader.dates);
           // print(dataReader.dailyDataAll[0]);
@@ -153,5 +211,21 @@ class _DayPageState extends State<DayPage> {
         }),
       ),
     );
+  }
+
+  void updatePhoto() async {
+    String date = DateFormat("yyyyMMdd").format(datesOfYear[indexOfDate2]);
+    // debugPrint(date.substring(4, 6));
+    print('a123');
+    response = await photoLibraryApiClient.getPhotosOfDate(
+        date.substring(0, 4), date.substring(4, 6), date.substring(6, 8));
+    photoResponse = parseResponse(response);
+    photoResponseModified = modifyPhotoResponseForPlot(photoResponse);
+    // photoLibraryApiClient.writeCache3(photoResponse[0], 'time');
+    // photoLibraryApiClient.writeCache3(photoResponse[1], 'link');
+    // photoLibraryApiClient.writeCache3(photoResponse[2], 'filename');
+    c = [photoResponseModified[0], photoResponseModified[2]].transpose;
+    print(c);
+    setState(() {});
   }
 }

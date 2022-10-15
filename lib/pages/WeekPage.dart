@@ -81,12 +81,12 @@ class _WeekPageState extends State<WeekPage> {
                       height: physicalHeight / 2,
                       child: Stack(children: [
                         Positioned(
-                          left: physicalWidth / 2 - defaultPolarPlotSize / 2,
-                          top: physicalHeight / 4 - defaultPolarPlotSize / 2,
+                          left: physicalWidth / 2 - kDefaultPolarPlotSize / 2,
+                          top: physicalHeight / 4 - kDefaultPolarPlotSize / 2,
                           child: Container(
                             margin: const EdgeInsets.only(top: 10),
-                            width: defaultPolarPlotSize,
-                            height: defaultPolarPlotSize,
+                            width: kDefaultPolarPlotSize,
+                            height: kDefaultPolarPlotSize,
                             child:
                             PolarSensorDataPlot(dataReader.dailyDataAll[dataIndex])
                                 .build(context),

@@ -88,9 +88,9 @@ const longitude_home = 126.7209;
 const latitude_home = 37.3627;
 const distance_threshold_home = 0.02;
 
-const defaultPolarPlotSize = 250.0;
-const secondPolarPlotSize = defaultPolarPlotSize*1.3;
-const thirdPolarPlotSize = defaultPolarPlotSize*1.5;
+const kDefaultPolarPlotSize = 250.0;
+const kSecondPolarPlotSize = kDefaultPolarPlotSize*1.3;
+const kThirdPolarPlotSize = kDefaultPolarPlotSize*1.5;
 
 const event_color_goingOut = Colors.red;
 const event_color_backHome = Colors.blue;
@@ -126,13 +126,31 @@ List modifyPhotoResponseForPlot(List fields){
   print(listTimeConverted.shape[1]);
 
   List listRadial = List<double>.generate(
-    listTimeConverted.shape[1], (int index) => kSensorPlotRadius);
+    listTimeConverted.shape[1], (int index) => kThirdPolarPlotSize);
   print("type of List Time converted : ${listTimeConverted.runtimeType}");
   listTimeConverted.add(listRadial);
   List listMerged = listTimeConverted;
   return listMerged;
 }
 
+
+List<List<dynamic>> transpose(list){
+
+  int columnNumber = list.elementAt(0).length;
+  int rowNumber = list.length;
+  List<List<dynamic>> output = [];
+
+  for(int i = 0; i < columnNumber; i++){
+    output.add([]);
+  }
+
+  for(int i = 0; i < columnNumber; i++){
+    for(int j = 0; j<rowNumber; j++){
+      output.elementAt(i).insert(j, list.elementAt(j).elementAt(i));
+    }
+  }
+  return output;
+}
 
 List modifySensorDataForPlot(List fields) {
   List listTimeConverted = convertStringTimeToInt(fields);

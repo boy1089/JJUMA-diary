@@ -46,8 +46,8 @@ class _DayPageState extends State<DayPage> {
   int indexOfDate2 = 0;
   List<List<String>> photoResponse = [];
   dynamic photoResponseModified = [];
-  var c = [];
-
+  dynamic c = [];
+  dynamic d;
   List<DateTime> datesOfYear =
       getDaysInBetween(DateTime.parse("20220101"), DateTime.now())
           .reversed
@@ -87,6 +87,7 @@ class _DayPageState extends State<DayPage> {
 
   @override
   Widget build(BuildContext context) {
+    print(c.runtimeType);
     // dataTime = [DateTime.parse("2021-08-01"), DateTime.parse("2021-08-02"), DateTime.parse("2021-08-03")];
     return Scaffold(
       key: _scaffoldKey,
@@ -105,12 +106,12 @@ class _DayPageState extends State<DayPage> {
                       height: physicalHeight / 2,
                       child: Stack(children: [
                         Positioned(
-                          left: physicalWidth / 2 - defaultPolarPlotSize / 2,
-                          top: physicalHeight / 4 - defaultPolarPlotSize / 2,
+                          left: physicalWidth / 2 - kDefaultPolarPlotSize / 2,
+                          top: physicalHeight / 4 - kDefaultPolarPlotSize / 2,
                           child: Container(
                             margin: const EdgeInsets.only(top: 10),
-                            width: defaultPolarPlotSize,
-                            height: defaultPolarPlotSize,
+                            width: kDefaultPolarPlotSize,
+                            height: kDefaultPolarPlotSize,
                             child: PolarSensorDataPlot(dataIndex == -1
                                     ? dummyData
                                     : dataReader.dailyDataAll[dataIndex])
@@ -118,12 +119,12 @@ class _DayPageState extends State<DayPage> {
                           ),
                         ),
                         Positioned(
-                            left: physicalWidth / 2 - defaultPolarPlotSize / 2,
-                            top: physicalHeight / 4 - defaultPolarPlotSize / 2,
+                            left: physicalWidth / 2 - kDefaultPolarPlotSize / 2,
+                            top: physicalHeight / 4 - kDefaultPolarPlotSize / 2,
                             child: Container(
                                 margin: const EdgeInsets.only(top: 10),
-                                width: defaultPolarPlotSize,
-                                height: defaultPolarPlotSize,
+                                width: kDefaultPolarPlotSize,
+                                height: kDefaultPolarPlotSize,
                                 child: Chart(
                                   data: photoResponseModified.length == 0?
                                   dummyData:
@@ -134,7 +135,7 @@ class _DayPageState extends State<DayPage> {
 
                                   elements: [
                                     PointElement(
-                                      size: SizeAttr(variable: 'dummy', values: [6, 7]),
+                                      size: SizeAttr(variable: 'dummy', values: [7, 8]),
                                       // shape : ShapeAttr(value : []),
                                     ),
                                   ],
@@ -145,7 +146,7 @@ class _DayPageState extends State<DayPage> {
                                           min: 0, max: 24, tickCount: 5),
                                     ),
                                     'dummy': Variable(
-                                      accessor: (List datum) => datum[2] as num,
+                                      accessor: (List datum) => datum[1] as num,
                                     ),
                                   },
                                   coord: PolarCoord(),
@@ -216,7 +217,6 @@ class _DayPageState extends State<DayPage> {
   void updatePhoto() async {
     String date = DateFormat("yyyyMMdd").format(datesOfYear[indexOfDate2]);
     // debugPrint(date.substring(4, 6));
-    print('a123');
     response = await photoLibraryApiClient.getPhotosOfDate(
         date.substring(0, 4), date.substring(4, 6), date.substring(6, 8));
     photoResponse = parseResponse(response);
@@ -224,8 +224,14 @@ class _DayPageState extends State<DayPage> {
     // photoLibraryApiClient.writeCache3(photoResponse[0], 'time');
     // photoLibraryApiClient.writeCache3(photoResponse[1], 'link');
     // photoLibraryApiClient.writeCache3(photoResponse[2], 'filename');
-    c = [photoResponseModified[0], photoResponseModified[2]].transpose;
-    print(c);
+    c = [photoResponseModified[0], photoResponseModified[2]];
+    // print("photoResponseModified : $photoResponseModified");
+    // c = transposeList([photoResponseModified[0], photoResponseModified[2]]);
+    // c = transposeList(c);
+    c = transpose(c);
+    d = c;
+    print("c : ${c}");
+
     setState(() {});
   }
 }

@@ -1,27 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:googleapis/cloudbuild/v1.dart';
+import 'package:googleapis/drive/v2.dart';
 import 'package:googleapis/shared.dart';
+import 'package:provider/provider.dart';
 import 'package:test_location_2nd/Permissions/GoogleAccountManager.dart';
+import 'package:test_location_2nd/StateProvider.dart';
 import 'package:test_location_2nd/Util/Util.dart';
-import '../Sensor/SensorDataReader.dart';
-import '../navigation.dart';
-import 'package:test_location_2nd/pages/SettingPage.dart';
-import 'package:test_location_2nd/Permissions/PermissionManager.dart';
-import 'package:test_location_2nd/Api/PhotoLibraryApiClient.dart';
-import 'package:test_location_2nd/Util/responseParser.dart';
-import 'package:test_location_2nd/PolarSensorDataPlot.dart';
-import 'package:test_location_2nd/PolarPhotoDataPlot.dart';
-import 'package:test_location_2nd/Data/DataManager.dart';
-import 'package:intl/intl.dart';
-
-import 'package:flutter/material.dart';
 import "package:test_location_2nd/DateHandler.dart";
+import 'package:test_location_2nd/global.dart';
+import 'MainPage.dart';
+import 'package:matrix_gesture_detector/matrix_gesture_detector.dart';
 
 //TODO : make navigation to day page
 
 class MonthPage extends StatefulWidget {
   int index = 0;
-
 
   MonthPage(int index) {
     this.index = index;
@@ -31,6 +24,8 @@ class MonthPage extends StatefulWidget {
   State<MonthPage> createState() => _MonthPageState();
 }
 
+double _scaleFactor = 1.0;
+double _baseScaleFactor = 1.0;
 class _MonthPageState extends State<MonthPage> {
   int index = 0;
 
@@ -41,25 +36,40 @@ class _MonthPageState extends State<MonthPage> {
 
   @override
   Widget build(BuildContext buildContext) {
+    // MainPageState? mainPage = buildContext.findAncestorRenderObjectOfType();
+    // Matrix4 matrix = Matrix4.identity();
+
     return Scaffold(
       body: Center(
-        child: YearWheelScrollView().build(buildContext),
+        child: GestureDetector(
+            onScaleStart: (details) {
+              _baseScaleFactor = _scaleFactor;
+            },
+            onScaleUpdate: (details) {
+              setState(() {
+                print(_scaleFactor);
+                _scaleFactor = _baseScaleFactor * details.scale;
+              });
+            },
+            child: YearWheelScrollView().build(buildContext)),
       ),
     );
   }
+
+
+
+
+
 }
 
 class YearWheelScrollView {
   @override
   Widget build(BuildContext buildContext) {
     return ListView(
-        // physics: const FixedExtentScrollPhysics(),
-        // itemExtent: 1,
         children: List.generate(
             DateTime.now().month,
             (int index) => MonthArray(DateTime.now().month - index - 1)
                 .build(buildContext)));
-    // children : List.generate(12, (int index)=> MonthArray(12-index-1).build(buildContext)));
   }
 }
 
@@ -68,19 +78,19 @@ class MonthArray {
   int numberOfWeek = 4;
   MonthArray(@required month) {
     this.month = month + 1;
-    this.numberOfWeek = weekNumber(DateTime(2022, this.month +1, 0)) -
+    this.numberOfWeek = weekNumber(DateTime(2022, this.month + 1, 0)) -
         weekNumber(DateTime(2022, this.month, 1));
   }
 
   @override
   Widget build(BuildContext buildContext) {
     return Column(children: [
-      Text("$month"),
       Column(
           // children : [],
           children: List.generate(
-              numberOfWeek+1,
-              (int index) => WeekRow(month, numberOfWeek-index).build(buildContext))),
+              numberOfWeek + 1,
+              (int index) =>
+                  WeekRow(month, numberOfWeek - index).build(buildContext))),
     ]);
   }
 }
@@ -93,20 +103,20 @@ class WeekRow {
     this.weekIndex = index;
   }
 
+  double width = physicalWidth * 1;
+  // double height = physicalWi;
+
   @override
   Widget build(BuildContext buildContext) {
     return SizedBox(
-      width: physicalWidth,
+      width: width ,
       child: Row(
-        children: [
-          Text("$month, $weekIndex"),
-          Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate(
-                  7,
-                  (int index) =>
-                      DayButton(month, weekIndex, index).build(buildContext))),
-        ],
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: List.generate(
+              7,
+              (int index) =>
+                  DayButton(month, weekIndex, index).build(buildContext))
+                  // Text('a', textScaleFactor: _scaleFactor))
       ),
     );
   }
@@ -124,29 +134,46 @@ class DayButton {
     this.day = day;
 
     this.start = DateTime(2022, month, 1).weekday;
-    this.today = DateTime(2022, month, (weekIndex) * 7 + day +1 -start);
+    this.today = DateTime(2022, month, (weekIndex) * 7 + day + 1 - start);
   }
+
+  double width = 10;
+  double height = 10;
 
   @override
   Widget build(BuildContext buildContext) {
-    bool isValidDate = today.month== month;
-    return
-      isValidDate?
-      RawMaterialButton(
-      onPressed: () {},
-      constraints: BoxConstraints(minWidth: physicalWidth / 8, minHeight: 36.0),
-      elevation: 2.0,
-      fillColor: Colors.white,
-      child: Text(
-          "${today.toString().substring(5, 10)}"),
-      // padding: EdgeInsets.all(15.0),
-      shape: CircleBorder(),
-    ):
-      RawMaterialButton(
-        onPressed: () {
+    // MainPageState? mainPage = buildContext.findAncestorRenderObjectOfType();
 
-        },
-        constraints: BoxConstraints(minWidth: physicalWidth / 8, minHeight: 36.0),
-      );
+    bool isValidDate = today.month == month;
+    return isValidDate
+        ? SizedBox(
+          width : 10 * _scaleFactor,
+          height : 10* _scaleFactor,
+          child: RawMaterialButton(
+
+              onPressed: () {
+                selectedDate = today;
+                buildContext.read<NavigationIndexProvider>().setIndex(0);
+                buildContext
+                    .read<NavigationIndexProvider>()
+                    .setDate(selectedDate);
+              },
+              constraints:
+                  BoxConstraints(minWidth: width*_scaleFactor, minHeight: height*_scaleFactor,
+                  maxWidth : width*_scaleFactor + 1.0, maxHeight: height*_scaleFactor + 1.0),
+              elevation: 4.0,
+              fillColor: Colors.white,
+              shape: CircleBorder(),
+            ),
+    )
+        : SizedBox(
+        width : 10 * _scaleFactor,
+        height : 10* _scaleFactor,
+        child: RawMaterialButton(
+            onPressed: () {},
+            constraints:
+            BoxConstraints(minWidth: width*_scaleFactor, minHeight: height*_scaleFactor,
+                maxWidth : width*_scaleFactor + 1.0, maxHeight: height*_scaleFactor + 1.0),
+          ));
   }
 }

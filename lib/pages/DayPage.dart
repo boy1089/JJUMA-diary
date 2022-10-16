@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:matrix2d/matrix2d.dart';
 import 'package:test_location_2nd/DateHandler.dart';
 import 'package:test_location_2nd/Permissions/GoogleAccountManager.dart';
+import 'package:test_location_2nd/StateProvider.dart';
 import 'package:test_location_2nd/Util/Util.dart';
 import '../Sensor/SensorDataReader.dart';
 import '../navigation.dart';
@@ -15,6 +16,10 @@ import 'package:test_location_2nd/PolarPhotoDataPlot.dart';
 import 'package:test_location_2nd/Data/DataManager.dart';
 import 'package:graphic/graphic.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+//TODO : put global variables to StateProvider - date/month/year, setting, current page
+
 
 class DayPage extends StatefulWidget {
   // const WeekPage({Key? key}) : super(key: key);
@@ -87,7 +92,6 @@ class _DayPageState extends State<DayPage> {
 
   @override
   Widget build(BuildContext context) {
-    print(c.runtimeType);
     // dataTime = [DateTime.parse("2021-08-01"), DateTime.parse("2021-08-02"), DateTime.parse("2021-08-03")];
     return Scaffold(
       key: _scaffoldKey,
@@ -126,16 +130,17 @@ class _DayPageState extends State<DayPage> {
                                 width: kDefaultPolarPlotSize,
                                 height: kDefaultPolarPlotSize,
                                 child: Chart(
-                                  data: photoResponseModified.length == 0?
-                                  dummyData:
-                                      c,
+                                  data: photoResponseModified.length == 0
+                                      ? dummyData
+                                      : c,
                                   // [photoResponseModified[0], photoResponseModified[2]],
                                   // photoResponseModified,
                                   // data : dummyData,
 
                                   elements: [
                                     PointElement(
-                                      size: SizeAttr(variable: 'dummy', values: [7, 8]),
+                                      size: SizeAttr(
+                                          variable: 'dummy', values: [7, 8]),
                                       // shape : ShapeAttr(value : []),
                                     ),
                                   ],
@@ -160,13 +165,14 @@ class _DayPageState extends State<DayPage> {
                 height: 50,
                 //reference : https://www.youtube.com/watch?v=wnTYKJEJ7f4&t=167s
                 child: ListWheelScrollView.useDelegate(
+                    controller: FixedExtentScrollController(initialItem: dataReader.dates.indexOf(context.watch<NavigationIndexProvider>().date)),
                     magnification: 1,
                     squeeze: 1.8,
                     physics: const FixedExtentScrollPhysics(),
                     diameterRatio: 0.7,
                     onSelectedItemChanged: (index) => setState(() {
                           String currentDateString =
-                              DateFormat("yyyyMMdd").format(datesOfYear[index]);
+                              context.watch<NavigationIndexProvider>().date;
                           indexOfDate2 = index;
                           int indexOfDate =
                               dataReader.dates.indexOf(currentDateString);
@@ -174,6 +180,7 @@ class _DayPageState extends State<DayPage> {
                           updatePhoto();
                         }),
                     itemExtent: 80,
+                    restorationId: "aa",
                     childDelegate: ListWheelChildBuilderDelegate(
                         builder: (context, index) => Center(
                               child: Text(
@@ -200,34 +207,29 @@ class _DayPageState extends State<DayPage> {
                         )))
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: (() async {
-          // print(dataReader.dailyDataAll[0].transpose[0]);
-
-          updatePhoto();
-          // print(dataManager.datesOfYear);
-          // print(dataReader.dates);
-          // print(dataReader.dailyDataAll[0]);
-          // print(dataReader.dailyDataAll[0]);
-        }),
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: (() async {
+      //     setState(() {
+      //       print(context.read<NavigationIndexProvider>().navigationIndex);
+      //       Provider.of<NavigationIndexProvider>(context, listen: false)
+      //           .setIndex(1);
+      //       // notifyListeners();
+      //       // context.read<NavigationIndexProvider>().setIndex(2);
+      //       // context.read<NavigationIndexProvider>().navigationIndex = 2;
+      //     });
+      //     // updatePhoto();
+      //   }),
+      // ),
     );
   }
 
   void updatePhoto() async {
     String date = DateFormat("yyyyMMdd").format(datesOfYear[indexOfDate2]);
-    // debugPrint(date.substring(4, 6));
     response = await photoLibraryApiClient.getPhotosOfDate(
         date.substring(0, 4), date.substring(4, 6), date.substring(6, 8));
     photoResponse = parseResponse(response);
     photoResponseModified = modifyPhotoResponseForPlot(photoResponse);
-    // photoLibraryApiClient.writeCache3(photoResponse[0], 'time');
-    // photoLibraryApiClient.writeCache3(photoResponse[1], 'link');
-    // photoLibraryApiClient.writeCache3(photoResponse[2], 'filename');
     c = [photoResponseModified[0], photoResponseModified[2]];
-    // print("photoResponseModified : $photoResponseModified");
-    // c = transposeList([photoResponseModified[0], photoResponseModified[2]]);
-    // c = transposeList(c);
     c = transpose(c);
     d = c;
     print("c : ${c}");

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import 'package:test_location_2nd/Sensor/SensorLogger.dart';
 import 'package:test_location_2nd/Loggers/NoteLogger.dart';
@@ -15,10 +16,23 @@ import 'Api/PhotoLibraryApiClient.dart';
 import 'PhotoManager.dart';
 import 'package:test_location_2nd/Note/NoteData.dart';
 import 'package:test_location_2nd/Data/DataManager.dart';
+import 'package:test_location_2nd/StateProvider.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(const MyApp());
+  runApp(ChangeNotifierProvider(
+    // Initialize the model in the builder. That way, Provider
+    // can own Counter's lifecycle, making sure to call `dispose`
+    // when not needed anymore.
+    create: (context) => NavigationIndexProvider(),
+    child: const MyApp(),
+  ));
+  // MultiProvider(
+  //   providers: [
+  //     ChangeNotifierProvider(create: (_) => NavigationIndexProvider()),
+  //   ],
+  //   child : const MyApp(),
+  // );
 }
 
 class MyApp extends StatefulWidget {

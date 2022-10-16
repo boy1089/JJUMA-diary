@@ -15,6 +15,9 @@ import 'dart:ui';
 import 'WeekPage.dart';
 import 'MonthPage.dart';
 import 'DayPage.dart';
+import 'package:test_location_2nd/global.dart';
+import 'package:provider/provider.dart';
+import 'package:test_location_2nd/StateProvider.dart';
 
 //TODO : put scroll wheel to select the date.
 //TODO : get images from google album
@@ -33,10 +36,10 @@ class MainPage extends StatefulWidget {
       : super(key: key);
 
   @override
-  State<MainPage> createState() => _MainPageState();
+  State<MainPage> createState() => MainPageState();
 }
 
-class _MainPageState extends State<MainPage> {
+class MainPageState extends State<MainPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   var response;
   late SensorDataReader dataReader;
@@ -48,7 +51,7 @@ class _MainPageState extends State<MainPage> {
   List<List<String>> responseResult = [];
   Future readData = Future.delayed(const Duration(seconds: 1));
   // Future<List<List<dynamic>>> readData;
-  int _selectedIndex = 0;
+
   List<Widget> _widgetOptions = [];
   int a = 0;
   late MonthPage monthPage;
@@ -68,8 +71,8 @@ class _MainPageState extends State<MainPage> {
         permissionManager, photoLibraryApiClient, dataManager);
     WeekPage weekPage = WeekPage(dataReader, googleAccountManager,
         permissionManager, photoLibraryApiClient, dataManager);
+    MonthPage monthPage = MonthPage(a);
 
-    monthPage = MonthPage(a);
     _widgetOptions = <Widget>[
       dayPage,
       weekPage,
@@ -84,6 +87,8 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
+    // int currentIndexFromProvider = context.watch();
+    // print("value from provider : ${context.watch<NavigationIndexProvider>().navigationIndex}");
     return Scaffold(
         appBar: AppBar(
           title: const Center(
@@ -102,7 +107,6 @@ class _MainPageState extends State<MainPage> {
                         color: Colors.black54)))
           ],
         ),
-
         bottomNavigationBar: BottomNavigationBar(
           items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(
@@ -112,25 +116,26 @@ class _MainPageState extends State<MainPage> {
             BottomNavigationBarItem(
                 icon: Icon(Icons.calendar_view_month), label: "Month"),
           ],
-          currentIndex: _selectedIndex,
-          onTap: _onBottomNavigationBarTapped,
+          currentIndex:
+              context.watch<NavigationIndexProvider>().navigationIndex,
+          onTap: (index) {
+            Provider.of<NavigationIndexProvider>(context, listen: false)
+                .setIndex(index);
+            // context.watch<NavigationIndexProvider>().setIndex(index);
+          },
         ),
-
         body: FutureBuilder(
             future: readData,
             builder: (BuildContext context, AsyncSnapshot snapshot) {
+              print(
+                  "value from provider : ${context.watch<NavigationIndexProvider>().navigationIndex}");
               if (snapshot.hasData == false) {
                 return Center(child: CircularProgressIndicator());
               } else {
-                return _widgetOptions[_selectedIndex];
+                return _widgetOptions[
+                    context.watch<NavigationIndexProvider>().navigationIndex];
               }
             }));
-  }
-
-  void _onBottomNavigationBarTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
   }
 
   void updatePhoto() async {

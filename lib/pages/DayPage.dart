@@ -20,7 +20,6 @@ import 'package:provider/provider.dart';
 
 //TODO : put global variables to StateProvider - date/month/year, setting, current page
 
-
 class DayPage extends StatefulWidget {
   // const WeekPage({Key? key}) : super(key: key);
   SensorDataReader dataReader;
@@ -41,12 +40,12 @@ class DayPage extends StatefulWidget {
 class _DayPageState extends State<DayPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  var response;
   late SensorDataReader dataReader;
   late GoogleAccountManager googleAccountManager;
   late PermissionManager permissionManager;
   late PhotosLibraryApiClient photoLibraryApiClient;
   late DataManager dataManager;
+  var response;
   int dataIndex = 0;
   int indexOfDate2 = 0;
   List<List<String>> photoResponse = [];
@@ -165,19 +164,24 @@ class _DayPageState extends State<DayPage> {
                 height: 50,
                 //reference : https://www.youtube.com/watch?v=wnTYKJEJ7f4&t=167s
                 child: ListWheelScrollView.useDelegate(
-                    controller: FixedExtentScrollController(initialItem: dataReader.dates.indexOf(context.watch<NavigationIndexProvider>().date)),
+                    controller: FixedExtentScrollController(
+                        initialItem: datesOfYear.indexOf(
+                            DateTime.parse(Provider.of<NavigationIndexProvider>(context, listen: false).date))),
                     magnification: 1,
                     squeeze: 1.8,
                     physics: const FixedExtentScrollPhysics(),
                     diameterRatio: 0.7,
                     onSelectedItemChanged: (index) => setState(() {
+
                           String currentDateString =
-                              context.watch<NavigationIndexProvider>().date;
+                          DateFormat("yyyyMMdd").format(datesOfYear[index]);
                           indexOfDate2 = index;
                           int indexOfDate =
                               dataReader.dates.indexOf(currentDateString);
                           dataIndex = indexOfDate;
                           updatePhoto();
+                          Provider.of<NavigationIndexProvider>(context, listen: false).date = currentDateString;
+
                         }),
                     itemExtent: 80,
                     restorationId: "aa",
@@ -210,12 +214,10 @@ class _DayPageState extends State<DayPage> {
       // floatingActionButton: FloatingActionButton(
       //   onPressed: (() async {
       //     setState(() {
-      //       print(context.read<NavigationIndexProvider>().navigationIndex);
-      //       Provider.of<NavigationIndexProvider>(context, listen: false)
-      //           .setIndex(1);
-      //       // notifyListeners();
-      //       // context.read<NavigationIndexProvider>().setIndex(2);
-      //       // context.read<NavigationIndexProvider>().navigationIndex = 2;
+      //       print(dataReader.dates);
+      //       print("navi index2 : ${Provider.of<NavigationIndexProvider>(context, listen: false).date}");
+      //       // print("from provide : ${context.watch<NavigationIndexProvider>().date}");
+      //       // print("navi index : ${context.watch<NavigationIndexProvider>().navigationIndex}");
       //     });
       //     // updatePhoto();
       //   }),

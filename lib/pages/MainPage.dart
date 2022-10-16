@@ -87,6 +87,7 @@ class MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
+    // updatePhoto();
     // int currentIndexFromProvider = context.watch();
     // print("value from provider : ${context.watch<NavigationIndexProvider>().navigationIndex}");
     return Scaffold(

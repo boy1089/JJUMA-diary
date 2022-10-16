@@ -10,7 +10,7 @@ import "package:test_location_2nd/DateHandler.dart";
 import 'package:test_location_2nd/global.dart';
 import 'MainPage.dart';
 import 'package:matrix_gesture_detector/matrix_gesture_detector.dart';
-
+import 'DayPage.dart';
 //TODO : make navigation to day page
 
 class MonthPage extends StatefulWidget {
@@ -157,6 +157,7 @@ class DayButton {
                 buildContext
                     .read<NavigationIndexProvider>()
                     .setDate(selectedDate);
+
               },
               constraints:
                   BoxConstraints(minWidth: width*_scaleFactor, minHeight: height*_scaleFactor,

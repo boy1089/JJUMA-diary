@@ -122,6 +122,8 @@ class MainPageState extends State<MainPage> {
           onTap: (index) {
             Provider.of<NavigationIndexProvider>(context, listen: false)
                 .setIndex(index);
+
+
             // context.watch<NavigationIndexProvider>().setIndex(index);
           },
         ),

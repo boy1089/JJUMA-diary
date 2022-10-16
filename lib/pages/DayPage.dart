@@ -73,6 +73,7 @@ class _DayPageState extends State<DayPage> {
     //
     // dataTime = List.generate(data.shape[0]-1, (index) => DateTime.parse(dataConverted[index]));
     // data2 = dataConverted2;
+    updatePhoto();
   }
 
   List<List<dynamic>> dummyData = [
@@ -172,7 +173,6 @@ class _DayPageState extends State<DayPage> {
                     physics: const FixedExtentScrollPhysics(),
                     diameterRatio: 0.7,
                     onSelectedItemChanged: (index) => setState(() {
-
                           String currentDateString =
                           DateFormat("yyyyMMdd").format(datesOfYear[index]);
                           indexOfDate2 = index;
@@ -180,8 +180,8 @@ class _DayPageState extends State<DayPage> {
                               dataReader.dates.indexOf(currentDateString);
                           dataIndex = indexOfDate;
                           updatePhoto();
-                          Provider.of<NavigationIndexProvider>(context, listen: false).date = currentDateString;
-
+                          // Provider.of<NavigationIndexProvider>(context, listen: false).date = currentDateString;
+                          context.read<NavigationIndexProvider>().setDate(datesOfYear[index]);
                         }),
                     itemExtent: 80,
                     restorationId: "aa",

@@ -137,18 +137,17 @@ class DayButton {
     this.today = DateTime(2022, month, (weekIndex) * 7 + day + 1 - start);
   }
 
-  double width = 10;
-  double height = 10;
+  double width = physicalHeight/70.0;
+  double height = physicalHeight/70.0;
 
   @override
   Widget build(BuildContext buildContext) {
-    // MainPageState? mainPage = buildContext.findAncestorRenderObjectOfType();
 
     bool isValidDate = today.month == month;
     return isValidDate
         ? SizedBox(
-          width : 10 * _scaleFactor,
-          height : 10* _scaleFactor,
+          width : width * _scaleFactor,
+          height : height * _scaleFactor,
           child: RawMaterialButton(
 
               onPressed: () {
@@ -168,8 +167,8 @@ class DayButton {
             ),
     )
         : SizedBox(
-        width : 10 * _scaleFactor,
-        height : 10* _scaleFactor,
+        width : width * _scaleFactor,
+        height : height * _scaleFactor,
         child: RawMaterialButton(
             onPressed: () {},
             constraints:

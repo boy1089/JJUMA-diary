@@ -157,7 +157,7 @@ List<List<double>> dummyPhotoData = [
 List modifyListForPlot(List fields,
     {bool filterTime = false, bool executeTranspose = false}) {
   //when empty list is input, return list with default value when
-  if (fields.length == 1) {
+  if (fields[0].length < 2) {
     // return List<List<dynamic>>.generate(fields[0].length, (int index) => [0, 1]);
     List<List<dynamic>> dummyData = [
       [0, "https://img.icons8.com/ios-filled/344/no-image.png", 3]

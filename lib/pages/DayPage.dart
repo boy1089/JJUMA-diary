@@ -36,8 +36,6 @@ class DayPage extends StatefulWidget {
       this.photoLibraryApiClient, this.dataManager, this.googlePhotoManager,
       {Key? key})
       : super(key: key);
-
-
 }
 
 class _DayPageState extends State<DayPage> {
@@ -79,6 +77,7 @@ class _DayPageState extends State<DayPage> {
       "https://lh3.googleusercontent.com/lr/AGiIYOVR_tHXYSoT-mraJx-N7emFAOmwsV10I3xpvkvt9L-eGyoiBRYbsoet65k6ONqTtaGSgTkysOh3wRC_IeOEEB1-yesECjGtpwuDmnZSEML4e3C08B640docvD8UxgH6P8RO-klXvSfIOOr54WGrdruw2QfET404Hm8z89H-T8Sd83n30W-Nrc0LFuSzwwz0IPQ6Cncx8aGGriBsrC9tcDeZ7NLzb_R8T92tR8WMzmYrXBfd748vohg6lD_0vihssmyAerrMgpnO406B_jsDdHggluLeIvxDrMaGNvBLCaWRBDIrHvD_IusKdULmxgGIIWxYe2hrgzhT2WzV0qrYbfNuDYvJgR-9NbOPbd-5NyxCT9uQRzbUvlHyZW-r87Vu8qUuV9i3uj7RwqTkFLsBrns-LkxjtQ58VCjid95iMP9MPQQiZzSvEK0SY2-vqNVksiWRLdgZGzxiskWiqkXenz63LqBKKlN3gxO0aSSU88-j5Ol9sjds_MEzIF3FjKQ3ZcmCW2jYfBUNeYXaDVzbMLivcift79CIehK8quaI8Wp3BhYPpbvRVpRCYM8qazYb-Jgjm4mOsI4uqdBnrPMeF14eLnaoh2ebvJXJCVT2YAVjIiWL6PYOCslCLVfMD2CmbSLzjbLevZlVKp5n_-DNe4uN0_or5yRWvyaUdkBXqhCGlOQN3CtQVQ7cOPuHrJkA4pNTvP-aNycKtUUPGd_lfbQP78bs_UWsfFFF_a57gIoyGfnsYAtI0x9ilO9w_1hvz9r1WktaNYzJV43dSSzN3StZ_ftpkqK-XNvBT_fP5HE9vrYIRp7tMTNVzBfb-yyeLIkirNRfbFJ70tOHiX3TI0cgaslGNVhQiGy_34URsaXPNRnYa2gzVU2zIhYD4betspl8xYJ9mkVGX_Ds57DSF5AFYMnmk_llErRaAK4LVnj0WHUmxXZhc9ZoaX1g8UTM7yPHl824zoMMVNCnZXkXDZpCsan2GNc-W4dWEpJDdsKc8SxWKAl-Rpbhz7rf1p7n8pRlI5TxKKxAe0SLUopO1Fjq1fCEmg6hVgBZVwzmMK8T-Yw3a80Q-VQdmAUCPg";
   @override
   Widget build(BuildContext context) {
+    print(dataForPlot);
     return Scaffold(
       key: _scaffoldKey,
       backgroundColor: Colors.white,
@@ -208,8 +207,8 @@ class _DayPageState extends State<DayPage> {
       floatingActionButton: FloatingActionButton(
         onPressed: (() async {
           setState(() {});
-          updatePhoto();
-
+          // updatePhoto();
+          print(googleAccountManager.currentUser);
         }),
       ),
     );
@@ -243,28 +242,22 @@ class _DayPageState extends State<DayPage> {
         .transform(utf8.decoder)
         .transform(const CsvToListConverter(eol: '\n'))
         .toList();
-    // c = modifyPhotoDataForPlot(transpose(fields.sublist(1)));
+
     dataForPlot = modifyListForPlot(fields, filterTime: true);
-    print("c, testing modifyListforPlot : ${dataForPlot.length}");
-
+    print("dataForPlot : $dataForPlot");
     googlePhotoLinks = transpose(dataForPlot).elementAt(1);
-
-    setState(() {});
-    // return fields;
   }
 
   void updatePhoto() async {
     String date =
         Provider.of<NavigationIndexProvider>(context, listen: false).date;
-    response = await this.googlePhotoManager.getPhoto(photoLibraryApiClient, date);
-    photoResponseModified =
-        modifyListForPlot(response, executeTranspose: true);
+    response =
+        await this.googlePhotoManager.getPhoto(photoLibraryApiClient, date);
+    photoResponseModified = modifyListForPlot(response, executeTranspose: true);
 
     dataForPlot = photoResponseModified;
     print("dataForPlot : $dataForPlot");
     googlePhotoLinks = transpose(dataForPlot).elementAt(1);
     googlePhotoManager.writePhotoResponse(date, response);
-    setState(() {});
   }
-
 }

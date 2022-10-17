@@ -26,6 +26,7 @@ class MonthPage extends StatefulWidget {
 
 double _scaleFactor = 1.0;
 double _baseScaleFactor = 1.0;
+
 class _MonthPageState extends State<MonthPage> {
   int index = 0;
 
@@ -43,7 +44,7 @@ class _MonthPageState extends State<MonthPage> {
       body: Center(
         child: GestureDetector(
             onScaleStart: (details) {
-              _baseScaleFactor = _scaleFactor;
+               _scaleFactor = _baseScaleFactor;
             },
             onScaleUpdate: (details) {
               setState(() {
@@ -51,15 +52,21 @@ class _MonthPageState extends State<MonthPage> {
                 _scaleFactor = _baseScaleFactor * details.scale;
               });
             },
+            onDoubleTap: () {
+              print(_scaleFactor);
+              print(_baseScaleFactor);
+              setState(() {
+                if (_scaleFactor > _baseScaleFactor * 4) {
+                  _scaleFactor = _baseScaleFactor;
+                } else {
+                  _scaleFactor = _scaleFactor * 1.5;
+                }
+              });
+            },
             child: YearWheelScrollView().build(buildContext)),
       ),
     );
   }
-
-
-
-
-
 }
 
 class YearWheelScrollView {
@@ -109,15 +116,15 @@ class WeekRow {
   @override
   Widget build(BuildContext buildContext) {
     return SizedBox(
-      width: width ,
+      width: width,
       child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: List.generate(
               7,
               (int index) =>
                   DayButton(month, weekIndex, index).build(buildContext))
-                  // Text('a', textScaleFactor: _scaleFactor))
-      ),
+          // Text('a', textScaleFactor: _scaleFactor))
+          ),
     );
   }
 }
@@ -137,43 +144,46 @@ class DayButton {
     this.today = DateTime(2022, month, (weekIndex) * 7 + day + 1 - start);
   }
 
-  double width = physicalHeight/70.0;
-  double height = physicalHeight/70.0;
+  double width = physicalHeight / 70.0;
+  double height = physicalHeight / 70.0;
 
   @override
   Widget build(BuildContext buildContext) {
-
     bool isValidDate = today.month == month;
     return isValidDate
         ? SizedBox(
-          width : width * _scaleFactor,
-          height : height * _scaleFactor,
-          child: RawMaterialButton(
-
+            width: width * _scaleFactor,
+            height: height * _scaleFactor,
+            child: RawMaterialButton(
               onPressed: () {
                 selectedDate = today;
-                buildContext.read<NavigationIndexProvider>().setNavigationIndex(0);
+                buildContext
+                    .read<NavigationIndexProvider>()
+                    .setNavigationIndex(0);
                 buildContext
                     .read<NavigationIndexProvider>()
                     .setDate(selectedDate);
-
               },
-              constraints:
-                  BoxConstraints(minWidth: width*_scaleFactor, minHeight: height*_scaleFactor,
-                  maxWidth : width*_scaleFactor + 1.0, maxHeight: height*_scaleFactor + 1.0),
+              constraints: BoxConstraints(
+                  minWidth: width * _scaleFactor,
+                  minHeight: height * _scaleFactor,
+                  maxWidth: width * _scaleFactor + 1.0,
+                  maxHeight: height * _scaleFactor + 1.0),
               elevation: 4.0,
               fillColor: Colors.white,
               shape: CircleBorder(),
             ),
-    )
+          )
         : SizedBox(
-        width : width * _scaleFactor,
-        height : height * _scaleFactor,
-        child: RawMaterialButton(
-            onPressed: () {},
-            constraints:
-            BoxConstraints(minWidth: width*_scaleFactor, minHeight: height*_scaleFactor,
-                maxWidth : width*_scaleFactor + 1.0, maxHeight: height*_scaleFactor + 1.0),
-          ));
+            width: width * _scaleFactor,
+            height: height * _scaleFactor,
+            child: RawMaterialButton(
+              onPressed: () {},
+              constraints: BoxConstraints(
+                  minWidth: width * _scaleFactor,
+                  minHeight: height * _scaleFactor,
+                  maxWidth: width * _scaleFactor + 1.0,
+                  maxHeight: height * _scaleFactor + 1.0),
+            ));
   }
 }

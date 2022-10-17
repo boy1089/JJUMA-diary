@@ -108,7 +108,6 @@ class GooglePhotoManager {
         .transform(utf8.decoder)
         .transform(const CsvToListConverter(eol: '\n'))
         .toList();
-
     return fields;
   }
 }

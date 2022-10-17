@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:matrix2d/matrix2d.dart';
 import 'dart:ui';
+
 const bool kDebugMode = !kReleaseMode && !kProfileMode;
 
 List<String> kTimeStamps = [
@@ -80,6 +81,10 @@ List<String> kTimeStamps2hour_filtered = [
   '22',
 ];
 
+var physicalScreenSize = window.physicalSize / window.devicePixelRatio;
+var physicalWidth = physicalScreenSize.width;
+var physicalHeight = physicalScreenSize.height;
+
 const kSensorPlotRadius = 1.0;
 const kPhotoPlotRadius = 2.0;
 const kDataReaderSubsampleFactor = 50;
@@ -89,12 +94,26 @@ const latitude_home = 37.3627;
 const distance_threshold_home = 0.02;
 
 const kDefaultPolarPlotSize = 250.0;
-const kSecondPolarPlotSize = kDefaultPolarPlotSize*1.3;
-const kThirdPolarPlotSize = kDefaultPolarPlotSize*1.5;
+const kSecondPolarPlotSize = kDefaultPolarPlotSize * 1.3;
+const kThirdPolarPlotSize = kDefaultPolarPlotSize * 1.5;
 
 const event_color_goingOut = Colors.red;
 const event_color_backHome = Colors.blue;
 const path_phonecall = '/sdcard/Music/TPhoneCallRecords';
+
+List<List<dynamic>> dummyData = [
+  [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+  [0.0, 1.5, 0.0, 0.0, 0.0, 0.0, 0.0],
+  [2.0, 1.5, 0.0, 0.0, 0.0, 0.0, 0.0],
+  [4.0, 1.5, 0.0, 0.0, 0.0, 0.0, 0.0],
+  [6.0, 1.5, 0.0, 0.0, 0.0, 0.0, 0.0],
+  [8.0, 1.5, 0.0, 0.0, 0.0, 0.0, 0.0],
+  [10.0, 1.5, 0.0, 0.0, 0.0, 0.0, 0.0],
+  [12.0, 1.5, 0.0, 0.0, 0.0, 0.0, 0.0],
+  [14.0, 1.5, 0.0, 0.0, 0.0, 0.0, 0.0],
+  [16.0, 1.5, 0.0, 0.0, 0.0, 0.0, 0.0],
+  [18.0, 1.5, 0.0, 0.0, 0.0, 0.0, 0.0],
+];
 
 int a = 50;
 List<Color> get colorsHotCold => [
@@ -110,119 +129,143 @@ List<Color> get colorsHotCold => [
       Color.fromARGB(a, 0, 20, 80),
     ];
 
-List<List<double>> dummyPhotoData =
-[[0, kPhotoPlotRadius],
-[8, kPhotoPlotRadius],
+List<List<double>> dummyPhotoData = [
+  [0, kPhotoPlotRadius],
+  [8, kPhotoPlotRadius],
   [10, kPhotoPlotRadius],
   [18, kPhotoPlotRadius],
   [21, kPhotoPlotRadius],
 ];
 
-List modifyPhotoDataForPlot(List fields){
-  print("modifyPhotoDataForPlot, fields, $fields");
-  if(fields[0].length ==0) return [[0], [0], [0]];
+/***
+ * when reading csv file with open file, resulting list is
+ * [[time, column_a, column_b],
+ * [2022~, 0.0, link234], ...]
+ * we need to i) convert timestamp to hour, ii) select column, iii) put dummy column for radius, iv) handling empty list, v) handling exceptions
+ * modify functions handles such cases.
+ *
+ * openFile -> convertTime -> get the
+ */
 
-  List listTimeConverted = convertStringTimeToInt2(filterList(fields));
-  print(listTimeConverted);
-  print(listTimeConverted.shape[1]);
 
+//coverage : photoData, photoResponse, sensorData
+//photoDAta : time, link
+//sensorData : time, longitude, latitude, accelX, accelY, accelZ, light, temperature, proximity, humidity
+// or time, longitude, latitude, accelX, accelY, accelZ
+
+//result : time(int), values ~~, dummy for radial plot
+
+List modifyListForPlot(List fields, {bool filterTime=false}){
+  //when empty list is input, return list with default value when
+  if (fields.length == 1) {
+    // return List<List<dynamic>>.generate(fields[0].length, (int index) => [0, 1]);
+    List<List<dynamic>> dummyData = [
+      [
+        0,
+        "https://img.icons8.com/ios-filled/344/no-image.png",
+        3
+      ]
+    ];
+    return dummyData;
+  }
+  //filter the value
+  List listFiltered = fields;
+  if(filterTime) listFiltered = filterList(fields);
+
+  // convert time string or timestamp into int
+  List result = convertStringTimeToInt3(listFiltered);
+  print("result shape : ${result.shape}");
+  List listRadial = List<List<double>>.generate(
+      result.shape[0], (int index) => [kThirdPolarPlotSize]);
+  result =
+  Matrix2d().concatenate(result, listRadial, axis: 1);
+  return result;
+}
+
+List modifyPhotoResponseForPlot(List fields) {
+  List listTimeConverted = convertStringTimeToInt2(fields);
   List listRadial = List<double>.generate(
       listTimeConverted.shape[1], (int index) => kThirdPolarPlotSize);
-  print("type of List Time converted : ${listTimeConverted.runtimeType}");
   listTimeConverted.add(listRadial);
   List listMerged = listTimeConverted;
   return listMerged;
 }
 
+List filterList(List input) {
+  //create empty output with same shape as input
+  List output = [];
 
-List modifyPhotoResponseForPlot(List fields){
-  List listTimeConverted = convertStringTimeToInt2(fields);
-
-  List listRadial = List<double>.generate(
-    listTimeConverted.shape[1], (int index) => kThirdPolarPlotSize);
-  print("type of List Time converted : ${listTimeConverted.runtimeType}");
-  listTimeConverted.add(listRadial);
-  List listMerged = listTimeConverted;
-  return listMerged;
-}
-
-List filterList(List input){
-  List output = [[], []];
-  for(int i= 0; i< input[0].length; i++){
-    if(input[0][i][8] !="_"){
-      continue;
+  for (int i = 0; i < input.length; i++) {
+    try {
+      //exclude if filename is not in format of yyyyMMdd_HHmmSS
+      if (input[i][0][8] != "_") {
+        continue;
+      }
+      output.add(input[i]);
+    } catch(e){
+      print(e);
     }
-    output[0].add(input[0][i]);
-    output[1].add(input[1][i]);
   }
-  print("filterList : $output");
+
+  //insert the name of columns
+  output.insert(0, input[0]);
+  print("filterList result: ${output}");
   return output;
 }
 
-
-List<List<dynamic>> transpose(list){
+List<List<dynamic>> transpose(list) {
   print("transpose, $list");
-  if(list.length ==0) return [[], []];
+  if (list.length == 0) return [[], []];
 
   int columnNumber = list.elementAt(0).length;
   int rowNumber = list.length;
   List<List<dynamic>> output = [];
 
-  for(int i = 0; i < columnNumber; i++){
+  for (int i = 0; i < columnNumber; i++) {
     output.add([]);
   }
 
-  for(int i = 0; i < columnNumber; i++){
-    for(int j = 0; j<rowNumber; j++){
+  for (int i = 0; i < columnNumber; i++) {
+    for (int j = 0; j < rowNumber; j++) {
       output.elementAt(i).insert(j, list.elementAt(j).elementAt(i));
     }
   }
   return output;
 }
 
-List modifySensorDataForPlot(List fields) {
-  List listTimeConverted = convertStringTimeToInt(fields);
-  List listRadial = List<List<double>>.generate(
-      listTimeConverted.shape[0], (int index) => [kSensorPlotRadius]);
-  List listMerged =
-      Matrix2d().concatenate(listTimeConverted, listRadial, axis: 1);
-  return listMerged;
-}
 
-List<dynamic> convertStringTimeToInt(List fields) {
+List convertStringTimeToInt3(List fields) {
   List listTime = slice(fields, [1, fields.shape[0]], [0, 1]).flatten;
   listTime = List<List<double>>.generate(listTime.length,
-      (int index) => [convertStringTimeToDouble(listTime[index])]);
+          (int index) => [convertStringTimeToDouble(listTime[index])]);
 
-  List listSensor = slice(fields, [1, fields.shape[0]], [1, fields.shape[1]]);
-  List list = const Matrix2d().concatenate(listTime, listSensor, axis: 1);
-  return list;
+  List listValues = slice(fields, [1, fields.shape[0]], [1, fields.shape[1]]);
+
+  List output = const Matrix2d().concatenate(listTime, listValues, axis: 1);
+  return output;
 }
 
 List convertStringTimeToInt2(List fields) {
   List listTime = fields[0];
   listTime = List<List<double>>.generate(listTime.length,
-          (int index) => [convertStringTimeToDouble(listTime[index])]).flatten;
+      (int index) => [convertStringTimeToDouble(listTime[index])]).flatten;
 
   List listPhotoLinks = fields[1];
   List<List<dynamic>> result = [listTime, listPhotoLinks];
   return result;
 }
 
-var physicalScreenSize = window.physicalSize / window.devicePixelRatio;
-var physicalWidth = physicalScreenSize.width;
-var physicalHeight = physicalScreenSize.height;
-
-
 double convertStringTimeToDouble(String time) {
   var timeSplit;
-  // print(time);
   if (time.contains(":")) {
     timeSplit = time.substring(11, 19).split(':');
-  } else{
-    timeSplit = [time.substring(9, 11), time.substring(11, 13),time.substring(13, 15)];
+  } else {
+    timeSplit = [
+      time.substring(9, 11),
+      time.substring(11, 13),
+      time.substring(13, 15)
+    ];
   }
-  // print(timeSplit);
   double timeDouble = double.parse(timeSplit[0]) +
       double.parse(timeSplit[1]) / 60.0 +
       double.parse(timeSplit[2]) / 3600.0;

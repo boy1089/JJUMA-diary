@@ -1,30 +1,27 @@
 import 'package:flutter/material.dart';
-import 'package:googleapis/cloudbuild/v1.dart';
 import 'package:test_location_2nd/Permissions/GoogleAccountManager.dart';
-import 'package:test_location_2nd/Util/Util.dart';
 import '../Sensor/SensorDataReader.dart';
 import '../navigation.dart';
 import 'package:test_location_2nd/pages/SettingPage.dart';
 import 'package:test_location_2nd/Permissions/PermissionManager.dart';
 import 'package:test_location_2nd/Api/PhotoLibraryApiClient.dart';
 import 'package:test_location_2nd/Util/responseParser.dart';
-import 'package:test_location_2nd/PolarSensorDataPlot.dart';
-import 'package:test_location_2nd/PolarPhotoDataPlot.dart';
 import 'package:test_location_2nd/Data/DataManager.dart';
-import 'dart:ui';
 import 'WeekPage.dart';
 import 'MonthPage.dart';
 import 'DayPage.dart';
-// import 'package:test_location_2nd/global.dart';
 import 'package:provider/provider.dart';
 import 'package:test_location_2nd/StateProvider.dart';
 import 'package:test_location_2nd/GooglePhotoManager.dart';
-//TODO : put scroll wheel to select the date.
-//TODO : get images from google album
+
+//TODO : put shared data in provider(date,
+//TODO : make consistency on datetime handling - datetime or date?
+//TODO : formatting list for chart data
+//TODO : refactoring -
+//TODO : refactoring - dataManager-data reader
 
 class MainPage extends StatefulWidget {
   SensorDataReader dataReader;
-
   GoogleAccountManager googleAccountManager;
   PermissionManager permissionManager;
   PhotosLibraryApiClient photoLibraryApiClient;
@@ -53,7 +50,6 @@ class MainPageState extends State<MainPage> {
   int dataIndex = 0;
   List<List<String>> responseResult = [];
   Future readData = Future.delayed(const Duration(seconds: 1));
-  // Future<List<List<dynamic>>> readData;
 
   List<Widget> _widgetOptions = [];
   int a = 0;
@@ -91,9 +87,6 @@ class MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
-    // updatePhoto();
-    // int currentIndexFromProvider = context.watch();
-    // print("value from provider : ${context.watch<NavigationIndexProvider>().navigationIndex}");
     return Scaffold(
       appBar: AppBar(
         title: const Center(
@@ -124,7 +117,7 @@ class MainPageState extends State<MainPage> {
         currentIndex: context.watch<NavigationIndexProvider>().navigationIndex,
         onTap: (index) {
           Provider.of<NavigationIndexProvider>(context, listen: false)
-              .setIndex(index);
+              .setNavigationIndex(index);
 
           // context.watch<NavigationIndexProvider>().setIndex(index);
         },
@@ -141,16 +134,16 @@ class MainPageState extends State<MainPage> {
                   context.watch<NavigationIndexProvider>().navigationIndex];
             }
           }),
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: () async {
-      //     // var photoResponse = await googlePhotoManager.getPhoto(photoLibraryApiClient, "20221004");
-      //     googlePhotoManager.getAndSaveAllPhoto(photoLibraryApiClient, "20220601", "20220831");
-      //
-      //     // print(googlePhotoManager.photoResponseAll.keys);
-      //     // print(googlePhotoManager.photoResponseAll);
-      //
-      //   },
-      // ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          // var photoResponse = await googlePhotoManager.getPhoto(photoLibraryApiClient, "20221004");
+          googlePhotoManager.getAndSaveAllPhoto(photoLibraryApiClient, "20220601", "20220831");
+
+          // print(googlePhotoManager.photoResponseAll.keys);
+          // print(googlePhotoManager.photoResponseAll);
+
+        },
+      ),
     );
   }
 
@@ -179,6 +172,4 @@ class MainPageState extends State<MainPage> {
         break;
     }
   }
-
-
 }

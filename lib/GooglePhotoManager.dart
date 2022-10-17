@@ -8,7 +8,6 @@ import 'package:flutter_file_manager/flutter_file_manager.dart';
 import 'package:csv/csv.dart';
 import 'dart:convert';
 
-
 class GooglePhotoManager {
   Map photoResponseAll = {};
   var response;
@@ -17,12 +16,12 @@ class GooglePhotoManager {
   List<String> dates = [];
 
   void getAndSaveAllPhoto(photoLibraryApiClient, startDate, endDate) async {
-    var datesOfYear = getDaysInBetween(DateTime.parse(startDate), DateTime.parse(endDate));
+    var datesOfYear =
+        getDaysInBetween(DateTime.parse(startDate), DateTime.parse(endDate));
 
     for (int i = 0; i < datesOfYear.length; i++) {
       String date = DateFormat("yyyyMMdd").format(datesOfYear[i]);
-      var photoResponse = await getPhoto(
-          photoLibraryApiClient, date);
+      var photoResponse = await getPhoto(photoLibraryApiClient, date);
       writePhotoResponse(date, photoResponse);
     }
   }
@@ -32,7 +31,6 @@ class GooglePhotoManager {
         date.substring(0, 4), date.substring(4, 6), date.substring(6, 8));
     photoResponse = parseResponse(response);
     photoResponseAll[date] = photoResponse;
-
     return photoResponse;
   }
 
@@ -50,15 +48,15 @@ class GooglePhotoManager {
     bool isExists = await file.exists();
     debugPrint("writing Cache to Local..");
 
-    if (!isExists)
-      await file.writeAsString('time, link\n', mode: FileMode.write);
+    // if (!isExists)
+    await file.writeAsString('time,link\n', mode: FileMode.write);
 
     for (int i = 0; i < photoResponse[0].length; i++) {
       List<String> timeList = photoResponse[0];
       List<String> linkList = photoResponse[1];
 
       await file.writeAsString(
-          '${timeList.elementAt(i)}, ${linkList.elementAt(i)} \n',
+          '${timeList.elementAt(i)},${linkList.elementAt(i)}\n',
           mode: FileMode.append);
     }
   }
@@ -94,7 +92,6 @@ class GooglePhotoManager {
     }
     debugPrint("photoManager, readFiles done");
     return photoDataAll;
-
   }
 
   List<List<dynamic>> subsampleList(List list, int factor) {

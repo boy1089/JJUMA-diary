@@ -89,7 +89,8 @@ class SensorDataReader {
         .transform(utf8.decoder)
         .transform(const CsvToListConverter(eol: '\n'))
         .toList();
-    List list = modifySensorDataForPlot(fields);
+    // List list = modifySensorDataForPlot(fields);
+    List list = modifyListForPlot(fields);
     // List list = convertStringTimeToInt(fields);
 
     return list;

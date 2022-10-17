@@ -6,7 +6,7 @@ class NavigationIndexProvider with ChangeNotifier{
   int navigationIndex = 0;
   String date = formatDate(DateTime.now());
 
-  void setIndex(int index){
+  void setNavigationIndex(int index){
     navigationIndex = index;
     print("index : $navigationIndex");
     notifyListeners();
@@ -15,5 +15,6 @@ class NavigationIndexProvider with ChangeNotifier{
     this.date = formatDate(date);
     print("date : ${this.date}");
   }
+  // void set
 
 }

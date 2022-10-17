@@ -8,7 +8,6 @@ import 'package:record/record.dart';
 import 'package:flutter_sensors/flutter_sensors.dart';
 import 'package:test_location_2nd/Sensor/SensorData.dart';
 import 'package:intl/intl.dart';
-
 import 'package:test_location_2nd/Usage/UsageLogger.dart';
 
 class SensorLogger {

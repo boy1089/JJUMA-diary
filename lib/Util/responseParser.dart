@@ -20,7 +20,14 @@ List<List<String>> parseResponse(response) {
       filenames.add(responseToString[i].substring(11).split('}').first);
       String filename = responseToString[i].substring(11).split('}').first;
       filenames.add(filename);
-      datetimes.add(filename.substring(0, 15));
+
+      try {
+        datetimes.add(filename.substring(0, 15));
+      } catch(e){
+        datetimes.add(filename);
+      }
+
+
     }
   }
   List<List<String>> result = [datetimes, links, filenames];

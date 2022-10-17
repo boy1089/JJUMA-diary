@@ -17,6 +17,11 @@ import 'package:test_location_2nd/Data/DataManager.dart';
 import 'package:graphic/graphic.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'dart:io';
+import 'dart:convert';
+import 'package:csv/csv.dart';
+
+import 'package:path_provider/path_provider.dart';
 
 //TODO : put global variables to StateProvider - date/month/year, setting, current page
 
@@ -73,7 +78,15 @@ class _DayPageState extends State<DayPage> {
     //
     // dataTime = List.generate(data.shape[0]-1, (index) => DateTime.parse(dataConverted[index]));
     // data2 = dataConverted2;
-    updatePhoto();
+    // updatePhoto();
+
+    var date2 =
+        DateTime.parse(Provider.of<NavigationIndexProvider>(context, listen: false).date);
+
+    print("date2 : $date2");
+    print("format date : ${formatDate(date2)}");
+    openFile("/storage/emulated/0/Android/data/com.example.test_location_2nd/files/googlePhotoData/${formatDate(date2)}_googlePhoto.csv");
+
   }
 
   List<List<dynamic>> dummyData = [
@@ -130,7 +143,7 @@ class _DayPageState extends State<DayPage> {
                                 width: kDefaultPolarPlotSize,
                                 height: kDefaultPolarPlotSize,
                                 child: Chart(
-                                  data: photoResponseModified.length == 0
+                                  data: c.length == 0
                                       ? dummyData
                                       : c,
                                   // [photoResponseModified[0], photoResponseModified[2]],
@@ -179,10 +192,19 @@ class _DayPageState extends State<DayPage> {
                           int indexOfDate =
                               dataReader.dates.indexOf(currentDateString);
                           dataIndex = indexOfDate;
-                          updatePhoto();
+                          // updatePhoto();
                           // Provider.of<NavigationIndexProvider>(context, listen: false).date = currentDateString;
                           context.read<NavigationIndexProvider>().setDate(datesOfYear[index]);
-                        }),
+
+                          var date2 =
+                          DateTime.parse(Provider.of<NavigationIndexProvider>(context, listen: false).date);
+
+                          print("date2 : $date2");
+                          print("format date : ${formatDate(date2)}");
+                          openFile("/storage/emulated/0/Android/data/com.example.test_location_2nd/files/googlePhotoData/${formatDate(date2)}_googlePhoto.csv");
+
+
+                    }),
                     itemExtent: 80,
                     restorationId: "aa",
                     childDelegate: ListWheelChildBuilderDelegate(
@@ -225,6 +247,20 @@ class _DayPageState extends State<DayPage> {
     );
   }
 
+
+  void openFile(filepath) async {
+    File f = File(filepath);
+    debugPrint("CSV to List");
+    final input = f.openRead();
+    final fields = await input
+        .transform(utf8.decoder)
+        .transform(const CsvToListConverter(eol: '\n'))
+        .toList();
+    c = transpose(fields.sublist(1));
+    print(c[0]);
+    // return fields;
+  }
+
   void updatePhoto() async {
     String date = DateFormat("yyyyMMdd").format(datesOfYear[indexOfDate2]);
     response = await photoLibraryApiClient.getPhotosOfDate(
@@ -232,10 +268,15 @@ class _DayPageState extends State<DayPage> {
     photoResponse = parseResponse(response);
     photoResponseModified = modifyPhotoResponseForPlot(photoResponse);
     c = [photoResponseModified[0], photoResponseModified[2]];
-    c = transpose(c);
     d = c;
     print("c : ${c}");
 
     setState(() {});
   }
+}
+
+Future<String?> get _localPath async {
+  final directory2 = await getExternalStorageDirectories();
+  var path = directory2?[0].path;
+  return path;
 }

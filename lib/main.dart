@@ -13,7 +13,7 @@ import 'package:test_location_2nd/Api/PhotoLibraryApiClient.dart';
 import 'package:test_location_2nd/Permissions/PermissionManager.dart';
 import 'package:test_location_2nd/Permissions/GoogleAccountManager.dart';
 import 'Api/PhotoLibraryApiClient.dart';
-import 'PhotoManager.dart';
+import 'GooglePhotoManager.dart';
 import 'package:test_location_2nd/Note/NoteData.dart';
 import 'package:test_location_2nd/Data/DataManager.dart';
 import 'package:test_location_2nd/StateProvider.dart';
@@ -52,7 +52,7 @@ class _MyAppState extends State<MyApp> {
   final permissionManager = PermissionManager();
   late final photoLibraryApiClient =
       PhotosLibraryApiClient(googleAccountManager);
-  final photoManager = PhotoManager();
+  final googlePhotoManager = GooglePhotoManager();
   final dataManager = DataManager();
 
   void saveNote() {
@@ -67,7 +67,7 @@ class _MyAppState extends State<MyApp> {
       initialRoute: '/daily',
       routes: {
         '/daily': (context) => MainPage(dataReader, googleAccountManager,
-            permissionManager, photoLibraryApiClient, dataManager),
+            permissionManager, photoLibraryApiClient, dataManager, googlePhotoManager),
         '/settings': (context) =>
             AndroidSettingsScreen(googleAccountManager, permissionManager),
       },

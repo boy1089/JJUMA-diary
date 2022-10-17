@@ -6,7 +6,7 @@ import 'package:csv/csv.dart';
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:test_location_2nd/Util/Util.dart';
-
+import 'package:csv/csv.dart';
 
 //Reads one *_sensor.csv and put in dataAll variable.
 class SensorDataReader {

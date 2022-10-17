@@ -143,11 +143,10 @@ class _DayPageState extends State<DayPage> {
                                 width: kDefaultPolarPlotSize,
                                 height: kDefaultPolarPlotSize,
                                 child: Chart(
-                                  data: c.length == 0
-                                      ? dummyData
-                                      : c,
-                                  // [photoResponseModified[0], photoResponseModified[2]],
-                                  // photoResponseModified,
+                                  // data: c.length == 0
+                                  //     ? dummyData
+                                  //     : c,
+                                  data : d,
                                   // data : dummyData,
 
                                   elements: [
@@ -233,17 +232,18 @@ class _DayPageState extends State<DayPage> {
                         )))
         ],
       ),
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: (() async {
-      //     setState(() {
-      //       print(dataReader.dates);
-      //       print("navi index2 : ${Provider.of<NavigationIndexProvider>(context, listen: false).date}");
-      //       // print("from provide : ${context.watch<NavigationIndexProvider>().date}");
-      //       // print("navi index : ${context.watch<NavigationIndexProvider>().navigationIndex}");
-      //     });
-      //     // updatePhoto();
-      //   }),
-      // ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: (() async {
+          setState(() {
+            print(c);
+            print(c.length);
+            openFile("/storage/emulated/0/Android/data/com.example.test_location_2nd/files/googlePhotoData/20220812_googlePhoto.csv");
+            // print("from provide : ${context.watch<NavigationIndexProvider>().date}");
+            // print("navi index : ${context.watch<NavigationIndexProvider>().navigationIndex}");
+          });
+          // updatePhoto();
+        }),
+      ),
     );
   }
 
@@ -256,8 +256,11 @@ class _DayPageState extends State<DayPage> {
         .transform(utf8.decoder)
         .transform(const CsvToListConverter(eol: '\n'))
         .toList();
-    c = transpose(fields.sublist(1));
-    print(c[0]);
+    c = modifyPhotoDataForPlot(transpose(fields.sublist(1)));
+    // c = dummyData;
+    print("c : ${c}");
+    d = transpose([c[0], c[2]]);
+    setState((){});
     // return fields;
   }
 

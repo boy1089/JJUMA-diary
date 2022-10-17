@@ -118,12 +118,25 @@ List<List<double>> dummyPhotoData =
   [21, kPhotoPlotRadius],
 ];
 
+List modifyPhotoDataForPlot(List fields){
+  print("modifyPhotoDataForPlot, fields, $fields");
+  if(fields[0].length ==0) return [[0], [0], [0]];
+
+  List listTimeConverted = convertStringTimeToInt2(filterList(fields));
+  print(listTimeConverted);
+  print(listTimeConverted.shape[1]);
+
+  List listRadial = List<double>.generate(
+      listTimeConverted.shape[1], (int index) => kThirdPolarPlotSize);
+  print("type of List Time converted : ${listTimeConverted.runtimeType}");
+  listTimeConverted.add(listRadial);
+  List listMerged = listTimeConverted;
+  return listMerged;
+}
 
 
 List modifyPhotoResponseForPlot(List fields){
   List listTimeConverted = convertStringTimeToInt2(fields);
-  print(listTimeConverted);
-  print(listTimeConverted.shape[1]);
 
   List listRadial = List<double>.generate(
     listTimeConverted.shape[1], (int index) => kThirdPolarPlotSize);
@@ -133,8 +146,23 @@ List modifyPhotoResponseForPlot(List fields){
   return listMerged;
 }
 
+List filterList(List input){
+  List output = [[], []];
+  for(int i= 0; i< input[0].length; i++){
+    if(input[0][i][8] !="_"){
+      continue;
+    }
+    output[0].add(input[0][i]);
+    output[1].add(input[1][i]);
+  }
+  print("filterList : $output");
+  return output;
+}
+
 
 List<List<dynamic>> transpose(list){
+  print("transpose, $list");
+  if(list.length ==0) return [[], []];
 
   int columnNumber = list.elementAt(0).length;
   int rowNumber = list.length;
@@ -188,12 +216,13 @@ var physicalHeight = physicalScreenSize.height;
 
 double convertStringTimeToDouble(String time) {
   var timeSplit;
+  // print(time);
   if (time.contains(":")) {
     timeSplit = time.substring(11, 19).split(':');
   } else{
     timeSplit = [time.substring(9, 11), time.substring(11, 13),time.substring(13, 15)];
   }
-  print(timeSplit);
+  // print(timeSplit);
   double timeDouble = double.parse(timeSplit[0]) +
       double.parse(timeSplit[1]) / 60.0 +
       double.parse(timeSplit[2]) / 3600.0;

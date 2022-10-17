@@ -15,7 +15,7 @@ import 'dart:ui';
 import 'WeekPage.dart';
 import 'MonthPage.dart';
 import 'DayPage.dart';
-import 'package:test_location_2nd/global.dart';
+// import 'package:test_location_2nd/global.dart';
 import 'package:provider/provider.dart';
 import 'package:test_location_2nd/StateProvider.dart';
 import 'package:test_location_2nd/GooglePhotoManager.dart';

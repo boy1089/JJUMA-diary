@@ -68,7 +68,7 @@ class MainPageState extends State<MainPage> {
     googlePhotoManager = widget.googlePhotoManager;
 
     DayPage dayPage = DayPage(dataReader, googleAccountManager,
-        permissionManager, photoLibraryApiClient, dataManager);
+        permissionManager, photoLibraryApiClient, dataManager, googlePhotoManager);
     WeekPage weekPage = WeekPage(dataReader, googleAccountManager,
         permissionManager, photoLibraryApiClient, dataManager);
     MonthPage monthPage = MonthPage(a);
@@ -137,7 +137,7 @@ class MainPageState extends State<MainPage> {
       // floatingActionButton: FloatingActionButton(
       //   onPressed: () async {
       //     // var photoResponse = await googlePhotoManager.getPhoto(photoLibraryApiClient, "20221004");
-      //     googlePhotoManager.getAndSaveAllPhoto(photoLibraryApiClient, "20220601", "20220831");
+      //     googlePhotoManager.getAndSaveAllPhoto(photoLibraryApiClient, "20220601", "20220602");
       //
       //     // print(googlePhotoManager.photoResponseAll.keys);
       //     // print(googlePhotoManager.photoResponseAll);

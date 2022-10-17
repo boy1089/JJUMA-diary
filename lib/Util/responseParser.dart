@@ -32,7 +32,7 @@ List<List<String>> parseResponse(response) {
 
     }
   }
-  List<List<String>> result = [datetimes, links, filenames];
+  List<List<String>> result = [datetimes, links];
   // result.insert(0, ["time", "link", "filename"]);
   return result;
 }

@@ -36,20 +36,18 @@ class GooglePhotoManager {
 
   void writePhotoResponse(date, photoResponse) async {
     final Directory? directory = await getExternalStorageDirectory();
+
     final String folder = '${directory?.path}/googlePhotoData';
     bool isFolderExists = await Directory(folder).exists();
-    print(folder);
     if (!isFolderExists) {
       Directory(folder).create(recursive: true);
     }
 
     final File file =
         File('${directory?.path}/googlePhotoData/${date}_googlePhoto.csv');
-    bool isExists = await file.exists();
     debugPrint("writing Cache to Local..");
 
-    // if (!isExists)
-    await file.writeAsString('time,link\n', mode: FileMode.write);
+    await file.writeAsString('', mode: FileMode.write);
 
     for (int i = 0; i < photoResponse[0].length; i++) {
       List<String> timeList = photoResponse[0];

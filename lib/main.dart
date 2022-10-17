@@ -47,12 +47,12 @@ class _MyAppState extends State<MyApp> {
   final noteLogger = NoteLogger();
   final dataAnalyzer = DataAnalyzer();
   final myTextController = TextEditingController();
+  final googlePhotoManager = GooglePhotoManager();
   final dataReader = SensorDataReader();
   final googleAccountManager = GoogleAccountManager();
   final permissionManager = PermissionManager();
   late final photoLibraryApiClient =
       PhotosLibraryApiClient(googleAccountManager);
-  final googlePhotoManager = GooglePhotoManager();
   final dataManager = DataManager();
 
   void saveNote() {

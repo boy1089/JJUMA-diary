@@ -189,9 +189,9 @@ List filterList(List input) {
   for (int i = 0; i < input.length; i++) {
     try {
       //exclude if filename is not in format of yyyyMMdd_HHmmSS
-      if (input[i][0][8] != "_") {
-        continue;
-      }
+      if (input[i][0][8] != "_")continue;
+      if (input[i][0].contains("t"))continue;
+
       output.add(input[i]);
     } catch (e) {
       print(e);

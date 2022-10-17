@@ -147,7 +147,6 @@ List<List<double>> dummyPhotoData = [
  * openFile -> convertTime -> get the
  */
 
-
 //coverage : photoData, photoResponse, sensorData
 //photoDAta : time, link
 //sensorData : time, longitude, latitude, accelX, accelY, accelZ, light, temperature, proximity, humidity
@@ -155,46 +154,38 @@ List<List<double>> dummyPhotoData = [
 
 //result : time(int), values ~~, dummy for radial plot
 
-List modifyListForPlot(List fields, {bool filterTime=false}){
+List modifyListForPlot(List fields,
+    {bool filterTime = false, bool executeTranspose = false}) {
   //when empty list is input, return list with default value when
   if (fields.length == 1) {
     // return List<List<dynamic>>.generate(fields[0].length, (int index) => [0, 1]);
     List<List<dynamic>> dummyData = [
-      [
-        0,
-        "https://img.icons8.com/ios-filled/344/no-image.png",
-        3
-      ]
+      [0, "https://img.icons8.com/ios-filled/344/no-image.png", 3]
     ];
     return dummyData;
   }
+
+  //transpose data if needed
+  if (executeTranspose) {
+    fields = transpose(fields);
+  }
+
   //filter the value
   List listFiltered = fields;
-  if(filterTime) listFiltered = filterList(fields);
+  if (filterTime) listFiltered = filterList(fields);
 
   // convert time string or timestamp into int
-  List result = convertStringTimeToInt3(listFiltered);
+  List result = convertStringTimeToInt(listFiltered);
   print("result shape : ${result.shape}");
   List listRadial = List<List<double>>.generate(
       result.shape[0], (int index) => [kThirdPolarPlotSize]);
-  result =
-  Matrix2d().concatenate(result, listRadial, axis: 1);
+  result = Matrix2d().concatenate(result, listRadial, axis: 1);
   return result;
-}
-
-List modifyPhotoResponseForPlot(List fields) {
-  List listTimeConverted = convertStringTimeToInt2(fields);
-  List listRadial = List<double>.generate(
-      listTimeConverted.shape[1], (int index) => kThirdPolarPlotSize);
-  listTimeConverted.add(listRadial);
-  List listMerged = listTimeConverted;
-  return listMerged;
 }
 
 List filterList(List input) {
   //create empty output with same shape as input
   List output = [];
-
   for (int i = 0; i < input.length; i++) {
     try {
       //exclude if filename is not in format of yyyyMMdd_HHmmSS
@@ -202,7 +193,7 @@ List filterList(List input) {
         continue;
       }
       output.add(input[i]);
-    } catch(e){
+    } catch (e) {
       print(e);
     }
   }
@@ -233,26 +224,15 @@ List<List<dynamic>> transpose(list) {
   return output;
 }
 
-
-List convertStringTimeToInt3(List fields) {
+List convertStringTimeToInt(List fields) {
   List listTime = slice(fields, [1, fields.shape[0]], [0, 1]).flatten;
   listTime = List<List<double>>.generate(listTime.length,
-          (int index) => [convertStringTimeToDouble(listTime[index])]);
+      (int index) => [convertStringTimeToDouble(listTime[index])]);
 
   List listValues = slice(fields, [1, fields.shape[0]], [1, fields.shape[1]]);
 
   List output = const Matrix2d().concatenate(listTime, listValues, axis: 1);
   return output;
-}
-
-List convertStringTimeToInt2(List fields) {
-  List listTime = fields[0];
-  listTime = List<List<double>>.generate(listTime.length,
-      (int index) => [convertStringTimeToDouble(listTime[index])]).flatten;
-
-  List listPhotoLinks = fields[1];
-  List<List<dynamic>> result = [listTime, listPhotoLinks];
-  return result;
 }
 
 double convertStringTimeToDouble(String time) {

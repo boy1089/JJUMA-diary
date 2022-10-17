@@ -134,16 +134,16 @@ class MainPageState extends State<MainPage> {
                   context.watch<NavigationIndexProvider>().navigationIndex];
             }
           }),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          // var photoResponse = await googlePhotoManager.getPhoto(photoLibraryApiClient, "20221004");
-          googlePhotoManager.getAndSaveAllPhoto(photoLibraryApiClient, "20220601", "20220831");
-
-          // print(googlePhotoManager.photoResponseAll.keys);
-          // print(googlePhotoManager.photoResponseAll);
-
-        },
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () async {
+      //     // var photoResponse = await googlePhotoManager.getPhoto(photoLibraryApiClient, "20221004");
+      //     googlePhotoManager.getAndSaveAllPhoto(photoLibraryApiClient, "20220601", "20220831");
+      //
+      //     // print(googlePhotoManager.photoResponseAll.keys);
+      //     // print(googlePhotoManager.photoResponseAll);
+      //
+      //   },
+      // ),
     );
   }
 

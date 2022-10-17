@@ -204,18 +204,13 @@ class _DayPageState extends State<DayPage> {
                         )))
         ],
       ),
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: (() async {
-      //     setState(() {
-      //       print(c);
-      //       // openFile(
-      //       //     "/storage/emulated/0/Android/data/com.example.test_location_2nd/files/googlePhotoData/20220812_googlePhoto.csv");
-      //       // print("from provide : ${context.watch<NavigationIndexProvider>().date}");
-      //       // print("navi index : ${context.watch<NavigationIndexProvider>().navigationIndex}");
-      //     });
-      //     // updatePhoto();
-      //   }),
-      // ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: (() async {
+          setState(() {
+          });
+          updatePhoto();
+        }),
+      ),
     );
   }
 
@@ -239,14 +234,19 @@ class _DayPageState extends State<DayPage> {
 
   void updatePhoto() async {
     String date = DateFormat("yyyyMMdd").format(datesOfYear[indexOfDate2]);
+    date = "20221010";
     response = await photoLibraryApiClient.getPhotosOfDate(
         date.substring(0, 4), date.substring(4, 6), date.substring(6, 8));
     photoResponse = parseResponse(response);
-    photoResponseModified = modifyPhotoResponseForPlot(photoResponse);
-    dataForPlot = [photoResponseModified[0], photoResponseModified[2]];
-    d = dataForPlot;
-    print("c : ${dataForPlot}");
+    print(photoResponse);
+    // photoResponseModified = modifyPhotoResponseForPlot(photoResponse);
+    photoResponseModified = modifyListForPlot(photoResponse, executeTranspose: true);
 
+    print(photoResponseModified);
+    // dataForPlot = [photoResponseModified[0], photoResponseModified[2]];
+    // d = dataForPlot;
+    // print("c : ${dataForPlot}");
+    //
     setState(() {});
   }
 }

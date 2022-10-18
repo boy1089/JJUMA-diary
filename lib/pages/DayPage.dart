@@ -72,8 +72,8 @@ class _DayPageState extends State<DayPage> {
   Future readData = Future.delayed(const Duration(seconds: 1));
 
   Future<List<dynamic>> _fetchData() async {
-    updateUi();
-    await Future.delayed(const Duration(seconds: 5));
+    await Future.delayed(const Duration(microseconds: 100));
+    await updateUi();
     // return dataReader.readFiles();
     return googlePhotoLinks;
   }
@@ -102,8 +102,9 @@ class _DayPageState extends State<DayPage> {
     return FutureBuilder(
         future: readData,
         builder: (BuildContext context, AsyncSnapshot snapshot) {
-            return
-              Scaffold(
+          print("snapshot.data : ${snapshot.data}");
+
+          return Scaffold(
             key: _scaffoldKey,
             backgroundColor: Colors.white,
             body: Column(
@@ -111,69 +112,79 @@ class _DayPageState extends State<DayPage> {
                 SizedBox(
                     height: physicalHeight / 2,
                     width: physicalWidth,
-                    child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                          SizedBox(
-                            width: physicalWidth,
-                            height: physicalHeight / 2,
-                            child: Stack(children: [
-                              Positioned(
-                                left: physicalWidth / 2 -
-                                    kDefaultPolarPlotSize / 2,
-                                top: physicalHeight / 4 -
-                                    kDefaultPolarPlotSize / 2,
-                                child: Container(
-                                  margin: const EdgeInsets.only(top: 10),
-                                  width: kDefaultPolarPlotSize,
-                                  height: kDefaultPolarPlotSize,
-                                  child: PolarSensorDataPlot(
-                                          sensorDataForPlot[0].length == 0
-                                              ? dummyData
-                                              : sensorDataForPlot)
-                                      .build(context),
+                    child: !snapshot.hasData
+                        ? Center(
+                        child: SizedBox(
+                          width : 95,
+                        height : 95,
+                        child: CircularProgressIndicator()))
+                        : Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                                SizedBox(
+                                  width: physicalWidth,
+                                  height: physicalHeight / 2,
+                                  child: Stack(children: [
+                                    Positioned(
+                                      left: physicalWidth / 2 -
+                                          kDefaultPolarPlotSize / 2,
+                                      top: physicalHeight / 4 -
+                                          kDefaultPolarPlotSize / 2,
+                                      child: Container(
+                                        margin: const EdgeInsets.only(top: 10),
+                                        width: kDefaultPolarPlotSize,
+                                        height: kDefaultPolarPlotSize,
+                                        child: PolarSensorDataPlot(
+                                                sensorDataForPlot[0].length == 0
+                                                    ? dummyData
+                                                    : sensorDataForPlot)
+                                            .build(context),
+                                      ),
+                                    ),
+                                    Positioned(
+                                        left: physicalWidth / 2 -
+                                            kDefaultPolarPlotSize / 2,
+                                        top: physicalHeight / 4 -
+                                            kDefaultPolarPlotSize / 2,
+                                        child: Container(
+                                            margin:
+                                                const EdgeInsets.only(top: 10),
+                                            width: kDefaultPolarPlotSize,
+                                            height: kDefaultPolarPlotSize,
+                                            child: Chart(
+                                              data: ((googlePhotoDataForPlot[0]
+                                                          .length ==
+                                                      0))
+                                                  ? dummyData
+                                                  : googlePhotoDataForPlot
+                                                      .sublist(0),
+                                              elements: [
+                                                PointElement(
+                                                  size: SizeAttr(
+                                                      variable: 'dummy',
+                                                      values: [7, 8]),
+                                                ),
+                                              ],
+                                              variables: {
+                                                'time': Variable(
+                                                  accessor: (List datum) =>
+                                                      datum[0] as num,
+                                                  scale: LinearScale(
+                                                      min: 0,
+                                                      max: 24,
+                                                      tickCount: 5),
+                                                ),
+                                                'dummy': Variable(
+                                                  accessor: (List datum) =>
+                                                      datum[2] as num,
+                                                ),
+                                              },
+                                              coord: PolarCoord(),
+                                            )))
+                                  ]),
                                 ),
-                              ),
-                              Positioned(
-                                  left: physicalWidth / 2 -
-                                      kDefaultPolarPlotSize / 2,
-                                  top: physicalHeight / 4 -
-                                      kDefaultPolarPlotSize / 2,
-                                  child: Container(
-                                      margin: const EdgeInsets.only(top: 10),
-                                      width: kDefaultPolarPlotSize,
-                                      height: kDefaultPolarPlotSize,
-                                      child: Chart(
-                                        data: ((googlePhotoDataForPlot[0]
-                                                    .length ==
-                                                0))
-                                            ? dummyData
-                                            : googlePhotoDataForPlot.sublist(0),
-                                        elements: [
-                                          PointElement(
-                                            size: SizeAttr(
-                                                variable: 'dummy',
-                                                values: [7, 8]),
-                                          ),
-                                        ],
-                                        variables: {
-                                          'time': Variable(
-                                            accessor: (List datum) =>
-                                                datum[0] as num,
-                                            scale: LinearScale(
-                                                min: 0, max: 24, tickCount: 5),
-                                          ),
-                                          'dummy': Variable(
-                                            accessor: (List datum) =>
-                                                datum[2] as num,
-                                          ),
-                                        },
-                                        coord: PolarCoord(),
-                                      )))
-                            ]),
-                          ),
-                        ])),
+                              ])),
                 Center(
                   child: SizedBox(
                       width: physicalWidth,
@@ -214,18 +225,22 @@ class _DayPageState extends State<DayPage> {
                     child: SizedBox(
                         width: physicalWidth,
                         height: physicalHeight / 4,
-                        child: googlePhotoLinks.isEmpty
-                            ? const Text('no links')
-                            : ListView.builder(
-                                // ListView.builder(
+                        child: !snapshot.hasData
+                            ? Center(child: CircularProgressIndicator())
+                            : googlePhotoLinks.isEmpty
+                                ? const Text('no links')
+                                : ListView.builder(
+                                    // ListView.builder(
 
-                                scrollDirection: Axis.horizontal,
-                                itemBuilder: (BuildContext context, int index) {
-                                  // print(googlePhotoLinks[index]);
-                                  return Image.network(googlePhotoLinks[index]);
-                                },
-                                itemCount: googlePhotoLinks.length,
-                              )))
+                                    scrollDirection: Axis.horizontal,
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
+                                      // print(googlePhotoLinks[index]);
+                                      return Image.network(
+                                          googlePhotoLinks[index]);
+                                    },
+                                    itemCount: googlePhotoLinks.length,
+                                  )))
               ],
             ),
             floatingActionButton: FloatingActionButton(
@@ -239,7 +254,7 @@ class _DayPageState extends State<DayPage> {
         });
   }
 
-  void updateUi() async {
+  Future updateUi() async {
     var date2 = DateTime.parse(
         Provider.of<NavigationIndexProvider>(context, listen: false).date);
     bool isGooglePhotoFileExists = await File(
@@ -255,7 +270,7 @@ class _DayPageState extends State<DayPage> {
     // } catch (e) {
     //   print(e);
     // }
-    updatePhoto();
+    var a = await updatePhoto();
     setState(() {
       // try {
       //   if (isGooglePhotoFileExists) {
@@ -276,6 +291,7 @@ class _DayPageState extends State<DayPage> {
         updateSensorData();
       }
     });
+    print("updateUi");
     setState(() {});
   }
 
@@ -293,7 +309,7 @@ class _DayPageState extends State<DayPage> {
     googlePhotoLinks = transpose(googlePhotoDataForPlot).elementAt(1);
   }
 
-  void updatePhoto() async {
+  Future updatePhoto() async {
     String date =
         Provider.of<NavigationIndexProvider>(context, listen: false).date;
     response =
@@ -307,6 +323,7 @@ class _DayPageState extends State<DayPage> {
     googlePhotoLinks = transpose(googlePhotoDataForPlot).elementAt(1);
     print("googlePhotoLinks : $googlePhotoLinks");
     googlePhotoDataManager.writePhotoResponse(date, response);
+    return googlePhotoLinks;
   }
 
   void openSensorData(filepath) async {

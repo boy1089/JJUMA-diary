@@ -95,7 +95,7 @@ const distance_threshold_home = 0.02;
 
 const kDefaultPolarPlotSize = 250.0;
 const kSecondPolarPlotSize = kDefaultPolarPlotSize * 1.3;
-const kThirdPolarPlotSize = kDefaultPolarPlotSize * 1.5;
+const kThirdPolarPlotSize = kDefaultPolarPlotSize * 2;
 
 const event_color_goingOut = Colors.red;
 const event_color_backHome = Colors.blue;

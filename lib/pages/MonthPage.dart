@@ -180,7 +180,7 @@ class DayButton {
               fillColor: summaryOfGooglePhotoData.containsKey(formatDate(today))
                   // ? Color.lerp(Colors.white, Colors.yellowAccent,
                   //     (summaryOfGooglePhotoData[formatDate(today)] ) / 50)
-                  ? Color.lerp(Colors.yellowAccent, Colors.lightBlueAccent,
+                  ? Color.lerp(Colors.white, Colors.deepOrangeAccent,
                   (summaryOfGooglePhotoData[formatDate(today)] ) / 50)
                   : Colors.white,
               shape: CircleBorder(),

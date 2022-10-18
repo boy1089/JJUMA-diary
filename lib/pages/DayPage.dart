@@ -17,12 +17,12 @@ import 'package:provider/provider.dart';
 import 'dart:io';
 import 'dart:convert';
 import 'package:csv/csv.dart';
-import 'dart:math';
+import 'package:test_location_2nd/polarPhotoImageContainer.dart';
+import 'package:test_location_2nd/PolarPhotoDataPlot.dart';
 
 //TODO : put global variables to StateProvider - date/month/year, setting, current page
 
 class DayPage extends StatefulWidget {
-  // SensorDataReader dataReader;
   GoogleAccountManager googleAccountManager;
   PermissionManager permissionManager;
   PhotosLibraryApiClient photoLibraryApiClient;
@@ -34,7 +34,6 @@ class DayPage extends StatefulWidget {
   State<DayPage> createState() => _DayPageState();
 
   DayPage(
-      // this.dataReader,
       this.googleAccountManager,
       this.permissionManager,
       this.photoLibraryApiClient,
@@ -56,16 +55,11 @@ class _DayPageState extends State<DayPage> {
   late SensorDataManager sensorDataManager;
 
   List response = [];
-  int dataIndexInDataReader = 0;
-  int indexOfDate2 = 0;
   dynamic photoResponseModified = [];
   dynamic sensorDataModified = [];
   dynamic googlePhotoDataForPlot = [[]];
   dynamic sensorDataForPlot = [[]];
-  dynamic d;
 
-  double imageSize = 150;
-  double imageLocationFactor = 1.5;
   List<dynamic> googlePhotoLinks = [];
   List<DateTime> datesOfYear =
       getDaysInBetween(DateTime.parse("20220101"), DateTime.now())
@@ -73,17 +67,16 @@ class _DayPageState extends State<DayPage> {
           .toList();
   Future readData = Future.delayed(const Duration(seconds: 1));
 
+  List imagesForPlot = [];
   Future<List<dynamic>> _fetchData() async {
     await Future.delayed(const Duration(microseconds: 100));
     await updateUi();
-    // return dataReader.readFiles();
     return googlePhotoLinks;
   }
 
   @override
   void initState() {
     super.initState();
-    // dataReader = widget.dataReader;
     googleAccountManager = widget.googleAccountManager;
     permissionManager = widget.permissionManager;
     photoLibraryApiClient = widget.photoLibraryApiClient;
@@ -97,22 +90,19 @@ class _DayPageState extends State<DayPage> {
 
   @override
   Widget build(BuildContext context) {
-    // updateUi();
     var date =
         Provider.of<NavigationIndexProvider>(context, listen: false).date;
     print("date : $date");
     return FutureBuilder(
         future: readData,
         builder: (BuildContext context, AsyncSnapshot snapshot) {
-          print("snapshot.data : ${snapshot.data}");
-
           return Scaffold(
-            key: _scaffoldKey,
             backgroundColor: Colors.white,
             body: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 SizedBox(
-                    height: physicalHeight / 2,
+                    height: physicalHeight / 2 * 1.2,
                     width: physicalWidth,
                     child: !snapshot.hasData
                         ? Center(
@@ -122,152 +112,20 @@ class _DayPageState extends State<DayPage> {
                                 child: CircularProgressIndicator(
                                   strokeWidth: 10,
                                 )))
-                        : Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: <Widget>[
-                                SizedBox(
-                                  width: physicalWidth,
-                                  height: physicalHeight / 2,
-                                  child: Stack(
-                                      alignment: Alignment.center,
-                                      children: [
-                                        Positioned(
-                                          left: physicalWidth / 2 -
-                                              kSecondPolarPlotSize / 2,
-                                          top: physicalHeight / 4 -
-                                              kSecondPolarPlotSize / 2,
-                                          child: Container(
-                                            margin:
-                                                const EdgeInsets.only(top: 10),
-                                            width: kSecondPolarPlotSize,
-                                            height: kSecondPolarPlotSize,
-                                            child: PolarSensorDataPlot(
-                                                    sensorDataForPlot[0]
-                                                                .length ==
-                                                            0
-                                                        ? dummyData
-                                                        : sensorDataForPlot)
-                                                .build(context),
-                                          ),
-                                        ),
-                                        Container(
-                                            width: kThirdPolarPlotSize,
-                                            height: kThirdPolarPlotSize,
-                                            child: Align(
-                                              alignment: Alignment(
-                                                  cos((googlePhotoDataForPlot[0]
-                                                                  [0]) /
-                                                              24 *
-                                                              2 *
-                                                              pi -
-                                                          pi / 2) *
-                                                      imageLocationFactor,
-                                                  imageLocationFactor *
-                                                      sin((googlePhotoDataForPlot[
-                                                                  0][0]) /
-                                                              24 *
-                                                              2 *
-                                                              pi -
-                                                          pi / 2)),
-                                              child: Image.network(
-                                                googlePhotoDataForPlot[2][1],
-                                                width: imageSize,
-                                                height: imageSize,
-                                              ),
-                                            )),
-                                        Container(
-                                            width: kThirdPolarPlotSize,
-                                            height: kThirdPolarPlotSize,
-                                            child: Align(
-                                              alignment: Alignment(
-                                                  imageLocationFactor*
-                                                      cos((googlePhotoDataForPlot[
-                                                                  20][0]) /
-                                                              24 *
-                                                              2 *
-                                                              pi -
-                                                          pi / 2),
-                                                  imageLocationFactor *
-                                                      sin((googlePhotoDataForPlot[
-                                                                  20][0]) /
-                                                              24 *
-                                                              2 *
-                                                              pi -
-                                                          pi / 2)),
-                                              child: Image.network(
-                                                googlePhotoDataForPlot[20][1],
-                                                width: imageSize,
-                                                height: imageSize,
-                                              ),
-                                            )),
-                                        Container(
-                                            width: kThirdPolarPlotSize,
-                                            height: kThirdPolarPlotSize,
-                                            child: Align(
-                                              alignment: Alignment(
-                                                  imageLocationFactor* cos((googlePhotoDataForPlot
-                                                              .last[0]) /
-                                                          24 *
-                                                          2 *
-                                                          pi -
-                                                      pi / 2),
-                                                  imageLocationFactor* sin((googlePhotoDataForPlot
-                                                              .last[0]) /
-                                                          24 *
-                                                          2 *
-                                                          pi -
-                                                      pi / 2)),
-                                              child: Image.network(
-                                                googlePhotoDataForPlot.last[1],
-                                                width: imageSize,
-                                                height: imageSize,
-                                              ),
-                                            )),
-                                        Positioned(
-                                            left: physicalWidth / 2 -
-                                                kThirdPolarPlotSize / 2,
-                                            top: physicalHeight / 4 -
-                                                kThirdPolarPlotSize / 2,
-                                            child: Container(
-                                                margin: const EdgeInsets.only(
-                                                    top: 10),
-                                                width: kThirdPolarPlotSize,
-                                                height: kThirdPolarPlotSize,
-                                                child: Chart(
-                                                  data: ((googlePhotoDataForPlot[
-                                                                  0]
-                                                              .length ==
-                                                          0))
-                                                      ? dummyData
-                                                      : googlePhotoDataForPlot
-                                                          .sublist(0),
-                                                  elements: [
-                                                    PointElement(
-                                                      size: SizeAttr(
-                                                          variable: 'dummy',
-                                                          values: [7, 8]),
-                                                    ),
-                                                  ],
-                                                  variables: {
-                                                    'time': Variable(
-                                                      accessor: (List datum) =>
-                                                          datum[0] as num,
-                                                      scale: LinearScale(
-                                                          min: 0,
-                                                          max: 24,
-                                                          tickCount: 5),
-                                                    ),
-                                                    'dummy': Variable(
-                                                      accessor: (List datum) =>
-                                                          datum[2] as num,
-                                                    ),
-                                                  },
-                                                  coord: PolarCoord(),
-                                                ))),
-                                      ]),
-                                ),
-                              ])),
+                        : Stack(alignment: Alignment.center, children: [
+                            Container(
+                              margin: const EdgeInsets.only(top: 10),
+                              width: kSecondPolarPlotSize,
+                              height: kSecondPolarPlotSize,
+                              child: PolarSensorDataPlot(
+                                      sensorDataForPlot[0].length == 0
+                                          ? dummyData
+                                          : sensorDataForPlot)
+                                  .build(context),
+                            ),
+                            polarPhotoImageContainers(imagesForPlot).build(),
+                            PolarPhotoDataPlot(googlePhotoDataForPlot).build(context),
+                          ])),
                 Center(
                   child: SizedBox(
                       width: physicalWidth,
@@ -301,38 +159,8 @@ class _DayPageState extends State<DayPage> {
                                   ),
                               childCount: datesOfYear.length))),
                 ),
-                // Center(
-                //     child: SizedBox(
-                //         width: physicalWidth,
-                //         height: physicalHeight / 4,
-                //         child: !snapshot.hasData
-                //             ? Center(child: CircularProgressIndicator())
-                //             : googlePhotoLinks.isEmpty
-                //                 ? const Text('no links')
-                //                 : ListView.builder(
-                //                     // ListView.builder(
-                //
-                //                     scrollDirection: Axis.horizontal,
-                //                     itemBuilder:
-                //                         (BuildContext context, int index) {
-                //                       // print(googlePhotoLinks[index]);
-                //                       return Image.network(googlePhotoLinks
-                //                           .reversed
-                //                           .toList()[index]);
-                //                     },
-                //                     itemCount: googlePhotoLinks.length,
-                //                   )))
               ],
             ),
-            // floatingActionButton: FloatingActionButton(
-            //   onPressed: (() async {
-            //     setState(() {});
-            //     // updatePhoto();
-            //     print(dataManager.summaryOfGooglePhotoData);
-            //     print(
-            //         "checking contaiments : ${dataManager.summaryOfGooglePhotoData.containsKey(20221001)}");
-            //   }),
-            // ),
           );
         });
   }
@@ -376,7 +204,24 @@ class _DayPageState extends State<DayPage> {
     });
     print("updateUi");
     setState(() {});
+    imagesForPlot = selectImagesForPlot();
+
   }
+
+  List selectImagesForPlot() {
+    if(googlePhotoDataForPlot[0].length == 0){
+      return [];
+    }
+    imagesForPlot = [googlePhotoDataForPlot.first];
+    int j = 0;
+    for(int i = 0; i < googlePhotoDataForPlot.length; i++){
+      if( (googlePhotoDataForPlot[i][0] - imagesForPlot[j][0]).abs() > 1.7){
+        imagesForPlot.add(googlePhotoDataForPlot[i]);
+        j +=1;
+      }
+    }
+    return imagesForPlot;
+}
 
   void openFile(filepath) async {
     File f = File(filepath);

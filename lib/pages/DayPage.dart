@@ -17,8 +17,7 @@ import 'package:provider/provider.dart';
 import 'dart:io';
 import 'dart:convert';
 import 'package:csv/csv.dart';
-
-import 'package:path_provider/path_provider.dart';
+import 'dart:math';
 
 //TODO : put global variables to StateProvider - date/month/year, setting, current page
 
@@ -64,6 +63,9 @@ class _DayPageState extends State<DayPage> {
   dynamic googlePhotoDataForPlot = [[]];
   dynamic sensorDataForPlot = [[]];
   dynamic d;
+
+  double imageSize = 150;
+  double imageLocationFactor = 1.5;
   List<dynamic> googlePhotoLinks = [];
   List<DateTime> datesOfYear =
       getDaysInBetween(DateTime.parse("20220101"), DateTime.now())
@@ -127,64 +129,143 @@ class _DayPageState extends State<DayPage> {
                                 SizedBox(
                                   width: physicalWidth,
                                   height: physicalHeight / 2,
-                                  child: Stack(children: [
-                                    Positioned(
-                                      left: physicalWidth / 2 -
-                                          kDefaultPolarPlotSize / 2,
-                                      top: physicalHeight / 4 -
-                                          kDefaultPolarPlotSize / 2,
-                                      child: Container(
-                                        margin: const EdgeInsets.only(top: 10),
-                                        width: kDefaultPolarPlotSize,
-                                        height: kDefaultPolarPlotSize,
-                                        child: PolarSensorDataPlot(
-                                                sensorDataForPlot[0].length == 0
-                                                    ? dummyData
-                                                    : sensorDataForPlot)
-                                            .build(context),
-                                      ),
-                                    ),
-                                    Positioned(
-                                        left: physicalWidth / 2 -
-                                            kSecondPolarPlotSize / 2,
-                                        top: physicalHeight / 4 -
-                                            kSecondPolarPlotSize / 2,
-                                        child: Container(
+                                  child: Stack(
+                                      alignment: Alignment.center,
+                                      children: [
+                                        Positioned(
+                                          left: physicalWidth / 2 -
+                                              kSecondPolarPlotSize / 2,
+                                          top: physicalHeight / 4 -
+                                              kSecondPolarPlotSize / 2,
+                                          child: Container(
                                             margin:
                                                 const EdgeInsets.only(top: 10),
                                             width: kSecondPolarPlotSize,
                                             height: kSecondPolarPlotSize,
-                                            child: Chart(
-                                              data: ((googlePhotoDataForPlot[0]
-                                                          .length ==
-                                                      0))
-                                                  ? dummyData
-                                                  : googlePhotoDataForPlot
-                                                      .sublist(0),
-                                              elements: [
-                                                PointElement(
-                                                  size: SizeAttr(
-                                                      variable: 'dummy',
-                                                      values: [7, 8]),
-                                                ),
-                                              ],
-                                              variables: {
-                                                'time': Variable(
-                                                  accessor: (List datum) =>
-                                                      datum[0] as num,
-                                                  scale: LinearScale(
-                                                      min: 0,
-                                                      max: 24,
-                                                      tickCount: 5),
-                                                ),
-                                                'dummy': Variable(
-                                                  accessor: (List datum) =>
-                                                      datum[2] as num,
-                                                ),
-                                              },
-                                              coord: PolarCoord(),
-                                            )))
-                                  ]),
+                                            child: PolarSensorDataPlot(
+                                                    sensorDataForPlot[0]
+                                                                .length ==
+                                                            0
+                                                        ? dummyData
+                                                        : sensorDataForPlot)
+                                                .build(context),
+                                          ),
+                                        ),
+                                        Container(
+                                            width: kThirdPolarPlotSize,
+                                            height: kThirdPolarPlotSize,
+                                            child: Align(
+                                              alignment: Alignment(
+                                                  cos((googlePhotoDataForPlot[0]
+                                                                  [0]) /
+                                                              24 *
+                                                              2 *
+                                                              pi -
+                                                          pi / 2) *
+                                                      imageLocationFactor,
+                                                  imageLocationFactor *
+                                                      sin((googlePhotoDataForPlot[
+                                                                  0][0]) /
+                                                              24 *
+                                                              2 *
+                                                              pi -
+                                                          pi / 2)),
+                                              child: Image.network(
+                                                googlePhotoDataForPlot[2][1],
+                                                width: imageSize,
+                                                height: imageSize,
+                                              ),
+                                            )),
+                                        Container(
+                                            width: kThirdPolarPlotSize,
+                                            height: kThirdPolarPlotSize,
+                                            child: Align(
+                                              alignment: Alignment(
+                                                  imageLocationFactor*
+                                                      cos((googlePhotoDataForPlot[
+                                                                  20][0]) /
+                                                              24 *
+                                                              2 *
+                                                              pi -
+                                                          pi / 2),
+                                                  imageLocationFactor *
+                                                      sin((googlePhotoDataForPlot[
+                                                                  20][0]) /
+                                                              24 *
+                                                              2 *
+                                                              pi -
+                                                          pi / 2)),
+                                              child: Image.network(
+                                                googlePhotoDataForPlot[20][1],
+                                                width: imageSize,
+                                                height: imageSize,
+                                              ),
+                                            )),
+                                        Container(
+                                            width: kThirdPolarPlotSize,
+                                            height: kThirdPolarPlotSize,
+                                            child: Align(
+                                              alignment: Alignment(
+                                                  imageLocationFactor* cos((googlePhotoDataForPlot
+                                                              .last[0]) /
+                                                          24 *
+                                                          2 *
+                                                          pi -
+                                                      pi / 2),
+                                                  imageLocationFactor* sin((googlePhotoDataForPlot
+                                                              .last[0]) /
+                                                          24 *
+                                                          2 *
+                                                          pi -
+                                                      pi / 2)),
+                                              child: Image.network(
+                                                googlePhotoDataForPlot.last[1],
+                                                width: imageSize,
+                                                height: imageSize,
+                                              ),
+                                            )),
+                                        Positioned(
+                                            left: physicalWidth / 2 -
+                                                kThirdPolarPlotSize / 2,
+                                            top: physicalHeight / 4 -
+                                                kThirdPolarPlotSize / 2,
+                                            child: Container(
+                                                margin: const EdgeInsets.only(
+                                                    top: 10),
+                                                width: kThirdPolarPlotSize,
+                                                height: kThirdPolarPlotSize,
+                                                child: Chart(
+                                                  data: ((googlePhotoDataForPlot[
+                                                                  0]
+                                                              .length ==
+                                                          0))
+                                                      ? dummyData
+                                                      : googlePhotoDataForPlot
+                                                          .sublist(0),
+                                                  elements: [
+                                                    PointElement(
+                                                      size: SizeAttr(
+                                                          variable: 'dummy',
+                                                          values: [7, 8]),
+                                                    ),
+                                                  ],
+                                                  variables: {
+                                                    'time': Variable(
+                                                      accessor: (List datum) =>
+                                                          datum[0] as num,
+                                                      scale: LinearScale(
+                                                          min: 0,
+                                                          max: 24,
+                                                          tickCount: 5),
+                                                    ),
+                                                    'dummy': Variable(
+                                                      accessor: (List datum) =>
+                                                          datum[2] as num,
+                                                    ),
+                                                  },
+                                                  coord: PolarCoord(),
+                                                ))),
+                                      ]),
                                 ),
                               ])),
                 Center(
@@ -201,9 +282,6 @@ class _DayPageState extends State<DayPage> {
                           physics: const FixedExtentScrollPhysics(),
                           diameterRatio: 0.7,
                           onSelectedItemChanged: (index) => setState(() {
-                                String currentDateString =
-                                    DateFormat("yyyyMMdd")
-                                        .format(datesOfYear[index]);
                                 context
                                     .read<NavigationIndexProvider>()
                                     .setDate(datesOfYear[index]);
@@ -223,37 +301,38 @@ class _DayPageState extends State<DayPage> {
                                   ),
                               childCount: datesOfYear.length))),
                 ),
-                Center(
-                    child: SizedBox(
-                        width: physicalWidth,
-                        height: physicalHeight / 4,
-                        child: !snapshot.hasData
-                            ? Center(child: CircularProgressIndicator())
-                            : googlePhotoLinks.isEmpty
-                                ? const Text('no links')
-                                : ListView.builder(
-                                    // ListView.builder(
-
-                                    scrollDirection: Axis.horizontal,
-                                    itemBuilder:
-                                        (BuildContext context, int index) {
-                                      // print(googlePhotoLinks[index]);
-                                      return Image.network(
-                                          googlePhotoLinks[index]);
-                                    },
-                                    itemCount: googlePhotoLinks.length,
-                                  )))
+                // Center(
+                //     child: SizedBox(
+                //         width: physicalWidth,
+                //         height: physicalHeight / 4,
+                //         child: !snapshot.hasData
+                //             ? Center(child: CircularProgressIndicator())
+                //             : googlePhotoLinks.isEmpty
+                //                 ? const Text('no links')
+                //                 : ListView.builder(
+                //                     // ListView.builder(
+                //
+                //                     scrollDirection: Axis.horizontal,
+                //                     itemBuilder:
+                //                         (BuildContext context, int index) {
+                //                       // print(googlePhotoLinks[index]);
+                //                       return Image.network(googlePhotoLinks
+                //                           .reversed
+                //                           .toList()[index]);
+                //                     },
+                //                     itemCount: googlePhotoLinks.length,
+                //                   )))
               ],
             ),
-            floatingActionButton: FloatingActionButton(
-              onPressed: (() async {
-                setState(() {});
-                // updatePhoto();
-                print(dataManager.summaryOfGooglePhotoData);
-                print("checking contaiments : ${dataManager.summaryOfGooglePhotoData.containsKey(20221001)}");
-
-              }),
-            ),
+            // floatingActionButton: FloatingActionButton(
+            //   onPressed: (() async {
+            //     setState(() {});
+            //     // updatePhoto();
+            //     print(dataManager.summaryOfGooglePhotoData);
+            //     print(
+            //         "checking contaiments : ${dataManager.summaryOfGooglePhotoData.containsKey(20221001)}");
+            //   }),
+            // ),
           );
         });
   }

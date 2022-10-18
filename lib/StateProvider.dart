@@ -2,9 +2,11 @@
 import 'package:flutter/material.dart';
 import 'package:test_location_2nd/DateHandler.dart';
 
+
 class NavigationIndexProvider with ChangeNotifier{
   int navigationIndex = 0;
   String date = formatDate(DateTime.now());
+  Map summaryOfGooglePhotoData = {};
 
   void setNavigationIndex(int index){
     navigationIndex = index;
@@ -14,6 +16,10 @@ class NavigationIndexProvider with ChangeNotifier{
   void setDate(DateTime date){
     this.date = formatDate(date);
     print("date : ${this.date}");
+  }
+
+  void setSummaryOfGooglePhotoData(data){
+    summaryOfGooglePhotoData = data;
   }
   // void set
 

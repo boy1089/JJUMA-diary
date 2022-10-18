@@ -1,27 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:googleapis/cloudbuild/v1.dart';
-import 'package:googleapis/drive/v2.dart';
-import 'package:googleapis/shared.dart';
 import 'package:provider/provider.dart';
-import 'package:test_location_2nd/Permissions/GoogleAccountManager.dart';
 import 'package:test_location_2nd/StateProvider.dart';
 import 'package:test_location_2nd/Util/Util.dart';
 import "package:test_location_2nd/DateHandler.dart";
 import 'package:test_location_2nd/global.dart';
-import 'MainPage.dart';
-import 'package:matrix_gesture_detector/matrix_gesture_detector.dart';
 import 'DayPage.dart';
 //TODO : make navigation to day page
+import 'package:test_location_2nd/Data/DataManager.dart';
+import 'package:test_location_2nd/global.dart';
 
 class MonthPage extends StatefulWidget {
   int index = 0;
-
-  MonthPage(int index) {
-    this.index = index;
-  }
+  DataManager dataManager;
 
   @override
   State<MonthPage> createState() => _MonthPageState();
+
+  MonthPage(this.index, this.dataManager, {Key? key}) : super(key: key);
 }
 
 double _scaleFactor = 1.0;
@@ -29,10 +24,12 @@ double _baseScaleFactor = 1.0;
 
 class _MonthPageState extends State<MonthPage> {
   int index = 0;
+  late DataManager dataManager;
 
   @override
   void initState() {
     this.index = index;
+    this.dataManager = widget.dataManager;
   }
 
   @override
@@ -44,7 +41,7 @@ class _MonthPageState extends State<MonthPage> {
       body: Center(
         child: GestureDetector(
             onScaleStart: (details) {
-               _scaleFactor = _baseScaleFactor;
+              _scaleFactor = _baseScaleFactor;
             },
             onScaleUpdate: (details) {
               setState(() {
@@ -135,7 +132,12 @@ class DayButton {
   int month = 1;
   int start = 1;
   late DateTime today;
-  DayButton(@required month, @required weekIndex, @required day) {
+
+  DayButton(
+    @required month,
+    @required weekIndex,
+    @required day,
+  ) {
     this.month = month;
     this.weekIndex = weekIndex;
     this.day = day;
@@ -147,15 +149,20 @@ class DayButton {
   double width = physicalHeight / 70.0;
   double height = physicalHeight / 70.0;
 
+  Future animation() async {
+    return await Future.delayed(const Duration(seconds: 3));
+  }
+
   @override
   Widget build(BuildContext buildContext) {
+    print(today);
     bool isValidDate = today.month == month;
     return isValidDate
         ? SizedBox(
             width: width * _scaleFactor,
             height: height * _scaleFactor,
             child: RawMaterialButton(
-              onPressed: () {
+              onPressed: () async {
                 selectedDate = today;
                 buildContext
                     .read<NavigationIndexProvider>()
@@ -169,8 +176,13 @@ class DayButton {
                   minHeight: height * _scaleFactor,
                   maxWidth: width * _scaleFactor + 1.0,
                   maxHeight: height * _scaleFactor + 1.0),
-              elevation: 4.0,
-              fillColor: Colors.white,
+              elevation: 1.0,
+              fillColor: summaryOfGooglePhotoData.containsKey(formatDate(today))
+                  // ? Color.lerp(Colors.white, Colors.yellowAccent,
+                  //     (summaryOfGooglePhotoData[formatDate(today)] ) / 50)
+                  ? Color.lerp(Colors.yellowAccent, Colors.lightBlueAccent,
+                  (summaryOfGooglePhotoData[formatDate(today)] ) / 50)
+                  : Colors.white,
               shape: CircleBorder(),
             ),
           )

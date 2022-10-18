@@ -83,7 +83,7 @@ class MainPageState extends State<MainPage> {
         dataManager,
         googlePhotoDataManager,
         sensorDataManager);
-    MonthPage monthPage = MonthPage(a);
+    MonthPage monthPage = MonthPage(a, dataManager);
 
     _widgetOptions = <Widget>[
       dayPage,

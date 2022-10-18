@@ -114,10 +114,12 @@ class _DayPageState extends State<DayPage> {
                     width: physicalWidth,
                     child: !snapshot.hasData
                         ? Center(
-                        child: SizedBox(
-                          width : 95,
-                        height : 95,
-                        child: CircularProgressIndicator()))
+                            child: SizedBox(
+                                width: 140,
+                                height: 140,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 10,
+                                )))
                         : Column(
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.center,
@@ -144,14 +146,14 @@ class _DayPageState extends State<DayPage> {
                                     ),
                                     Positioned(
                                         left: physicalWidth / 2 -
-                                            kDefaultPolarPlotSize / 2,
+                                            kSecondPolarPlotSize / 2,
                                         top: physicalHeight / 4 -
-                                            kDefaultPolarPlotSize / 2,
+                                            kSecondPolarPlotSize / 2,
                                         child: Container(
                                             margin:
                                                 const EdgeInsets.only(top: 10),
-                                            width: kDefaultPolarPlotSize,
-                                            height: kDefaultPolarPlotSize,
+                                            width: kSecondPolarPlotSize,
+                                            height: kSecondPolarPlotSize,
                                             child: Chart(
                                               data: ((googlePhotoDataForPlot[0]
                                                           .length ==
@@ -247,7 +249,9 @@ class _DayPageState extends State<DayPage> {
               onPressed: (() async {
                 setState(() {});
                 // updatePhoto();
-                print(googleAccountManager.currentUser);
+                print(dataManager.summaryOfGooglePhotoData);
+                print("checking contaiments : ${dataManager.summaryOfGooglePhotoData.containsKey(20221001)}");
+
               }),
             ),
           );
@@ -323,6 +327,7 @@ class _DayPageState extends State<DayPage> {
     googlePhotoLinks = transpose(googlePhotoDataForPlot).elementAt(1);
     print("googlePhotoLinks : $googlePhotoLinks");
     googlePhotoDataManager.writePhotoResponse(date, response);
+    dataManager.updateSummaryOfGooglePhotoData(date, googlePhotoLinks.length);
     return googlePhotoLinks;
   }
 

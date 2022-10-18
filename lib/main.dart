@@ -63,14 +63,14 @@ class _MyAppState extends State<MyApp> {
       initialRoute: '/daily',
       routes: {
         '/daily': (context) => MainPage(
-            // dataReader,
-            googleAccountManager,
-            permissionManager,
-            photoLibraryApiClient,
-            dataManager,
-            googlePhotoDataManager,
-          sensorDataManager,
-        ),
+              // dataReader,
+              googleAccountManager,
+              permissionManager,
+              photoLibraryApiClient,
+              dataManager,
+              googlePhotoDataManager,
+              sensorDataManager,
+            ),
         '/settings': (context) =>
             AndroidSettingsScreen(googleAccountManager, permissionManager),
       },

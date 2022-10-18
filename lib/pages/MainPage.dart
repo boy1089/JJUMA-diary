@@ -69,7 +69,6 @@ class MainPageState extends State<MainPage> {
   void initState() {
     readData = _fetchData();
     super.initState();
-    // dataReader = widget.dataReader;
     googleAccountManager = widget.googleAccountManager;
     permissionManager = widget.permissionManager;
     photoLibraryApiClient = widget.photoLibraryApiClient;
@@ -78,15 +77,12 @@ class MainPageState extends State<MainPage> {
     sensorDataManager = widget.sensorDataManager;
 
     DayPage dayPage = DayPage(
-        // dataReader,
         googleAccountManager,
         permissionManager,
         photoLibraryApiClient,
         dataManager,
         googlePhotoDataManager,
         sensorDataManager);
-    // WeekPage weekPage = WeekPage(dataReader, googleAccountManager,
-    //     permissionManager, photoLibraryApiClient, dataManager);
     MonthPage monthPage = MonthPage(a);
 
     _widgetOptions = <Widget>[

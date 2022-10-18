@@ -157,19 +157,17 @@ List<List<double>> dummyPhotoData = [
 List modifyListForPlot(List fields,
     {bool filterTime = false, bool executeTranspose = false}) {
   //when empty list is input, return list with default value when
-  if (fields[0].length < 2) {
+  if (fields.length < 2) {
     // return List<List<dynamic>>.generate(fields[0].length, (int index) => [0, 1]);
     List<List<dynamic>> dummyData = [
       [0, "https://img.icons8.com/ios-filled/344/no-image.png", 3]
     ];
     return dummyData;
   }
-
   //transpose data if needed
   if (executeTranspose) {
     fields = transpose(fields);
   }
-
   //filter the value
   List listFiltered = fields;
   if (filterTime) listFiltered = filterList(fields);
@@ -188,9 +186,10 @@ List filterList(List input) {
   List output = [];
   for (int i = 0; i < input.length; i++) {
     try {
+      // print("filterList : ${input[i][0]}");
       //exclude if filename is not in format of yyyyMMdd_HHmmSS
-      if (input[i][0][8] != "_")continue;
-      if (input[i][0].contains("t"))continue;
+      if (input[i][0][8] != "_") continue;
+      if (input[i][0].contains("t")) continue;
 
       output.add(input[i]);
     } catch (e) {
@@ -201,26 +200,6 @@ List filterList(List input) {
   //insert the name of columns
   output.insert(0, input[0]);
   print("filterList result: ${output}");
-  return output;
-}
-
-List<List<dynamic>> transpose(list) {
-  print("transpose, $list");
-  if (list.length == 0) return [[], []];
-
-  int columnNumber = list.elementAt(0).length;
-  int rowNumber = list.length;
-  List<List<dynamic>> output = [];
-
-  for (int i = 0; i < columnNumber; i++) {
-    output.add([]);
-  }
-
-  for (int i = 0; i < columnNumber; i++) {
-    for (int j = 0; j < rowNumber; j++) {
-      output.elementAt(i).insert(j, list.elementAt(j).elementAt(i));
-    }
-  }
   return output;
 }
 
@@ -250,6 +229,26 @@ double convertStringTimeToDouble(String time) {
       double.parse(timeSplit[1]) / 60.0 +
       double.parse(timeSplit[2]) / 3600.0;
   return timeDouble;
+}
+
+List<List<dynamic>> transpose(list) {
+  print("transpose, $list");
+  if (list.length == 0) return [[], []];
+
+  int columnNumber = list.elementAt(0).length;
+  int rowNumber = list.length;
+  List<List<dynamic>> output = [];
+
+  for (int i = 0; i < columnNumber; i++) {
+    output.add([]);
+  }
+
+  for (int i = 0; i < columnNumber; i++) {
+    for (int j = 0; j < rowNumber; j++) {
+      output.elementAt(i).insert(j, list.elementAt(j).elementAt(i));
+    }
+  }
+  return output;
 }
 
 List slice(List<dynamic> array, List<int> row_index,
@@ -284,4 +283,12 @@ List slice(List<dynamic> array, List<int> row_index,
   } catch (e) {
     throw Exception(e);
   }
+}
+
+List<List<dynamic>> subsampleList(List list, int factor) {
+  List<List<dynamic>> newList = [];
+  for (int i = 0; i < list.length; i++) {
+    if (i % factor == 0) newList.add(list[i]);
+  }
+  return newList;
 }

@@ -13,10 +13,11 @@ import 'package:test_location_2nd/Api/PhotoLibraryApiClient.dart';
 import 'package:test_location_2nd/Permissions/PermissionManager.dart';
 import 'package:test_location_2nd/Permissions/GoogleAccountManager.dart';
 import 'Api/PhotoLibraryApiClient.dart';
-import 'GooglePhotoManager.dart';
+import 'GooglePhotoDataManager.dart';
 import 'package:test_location_2nd/Note/NoteData.dart';
 import 'package:test_location_2nd/Data/DataManager.dart';
 import 'package:test_location_2nd/StateProvider.dart';
+import 'package:test_location_2nd/Sensor/SensorDataManager.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,12 +28,6 @@ void main() {
     create: (context) => NavigationIndexProvider(),
     child: const MyApp(),
   ));
-  // MultiProvider(
-  //   providers: [
-  //     ChangeNotifierProvider(create: (_) => NavigationIndexProvider()),
-  //   ],
-  //   child : const MyApp(),
-  // );
 }
 
 class MyApp extends StatefulWidget {
@@ -47,13 +42,14 @@ class _MyAppState extends State<MyApp> {
   final noteLogger = NoteLogger();
   final dataAnalyzer = DataAnalyzer();
   final myTextController = TextEditingController();
-  final googlePhotoManager = GooglePhotoManager();
-  final dataReader = SensorDataReader();
+  final googlePhotoDataManager = GooglePhotoDataManager();
+  // final dataReader = SensorDataReader();
   final googleAccountManager = GoogleAccountManager();
   final permissionManager = PermissionManager();
   late final photoLibraryApiClient =
       PhotosLibraryApiClient(googleAccountManager);
   final dataManager = DataManager();
+  final sensorDataManager = SensorDataManager();
 
   void saveNote() {
     noteLogger.writeCache2(NoteData(DateTime.now(), myTextController.text));
@@ -66,8 +62,15 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       initialRoute: '/daily',
       routes: {
-        '/daily': (context) => MainPage(dataReader, googleAccountManager,
-            permissionManager, photoLibraryApiClient, dataManager, googlePhotoManager),
+        '/daily': (context) => MainPage(
+            // dataReader,
+            googleAccountManager,
+            permissionManager,
+            photoLibraryApiClient,
+            dataManager,
+            googlePhotoDataManager,
+          sensorDataManager,
+        ),
         '/settings': (context) =>
             AndroidSettingsScreen(googleAccountManager, permissionManager),
       },

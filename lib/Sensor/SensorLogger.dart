@@ -11,7 +11,6 @@ import 'package:intl/intl.dart';
 import 'package:test_location_2nd/Usage/UsageLogger.dart';
 
 class SensorLogger {
-
   Location location = new Location();
   UsageLogger usageLogger = new UsageLogger();
 
@@ -118,13 +117,6 @@ class SensorLogger {
             0.0,
             0.0,
           ];
-
-      // print(_accelData);
-      // print(_temperatureData);
-      // print(_proximityData);
-      // print(_humidityData);
-      // print(currentLocation.latitude);
-
       _cacheData.add(SensorData(
           DateTime.now(),
           currentLocation.latitude,

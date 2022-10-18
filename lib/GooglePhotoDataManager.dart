@@ -8,7 +8,9 @@ import 'package:flutter_file_manager/flutter_file_manager.dart';
 import 'package:csv/csv.dart';
 import 'dart:convert';
 
-class GooglePhotoManager {
+//TODO : move getPhoto and updatePhoto of dayPage to googlePhotoDataManager
+
+class GooglePhotoDataManager {
   Map photoResponseAll = {};
   var response;
   var photoResponse;
@@ -92,13 +94,7 @@ class GooglePhotoManager {
     return photoDataAll;
   }
 
-  List<List<dynamic>> subsampleList(List list, int factor) {
-    List<List<dynamic>> newList = [];
-    for (int i = 0; i < list.length; i++) {
-      if (i % factor == 0) newList.add(list[i]);
-    }
-    return newList;
-  }
+
 
   Future<List> openFile(filepath) async {
     File f = File(filepath);

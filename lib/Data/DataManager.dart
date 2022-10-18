@@ -36,9 +36,9 @@ class DataManager {
   List<DateTime> datesOfYear = [];
 
   DataManager(){
-    datesOfYear = getDaysInBetween(DateTime.parse("20220101"), DateTime.now());
-    processAllSensorFiles();
-    getProcessedSensorFile();
+    // datesOfYear = getDaysInBetween(DateTime.parse("20220101"), DateTime.now());
+    // processAllSensorFiles();
+    // getProcessedSensorFile();
   }
 
   Future<List> getSensorFileList() async {
@@ -47,7 +47,6 @@ class DataManager {
     var files = Glob("${directory.first.path}/sensorData/*_sensor.csv");
     fileList = List<String>.generate(
         files.listSync().length, (int index) => files.listSync()[index].path);
-    print(fileList);
     return fileList;
   }
 

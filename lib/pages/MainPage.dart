@@ -12,7 +12,8 @@ import 'MonthPage.dart';
 import 'DayPage.dart';
 import 'package:provider/provider.dart';
 import 'package:test_location_2nd/StateProvider.dart';
-import 'package:test_location_2nd/GooglePhotoManager.dart';
+import 'package:test_location_2nd/GooglePhotoDataManager.dart';
+import 'package:test_location_2nd/Sensor/SensorDataManager.dart';
 
 //TODO : put shared data in provider(date,
 //TODO : make consistency on datetime handling - datetime or date?
@@ -21,15 +22,22 @@ import 'package:test_location_2nd/GooglePhotoManager.dart';
 //TODO : refactoring - dataManager-data reader
 
 class MainPage extends StatefulWidget {
-  SensorDataReader dataReader;
+  // SensorDataReader dataReader;
   GoogleAccountManager googleAccountManager;
   PermissionManager permissionManager;
   PhotosLibraryApiClient photoLibraryApiClient;
   DataManager dataManager;
-  GooglePhotoManager googlePhotoManager;
+  GooglePhotoDataManager googlePhotoDataManager;
+  SensorDataManager sensorDataManager;
 
-  MainPage(this.dataReader, this.googleAccountManager, this.permissionManager,
-      this.photoLibraryApiClient, this.dataManager, this.googlePhotoManager,
+  MainPage(
+      // this.dataReader,
+      this.googleAccountManager,
+      this.permissionManager,
+      this.photoLibraryApiClient,
+      this.dataManager,
+      this.googlePhotoDataManager,
+      this.sensorDataManager,
       {Key? key})
       : super(key: key);
 
@@ -40,12 +48,13 @@ class MainPage extends StatefulWidget {
 class MainPageState extends State<MainPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   var response;
-  late SensorDataReader dataReader;
+  // late SensorDataReader dataReader;
   late GoogleAccountManager googleAccountManager;
   late PermissionManager permissionManager;
   late PhotosLibraryApiClient photoLibraryApiClient;
   late DataManager dataManager;
-  late GooglePhotoManager googlePhotoManager;
+  late GooglePhotoDataManager googlePhotoDataManager;
+  late SensorDataManager sensorDataManager;
 
   int dataIndex = 0;
   List<List<String>> responseResult = [];
@@ -60,29 +69,37 @@ class MainPageState extends State<MainPage> {
   void initState() {
     readData = _fetchData();
     super.initState();
-    dataReader = widget.dataReader;
+    // dataReader = widget.dataReader;
     googleAccountManager = widget.googleAccountManager;
     permissionManager = widget.permissionManager;
     photoLibraryApiClient = widget.photoLibraryApiClient;
     dataManager = widget.dataManager;
-    googlePhotoManager = widget.googlePhotoManager;
+    googlePhotoDataManager = widget.googlePhotoDataManager;
+    sensorDataManager = widget.sensorDataManager;
 
-    DayPage dayPage = DayPage(dataReader, googleAccountManager,
-        permissionManager, photoLibraryApiClient, dataManager, googlePhotoManager);
-    WeekPage weekPage = WeekPage(dataReader, googleAccountManager,
-        permissionManager, photoLibraryApiClient, dataManager);
+    DayPage dayPage = DayPage(
+        // dataReader,
+        googleAccountManager,
+        permissionManager,
+        photoLibraryApiClient,
+        dataManager,
+        googlePhotoDataManager,
+        sensorDataManager);
+    // WeekPage weekPage = WeekPage(dataReader, googleAccountManager,
+    //     permissionManager, photoLibraryApiClient, dataManager);
     MonthPage monthPage = MonthPage(a);
 
     _widgetOptions = <Widget>[
       dayPage,
-      weekPage,
+      // weekPage,
       monthPage,
     ];
   }
 
   Future<List<List<dynamic>>> _fetchData() async {
     await Future.delayed(const Duration(seconds: 2));
-    return dataReader.readFiles();
+    // return dataReader.readFiles();
+    return [[]];
   }
 
   @override
@@ -109,8 +126,6 @@ class MainPageState extends State<MainPage> {
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
               icon: Icon(Icons.calendar_today), label: "Day"),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.calendar_view_week), label: "Week"),
           BottomNavigationBarItem(
               icon: Icon(Icons.calendar_view_month), label: "Month"),
         ],
@@ -145,19 +160,6 @@ class MainPageState extends State<MainPage> {
       //   },
       // ),
     );
-  }
-
-  void updatePhoto() async {
-    String date = dataReader.dates[dataIndex];
-    // if(response
-    debugPrint(date.substring(4, 6));
-    response = await photoLibraryApiClient.getPhotosOfDate(
-        date.substring(0, 4), date.substring(4, 6), date.substring(6, 8));
-    responseResult = parseResponse(response);
-    photoLibraryApiClient.writeCache3(responseResult[0], 'links');
-    photoLibraryApiClient.writeCache3(responseResult[1], 'filename');
-    setState(() {});
-    debugPrint("googleAccount manager : ${googleAccountManager.currentUser}");
   }
 
   void onSelected(BuildContext context, int item) {

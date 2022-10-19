@@ -59,6 +59,7 @@ dependencies:
   glob:
   provider: ^6.0.4
   matrix_gesture_detector: ^0.1.0
+  animations:
 
 dev_dependencies:
   flutter_test:

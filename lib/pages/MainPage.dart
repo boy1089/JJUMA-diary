@@ -1,3 +1,4 @@
+import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:test_location_2nd/Permissions/GoogleAccountManager.dart';
 import '../Sensor/SensorDataReader.dart';
@@ -100,6 +101,7 @@ class MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
+    final PageController controller = PageController();
     return Scaffold(
       appBar: AppBar(
         title: const Center(
@@ -129,8 +131,6 @@ class MainPageState extends State<MainPage> {
         onTap: (index) {
           Provider.of<NavigationIndexProvider>(context, listen: false)
               .setNavigationIndex(index);
-
-          // context.watch<NavigationIndexProvider>().setIndex(index);
         },
       ),
       body: FutureBuilder(
@@ -141,8 +141,20 @@ class MainPageState extends State<MainPage> {
             if (snapshot.hasData == false) {
               return Center(child: CircularProgressIndicator());
             } else {
-              return _widgetOptions[
-                  context.watch<NavigationIndexProvider>().navigationIndex];
+              return PageTransitionSwitcher(
+                duration : Duration(milliseconds: 1000),
+                transitionBuilder:
+                    (child, primaryAnimation, secondaryAnimation) =>
+
+                        FadeThroughTransition(
+                  animation: primaryAnimation,
+                  secondaryAnimation: secondaryAnimation,
+                  child: child,
+                ),
+
+                child: _widgetOptions[
+                    context.watch<NavigationIndexProvider>().navigationIndex],
+              );
             }
           }),
       // floatingActionButton: FloatingActionButton(

@@ -20,8 +20,6 @@ import 'package:csv/csv.dart';
 import 'package:test_location_2nd/polarPhotoImageContainer.dart';
 import 'package:test_location_2nd/PolarPhotoDataPlot.dart';
 
-//TODO : put global variables to StateProvider - date/month/year, setting, current page
-
 class DayPage extends StatefulWidget {
   GoogleAccountManager googleAccountManager;
   PermissionManager permissionManager;
@@ -45,7 +43,6 @@ class DayPage extends StatefulWidget {
 }
 
 class _DayPageState extends State<DayPage> {
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   late GoogleAccountManager googleAccountManager;
   late PermissionManager permissionManager;
@@ -176,25 +173,10 @@ class _DayPageState extends State<DayPage> {
         .exists();
 
     print("isFileExists $isGooglePhotoFileExists");
-    // try {
-    //   updatePhoto();
-    // } catch (e) {
-    //   print(e);
-    // }
+
     var a = await updatePhoto();
     setState(() {
-      // try {
-      //   if (isGooglePhotoFileExists) {
-      //     print("opening file");
-      //     openFile(
-      //         "/storage/emulated/0/Android/data/com.example.test_location_2nd/files/googlePhotoData/${formatDate(date2)}_googlePhoto.csv");
-      //   } else {
-      //     updatePhoto();
-      //   }
-      // } catch(e){
-      //   print(e);
-      //   print("error in updateUI for google Photo");
-      // }
+
       if (isProcessedSensorFileExists) {
         openSensorData(
             "/storage/emulated/0/Android/data/com.example.test_location_2nd/files/processedSensorData/${formatDate(date2)}_processedSensor.csv");

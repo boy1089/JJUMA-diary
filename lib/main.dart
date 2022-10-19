@@ -63,7 +63,6 @@ class _MyAppState extends State<MyApp> {
       initialRoute: '/daily',
       routes: {
         '/daily': (context) => MainPage(
-              // dataReader,
               googleAccountManager,
               permissionManager,
               photoLibraryApiClient,

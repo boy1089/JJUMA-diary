@@ -8,6 +8,7 @@ import 'DayPage.dart';
 //TODO : make navigation to day page
 import 'package:test_location_2nd/Data/DataManager.dart';
 import 'package:test_location_2nd/global.dart';
+import 'package:intl/intl.dart';
 
 class MonthPage extends StatefulWidget {
   int index = 0;
@@ -60,19 +61,47 @@ class _MonthPageState extends State<MonthPage> {
                 }
               });
             },
-            child: YearWheelScrollView().build(buildContext)),
+            child: YearWheelScrollView(2021).build(buildContext)),
       ),
     );
   }
 }
 
 class YearWheelScrollView {
+  int endYear = DateTime.now().year;
+  int startYear = DateTime.now().year;
+  int numberOfYears = 1;
+  YearWheelScrollView(@required int startYear) {
+    this.startYear = startYear;
+    this.numberOfYears = endYear - startYear + 1;
+  }
+
+  final ScrollController _controller = ScrollController(
+    keepScrollOffset: true
+    // initialScrollOffset: monthPageScrollOffset,
+  );
+  @override
+  void initState() {
+    _controller.addListener(() {
+      print(_controller.offset);
+    });
+  }
+
+  @override
+  void dispose() {
+    monthPageScrollOffset = _controller.offset;
+    print("monthPageScrollOffset : $monthPageScrollOffset");
+    _controller.dispose();
+  }
+
   @override
   Widget build(BuildContext buildContext) {
     return ListView(
+        controller: _controller,
         children: List.generate(
-            DateTime.now().month,
-            (int index) => MonthArray(DateTime.now().month - index - 1)
+            numberOfYears * 12,
+            (int index) => MonthArray(endYear - (index / 12).floor(),
+                    (DateTime.december - index - 1) % 12)
                 .build(buildContext)));
   }
 }
@@ -80,29 +109,42 @@ class YearWheelScrollView {
 class MonthArray {
   int month = 1;
   int numberOfWeek = 4;
-  MonthArray(@required month) {
+  int year = DateTime.now().year;
+  MonthArray(@required int year, @required int month) {
+    this.year = year;
     this.month = month + 1;
-    this.numberOfWeek = weekNumber(DateTime(2022, this.month + 1, 0)) -
-        weekNumber(DateTime(2022, this.month, 1));
+    this.numberOfWeek = weekNumber(DateTime(year, this.month + 1, 0)) -
+        weekNumber(DateTime(year, this.month, 1));
   }
 
   @override
   Widget build(BuildContext buildContext) {
-    return Column(children: [
+    return Stack(children: [
+      Positioned(
+        left: physicalWidth / 4,
+        top: physicalHeight / 70 * 3,
+        child: RotatedBox(
+            quarterTurns: 3,
+            child: _scaleFactor < 1
+                ? Text("")
+                : Text(DateFormat("MMM").format(DateTime(year, month)))),
+      ),
       Column(
           // children : [],
           children: List.generate(
               numberOfWeek + 1,
-              (int index) =>
-                  WeekRow(month, numberOfWeek - index).build(buildContext))),
+              (int index) => WeekRow(year, month, numberOfWeek - index)
+                  .build(buildContext))),
     ]);
   }
 }
 
 class WeekRow {
+  int year = DateTime.now().year;
   int month = 1;
   int weekIndex = 1;
-  WeekRow(@required month, @required index) {
+  WeekRow(@required int year, @required month, @required index) {
+    this.year = year;
     this.month = month;
     this.weekIndex = index;
   }
@@ -119,7 +161,7 @@ class WeekRow {
           children: List.generate(
               7,
               (int index) =>
-                  DayButton(month, weekIndex, index).build(buildContext))
+                  DayButton(year, month, weekIndex, index).build(buildContext))
           // Text('a', textScaleFactor: _scaleFactor))
           ),
     );
@@ -127,6 +169,7 @@ class WeekRow {
 }
 
 class DayButton {
+  int year = DateTime.now().year;
   int day = 1;
   int weekIndex = 1;
   int month = 1;
@@ -134,16 +177,18 @@ class DayButton {
   late DateTime today;
 
   DayButton(
+    @required year,
     @required month,
     @required weekIndex,
     @required day,
   ) {
+    this.year = year;
     this.month = month;
     this.weekIndex = weekIndex;
     this.day = day;
 
-    this.start = DateTime(2022, month, 1).weekday;
-    this.today = DateTime(2022, month, (weekIndex) * 7 + day + 1 - start);
+    this.start = DateTime(year, month, 1).weekday;
+    this.today = DateTime(year, month, (weekIndex) * 7 + day + 1 - start);
   }
 
   double width = physicalHeight / 70.0;
@@ -155,7 +200,6 @@ class DayButton {
 
   @override
   Widget build(BuildContext buildContext) {
-    print(today);
     bool isValidDate = today.month == month;
     return isValidDate
         ? SizedBox(
@@ -164,6 +208,7 @@ class DayButton {
             child: RawMaterialButton(
               onPressed: () async {
                 selectedDate = today;
+                print("selectedDate : $selectedDate");
                 buildContext
                     .read<NavigationIndexProvider>()
                     .setNavigationIndex(1);
@@ -181,7 +226,7 @@ class DayButton {
                   // ? Color.lerp(Colors.white, Colors.yellowAccent,
                   //     (summaryOfGooglePhotoData[formatDate(today)] ) / 50)
                   ? Color.lerp(Colors.white, Colors.deepOrangeAccent,
-                  (summaryOfGooglePhotoData[formatDate(today)] ) / 50)
+                      (summaryOfGooglePhotoData[formatDate(today)]) / 50)
                   : Colors.white,
               shape: CircleBorder(),
             ),

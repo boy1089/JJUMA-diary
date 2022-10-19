@@ -58,11 +58,11 @@ class _DayPageState extends State<DayPage> {
 
   List<dynamic> googlePhotoLinks = [];
   List<DateTime> datesOfYear =
-      getDaysInBetween(DateTime.parse("20220101"), DateTime.now())
+      getDaysInBetween(DateTime.parse("20210101"), DateTime.now())
           .reversed
           .toList();
   Future readData = Future.delayed(const Duration(seconds: 1));
-
+  Future update = Future.delayed(const Duration(seconds: 1));
   List imagesForPlot = [];
   Future<List<dynamic>> _fetchData() async {
     await Future.delayed(const Duration(microseconds: 100));
@@ -80,7 +80,7 @@ class _DayPageState extends State<DayPage> {
     googlePhotoDataManager = widget.googlePhotoDataManager;
     sensorDataManager = widget.sensorDataManager;
     readData = _fetchData();
-    updateUi();
+    update = updateUi();
     print("DayPage, after initState : ${googlePhotoDataForPlot}");
   }
 
@@ -133,15 +133,17 @@ class _DayPageState extends State<DayPage> {
                               initialItem:
                                   datesOfYear.indexOf(DateTime.parse(date))),
                           // magnification: 1,
+
                           squeeze: 1.8,
                           physics: const FixedExtentScrollPhysics(),
                           diameterRatio: 0.7,
+
                           onSelectedItemChanged: (index) => setState(() {
                                 context
                                     .read<NavigationIndexProvider>()
                                     .setDate(datesOfYear[index]);
 
-                                updateUi();
+                                update = updateUi();
                               }),
                           itemExtent: 80,
                           restorationId: "aa",
@@ -175,14 +177,15 @@ class _DayPageState extends State<DayPage> {
     print("isFileExists $isGooglePhotoFileExists");
 
     var a = await updatePhoto();
-    setState(() {
-      if (isProcessedSensorFileExists) {
-        openSensorData(
-            "/storage/emulated/0/Android/data/com.example.test_location_2nd/files/processedSensorData/${formatDate(date2)}_processedSensor.csv");
-      } else {
-        updateSensorData();
-      }
-    });
+    // setState(() {
+    //   if (isProcessedSensorFileExists) {
+    //     openSensorData(
+    //         "/storage/emulated/0/Android/data/com.example.test_location_2nd/files/processedSensorData/${formatDate(date2)}_processedSensor.csv");
+    //   } else {
+    //     updateSensorData();
+    //   }
+    // }
+    // );
     print("updateUi");
     setState(() {});
     imagesForPlot = selectImagesForPlot();

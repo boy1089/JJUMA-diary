@@ -43,7 +43,6 @@ class DayPage extends StatefulWidget {
 }
 
 class _DayPageState extends State<DayPage> {
-
   late GoogleAccountManager googleAccountManager;
   late PermissionManager permissionManager;
   late PhotosLibraryApiClient photoLibraryApiClient;
@@ -121,7 +120,8 @@ class _DayPageState extends State<DayPage> {
                                   .build(context),
                             ),
                             polarPhotoImageContainers(imagesForPlot).build(),
-                            PolarPhotoDataPlot(googlePhotoDataForPlot).build(context),
+                            PolarPhotoDataPlot(googlePhotoDataForPlot)
+                                .build(context),
                           ])),
                 Center(
                   child: SizedBox(
@@ -176,7 +176,6 @@ class _DayPageState extends State<DayPage> {
 
     var a = await updatePhoto();
     setState(() {
-
       if (isProcessedSensorFileExists) {
         openSensorData(
             "/storage/emulated/0/Android/data/com.example.test_location_2nd/files/processedSensorData/${formatDate(date2)}_processedSensor.csv");
@@ -187,23 +186,23 @@ class _DayPageState extends State<DayPage> {
     print("updateUi");
     setState(() {});
     imagesForPlot = selectImagesForPlot();
-
   }
 
   List selectImagesForPlot() {
-    if(googlePhotoDataForPlot[0].length == 0){
+    if (googlePhotoDataForPlot[0].length == 0) {
       return [];
     }
-    imagesForPlot = [googlePhotoDataForPlot.first];
+    imagesForPlot = [googlePhotoDataForPlot.first, googlePhotoDataForPlot.last];
     int j = 0;
-    for(int i = 0; i < googlePhotoDataForPlot.length; i++){
-      if( (googlePhotoDataForPlot[i][0] - imagesForPlot[j][0]).abs() > 1.7){
+    for (int i = 0; i < googlePhotoDataForPlot.length; i++) {
+      if ((googlePhotoDataForPlot[i][0] - imagesForPlot[j][0]).abs() > 1.7) {
         imagesForPlot.add(googlePhotoDataForPlot[i]);
-        j +=1;
+        j += 1;
       }
     }
+
     return imagesForPlot;
-}
+  }
 
   void openFile(filepath) async {
     File f = File(filepath);
@@ -254,7 +253,7 @@ class _DayPageState extends State<DayPage> {
         Provider.of<NavigationIndexProvider>(context, listen: false).date;
 
     var sensorData = await this.sensorDataManager.openFile(date);
-    sensorDataModified = subsampleList(sensorData, 50);
+    sensorDataModified = modifyListForPlot(subsampleList(sensorData, 50));
     sensorDataForPlot = sensorDataModified;
     print("sensorDataForPlot : $googlePhotoDataForPlot");
 

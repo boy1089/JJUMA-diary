@@ -2,9 +2,8 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:googleapis/shared.dart';
 import 'package:test_location_2nd/Util/Util.dart';
-
-
-
+import 'package:transparent_image/transparent_image.dart';
+import 'package:extended_image/extended_image.dart';
 
 class polarPhotoImageContainers{
   var googlePhotoDataForPlot;
@@ -60,18 +59,29 @@ class polarPhotoImageContainer {
       // alignment for circular positioning
         child: Align(
           alignment: Alignment(xLocation, yLocation),
-          child: Container(
+          child: SizedBox(
             width : imageSize,
             height : imageSize,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              image : DecorationImage(
-                fit : BoxFit.cover,
-                image: NetworkImage(
-                  googlePhotoDataForPlot[1],
-                ),
+              // https://stackoverflow.com/questions/53866481/flutter-how-to-create-card-with-background-image
+              child : Card(
+                shape: CircleBorder(),
+                elevation : 0,
+                clipBehavior: Clip.antiAliasWithSaveLayer,
+
+                child: ExtendedImage.network(googlePhotoDataForPlot[1],
+                // centerSlice: Rect.fromCircle(center: Offset(10.0, 10.0), radius : 10.0),
+                  fit: BoxFit.cover,
+                enableLoadState: false,
+                cache : true,
+                )
+            //     child: FadeInImage.memoryNetwork(
+            //       fadeInDuration: Duration(milliseconds: 700),
+            //       fit: BoxFit.cover,
+            //       placeholder: kTransparentImage, image:
+            //         googlePhotoDataForPlot[1],
+            // ),
+
               )
-            )
 
             ),
           ),

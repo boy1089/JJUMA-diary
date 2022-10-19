@@ -61,6 +61,10 @@ dependencies:
   matrix_gesture_detector: ^0.1.0
   animations:
 
+  transparent_image:
+  cached_network_image:
+  extended_image:
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -20,6 +20,7 @@ class PolarSensorDataPlot {
 
   @override
   Widget build(BuildContext context) {
+    print("polarSensorDataPlot, $data");
     return Chart(
       data: data,
       variables: {

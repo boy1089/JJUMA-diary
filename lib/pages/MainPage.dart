@@ -87,9 +87,8 @@ class MainPageState extends State<MainPage> {
     MonthPage monthPage = MonthPage(a, dataManager);
 
     _widgetOptions = <Widget>[
-      dayPage,
-      // weekPage,
       monthPage,
+      dayPage,
     ];
   }
 
@@ -102,71 +101,78 @@ class MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     final PageController controller = PageController();
-    return Scaffold(
-      appBar: AppBar(
-        title: const Center(
-          child: Text(
-            "         Auto Diary",
-            style: TextStyle(color: Colors.black54),
+    return WillPopScope(
+      onWillPop: () async{
+        Provider.of<NavigationIndexProvider>(context, listen: false)
+            .setNavigationIndex(0);
+        return Navigator.canPop(context);
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Center(
+            child: Text(
+              "         Auto Diary",
+              style: TextStyle(color: Colors.black54),
+            ),
           ),
+          backgroundColor: Colors.white,
+          actions: [
+            Padding(
+                padding: const EdgeInsets.only(right: 20.0),
+                child: GestureDetector(
+                    onTap: () {},
+                    child: const Icon(Icons.settings_outlined,
+                        color: Colors.black54)))
+          ],
         ),
-        backgroundColor: Colors.white,
-        actions: [
-          Padding(
-              padding: const EdgeInsets.only(right: 20.0),
-              child: GestureDetector(
-                  onTap: () {},
-                  child: const Icon(Icons.settings_outlined,
-                      color: Colors.black54)))
-        ],
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-              icon: Icon(Icons.calendar_today), label: "Day"),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.calendar_view_month), label: "Month"),
-        ],
-        currentIndex: context.watch<NavigationIndexProvider>().navigationIndex,
-        onTap: (index) {
-          Provider.of<NavigationIndexProvider>(context, listen: false)
-              .setNavigationIndex(index);
-        },
-      ),
-      body: FutureBuilder(
-          future: readData,
-          builder: (BuildContext context, AsyncSnapshot snapshot) {
-            print(
-                "value from provider : ${context.watch<NavigationIndexProvider>().navigationIndex}");
-            if (snapshot.hasData == false) {
-              return Center(child: CircularProgressIndicator());
-            } else {
-              return PageTransitionSwitcher(
-                duration : Duration(milliseconds: 1000),
-                transitionBuilder:
-                    (child, primaryAnimation, secondaryAnimation) =>
+        bottomNavigationBar: BottomNavigationBar(
+          items: const <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+                icon: Icon(Icons.calendar_view_month), label: "Month"),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.calendar_today), label: "Day"),
+            ],
+          currentIndex: context.watch<NavigationIndexProvider>().navigationIndex,
+          onTap: (index) {
+            Provider.of<NavigationIndexProvider>(context, listen: false)
+                .setNavigationIndex(index);
+          },
+        ),
+        body: FutureBuilder(
+            future: readData,
+            builder: (BuildContext context, AsyncSnapshot snapshot) {
+              print(
+                  "value from provider : ${context.watch<NavigationIndexProvider>().navigationIndex}");
+              if (snapshot.hasData == false) {
+                return Center(child: CircularProgressIndicator());
+              } else {
+                return PageTransitionSwitcher(
+                  duration : Duration(milliseconds: 1000),
+                  transitionBuilder:
+                      (child, primaryAnimation, secondaryAnimation) =>
 
-                        FadeThroughTransition(
-                  animation: primaryAnimation,
-                  secondaryAnimation: secondaryAnimation,
-                  child: child,
-                ),
+                          FadeThroughTransition(
+                    animation: primaryAnimation,
+                    secondaryAnimation: secondaryAnimation,
+                    child: child,
+                  ),
 
-                child: _widgetOptions[
-                    context.watch<NavigationIndexProvider>().navigationIndex],
-              );
-            }
-          }),
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: () async {
-      //     // var photoResponse = await googlePhotoManager.getPhoto(photoLibraryApiClient, "20221004");
-      //     googlePhotoManager.getAndSaveAllPhoto(photoLibraryApiClient, "20220601", "20220602");
-      //
-      //     // print(googlePhotoManager.photoResponseAll.keys);
-      //     // print(googlePhotoManager.photoResponseAll);
-      //
-      //   },
-      // ),
+                  child: _widgetOptions[
+                      context.watch<NavigationIndexProvider>().navigationIndex],
+                );
+              }
+            }),
+        // floatingActionButton: FloatingActionButton(
+        //   onPressed: () async {
+        //     // var photoResponse = await googlePhotoManager.getPhoto(photoLibraryApiClient, "20221004");
+        //     googlePhotoManager.getAndSaveAllPhoto(photoLibraryApiClient, "20220601", "20220602");
+        //
+        //     // print(googlePhotoManager.photoResponseAll.keys);
+        //     // print(googlePhotoManager.photoResponseAll);
+        //
+        //   },
+        // ),
+      ),
     );
   }
 

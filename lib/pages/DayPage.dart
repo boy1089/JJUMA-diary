@@ -19,7 +19,7 @@ import 'dart:convert';
 import 'package:csv/csv.dart';
 import 'package:test_location_2nd/polarPhotoImageContainer.dart';
 import 'package:test_location_2nd/PolarPhotoDataPlot.dart';
-
+import 'package:test_location_2nd/global.dart';
 class DayPage extends StatefulWidget {
   GoogleAccountManager googleAccountManager;
   PermissionManager permissionManager;
@@ -58,7 +58,7 @@ class _DayPageState extends State<DayPage> {
 
   List<dynamic> googlePhotoLinks = [];
   List<DateTime> datesOfYear =
-      getDaysInBetween(DateTime.parse("20210101"), DateTime.now())
+      getDaysInBetween(DateTime.parse("${startYear}0101"), DateTime.now())
           .reversed
           .toList();
   Future readData = Future.delayed(const Duration(seconds: 1));

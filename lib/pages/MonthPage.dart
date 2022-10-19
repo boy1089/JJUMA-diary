@@ -61,19 +61,40 @@ class _MonthPageState extends State<MonthPage> {
                 }
               });
             },
-            child: YearWheelScrollView(2021).build(buildContext)),
+            child: AllWheelScrollView(2022, startYear).build(buildContext)),
       ),
     );
   }
 }
 
-class YearWheelScrollView {
+class AllWheelScrollView{
   int endYear = DateTime.now().year;
   int startYear = DateTime.now().year;
   int numberOfYears = 1;
-  YearWheelScrollView(@required int startYear) {
+  AllWheelScrollView(@required int endYear, @required int startYear){
+    this.endYear = endYear;
     this.startYear = startYear;
-    this.numberOfYears = endYear - startYear + 1;
+    this.numberOfYears = endYear - startYear +1;
+  }
+
+
+  @override
+  Widget build(BuildContext buildContext){
+    return ListView(
+        children: List.generate(
+            numberOfYears,
+                (int index) => YearArray(endYear - index)
+                .build(buildContext)));
+  }
+}
+
+
+class YearArray {
+  int year = DateTime.now().year;
+  int numberOfYears = 1;
+  YearArray(@required int year) {
+    this.year = year;
+    this.numberOfYears = year + 1;
   }
 
   final ScrollController _controller = ScrollController(
@@ -96,14 +117,27 @@ class YearWheelScrollView {
 
   @override
   Widget build(BuildContext buildContext) {
-    return ListView(
-        controller: _controller,
-        children: List.generate(
-            numberOfYears * 12,
-            (int index) => MonthArray(endYear - (index / 12).floor(),
-                    (DateTime.december - index - 1) % 12)
-                .build(buildContext)));
-  }
+    return Stack(
+      children: [
+        Positioned(
+          left: physicalWidth / 4,
+          top: physicalHeight / 3,
+          child: RotatedBox(
+              quarterTurns: 3,
+              child: _scaleFactor > 1
+                  ? Text("")
+                  : Text(DateFormat("yyyy").format(DateTime(year)),
+                style : TextStyle(fontSize : 25),
+              )),
+        ),
+        Column(
+        children : List.generate(
+            DateTime.monthsPerYear,
+                (int index) => MonthArray(year,
+                (DateTime.december - index - 1) % 12)
+                .build(buildContext)))],
+    );}
+
 }
 
 class MonthArray {

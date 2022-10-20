@@ -13,4 +13,4 @@ Map summaryOfGooglePhotoData = {};
 
 double monthPageScrollOffset = 0.0;
 
-int startYear = 2018;
+int startYear = 2010;

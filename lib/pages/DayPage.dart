@@ -20,6 +20,7 @@ import 'package:csv/csv.dart';
 import 'package:test_location_2nd/polarPhotoImageContainer.dart';
 import 'package:test_location_2nd/PolarPhotoDataPlot.dart';
 import 'package:test_location_2nd/global.dart';
+
 class DayPage extends StatefulWidget {
   GoogleAccountManager googleAccountManager;
   PermissionManager permissionManager;
@@ -137,7 +138,6 @@ class _DayPageState extends State<DayPage> {
                           squeeze: 1.8,
                           physics: const FixedExtentScrollPhysics(),
                           diameterRatio: 0.7,
-
                           onSelectedItemChanged: (index) => setState(() {
                                 context
                                     .read<NavigationIndexProvider>()
@@ -254,7 +254,6 @@ class _DayPageState extends State<DayPage> {
   void updateSensorData() async {
     String date =
         Provider.of<NavigationIndexProvider>(context, listen: false).date;
-
     var sensorData = await this.sensorDataManager.openFile(date);
     sensorDataModified = modifyListForPlot(subsampleList(sensorData, 50));
     sensorDataForPlot = sensorDataModified;

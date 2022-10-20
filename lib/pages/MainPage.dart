@@ -8,7 +8,6 @@ import 'package:test_location_2nd/Permissions/PermissionManager.dart';
 import 'package:test_location_2nd/Api/PhotoLibraryApiClient.dart';
 import 'package:test_location_2nd/Util/responseParser.dart';
 import 'package:test_location_2nd/Data/DataManager.dart';
-import 'WeekPage.dart';
 import 'MonthPage.dart';
 import 'DayPage.dart';
 import 'package:provider/provider.dart';
@@ -162,16 +161,15 @@ class MainPageState extends State<MainPage> {
                 );
               }
             }),
-        // floatingActionButton: FloatingActionButton(
-        //   onPressed: () async {
-        //     // var photoResponse = await googlePhotoManager.getPhoto(photoLibraryApiClient, "20221004");
-        //     googlePhotoManager.getAndSaveAllPhoto(photoLibraryApiClient, "20220601", "20220602");
-        //
-        //     // print(googlePhotoManager.photoResponseAll.keys);
-        //     // print(googlePhotoManager.photoResponseAll);
-        //
-        //   },
-        // ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () async {
+            // var photoResponse = await googlePhotoManager.getPhoto(photoLibraryApiClient, "20221004");
+            googlePhotoDataManager.getAndSaveAllPhoto(photoLibraryApiClient, "20150101", "20161231");
+            // print(googlePhotoManager.photoResponseAll.keys);
+            // print(googlePhotoManager.photoResponseAll);
+
+          },
+        ),
       ),
     );
   }

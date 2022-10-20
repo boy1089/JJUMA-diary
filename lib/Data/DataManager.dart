@@ -55,7 +55,6 @@ class DataManager {
     print("read ${file.path}");
     var data = await openFile(file.path);
 
-    print(data);
     for( int i = 0; i< data.length; i++){
       try {
         summaryOfGooglePhotoData[data[i][0].toString()] = data[i][1];

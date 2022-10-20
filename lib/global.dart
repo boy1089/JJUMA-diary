@@ -13,7 +13,7 @@ Map summaryOfGooglePhotoData = {};
 
 double monthPageScrollOffset = 0.0;
 
-int startYear = 2021;
+int startYear = 2013;
 
 double kMinimumTimeDifferenceBetweenImages = 1.7; //unit is hour
 

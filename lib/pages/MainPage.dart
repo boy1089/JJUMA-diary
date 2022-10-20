@@ -86,7 +86,12 @@ class MainPageState extends State<MainPage> {
         googlePhotoDataManager,
         sensorDataManager);
     MonthPage monthPage = MonthPage(a, dataManager);
-    HourPage hourPage = HourPage();
+    HourPage hourPage = HourPage(googleAccountManager,
+        permissionManager,
+        photoLibraryApiClient,
+        dataManager,
+        googlePhotoDataManager,
+        sensorDataManager);
 
     _widgetOptions = <Widget>[
       monthPage,
@@ -165,15 +170,15 @@ class MainPageState extends State<MainPage> {
                 );
               }
             }),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () async {
-            // var photoResponse = await googlePhotoManager.getPhoto(photoLibraryApiClient, "20221004");
-            googlePhotoDataManager.getAndSaveAllPhoto(
-                photoLibraryApiClient, "20170101", "20171231");
-            // print(googlePhotoManager.photoResponseAll.keys);
-            // print(googlePhotoManager.photoResponseAll);
-          },
-        ),
+        // floatingActionButton: FloatingActionButton(
+        //   onPressed: () async {
+        //     // var photoResponse = await googlePhotoManager.getPhoto(photoLibraryApiClient, "20221004");
+        //     googlePhotoDataManager.getAndSaveAllPhoto(
+        //         photoLibraryApiClient, "20170101", "20171231");
+        //     // print(googlePhotoManager.photoResponseAll.keys);
+        //     // print(googlePhotoManager.photoResponseAll);
+        //   },
+        // ),
       ),
     );
   }

@@ -24,12 +24,7 @@ class polarPhotoImageContainers{
       children: List<Widget>.generate(googlePhotoDataForPlot.length, (int index) => polarPhotoImageContainer(googlePhotoDataForPlot[index]).build())
     );
   }
-
-
 }
-
-
-
 
 class polarPhotoImageContainer {
   var googlePhotoDataForPlot;

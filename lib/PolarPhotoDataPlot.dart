@@ -19,11 +19,6 @@ class PolarPhotoDataPlot {
       dataForPlot = googlePhotoDataForPlot;
       isDataValid = true;
     }
-
-
-
-
-
   } // {data = ['a'];}
 
   Color ColorForSensorDataOutline = Colors.lightBlueAccent;

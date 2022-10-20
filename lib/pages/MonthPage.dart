@@ -120,7 +120,7 @@ class YearArray {
     return Stack(
       children: [
         Positioned(
-          left: physicalWidth / 4,
+          left: physicalWidth / 6,
           top: physicalHeight / 3,
           child: RotatedBox(
               quarterTurns: 3,
@@ -249,6 +249,7 @@ class DayButton {
                 buildContext
                     .read<NavigationIndexProvider>()
                     .setDate(selectedDate);
+                // Provider.of<NavigationIndexProvider>(buildContext, listen: false).date = DateFormat("yyyyMMdd").format(today);
               },
               constraints: BoxConstraints(
                   minWidth: width * _scaleFactor,

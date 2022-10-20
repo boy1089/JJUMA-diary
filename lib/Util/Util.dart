@@ -103,19 +103,22 @@ const path_phonecall = '/sdcard/Music/TPhoneCallRecords';
 
 
 
-int a = 50;
+int a = 255;
 List<Color> get colorsHotCold => [
-      Color.fromARGB(a, 100, 20, 0),
-      Color.fromARGB(a, 80, 20, 0),
-      Color.fromARGB(a, 60, 20, 0),
-      Color.fromARGB(a, 40, 20, 0),
-      Color.fromARGB(a, 20, 20, 0),
-      Color.fromARGB(a, 0, 20, 0),
-      Color.fromARGB(a, 0, 20, 20),
-      Color.fromARGB(a, 0, 20, 40),
-      Color.fromARGB(a, 0, 20, 60),
-      Color.fromARGB(a, 0, 20, 80),
+      Colors.deepOrangeAccent,
+      // Color.fromARGB(a, 220, 255, 0),
+      // Color.fromARGB(a, 200, 255, 0),
+      // Color.fromARGB(a, 180, 255, 0),
+      // Color.fromARGB(a, 160, 255, 0),
+      // Color.fromARGB(a, 140, 255, 0),
+      // Color.fromARGB(a, 120, 255, 20),
+      // Color.fromARGB(a, 100, 255, 40),
+      // Color.fromARGB(a, 80, 255, 60),
+      Colors.blue,
     ];
+
+
+// List<Color> colorsLp = Color.lerp(Colors.deepOrange, Colors.blueAccent, 2.0);
 
 List<List<double>> dummyPhotoData = [
   [0, kPhotoPlotRadius],
@@ -124,6 +127,8 @@ List<List<double>> dummyPhotoData = [
   [18, kPhotoPlotRadius],
   [21, kPhotoPlotRadius],
 ];
+
+
 
 /***
  * when reading csv file with open file, resulting list is
@@ -144,14 +149,6 @@ List<List<double>> dummyPhotoData = [
 
 List modifyListForPlot(List fields,
     {bool filterTime = false, bool executeTranspose = false}) {
-  //when empty list is input, return list with default value when
-  // if (fields.length < 2) {
-  //   // return List<List<dynamic>>.generate(fields[0].length, (int index) => [0, 1]);
-  //   List<List<dynamic>> dummyData = [
-  //     [0, "https://img.icons8.com/ios-filled/344/no-image.png", 3]
-  //   ];
-  //   return dummyData;
-  // }
   //transpose data if needed
   if (executeTranspose) {
     fields = transpose(fields);
@@ -161,11 +158,13 @@ List modifyListForPlot(List fields,
   if (filterTime) listFiltered = filterList(fields);
 
   // convert time string or timestamp into int
+  print("listfiltered : $listFiltered");
   List result = convertStringTimeToInt(listFiltered);
-  print("result shape : ${result.shape}");
+  print("convertTime : $result");
   List listRadial = List<List<double>>.generate(
       result.shape[0], (int index) => [kThirdPolarPlotSize]);
   result = Matrix2d().concatenate(result, listRadial, axis: 1);
+  print("result : $result");
   return result;
 }
 
@@ -192,13 +191,16 @@ List filterList(List input) {
 }
 
 List convertStringTimeToInt(List fields) {
-  List listTime = slice(fields, [1, fields.shape[0]], [0, 1]).flatten;
+  fields = fields.sublist(1);
+  print(fields);
+  List listTime = slice(fields, [0, fields.shape[0]], [0, 1]).flatten;
+  print("listTime : $listTime");
   listTime = List<List<double>>.generate(listTime.length,
       (int index) => [convertStringTimeToDouble(listTime[index])]);
 
-  List listValues = slice(fields, [1, fields.shape[0]], [1, fields.shape[1]]);
-
+  List listValues = slice(fields, [0, fields.shape[0]], [1, fields.shape[1]]);
   List output = const Matrix2d().concatenate(listTime, listValues, axis: 1);
+
   return output;
 }
 

@@ -24,7 +24,7 @@ class PolarSensorDataPlot {
 
   @override
   Widget build(BuildContext context) {
-    print("polarSensorDataPlot, $data");
+    print("polarSensorDataPlot, ${data[0]}, ${data[0].length}");
     return Stack(
       children: [
         Chart(
@@ -56,35 +56,25 @@ class PolarSensorDataPlot {
             scale: LinearScale(min: 0, max: 24, tickCount: 5),
           ),
           'dummy': Variable(
-            accessor: (List datum) => datum[6] as num,
+            accessor: (List datum) => datum[data[0].length-1] as num,
           ),
           'latitude': Variable(
-            accessor: (List datum) => datum[1] as num,
+            accessor: (List datum) => (datum[1] - 37.362791)*5.abs() as num,
           ),
           'longitude': Variable(
             accessor: (List datum) => datum[2] as num,
           ),
-          'accelX': Variable(
-            accessor: (List datum) => datum[3] as num,
-          ),
-          'accelY': Variable(
-            accessor: (List datum) => datum[4] as num,
-          ),
-          'accelZ': Variable(
-            accessor: (List datum) => datum[5] as num,
-          ),
+
         },
         elements: [
           PointElement(
-            size: SizeAttr(variable: 'accelX',
-                values: data ==dummyData?
-                [0, 1]
-                :[6, 7]),
+
             color: ColorAttr(
               variable: 'latitude',
               values: data==dummyData
                     ?[ColorForDummyData, ColorForDummyData ]
                 :colorsHotCold
+
 
             ),
           ),

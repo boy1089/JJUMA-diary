@@ -186,14 +186,16 @@ class _DayPageState extends State<DayPage> {
       print("while updating Ui, error is occrued : $e");
     }
 
-    setState(() {
-      if (isProcessedSensorFileExists) {
-        openSensorData(
-            "/storage/emulated/0/Android/data/com.example.test_location_2nd/files/processedSensorData/${formatDate(date2)}_processedSensor.csv");
-      } else {
-        updateSensorData();
-      }
-    });
+    // setState(() {
+    //   if (isProcessedSensorFileExists) {
+    //     openSensorData(
+    //         "/storage/emulated/0/Android/data/com.example.test_location_2nd/files/processedSensorData/${formatDate(date2)}_processedSensor.csv");
+    //   } else {
+    //     updateSensorData();
+    //   }
+    // });
+    updateSensorData();
+
     setState(() {});
     imagesForPlot = selectImagesForPlot();
     print("updateUi done");
@@ -266,8 +268,8 @@ class _DayPageState extends State<DayPage> {
     var sensorData = await this.sensorDataManager.openFile(date);
     sensorDataModified = modifyListForPlot(subsampleList(sensorData, 50));
     sensorDataForPlot = sensorDataModified;
-    print("sensorDataForPlot : $googlePhotoDataForPlot");
+    print("sensorDataForPlot : $sensorDataForPlot");
 
-    sensorDataManager.writeSensorData(date, sensorDataModified);
+    // sensorDataManager.writeSensorData(date, sensorDataModified);
   }
 }

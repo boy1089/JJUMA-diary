@@ -101,19 +101,7 @@ const event_color_goingOut = Colors.red;
 const event_color_backHome = Colors.blue;
 const path_phonecall = '/sdcard/Music/TPhoneCallRecords';
 
-List<List<dynamic>> dummyData = [
-  [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-  [0.0, 1.5, 0.0, 0.0, 0.0, 0.0, 0.0],
-  [2.0, 1.5, 0.0, 0.0, 0.0, 0.0, 0.0],
-  [4.0, 1.5, 0.0, 0.0, 0.0, 0.0, 0.0],
-  [6.0, 1.5, 0.0, 0.0, 0.0, 0.0, 0.0],
-  [8.0, 1.5, 0.0, 0.0, 0.0, 0.0, 0.0],
-  [10.0, 1.5, 0.0, 0.0, 0.0, 0.0, 0.0],
-  [12.0, 1.5, 0.0, 0.0, 0.0, 0.0, 0.0],
-  [14.0, 1.5, 0.0, 0.0, 0.0, 0.0, 0.0],
-  [16.0, 1.5, 0.0, 0.0, 0.0, 0.0, 0.0],
-  [18.0, 1.5, 0.0, 0.0, 0.0, 0.0, 0.0],
-];
+
 
 int a = 50;
 List<Color> get colorsHotCold => [
@@ -157,13 +145,13 @@ List<List<double>> dummyPhotoData = [
 List modifyListForPlot(List fields,
     {bool filterTime = false, bool executeTranspose = false}) {
   //when empty list is input, return list with default value when
-  if (fields.length < 2) {
-    // return List<List<dynamic>>.generate(fields[0].length, (int index) => [0, 1]);
-    List<List<dynamic>> dummyData = [
-      [0, "https://img.icons8.com/ios-filled/344/no-image.png", 3]
-    ];
-    return dummyData;
-  }
+  // if (fields.length < 2) {
+  //   // return List<List<dynamic>>.generate(fields[0].length, (int index) => [0, 1]);
+  //   List<List<dynamic>> dummyData = [
+  //     [0, "https://img.icons8.com/ios-filled/344/no-image.png", 3]
+  //   ];
+  //   return dummyData;
+  // }
   //transpose data if needed
   if (executeTranspose) {
     fields = transpose(fields);

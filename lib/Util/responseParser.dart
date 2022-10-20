@@ -21,12 +21,11 @@ List<List<String>> parseResponse(response) {
 
       //9 hour is added to make timezone correct in korea.
       DateTime datetime = DateTime.parse(time).add(Duration(hours : 9));
-      time = DateFormat('yyyyMMdd_hhmmss').format(datetime);
+      time = DateFormat('yyyyMMdd_HHmmss').format(datetime);
         datetimes.add(time);
       print("$time, $datetime");
 
     }
-
 
       if (responseToString[i].contains("https://lh3.googleusercontent.com/")) {
       links.add(responseToString[i].substring(10));

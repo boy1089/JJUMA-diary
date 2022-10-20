@@ -65,9 +65,10 @@ class _DayPageState extends State<DayPage> {
   Future readData = Future.delayed(const Duration(seconds: 1));
   Future update = Future.delayed(const Duration(seconds: 1));
   List imagesForPlot = [];
+
   Future<List<dynamic>> _fetchData() async {
-    await Future.delayed(const Duration(microseconds: 100));
     await updateUi();
+
     return googlePhotoLinks;
   }
 
@@ -175,20 +176,27 @@ class _DayPageState extends State<DayPage> {
         .exists();
 
     print("isFileExists $isGooglePhotoFileExists");
+    googlePhotoLinks = [];
+    imagesForPlot = [];
+    googlePhotoDataForPlot = [[]];
 
-    var a = await updatePhoto();
-    // setState(() {
-    //   if (isProcessedSensorFileExists) {
-    //     openSensorData(
-    //         "/storage/emulated/0/Android/data/com.example.test_location_2nd/files/processedSensorData/${formatDate(date2)}_processedSensor.csv");
-    //   } else {
-    //     updateSensorData();
-    //   }
-    // }
-    // );
-    print("updateUi");
+    try {
+      var a = await updatePhoto();
+    } catch (e) {
+      print("while updating Ui, error is occrued : $e");
+    }
+
+    setState(() {
+      if (isProcessedSensorFileExists) {
+        openSensorData(
+            "/storage/emulated/0/Android/data/com.example.test_location_2nd/files/processedSensorData/${formatDate(date2)}_processedSensor.csv");
+      } else {
+        updateSensorData();
+      }
+    });
     setState(() {});
     imagesForPlot = selectImagesForPlot();
+    print("updateUi done");
   }
 
   List selectImagesForPlot() {
@@ -198,7 +206,8 @@ class _DayPageState extends State<DayPage> {
     imagesForPlot = [googlePhotoDataForPlot.first, googlePhotoDataForPlot.last];
     int j = 0;
     for (int i = 0; i < googlePhotoDataForPlot.length; i++) {
-      if ((googlePhotoDataForPlot[i][0] - imagesForPlot[j][0]).abs() > 1.7) {
+      if ((googlePhotoDataForPlot[i][0] - imagesForPlot[j][0]).abs() >
+          kMinimumTimeDifferenceBetweenImages) {
         imagesForPlot.add(googlePhotoDataForPlot[i]);
         j += 1;
       }

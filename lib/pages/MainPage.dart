@@ -14,6 +14,7 @@ import 'package:provider/provider.dart';
 import 'package:test_location_2nd/StateProvider.dart';
 import 'package:test_location_2nd/GooglePhotoDataManager.dart';
 import 'package:test_location_2nd/Sensor/SensorDataManager.dart';
+import 'HourPage.dart';
 
 //TODO : put shared data in provider(date,
 //TODO : make consistency on datetime handling - datetime or date?
@@ -64,6 +65,7 @@ class MainPageState extends State<MainPage> {
   int a = 0;
   late MonthPage monthPage;
   late DayPage dayPage;
+  late HourPage hourPage;
 
   @override
   void initState() {
@@ -84,10 +86,12 @@ class MainPageState extends State<MainPage> {
         googlePhotoDataManager,
         sensorDataManager);
     MonthPage monthPage = MonthPage(a, dataManager);
+    HourPage hourPage = HourPage();
 
     _widgetOptions = <Widget>[
       monthPage,
       dayPage,
+      hourPage,
     ];
   }
 
@@ -101,7 +105,7 @@ class MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     final PageController controller = PageController();
     return WillPopScope(
-      onWillPop: () async{
+      onWillPop: () async {
         Provider.of<NavigationIndexProvider>(context, listen: false)
             .setNavigationIndex(0);
         return Navigator.canPop(context);
@@ -130,8 +134,10 @@ class MainPageState extends State<MainPage> {
                 icon: Icon(Icons.calendar_view_month), label: "Month"),
             BottomNavigationBarItem(
                 icon: Icon(Icons.calendar_today), label: "Day"),
-            ],
-          currentIndex: context.watch<NavigationIndexProvider>().navigationIndex,
+            BottomNavigationBarItem(icon: Icon(Icons.timer), label: "Hour"),
+          ],
+          currentIndex:
+              context.watch<NavigationIndexProvider>().navigationIndex,
           onTap: (index) {
             Provider.of<NavigationIndexProvider>(context, listen: false)
                 .setNavigationIndex(index);
@@ -146,16 +152,14 @@ class MainPageState extends State<MainPage> {
                 return Center(child: CircularProgressIndicator());
               } else {
                 return PageTransitionSwitcher(
-                  duration : Duration(milliseconds: 1000),
+                  duration: Duration(milliseconds: 1000),
                   transitionBuilder:
                       (child, primaryAnimation, secondaryAnimation) =>
-
                           FadeThroughTransition(
                     animation: primaryAnimation,
                     secondaryAnimation: secondaryAnimation,
                     child: child,
                   ),
-
                   child: _widgetOptions[
                       context.watch<NavigationIndexProvider>().navigationIndex],
                 );
@@ -164,10 +168,10 @@ class MainPageState extends State<MainPage> {
         floatingActionButton: FloatingActionButton(
           onPressed: () async {
             // var photoResponse = await googlePhotoManager.getPhoto(photoLibraryApiClient, "20221004");
-            googlePhotoDataManager.getAndSaveAllPhoto(photoLibraryApiClient, "20150101", "20161231");
+            googlePhotoDataManager.getAndSaveAllPhoto(
+                photoLibraryApiClient, "20150101", "20161231");
             // print(googlePhotoManager.photoResponseAll.keys);
             // print(googlePhotoManager.photoResponseAll);
-
           },
         ),
       ),

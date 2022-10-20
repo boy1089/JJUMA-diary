@@ -6,7 +6,25 @@ import 'global.dart';
 
 class PolarPhotoDataPlot {
   var googlePhotoDataForPlot;
-  PolarPhotoDataPlot(this.googlePhotoDataForPlot); // {data = ['a'];}
+
+  var dataForPlot;
+  var isDataValid = false;
+  PolarPhotoDataPlot(this.googlePhotoDataForPlot){
+
+
+    if (googlePhotoDataForPlot[0].length == 0){
+      dataForPlot = dummyData;
+      isDataValid = false;
+    } else{
+      dataForPlot = googlePhotoDataForPlot;
+      isDataValid = true;
+    }
+
+
+
+
+
+  } // {data = ['a'];}
 
   Color ColorForSensorDataOutline = Colors.lightBlueAccent;
   Color ColorForDummyData = Colors.lightBlueAccent;
@@ -40,12 +58,12 @@ class PolarPhotoDataPlot {
               coord: PolarCoord(),
             ),
             Chart(
-            data: ((googlePhotoDataForPlot[0].length == 0))
-                ? dummyData
-                : googlePhotoDataForPlot.sublist(0),
+            data: dataForPlot,
             elements: [
               PointElement(
-                size: SizeAttr(variable: 'dummy', values: [7, 8]),
+                size: SizeAttr(variable: 'dummy',
+                    values: isDataValid?
+                    [7, 8]:[0, 1]),
               ),
             ],
             variables: {

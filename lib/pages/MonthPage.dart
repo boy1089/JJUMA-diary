@@ -245,7 +245,7 @@ class DayButton {
                 print("selectedDate : $selectedDate");
                 buildContext
                     .read<NavigationIndexProvider>()
-                    .setNavigationIndex(2);
+                    .setNavigationIndex(1);
                 buildContext
                     .read<NavigationIndexProvider>()
                     .setDate(selectedDate);

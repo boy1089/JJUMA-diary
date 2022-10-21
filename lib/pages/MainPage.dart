@@ -77,14 +77,14 @@ class MainPageState extends State<MainPage> {
     dataManager = widget.dataManager;
     googlePhotoDataManager = widget.googlePhotoDataManager;
     sensorDataManager = widget.sensorDataManager;
-
-    DayPage dayPage = DayPage(
-        googleAccountManager,
-        permissionManager,
-        photoLibraryApiClient,
-        dataManager,
-        googlePhotoDataManager,
-        sensorDataManager);
+    //
+    // DayPage dayPage = DayPage(
+    //     googleAccountManager,
+    //     permissionManager,
+    //     photoLibraryApiClient,
+    //     dataManager,
+    //     googlePhotoDataManager,
+    //     sensorDataManager);
     MonthPage monthPage = MonthPage(a, dataManager);
     HourPage hourPage = HourPage(googleAccountManager,
         permissionManager,
@@ -95,7 +95,7 @@ class MainPageState extends State<MainPage> {
 
     _widgetOptions = <Widget>[
       monthPage,
-      dayPage,
+      // dayPage,
       hourPage,
     ];
   }
@@ -136,10 +136,10 @@ class MainPageState extends State<MainPage> {
         bottomNavigationBar: BottomNavigationBar(
           items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(
-                icon: Icon(Icons.calendar_view_month), label: "Month"),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.calendar_today), label: "Day"),
-            BottomNavigationBarItem(icon: Icon(Icons.timer), label: "Hour"),
+                icon: Icon(Icons.calendar_month_outlined), label: "Month"),
+            // BottomNavigationBarItem(
+            //     icon: Icon(Icons.calendar_today), label: "Day"),
+            BottomNavigationBarItem(icon: Icon(Icons.calendar_today_outlined), label: "Day"),
           ],
           currentIndex:
               context.watch<NavigationIndexProvider>().navigationIndex,

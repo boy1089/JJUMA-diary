@@ -93,19 +93,26 @@ class polarPhotoImageContainer {
           child: AnimatedRotation(
             duration: Duration(milliseconds: 100),
             turns: -angle,
-            child: Card(
+            child: GestureDetector(
+              onTap: (){
+                print("gesture detected1");
+                if(angle != 0.0) {
 
-
-                shape: CircleBorder(),
-                elevation: 4.0,
-                clipBehavior: Clip.antiAliasWithSaveLayer,
-                child: ExtendedImage.network(
-                  googlePhotoDataForPlot[1],
-                  // centerSlice: Rect.fromCircle(center: Offset(10.0, 10.0), radius : 10.0),
-                  fit: BoxFit.cover,
-                  enableLoadState: false,
-                  cache: true,
-                )
+                  imageSize = 300;
+                }
+              },
+              child: Card(
+                  shape: CircleBorder(),
+                  elevation: 4.0,
+                  clipBehavior: Clip.antiAliasWithSaveLayer,
+                  child: ExtendedImage.network(
+                    googlePhotoDataForPlot[1],
+                    // centerSlice: Rect.fromCircle(center: Offset(10.0, 10.0), radius : 10.0),
+                    fit: BoxFit.cover,
+                    enableLoadState: false,
+                    cache: true,
+                  )
+              ),
             ),
           )),
     );

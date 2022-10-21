@@ -81,6 +81,8 @@ List<String> kTimeStamps2hour_filtered = [
   '22',
 ];
 
+Size standardScreenSize = Size(411.4, 707.4);
+
 var physicalScreenSize = window.physicalSize / window.devicePixelRatio;
 var physicalWidth = physicalScreenSize.width;
 var physicalHeight = physicalScreenSize.height;

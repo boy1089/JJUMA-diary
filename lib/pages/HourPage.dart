@@ -20,6 +20,7 @@ import 'package:csv/csv.dart';
 import 'package:test_location_2nd/polarPhotoImageContainer.dart';
 import 'package:test_location_2nd/PolarPhotoDataPlot.dart';
 import 'package:test_location_2nd/global.dart';
+import 'dart:math';
 
 class HourPage extends StatefulWidget {
   GoogleAccountManager googleAccountManager;
@@ -66,12 +67,6 @@ class _HourPageState extends State<HourPage> {
   Future update = Future.delayed(const Duration(seconds: 1));
   List imagesForPlot = [];
 
-  Future<List<dynamic>> _fetchData() async {
-    // await updateUi();
-
-    return googlePhotoLinks;
-  }
-
   @override
   void initState() {
     super.initState();
@@ -81,53 +76,105 @@ class _HourPageState extends State<HourPage> {
     dataManager = widget.dataManager;
     googlePhotoDataManager = widget.googlePhotoDataManager;
     sensorDataManager = widget.sensorDataManager;
-    readData = _fetchData();
     // update = updateUi();
     print("DayPage, after initState : ${googlePhotoDataForPlot}");
+
+    double leftPositionZoomIn = -graphBackgroundWidth * (3 / 4);
+    left = leftPositionZoomOut;
+    top = topPositionZoomOut;
   }
-  var scaleFactor = 1;
-  bool selected = false;
+
+  var left = 200.0;
+  double top = 0;
+  bool isZoomIn = false;
+  double magnification = 1;
+  double _angle = 0;
+  int animationTime = 200;
+  double leftPositionZoomOut = 30.7;
+  double leftPositionZoomIn = -700;
+  double topPositionZoomOut = 105.7;
+  double topPositionZoomIn = 105.7;
+  double magnificationZoomIn = 3;
+  double magnificationZoomOut = 1;
+  double angleZoomIn = 0;
+  double angleZoomOut = 0;
+  double firstContainerSize = 1000;
+  double graphBackgroundWidth = 350;
+  double graphBackgroundHeight = 350;
+
   @override
   Widget build(BuildContext context) {
     var date =
         Provider.of<NavigationIndexProvider>(context, listen: false).date;
     print("date : $date");
-    return FutureBuilder(
-        future: readData,
-        builder: (BuildContext context, AsyncSnapshot snapshot) {
-          return Scaffold(
+    return Scaffold(
+      body: GestureDetector(
+        onTapUp: (details){
+          // print(details.globalPosition);
+          var dx = details.globalPosition.dx  - physicalWidth/2;
+          var dy = details.globalPosition.dy - physicalHeight/2;
 
-            body: GestureDetector(
-              onTap: (){
-                setState((){selected = !selected;});
-              },
-              child: Container(
-                width : 1000,
-                height : 1000,
-                child: Stack(
-                  children: [AnimatedPositioned(
-                    duration : Duration(milliseconds:300),
-                  // top : selected? physicalWidth/1.2:physicalWidth/2,
-                  left : selected?-600.0:0,
+          angleZoomIn = - atan2(dy / sqrt(dx*dx + dy*dy) , dx/ sqrt(dx*dx + dy*dy)) / (2*pi);
 
-                    child: AnimatedContainer(
-                      child: Card(shape: CircleBorder(),),
-                      duration : Duration(milliseconds : 300),
-                        width : selected? physicalWidth*2:physicalWidth,
-                        height : selected? physicalHeight/1.2:physicalHeight/1.2,
-                        color: Colors.black),
-                  ),]
-                ),
-              ),
+          print("$dx, $dy, $angleZoomIn");
+
+          isZoomIn = !isZoomIn;
+          left = isZoomIn ? leftPositionZoomIn : leftPositionZoomOut;
+          top = isZoomIn ? topPositionZoomIn : topPositionZoomOut;
+          magnification =
+          isZoomIn ? magnificationZoomIn : magnificationZoomOut;
+          _angle = isZoomIn? angleZoomIn: angleZoomOut;
+          setState((){});
+          },
+        // onTap: () {
+        //   print('aaa');
+        //   setState(() {
+        //     print('tapped');
+        //     isZoomIn = !isZoomIn;
+        //     left = isZoomIn ? leftPositionZoomIn : leftPositionZoomOut;
+        //     top = isZoomIn ? topPositionZoomIn : topPositionZoomOut;
+        //     magnification =
+        //         isZoomIn ? magnificationZoomIn : magnificationZoomOut;
+        //     _angle = angleZoomOut;
+        //   });
+        // },
+        child: Container(
+          width: firstContainerSize,
+          height: firstContainerSize,
+          child: Stack(alignment: Alignment.center, children: [
+            AnimatedPositioned(
+              width: graphBackgroundWidth * magnification,
+              height: graphBackgroundHeight * magnification,
+              duration: Duration(milliseconds: animationTime),
+              left: left,
+              // top : top,
+              curve: Curves.fastOutSlowIn,
+              child: AnimatedRotation(
+                  turns: _angle,
+                  duration: Duration(milliseconds: animationTime-100),
+                  child: Stack(
+                    children: [
+                      PolarSensorDataPlot(sensorDataForPlot[0].length == 0
+                              ? dummyData
+                              : sensorDataForPlot)
+                          .build(context),
+                      Container(
+                        width: 1000,
+                        height: 1000,
+                        child:
+                            Card(color: Colors.transparent, elevation: 0.0),
+                      )
+                    ],
+                  )),
             ),
-
-            floatingActionButton: FloatingActionButton(
-              onPressed: (){
-
-              },
-            ),
-          );
-        });
+          ]),
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          print(physicalScreenSize);
+        },
+      ),
+    );
   }
-
 }

@@ -26,7 +26,6 @@ class PolarPhotoDataPlot {
   @override
   Widget build(BuildContext context) {
     return Container(
-        margin: const EdgeInsets.only(top: 10),
         width: kThirdPolarPlotSize,
         height: kThirdPolarPlotSize,
         child: Stack(

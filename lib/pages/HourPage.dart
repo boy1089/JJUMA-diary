@@ -76,13 +76,19 @@ class _HourPageState extends State<HourPage> {
     dataManager = widget.dataManager;
     googlePhotoDataManager = widget.googlePhotoDataManager;
     sensorDataManager = widget.sensorDataManager;
-    // update = updateUi();
+    update = updateUi();
     print("DayPage, after initState : ${googlePhotoDataForPlot}");
-
+    readData = _fetchData();
     double leftPositionZoomIn = -graphBackgroundWidth * (3 / 4);
     left = leftPositionZoomOut;
     top = topPositionZoomOut;
   }
+
+  Future<List<dynamic>> _fetchData() async {
+    await updateUi();
+    return googlePhotoLinks;
+  }
+
 
   var left = 200.0;
   double top = 0;
@@ -91,10 +97,10 @@ class _HourPageState extends State<HourPage> {
   double _angle = 0;
   int animationTime = 200;
   double leftPositionZoomOut = 30.7;
-  double leftPositionZoomIn = -700;
+  double leftPositionZoomIn = -2000;   // mag5 : -1400, mag7, -2000
   double topPositionZoomOut = 105.7;
   double topPositionZoomIn = 105.7;
-  double magnificationZoomIn = 3;
+  double magnificationZoomIn = 7;
   double magnificationZoomOut = 1;
   double angleZoomIn = 0;
   double angleZoomOut = 0;
@@ -102,42 +108,50 @@ class _HourPageState extends State<HourPage> {
   double graphBackgroundWidth = 350;
   double graphBackgroundHeight = 350;
 
+
+
+
   @override
   Widget build(BuildContext context) {
     var date =
         Provider.of<NavigationIndexProvider>(context, listen: false).date;
     print("date : $date");
-    return Scaffold(
-      body: GestureDetector(
-        onTapUp: (details){
-          // print(details.globalPosition);
-          var dx = details.globalPosition.dx  - physicalWidth/2;
-          var dy = details.globalPosition.dy - physicalHeight/2;
 
-          angleZoomIn = - atan2(dy / sqrt(dx*dx + dy*dy) , dx/ sqrt(dx*dx + dy*dy)) / (2*pi);
+    return    FutureBuilder(
+        future: readData,
+        builder: (BuildContext context, AsyncSnapshot snapshot) {return
+          Scaffold(
+      body: !snapshot.hasData
+              ?Center(
+          child: SizedBox(
+              width: 140,
+              height: 140,
+              child: CircularProgressIndicator(
+                strokeWidth: 10,
+              )))
+
+
+              :GestureDetector(
+        onTapUp: (details) {
+          // print(details.globalPosition);
+          var dx = details.globalPosition.dx - physicalWidth / 2;
+          var dy = details.globalPosition.dy - physicalHeight / 2;
+
+          angleZoomIn = -atan2(
+                  dy / sqrt(dx * dx + dy * dy), dx / sqrt(dx * dx + dy * dy)) /
+              (2 * pi) *
+              0.98;
 
           print("$dx, $dy, $angleZoomIn");
 
           isZoomIn = !isZoomIn;
           left = isZoomIn ? leftPositionZoomIn : leftPositionZoomOut;
           top = isZoomIn ? topPositionZoomIn : topPositionZoomOut;
-          magnification =
-          isZoomIn ? magnificationZoomIn : magnificationZoomOut;
-          _angle = isZoomIn? angleZoomIn: angleZoomOut;
-          setState((){});
-          },
-        // onTap: () {
-        //   print('aaa');
-        //   setState(() {
-        //     print('tapped');
-        //     isZoomIn = !isZoomIn;
-        //     left = isZoomIn ? leftPositionZoomIn : leftPositionZoomOut;
-        //     top = isZoomIn ? topPositionZoomIn : topPositionZoomOut;
-        //     magnification =
-        //         isZoomIn ? magnificationZoomIn : magnificationZoomOut;
-        //     _angle = angleZoomOut;
-        //   });
-        // },
+          magnification = isZoomIn ? magnificationZoomIn : magnificationZoomOut;
+          _angle = isZoomIn ? angleZoomIn : angleZoomOut;
+          Provider.of<NavigationIndexProvider>(context, listen: false).setZoomInRotationAngle(_angle);
+          setState(() {});
+        },
         child: Container(
           width: firstContainerSize,
           height: firstContainerSize,
@@ -151,18 +165,22 @@ class _HourPageState extends State<HourPage> {
               curve: Curves.fastOutSlowIn,
               child: AnimatedRotation(
                   turns: _angle,
-                  duration: Duration(milliseconds: animationTime-100),
+                  duration: Duration(milliseconds: animationTime - 100),
                   child: Stack(
                     children: [
                       PolarSensorDataPlot(sensorDataForPlot[0].length == 0
                               ? dummyData
                               : sensorDataForPlot)
                           .build(context),
+
+                      PolarPhotoDataPlot(googlePhotoDataForPlot).build(context),
+                      // polarPhotoImageContainers(imagesForPlot).build(context),
+                      polarPhotoImageContainers(imagesForPlot).build(context),
+
                       Container(
                         width: 1000,
                         height: 1000,
-                        child:
-                            Card(color: Colors.transparent, elevation: 0.0),
+                        child: Card(color: Colors.transparent, elevation: 0.0),
                       )
                     ],
                   )),
@@ -170,11 +188,106 @@ class _HourPageState extends State<HourPage> {
           ]),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          print(physicalScreenSize);
-        },
-      ),
-    );
+    );});
+  }
+
+  Future updateUi() async {
+    var date2 = DateTime.parse(
+        Provider.of<NavigationIndexProvider>(context, listen: false).date);
+    bool isGooglePhotoFileExists = await File(
+        "/storage/emulated/0/Android/data/com.example.test_location_2nd/files/googlePhotoData/${formatDate(date2)}_googlePhoto.csv")
+        .exists();
+    bool isProcessedSensorFileExists = await File(
+        "/storage/emulated/0/Android/data/com.example.test_location_2nd/files/processedSensorData/${formatDate(date2)}_processedSensor.csv")
+        .exists();
+
+    print("isFileExists $isGooglePhotoFileExists");
+    googlePhotoLinks = [];
+    imagesForPlot = [];
+    googlePhotoDataForPlot = [[]];
+
+    try {
+      var a = await updatePhoto();
+    } catch (e) {
+      print("while updating Ui, error is occrued : $e");
+    }
+
+    updateSensorData();
+
+    setState(() {});
+    imagesForPlot = selectImagesForPlot();
+    print("updateUi done");
+  }
+
+  List selectImagesForPlot() {
+    if (googlePhotoDataForPlot[0].length == 0) {
+      return [];
+    }
+    imagesForPlot = [googlePhotoDataForPlot.first, googlePhotoDataForPlot.last];
+    int j = 0;
+    for (int i = 0; i < googlePhotoDataForPlot.length; i++) {
+      if ((googlePhotoDataForPlot[i][0] - imagesForPlot[j][0]).abs() >
+          kMinimumTimeDifferenceBetweenImages) {
+        imagesForPlot.add(googlePhotoDataForPlot[i]);
+        j += 1;
+      }
+    }
+
+    return imagesForPlot;
+  }
+
+  void openFile(filepath) async {
+    File f = File(filepath);
+    debugPrint("CSV to List");
+    final input = f.openRead();
+    final fields = await input
+        .transform(utf8.decoder)
+        .transform(const CsvToListConverter(eol: '\n'))
+        .toList();
+    print("open file");
+    googlePhotoDataForPlot = modifyListForPlot(fields, filterTime: true);
+    print("googlePhotoDataForPlot : $googlePhotoDataForPlot");
+    googlePhotoLinks = transpose(googlePhotoDataForPlot).elementAt(1);
+  }
+
+  Future updatePhoto() async {
+    String date =
+        Provider.of<NavigationIndexProvider>(context, listen: false).date;
+    response =
+        await this.googlePhotoDataManager.getPhoto(photoLibraryApiClient, date);
+    print("updatePhoto");
+    photoResponseModified =
+        modifyListForPlot(response, executeTranspose: true, filterTime: true);
+
+    googlePhotoDataForPlot = photoResponseModified;
+    print("dataForPlot : $googlePhotoDataForPlot");
+    googlePhotoLinks = transpose(googlePhotoDataForPlot).elementAt(1);
+    print("googlePhotoLinks : $googlePhotoLinks");
+    googlePhotoDataManager.writePhotoResponse(date, response);
+    dataManager.updateSummaryOfGooglePhotoData(date, googlePhotoLinks.length);
+    return googlePhotoLinks;
+  }
+
+  void openSensorData(filepath) async {
+    File f = File(filepath);
+    debugPrint("CSV to List");
+    final input = f.openRead();
+    final fields = await input
+        .transform(utf8.decoder)
+        .transform(const CsvToListConverter(eol: '\n'))
+        .toList();
+    sensorDataForPlot = modifyListForPlot(fields);
+    print("sensorDataForPlot : $sensorDataForPlot");
+  }
+
+  void updateSensorData() async {
+    String date =
+        Provider.of<NavigationIndexProvider>(context, listen: false).date;
+    var sensorData = await this.sensorDataManager.openFile(date);
+    sensorDataModified = modifyListForPlot(subsampleList(sensorData, 50));
+    sensorDataForPlot = sensorDataModified;
+    print("sensorDataForPlot : $sensorDataForPlot");
+
+    // sensorDataManager.writeSensorData(date, sensorDataModified);
   }
 }

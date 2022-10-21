@@ -121,7 +121,7 @@ class _DayPageState extends State<DayPage> {
                                           : sensorDataForPlot)
                                   .build(context),
                             ),
-                            polarPhotoImageContainers(imagesForPlot).build(),
+                            polarPhotoImageContainers(imagesForPlot).build(context),
                             PolarPhotoDataPlot(googlePhotoDataForPlot)
                                 .build(context),
                           ])),

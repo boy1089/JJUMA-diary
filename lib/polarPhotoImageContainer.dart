@@ -4,77 +4,110 @@ import 'package:googleapis/shared.dart';
 import 'package:test_location_2nd/Util/Util.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:extended_image/extended_image.dart';
+import 'package:test_location_2nd/StateProvider.dart';
+import 'package:provider/provider.dart';
 
-class polarPhotoImageContainers{
+class polarPhotoImageContainers {
   var googlePhotoDataForPlot;
   double imageLocationFactor = 2.2;
   double imageSize = 100;
   double xLocation = 0;
   double yLocation = 0;
   double containerSize = kDefaultPolarPlotSize;
-
-  polarPhotoImageContainers(@required googlePhotoDataForPlot, {containerSize : kDefaultPolarPlotSize}) {
+  polarPhotoImageContainers(
+    @required googlePhotoDataForPlot, {
+    containerSize: kDefaultPolarPlotSize,
+  }) {
     this.googlePhotoDataForPlot = googlePhotoDataForPlot;
     this.containerSize = containerSize;
   }
 
   @override
-  Widget build(){
-    return Stack(
-      children: List<Widget>.generate(googlePhotoDataForPlot.length, (int index) => polarPhotoImageContainer(googlePhotoDataForPlot[index]).build())
-    );
+  Widget build(BuildContext context) {
+    print("rebuild!!?");
+    double angle = Provider.of<NavigationIndexProvider>(context, listen: false)
+        .zoomInAngle;
+    return angle == 0
+        ? Stack(
+            children: List<Widget>.generate(
+                googlePhotoDataForPlot.length,
+                (int index) => polarPhotoImageContainer(
+                      googlePhotoDataForPlot[index],
+                    ).build(context)))
+        : Stack(
+            children: List<Widget>.generate(
+                googlePhotoDataForPlot.length,
+                (int index) => polarPhotoImageContainer(
+                        googlePhotoDataForPlot[index],
+                        applyOffset: false,
+                        index: index)
+                    .build(context)));
   }
 }
 
 class polarPhotoImageContainer {
   var googlePhotoDataForPlot;
-  double imageLocationFactor = 1.2;
+  double imageLocationFactor = 1.4;
   double imageSize = 100;
+  double defaultImageSize = 100;
+  double zoomInImageSize = 300;
   double xLocation = 0;
   double yLocation = 0;
   double containerSize = kSecondPolarPlotSize;
 
-  polarPhotoImageContainer(@required googlePhotoDataForPlot, {containerSize : kDefaultPolarPlotSize}) {
+  polarPhotoImageContainer(@required googlePhotoDataForPlot,
+      {containerSize: kDefaultPolarPlotSize, applyOffset: true, index = 1}) {
     this.googlePhotoDataForPlot = googlePhotoDataForPlot;
     this.containerSize = containerSize;
 
-    xLocation = imageLocationFactor *
-        cos((googlePhotoDataForPlot[0]) / 24 * 2 * pi - pi / 2);
-    yLocation = imageLocationFactor *
-        sin((googlePhotoDataForPlot[0]) / 24 * 2 * pi - pi / 2);
+    if (applyOffset) {
+      xLocation = imageLocationFactor *
+          cos((googlePhotoDataForPlot[0]) / 24 * 2 * pi - pi / 2);
+      yLocation = imageLocationFactor *
+          sin((googlePhotoDataForPlot[0]) / 24 * 2 * pi - pi / 2);
+    } else {
+      var radiusSign = ((index/2).floor()%2 - 0.5) *2;
+      var radius = (index % 3)/1.8;  // mag5 1.2
+
+
+      xLocation = imageLocationFactor *
+          cos((googlePhotoDataForPlot[0]) / 24 * 2 * pi - pi / 2) *
+          (0.6 + 0.10 * radiusSign * radius);
+      yLocation = imageLocationFactor *
+          sin((googlePhotoDataForPlot[0]) / 24 * 2 * pi - pi / 2) *
+          (0.6 + 0.1 * radiusSign * radius);
+    }
   }
 
   @override
-  Widget build() {
-
+  Widget build(BuildContext context) {
     //outer container to make alignment consistent
+    double angle = Provider.of<NavigationIndexProvider>(context, listen: false)
+        .zoomInAngle;
     return Align(
       alignment: Alignment(xLocation, yLocation),
       child: SizedBox(
-        width : imageSize,
-        height : imageSize,
+          width: imageSize,
+          height: imageSize,
           // https://stackoverflow.com/questions/53866481/flutter-how-to-create-card-with-background-image
-          child : Card(
-            shape: CircleBorder(),
-            elevation : 0,
-            clipBehavior: Clip.antiAliasWithSaveLayer,
+          child: AnimatedRotation(
+            duration: Duration(milliseconds: 100),
+            turns: -angle,
+            child: Card(
 
-            child: ExtendedImage.network(googlePhotoDataForPlot[1],
-            // centerSlice: Rect.fromCircle(center: Offset(10.0, 10.0), radius : 10.0),
-              fit: BoxFit.cover,
-            enableLoadState: false,
-            cache : true,
-            )
-        //     child: FadeInImage.memoryNetwork(
-        //       fadeInDuration: Duration(milliseconds: 700),
-        //       fit: BoxFit.cover,
-        //       placeholder: kTransparentImage, image:
-        //         googlePhotoDataForPlot[1],
-        // ),
 
-          )
-
-        ),
-      );
+                shape: CircleBorder(),
+                elevation: 4.0,
+                clipBehavior: Clip.antiAliasWithSaveLayer,
+                child: ExtendedImage.network(
+                  googlePhotoDataForPlot[1],
+                  // centerSlice: Rect.fromCircle(center: Offset(10.0, 10.0), radius : 10.0),
+                  fit: BoxFit.cover,
+                  enableLoadState: false,
+                  cache: true,
+                )
+            ),
+          )),
+    );
   }
 }

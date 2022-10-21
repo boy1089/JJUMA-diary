@@ -15,7 +15,7 @@ double monthPageScrollOffset = 0.0;
 
 int startYear = 2013;
 
-double kMinimumTimeDifferenceBetweenImages = 1.7; //unit is hour
+double kMinimumTimeDifferenceBetweenImages = 0.05; //unit is hour
 
 List<List<dynamic>> dummyData = [
   [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],

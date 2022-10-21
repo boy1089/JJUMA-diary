@@ -4,10 +4,8 @@ import 'package:test_location_2nd/StateProvider.dart';
 import 'package:test_location_2nd/Util/Util.dart';
 import "package:test_location_2nd/DateHandler.dart";
 import 'package:test_location_2nd/global.dart';
-import 'DayPage.dart';
 //TODO : make navigation to day page
 import 'package:test_location_2nd/Data/DataManager.dart';
-import 'package:test_location_2nd/global.dart';
 import 'package:intl/intl.dart';
 
 class MonthPage extends StatefulWidget {
@@ -35,8 +33,6 @@ class _MonthPageState extends State<MonthPage> {
 
   @override
   Widget build(BuildContext buildContext) {
-    // MainPageState? mainPage = buildContext.findAncestorRenderObjectOfType();
-    // Matrix4 matrix = Matrix4.identity();
 
     return Scaffold(
       body: Center(
@@ -67,27 +63,23 @@ class _MonthPageState extends State<MonthPage> {
   }
 }
 
-class AllWheelScrollView{
+class AllWheelScrollView {
   int endYear = DateTime.now().year;
   int startYear = DateTime.now().year;
   int numberOfYears = 1;
-  AllWheelScrollView(@required int endYear, @required int startYear){
+  AllWheelScrollView(@required int endYear, @required int startYear) {
     this.endYear = endYear;
     this.startYear = startYear;
-    this.numberOfYears = endYear - startYear +1;
+    this.numberOfYears = endYear - startYear + 1;
   }
-
 
   @override
-  Widget build(BuildContext buildContext){
+  Widget build(BuildContext buildContext) {
     return ListView(
-        children: List.generate(
-            numberOfYears,
-                (int index) => YearArray(endYear - index)
-                .build(buildContext)));
+        children: List.generate(numberOfYears,
+            (int index) => YearArray(endYear - index).build(buildContext)));
   }
 }
-
 
 class YearArray {
   int year = DateTime.now().year;
@@ -97,10 +89,9 @@ class YearArray {
     this.numberOfYears = year + 1;
   }
 
-  final ScrollController _controller = ScrollController(
-    keepScrollOffset: true
-    // initialScrollOffset: monthPageScrollOffset,
-  );
+  final ScrollController _controller = ScrollController(keepScrollOffset: true
+      // initialScrollOffset: monthPageScrollOffset,
+      );
   @override
   void initState() {
     _controller.addListener(() {
@@ -126,18 +117,20 @@ class YearArray {
               quarterTurns: 3,
               child: _scaleFactor > 1
                   ? Text("")
-                  : Text(DateFormat("yyyy").format(DateTime(year)),
-                style : TextStyle(fontSize : 25),
-              )),
+                  : Text(
+                      DateFormat("yyyy").format(DateTime(year)),
+                      style: TextStyle(fontSize: 25),
+                    )),
         ),
         Column(
-        children : List.generate(
-            DateTime.monthsPerYear,
-                (int index) => MonthArray(year,
-                (DateTime.december - index - 1) % 12)
-                .build(buildContext)))],
-    );}
-
+            children: List.generate(
+                DateTime.monthsPerYear,
+                (int index) =>
+                    MonthArray(year, (DateTime.december - index - 1) % 12)
+                        .build(buildContext)))
+      ],
+    );
+  }
 }
 
 class MonthArray {

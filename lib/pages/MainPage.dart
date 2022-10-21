@@ -1,12 +1,10 @@
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:test_location_2nd/Permissions/GoogleAccountManager.dart';
-import '../Sensor/SensorDataReader.dart';
 import '../navigation.dart';
 import 'package:test_location_2nd/pages/SettingPage.dart';
 import 'package:test_location_2nd/Permissions/PermissionManager.dart';
 import 'package:test_location_2nd/Api/PhotoLibraryApiClient.dart';
-import 'package:test_location_2nd/Util/responseParser.dart';
 import 'package:test_location_2nd/Data/DataManager.dart';
 import 'MonthPage.dart';
 import 'DayPage.dart';
@@ -16,14 +14,10 @@ import 'package:test_location_2nd/GooglePhotoDataManager.dart';
 import 'package:test_location_2nd/Sensor/SensorDataManager.dart';
 import 'HourPage.dart';
 
-//TODO : put shared data in provider(date,
 //TODO : make consistency on datetime handling - datetime or date?
 //TODO : formatting list for chart data
-//TODO : refactoring -
-//TODO : refactoring - dataManager-data reader
 
 class MainPage extends StatefulWidget {
-  // SensorDataReader dataReader;
   GoogleAccountManager googleAccountManager;
   PermissionManager permissionManager;
   PhotosLibraryApiClient photoLibraryApiClient;
@@ -32,7 +26,6 @@ class MainPage extends StatefulWidget {
   SensorDataManager sensorDataManager;
 
   MainPage(
-      // this.dataReader,
       this.googleAccountManager,
       this.permissionManager,
       this.photoLibraryApiClient,
@@ -47,9 +40,7 @@ class MainPage extends StatefulWidget {
 }
 
 class MainPageState extends State<MainPage> {
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   var response;
-  // late SensorDataReader dataReader;
   late GoogleAccountManager googleAccountManager;
   late PermissionManager permissionManager;
   late PhotosLibraryApiClient photoLibraryApiClient;
@@ -77,14 +68,7 @@ class MainPageState extends State<MainPage> {
     dataManager = widget.dataManager;
     googlePhotoDataManager = widget.googlePhotoDataManager;
     sensorDataManager = widget.sensorDataManager;
-    //
-    // DayPage dayPage = DayPage(
-    //     googleAccountManager,
-    //     permissionManager,
-    //     photoLibraryApiClient,
-    //     dataManager,
-    //     googlePhotoDataManager,
-    //     sensorDataManager);
+
     MonthPage monthPage = MonthPage(a, dataManager);
     HourPage hourPage = HourPage(googleAccountManager,
         permissionManager,
@@ -95,7 +79,6 @@ class MainPageState extends State<MainPage> {
 
     _widgetOptions = <Widget>[
       monthPage,
-      // dayPage,
       hourPage,
     ];
   }
@@ -108,7 +91,6 @@ class MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
-    final PageController controller = PageController();
     return WillPopScope(
       onWillPop: () async {
         Provider.of<NavigationIndexProvider>(context, listen: false)

@@ -4,6 +4,7 @@
 
 
 import 'package:intl/intl.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 DateTime selectedDate = DateTime(2022, 1, 1);
 
@@ -16,6 +17,8 @@ double monthPageScrollOffset = 0.0;
 int startYear = 2013;
 
 double kMinimumTimeDifferenceBetweenImages = 0.05; //unit is hour
+
+GoogleSignInAccount? currentUser;
 
 List<List<dynamic>> dummyData = [
   [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],

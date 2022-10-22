@@ -110,7 +110,9 @@ class MainPageState extends State<MainPage> {
             Padding(
                 padding: const EdgeInsets.only(right: 20.0),
                 child: GestureDetector(
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.pushNamed(context, '/settings');
+                    },
                     child: const Icon(Icons.settings_outlined,
                         color: Colors.black54)))
           ],

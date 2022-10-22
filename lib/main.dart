@@ -18,6 +18,7 @@ import 'package:test_location_2nd/Note/NoteData.dart';
 import 'package:test_location_2nd/Data/DataManager.dart';
 import 'package:test_location_2nd/StateProvider.dart';
 import 'package:test_location_2nd/Sensor/SensorDataManager.dart';
+import 'pages/SignInPage.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -43,7 +44,6 @@ class _MyAppState extends State<MyApp> {
   final dataAnalyzer = DataAnalyzer();
   final myTextController = TextEditingController();
   final googlePhotoDataManager = GooglePhotoDataManager();
-  // final dataReader = SensorDataReader();
   final googleAccountManager = GoogleAccountManager();
   final permissionManager = PermissionManager();
   late final photoLibraryApiClient =
@@ -72,6 +72,7 @@ class _MyAppState extends State<MyApp> {
             ),
         '/settings': (context) =>
             AndroidSettingsScreen(googleAccountManager, permissionManager),
+        '/signIn' : (context) => SignInScreen(),
       },
     );
   }

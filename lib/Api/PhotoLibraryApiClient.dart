@@ -23,6 +23,7 @@ import 'package:test_location_2nd/Permissions/GoogleAccountManager.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter/foundation.dart';
+import 'package:test_location_2nd/global.dart' as global;
 
 class PhotosLibraryApiClient {
   GoogleAccountManager googleAccountManager;
@@ -42,7 +43,9 @@ class PhotosLibraryApiClient {
     final response = await http.post(
       Uri.parse("https://photoslibrary.googleapis.com/v1/mediaItems:search"),
       body: requestJson,
-      headers: await googleAccountManager.currentUser!.authHeaders,
+      // headers: await googleAccountManager.currentUser!.authHeaders,
+      headers: await global.currentUser!.authHeaders,
+
     );
 
     debugPrint("page token : ${jsonDecode(response.body)['nextPageToken']}");

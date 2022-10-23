@@ -39,7 +39,6 @@ dependencies:
   flutter_sensors:
   graphic:
   df:
-  flutter_file_manager:
   intl: ^0.17.0
   ml_dataframe: ^1.6.0
   image: ^3.2.0

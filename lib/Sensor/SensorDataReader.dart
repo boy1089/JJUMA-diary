@@ -1,12 +1,13 @@
+import 'package:glob/list_local_fs.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
-import 'package:flutter_file_manager/flutter_file_manager.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:csv/csv.dart';
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:test_location_2nd/Util/Util.dart';
 import 'package:csv/csv.dart';
+import 'package:glob/glob.dart';
 
 //Reads one *_sensor.csv and put in dataAll variable.
 class SensorDataReader {
@@ -40,25 +41,20 @@ class SensorDataReader {
     }
   }
 
-  Future<List<File>> getFiles() async {
+
+  Future<List<FileSystemEntity>> getFiles() async {
     String? kRoot = await _localPath;
     _getStoragePermission();
-
-    FileManager fm = FileManager(root: Directory('$kRoot/sensorData')); //
-    Future<List<File>> files = fm.filesTree(
-      extensions: [".csv"],
-    );
-    debugPrint("path : $kRoot/usageData");
+    final files = await Glob("$kRoot/processedSensorData/*").listSync();
 
     return files;
   }
 
   Future<List<List<dynamic>>> readFiles() async {
-    List<File> files = await getFiles();
+    List<FileSystemEntity> files = await getFiles();
     debugPrint("dataReader, readFiles : $files");
     dailyDataAll = [];
     dates = [];
-    files2 = files; //assigning files to class variable to later use.
     for (int i = 0; i < files.length; i++) {
       dailyData = await openFile(files.elementAt(i).path);
       debugPrint('readFiles, $i th data');

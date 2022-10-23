@@ -1,13 +1,14 @@
+import 'package:glob/list_local_fs.dart';
 import 'package:test_location_2nd/DateHandler.dart';
 import 'package:test_location_2nd/Util/responseParser.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
 import 'dart:io';
-import 'package:flutter_file_manager/flutter_file_manager.dart';
 import 'package:csv/csv.dart';
 import 'dart:convert';
 import 'package:test_location_2nd/Data/DataManager.dart';
+import 'package:glob/glob.dart';
 
 //TODO : move getPhoto and updatePhoto of dayPage to googlePhotoDataManager
 
@@ -73,19 +74,16 @@ class GooglePhotoDataManager {
     return path;
   }
 
-  Future<List<File>> getFiles() async {
-    String? kRoot = await _localPath;
 
-    FileManager fm = FileManager(root: Directory('$kRoot/googlePhotoData')); //
-    Future<List<File>> files = fm.filesTree(
-      extensions: [".csv"],
-    );
+  Future<List<FileSystemEntity>> getFiles() async {
+    String? kRoot = await _localPath;
+    final files = await Glob("$kRoot/googlePhotoData/*.csv").listSync();
 
     return files;
   }
 
   Future<List<dynamic>> readFiles() async {
-    List<File> files = await getFiles();
+    List<FileSystemEntity> files = await getFiles();
     debugPrint("googlePhotoManager, readFiles : $files");
     photoDataAll = [];
     dates = [];

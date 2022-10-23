@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 
 import 'package:test_location_2nd/Sensor/SensorLogger.dart';
 import 'package:test_location_2nd/Loggers/NoteLogger.dart';
-import 'package:test_location_2nd/Data/DataAnalyzer.dart';
 import 'package:test_location_2nd/Sensor/SensorDataReader.dart';
 
 import 'package:test_location_2nd/pages/MainPage.dart';
@@ -41,7 +40,6 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   final sensorLogger = SensorLogger();
   final noteLogger = NoteLogger();
-  final dataAnalyzer = DataAnalyzer();
   final myTextController = TextEditingController();
   final googlePhotoDataManager = GooglePhotoDataManager();
   final googleAccountManager = GoogleAccountManager();

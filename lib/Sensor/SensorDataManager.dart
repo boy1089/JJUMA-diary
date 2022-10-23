@@ -1,5 +1,6 @@
 
 
+import 'package:glob/list_local_fs.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter_file_manager/flutter_file_manager.dart';
 import 'dart:io';
@@ -20,17 +21,18 @@ class SensorDataManager {
     return path;
   }
 
-  Future<List<File>> getFiles() async {
+  Future<List<FileSystemEntity>> getFiles() async {
     String? kRoot = await _localPath;
-    FileManager fm = FileManager(root: Directory('$kRoot/processedSensorData')); //
-    Future<List<File>> files = fm.filesTree(
-      extensions: [".csv"],
-    );
+
+    // String fileName = Glob("${directory?.path}/$processedFileName").listSync().elementAt(0).path;
+    // FileManager fm = FileManager(root: Directory('$kRoot/processedSensorData')); //
+    final files = await Glob("$kRoot/processedSensorData/*").listSync();
+
     return files;
   }
 
   Future<Map> readFiles() async {
-    List<File> files = await getFiles();
+    List<FileSystemEntity> files = await getFiles();
     print("sensorDataManager, readFiles : $files");
     sensorDataAll = {};
     dates = [];
@@ -47,7 +49,6 @@ class SensorDataManager {
 
   Future<List> openFile(String date) async {
     final Directory? directory = await getExternalStorageDirectory();
-
     File f = File("${directory?.path}/sensorData/${date}_sensor.csv");
 
     if (!await f.exists()){

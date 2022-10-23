@@ -51,9 +51,11 @@ class DataManager {
 
   void readSummaryOfGooglePhotoData() async {
     final Directory? directory = await getExternalStorageDirectory();
-    final File file = File('${directory?.path}/summary_googlePhoto.csv');
-    print("read ${file.path}");
-    var data = await openFile(file.path);
+    // final File file = File('${directory?.path}/summary_googlePhoto.csv');
+    final fileName = Glob('${directory?.path}/summary_googlePhoto.csv').listSync().elementAt(0);
+
+    print("readSummaryOfGooglePHotoData ${fileName.path}");
+    var data = await openFile(fileName.path);
 
     for( int i = 0; i< data.length; i++){
       try {
@@ -67,7 +69,8 @@ class DataManager {
   }
   void writeSummaryOfGooglePhotoData() async{
     final Directory? directory = await getExternalStorageDirectory();
-    final File file = File('${directory?.path}/summary_googlePhoto.csv');
+    final fileName = Glob('${directory?.path}/summary_googlePhoto.csv').listSync().elementAt(0);
+    File file = File(fileName.path);
 
     print("write ${file.path}");
     await file.writeAsString(
@@ -95,7 +98,9 @@ class DataManager {
     //subsample and write each sensor file to local
 
     final Directory? directory = await getExternalStorageDirectory();
-    final File file = File('${directory?.path}/$processedFileName');
+    String fileName = Glob("${directory?.path}/$processedFileName").listSync().elementAt(0).path;
+    File file = File(fileName);
+
 
     await file.writeAsString(
         'time, longitude, latitude, accelX, accelY, accelZ, light, temperature, proximity, humidity\n',
@@ -115,7 +120,8 @@ class DataManager {
   }
   Future<List> getProcessedSensorFile() async{
     final Directory? directory = await getExternalStorageDirectory();
-    final File file = File('${directory?.path}/$processedFileName');
+    String fileName = Glob('${directory?.path}/$processedFileName').listSync().elementAt(0).path;
+    File file = File(fileName);
 
     List data = await openFile(file.path);
     processedSensorData = data;
@@ -125,7 +131,8 @@ class DataManager {
 
   Future<int> writeDataToProcessedFile(List data) async {
     final Directory? directory = await getExternalStorageDirectory();
-    final File file = File('${directory?.path}/$processedFileName');
+    String fileName = Glob('${directory?.path}/$processedFileName').listSync().elementAt(0).path;
+    File file = File(fileName);
     print("write ${file.path}");
 
     for (int i = 1; i < data.length; i++) {
@@ -137,8 +144,7 @@ class DataManager {
       print(line);
       await file.writeAsString(
           '${line[0]}, ${line[1]}, ${line[2]}, ${line[3]}'
-          ',${line[4]}, ${line[5]}, ${line[6]}, ${line[7]}'
-          ', ${line[8]}, ${line[9]}\n',
+          ',${line[4]}, ${line[5]}}\n',
           mode: FileMode.append);
     }
     return 0;

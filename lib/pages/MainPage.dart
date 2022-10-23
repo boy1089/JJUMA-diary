@@ -1,5 +1,6 @@
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
+import 'package:glob/list_local_fs.dart';
 import 'package:test_location_2nd/Permissions/GoogleAccountManager.dart';
 import '../navigation.dart';
 import 'package:test_location_2nd/pages/SettingPage.dart';
@@ -13,7 +14,9 @@ import 'package:test_location_2nd/StateProvider.dart';
 import 'package:test_location_2nd/GooglePhotoDataManager.dart';
 import 'package:test_location_2nd/Sensor/SensorDataManager.dart';
 import 'HourPage.dart';
-
+import 'package:glob/glob.dart';
+import 'package:path_provider/path_provider.dart';
+import 'dart:io';
 //TODO : make consistency on datetime handling - datetime or date?
 //TODO : formatting list for chart data
 
@@ -154,15 +157,14 @@ class MainPageState extends State<MainPage> {
                 );
               }
             }),
-        // floatingActionButton: FloatingActionButton(
-        //   onPressed: () async {
-        //     // var photoResponse = await googlePhotoManager.getPhoto(photoLibraryApiClient, "20221004");
-        //     googlePhotoDataManager.getAndSaveAllPhoto(
-        //         photoLibraryApiClient, "20170101", "20171231");
-        //     // print(googlePhotoManager.photoResponseAll.keys);
-        //     // print(googlePhotoManager.photoResponseAll);
-        //   },
-        // ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () async {
+            final Directory? directory = await getExternalStorageDirectory();
+            final files = Glob('${directory?.path}/summary_googlePhoto.csv');
+            print(files.listSync()[0].path);
+
+          },
+        ),
       ),
     );
   }

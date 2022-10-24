@@ -164,7 +164,6 @@ class MainPageState extends State<MainPage> {
             permissionManager.getStoragePermission();
             permissionManager.getLocationPermission();
 
-
           },
         ),
       ),

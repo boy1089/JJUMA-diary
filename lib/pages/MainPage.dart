@@ -1,6 +1,8 @@
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:test_location_2nd/Permissions/GoogleAccountManager.dart';
+import 'package:test_location_2nd/Util/Util.dart';
+import 'package:test_location_2nd/Util/responseParser.dart';
 import '../navigation.dart';
 import 'package:test_location_2nd/pages/SettingPage.dart';
 import 'package:test_location_2nd/Permissions/PermissionManager.dart';
@@ -11,7 +13,7 @@ import 'package:provider/provider.dart';
 import 'package:test_location_2nd/StateProvider.dart';
 import 'package:test_location_2nd/GooglePhotoDataManager.dart';
 import 'package:test_location_2nd/Sensor/SensorDataManager.dart';
-import 'HourPage.dart';
+import 'DayPage.dart';
 import 'package:glob/glob.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
@@ -60,7 +62,7 @@ class MainPageState extends State<MainPage> {
   List<Widget> _widgetOptions = [];
   int a = 0;
   late MonthPage monthPage;
-  late HourPage hourPage;
+  late DayPage hourPage;
 
   @override
   void initState() {
@@ -75,12 +77,13 @@ class MainPageState extends State<MainPage> {
     localPhotoDataManager = widget.localPhotoDataManager;
 
     MonthPage monthPage = MonthPage(a, dataManager);
-    HourPage hourPage = HourPage(googleAccountManager,
+    DayPage hourPage = DayPage(googleAccountManager,
         permissionManager,
         photoLibraryApiClient,
         dataManager,
         googlePhotoDataManager,
-        sensorDataManager);
+        sensorDataManager,
+    localPhotoDataManager);
 
     _widgetOptions = <Widget>[
       monthPage,
@@ -162,7 +165,8 @@ class MainPageState extends State<MainPage> {
         floatingActionButton: FloatingActionButton(
           onPressed: () async {
               // await localPhotoDataManager.getAllFiles();
-              await localPhotoDataManager.getFilesOfDate("20221024");
+              var files = await localPhotoDataManager.getPhotoOfDate("20221025");
+              print(modifyListForPlot(transpose(files)));
 
           },
         ),

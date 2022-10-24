@@ -6,6 +6,7 @@ import 'package:transparent_image/transparent_image.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:test_location_2nd/StateProvider.dart';
 import 'package:provider/provider.dart';
+import 'dart:io';
 
 class polarPhotoImageContainers {
   var googlePhotoDataForPlot;
@@ -82,6 +83,8 @@ class polarPhotoImageContainer {
   @override
   Widget build(BuildContext context) {
     //outer container to make alignment consistent
+
+    print(googlePhotoDataForPlot);
     double angle = Provider.of<NavigationIndexProvider>(context, listen: false)
         .zoomInAngle;
     return Align(
@@ -105,12 +108,17 @@ class polarPhotoImageContainer {
                   shape: CircleBorder(),
                   elevation: 4.0,
                   clipBehavior: Clip.antiAliasWithSaveLayer,
-                  child: ExtendedImage.network(
+                  child:
+                  googlePhotoDataForPlot[1].length>200
+                  ?ExtendedImage.network(
                     googlePhotoDataForPlot[1],
                     // centerSlice: Rect.fromCircle(center: Offset(10.0, 10.0), radius : 10.0),
                     fit: BoxFit.cover,
                     enableLoadState: false,
-                    cache: true,
+                  )
+                      :ExtendedImage.file(File(googlePhotoDataForPlot[1]),
+                    fit: BoxFit.cover,
+                    enableLoadState: false,
                   )
               ),
             ),

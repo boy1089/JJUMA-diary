@@ -1,7 +1,10 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:test_location_2nd/DateHandler.dart';
 import 'package:test_location_2nd/GooglePhotoDataManager.dart';
 import 'package:test_location_2nd/Permissions/GoogleAccountManager.dart';
+import 'package:test_location_2nd/Photo/LocalPhotoDataManager.dart';
 import 'package:test_location_2nd/Sensor/SensorDataManager.dart';
 import 'package:test_location_2nd/StateProvider.dart';
 import 'package:test_location_2nd/Util/Util.dart';
@@ -17,41 +20,46 @@ import 'package:test_location_2nd/polarPhotoImageContainer.dart';
 import 'package:test_location_2nd/PolarPhotoDataPlot.dart';
 import 'package:test_location_2nd/global.dart';
 import 'dart:math';
+import 'package:test_location_2nd/Photo/LocalPhotoDataManager.dart';
 
-class HourPage extends StatefulWidget {
+class DayPage extends StatefulWidget {
   GoogleAccountManager googleAccountManager;
   PermissionManager permissionManager;
   PhotosLibraryApiClient photoLibraryApiClient;
   DataManager dataManager;
   GooglePhotoDataManager googlePhotoDataManager;
   SensorDataManager sensorDataManager;
+  LocalPhotoDataManager localPhotoDataManager;
 
   @override
-  State<HourPage> createState() => _HourPageState();
+  State<DayPage> createState() => _DayPageState();
 
-  HourPage(
+  DayPage(
       this.googleAccountManager,
       this.permissionManager,
       this.photoLibraryApiClient,
       this.dataManager,
       this.googlePhotoDataManager,
       this.sensorDataManager,
+      this.localPhotoDataManager,
       {Key? key})
       : super(key: key);
 }
 
-class _HourPageState extends State<HourPage> {
+class _DayPageState extends State<DayPage> {
   late GoogleAccountManager googleAccountManager;
   late PermissionManager permissionManager;
   late PhotosLibraryApiClient photoLibraryApiClient;
   late DataManager dataManager;
   late GooglePhotoDataManager googlePhotoDataManager;
   late SensorDataManager sensorDataManager;
+  late LocalPhotoDataManager localPhotoDataManager;
 
   List response = [];
   dynamic photoResponseModified = [];
   dynamic sensorDataModified = [];
-  dynamic googlePhotoDataForPlot = [[]];
+  dynamic photoDataForPlot = [[]];
+  dynamic localPhotoDataForPlot = [[]];
   dynamic sensorDataForPlot = [[]];
 
   List<dynamic> googlePhotoLinks = [];
@@ -72,8 +80,9 @@ class _HourPageState extends State<HourPage> {
     dataManager = widget.dataManager;
     googlePhotoDataManager = widget.googlePhotoDataManager;
     sensorDataManager = widget.sensorDataManager;
+    localPhotoDataManager = widget.localPhotoDataManager;
     update = updateUi();
-    print("DayPage, after initState : ${googlePhotoDataForPlot}");
+    print("DayPage, after initState : ${photoDataForPlot}");
     readData = _fetchData();
     double leftPositionZoomIn = -graphBackgroundWidth * (3 / 4);
     left = leftPositionZoomOut;
@@ -103,6 +112,7 @@ class _HourPageState extends State<HourPage> {
   double graphBackgroundWidth = 350;
   double graphBackgroundHeight = 350;
   double angleZoomInModify = 0;
+
   @override
   Widget build(BuildContext context) {
     var date =
@@ -127,39 +137,36 @@ class _HourPageState extends State<HourPage> {
                       var dy = details.globalPosition.dy - physicalHeight / 2;
 
                       angleZoomIn = isZoomIn
-
-                      ? angleZoomIn - dy/4 / physicalHeight
-                      :-atan2(dy / sqrt(dx * dx + dy * dy),
-                          dx / sqrt(dx * dx + dy * dy)) /
-                          (2 * pi) * 0.98;
+                          ? angleZoomIn - dy / 4 / physicalHeight
+                          : -atan2(dy / sqrt(dx * dx + dy * dy),
+                                  dx / sqrt(dx * dx + dy * dy)) /
+                              (2 * pi) *
+                              0.98;
                       print("$dx, $dy, $angleZoomIn");
 
                       isZoomIn = true;
-                      left = leftPositionZoomIn ;
-                      top = topPositionZoomIn ;
+                      left = leftPositionZoomIn;
+                      top = topPositionZoomIn;
                       magnification = magnificationZoomIn;
-                      _angle =  angleZoomIn;
+                      _angle = angleZoomIn;
                       Provider.of<NavigationIndexProvider>(context,
                               listen: false)
                           .setZoomInRotationAngle(_angle);
                       setState(() {});
                     },
-                onDoubleTap: (){
-
-                  isZoomIn = false;
-                  left =
-                  isZoomIn ? leftPositionZoomIn : leftPositionZoomOut;
-                  top = isZoomIn ? topPositionZoomIn : topPositionZoomOut;
-                  magnification =
-                  isZoomIn ? magnificationZoomIn : magnificationZoomOut;
-                  _angle = isZoomIn ? angleZoomIn : angleZoomOut;
-                  Provider.of<NavigationIndexProvider>(context,
-                      listen: false)
-                      .setZoomInRotationAngle(_angle);
-                  setState(() {});
-                },
-
-
+                    onDoubleTap: () {
+                      isZoomIn = false;
+                      left =
+                          isZoomIn ? leftPositionZoomIn : leftPositionZoomOut;
+                      top = isZoomIn ? topPositionZoomIn : topPositionZoomOut;
+                      magnification =
+                          isZoomIn ? magnificationZoomIn : magnificationZoomOut;
+                      _angle = isZoomIn ? angleZoomIn : angleZoomOut;
+                      Provider.of<NavigationIndexProvider>(context,
+                              listen: false)
+                          .setZoomInRotationAngle(_angle);
+                      setState(() {});
+                    },
                     child: Container(
                       width: firstContainerSize,
                       height: firstContainerSize,
@@ -183,7 +190,7 @@ class _HourPageState extends State<HourPage> {
                                               : sensorDataForPlot)
                                       .build(context),
 
-                                  PolarPhotoDataPlot(googlePhotoDataForPlot)
+                                  PolarPhotoDataPlot(photoDataForPlot)
                                       .build(context),
                                   // polarPhotoImageContainers(imagesForPlot).build(context),
                                   polarPhotoImageContainers(imagesForPlot)
@@ -219,10 +226,16 @@ class _HourPageState extends State<HourPage> {
     print("isFileExists $isGooglePhotoFileExists");
     googlePhotoLinks = [];
     imagesForPlot = [];
-    googlePhotoDataForPlot = [[]];
+    photoDataForPlot = [[]];
+    localPhotoDataForPlot = [[]];
 
     try {
       var a = await updatePhoto();
+    } catch (e) {
+      print("while updating Ui, error is occrued : $e");
+    }
+    try {
+      var b = await updatePhotoFromLocal();
     } catch (e) {
       print("while updating Ui, error is occrued : $e");
     }
@@ -230,20 +243,23 @@ class _HourPageState extends State<HourPage> {
     updateSensorData();
 
     setState(() {});
-    imagesForPlot = selectImagesForPlot();
+    imagesForPlot = selectImagesForPlot(photoDataForPlot);
+    imagesForPlot = selectImagesForPlot(localPhotoDataForPlot);
     print("updateUi done");
   }
 
-  List selectImagesForPlot() {
-    if (googlePhotoDataForPlot[0].length == 0) {
-      return [];
+  List selectImagesForPlot(List input) {
+    if (input[0].length == 0) {
+      return imagesForPlot;
     }
-    imagesForPlot = [googlePhotoDataForPlot.first, googlePhotoDataForPlot.last];
+
+    imagesForPlot.add(input.first);
+    imagesForPlot.add(input.last);
     int j = 0;
-    for (int i = 0; i < googlePhotoDataForPlot.length; i++) {
-      if ((googlePhotoDataForPlot[i][0] - imagesForPlot[j][0]).abs() >
+    for (int i = 0; i < input.length; i++) {
+      if ((input[i][0] - imagesForPlot[j][0]).abs() >
           kMinimumTimeDifferenceBetweenImages) {
-        imagesForPlot.add(googlePhotoDataForPlot[i]);
+        imagesForPlot.add(input[i]);
         j += 1;
       }
     }
@@ -260,9 +276,9 @@ class _HourPageState extends State<HourPage> {
         .transform(const CsvToListConverter(eol: '\n'))
         .toList();
     print("open file");
-    googlePhotoDataForPlot = modifyListForPlot(fields, filterTime: true);
-    print("googlePhotoDataForPlot : $googlePhotoDataForPlot");
-    googlePhotoLinks = transpose(googlePhotoDataForPlot).elementAt(1);
+    photoDataForPlot = modifyListForPlot(fields, filterTime: true);
+    print("googlePhotoDataForPlot : $photoDataForPlot");
+    googlePhotoLinks = transpose(photoDataForPlot).elementAt(1);
   }
 
   Future updatePhoto() async {
@@ -274,13 +290,23 @@ class _HourPageState extends State<HourPage> {
     photoResponseModified =
         modifyListForPlot(response, executeTranspose: true, filterTime: true);
 
-    googlePhotoDataForPlot = photoResponseModified;
-    print("dataForPlot : $googlePhotoDataForPlot");
-    googlePhotoLinks = transpose(googlePhotoDataForPlot).elementAt(1);
+    photoDataForPlot = photoResponseModified;
+    print("dataForPlot : $photoDataForPlot");
+    googlePhotoLinks = transpose(photoDataForPlot).elementAt(1);
     print("googlePhotoLinks : $googlePhotoLinks");
     googlePhotoDataManager.writePhotoResponse(date, response);
     dataManager.updateSummaryOfGooglePhotoData(date, googlePhotoLinks.length);
     return googlePhotoLinks;
+  }
+
+  Future updatePhotoFromLocal() async {
+    String date =
+        Provider.of<NavigationIndexProvider>(context, listen: false).date;
+    List<List<dynamic>> files =
+        await localPhotoDataManager.getPhotoOfDate(date);
+    localPhotoDataForPlot = modifyListForPlot(transpose(files));
+    print(photoDataForPlot);
+    photoDataForPlot.addAll(localPhotoDataForPlot);
   }
 
   void openSensorData(filepath) async {

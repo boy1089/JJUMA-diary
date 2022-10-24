@@ -17,18 +17,27 @@ class GoogleAccountManager {
   }
 
   void init() async {
+    print("googleAccountManager, init");
     WidgetsFlutterBinding.ensureInitialized();
     await Firebase.initializeApp();
-    FirebaseAuth.instance.authStateChanges().listen((user) {
-      if (user == null) {
-      } else {}
-    });
+
+    if (await FirebaseAuth.instance.currentUser != null) {
+      await signInWithGoogle();
+    }
+    print("googleAccountManager, Initialize.. ${FirebaseAuth.instance.currentUser}");
+
+
 
     // await signInWithGoogle();
   }
 
   static Future<FirebaseApp> initializeFirebase() async {
     FirebaseApp firebaseApp = await Firebase.initializeApp();
+
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      await signInWithGoogle();
+    }
     return firebaseApp;
   }
 

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'package:test_location_2nd/Sensor/SensorLogger.dart';
+import 'package:test_location_2nd/Sensor/AudioRecorder.dart';
+import 'package:test_location_2nd/Sensor/SensorRecorder.dart';
+
 import 'package:test_location_2nd/Loggers/NoteLogger.dart';
 import 'package:test_location_2nd/Sensor/SensorDataReader.dart';
 
@@ -45,23 +47,26 @@ class _MyAppState extends State<MyApp> {
   final googlePhotoDataManager = GooglePhotoDataManager();
 
   //sensorLogger will be initialized after initializing PermissionManager
-  late final sensorLogger;
+  late final sensorRecorder;
+  late final audioRecorder;
   final dataManager = DataManager();
   final sensorDataManager = SensorDataManager();
 
-  final noteLogger = NoteLogger();
-  final myTextController = TextEditingController();
+  // final noteLogger = NoteLogger();
+  // final myTextController = TextEditingController();
 
   _MyAppState() {
-    sensorLogger = SensorLogger(permissionManager);
-    sensorLogger.init();
+    sensorRecorder = SensorRecorder(permissionManager);
+    sensorRecorder.init();
+    audioRecorder = AudioRecorder(permissionManager);
+    audioRecorder.init();
   }
 
-  void saveNote() {
-    noteLogger.writeCache2(NoteData(DateTime.now(), myTextController.text));
-    myTextController.clear();
-    setState(() {});
-  }
+  // void saveNote() {
+  //   noteLogger.writeCache2(NoteData(DateTime.now(), myTextController.text));
+  //   myTextController.clear();
+  //   setState(() {});
+  // }
 
   @override
   Widget build(BuildContext context) {

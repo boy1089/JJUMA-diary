@@ -25,6 +25,7 @@ class _MonthPageState extends State<MonthPage> {
   int index = 0;
   late DataManager dataManager;
 
+
   @override
   void initState() {
     this.index = index;
@@ -75,9 +76,11 @@ class AllWheelScrollView {
 
   @override
   Widget build(BuildContext buildContext) {
-    return ListView(
-        children: List.generate(numberOfYears,
-            (int index) => YearArray(endYear - index).build(buildContext)));
+    return ListView.builder(
+        key: PageStorageKey<String>("month page"),
+        itemCount: numberOfYears,
+        itemBuilder :(context, index){
+                return YearArray(endYear - index).build(buildContext);} );
   }
 }
 

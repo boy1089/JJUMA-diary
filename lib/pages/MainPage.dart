@@ -7,7 +7,6 @@ import 'package:test_location_2nd/Permissions/PermissionManager.dart';
 import 'package:test_location_2nd/Api/PhotoLibraryApiClient.dart';
 import 'package:test_location_2nd/Data/DataManager.dart';
 import 'MonthPage.dart';
-import 'DayPage.dart';
 import 'package:provider/provider.dart';
 import 'package:test_location_2nd/StateProvider.dart';
 import 'package:test_location_2nd/GooglePhotoDataManager.dart';
@@ -57,7 +56,6 @@ class MainPageState extends State<MainPage> {
   List<Widget> _widgetOptions = [];
   int a = 0;
   late MonthPage monthPage;
-  late DayPage dayPage;
   late HourPage hourPage;
 
   @override

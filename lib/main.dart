@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:test_location_2nd/Photo/LocalPhotoDataManager.dart';
 
 import 'package:test_location_2nd/Sensor/AudioRecorder.dart';
 import 'package:test_location_2nd/Sensor/SensorRecorder.dart';
@@ -20,6 +21,7 @@ import 'package:test_location_2nd/Data/DataManager.dart';
 import 'package:test_location_2nd/StateProvider.dart';
 import 'package:test_location_2nd/Sensor/SensorDataManager.dart';
 import 'pages/SignInPage.dart';
+import 'Photo/LocalPhotoDataManager.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -45,6 +47,7 @@ class _MyAppState extends State<MyApp> {
   late final photoLibraryApiClient =
       PhotosLibraryApiClient(googleAccountManager);
   final googlePhotoDataManager = GooglePhotoDataManager();
+  final localPhotoDataManager = LocalPhotoDataManager();
 
   //sensorLogger will be initialized after initializing PermissionManager
   late final sensorRecorder;
@@ -80,6 +83,7 @@ class _MyAppState extends State<MyApp> {
               dataManager,
               googlePhotoDataManager,
               sensorDataManager,
+              localPhotoDataManager,
             ),
         '/settings': (context) =>
             AndroidSettingsScreen(googleAccountManager, permissionManager),

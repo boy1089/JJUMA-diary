@@ -17,6 +17,7 @@ import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 //TODO : make consistency on datetime handling - datetime or date?
 //TODO : formatting list for chart data
+import 'package:test_location_2nd/Photo/LocalPhotoDataManager.dart';
 
 class MainPage extends StatefulWidget {
   GoogleAccountManager googleAccountManager;
@@ -25,6 +26,7 @@ class MainPage extends StatefulWidget {
   DataManager dataManager;
   GooglePhotoDataManager googlePhotoDataManager;
   SensorDataManager sensorDataManager;
+  LocalPhotoDataManager localPhotoDataManager;
 
   MainPage(
       this.googleAccountManager,
@@ -33,6 +35,7 @@ class MainPage extends StatefulWidget {
       this.dataManager,
       this.googlePhotoDataManager,
       this.sensorDataManager,
+      this.localPhotoDataManager,
       {Key? key})
       : super(key: key);
 
@@ -48,6 +51,7 @@ class MainPageState extends State<MainPage> {
   late DataManager dataManager;
   late GooglePhotoDataManager googlePhotoDataManager;
   late SensorDataManager sensorDataManager;
+  late LocalPhotoDataManager localPhotoDataManager;
 
   int dataIndex = 0;
   List<List<String>> responseResult = [];
@@ -68,6 +72,7 @@ class MainPageState extends State<MainPage> {
     dataManager = widget.dataManager;
     googlePhotoDataManager = widget.googlePhotoDataManager;
     sensorDataManager = widget.sensorDataManager;
+    localPhotoDataManager = widget.localPhotoDataManager;
 
     MonthPage monthPage = MonthPage(a, dataManager);
     HourPage hourPage = HourPage(googleAccountManager,
@@ -156,10 +161,8 @@ class MainPageState extends State<MainPage> {
             }),
         floatingActionButton: FloatingActionButton(
           onPressed: () async {
-            // permissionManager.getStoragePermission();
-            permissionManager.getAudioPermission();
-            permissionManager.getStoragePermission();
-            permissionManager.getLocationPermission();
+              // await localPhotoDataManager.getAllFiles();
+              await localPhotoDataManager.getFilesOfDate("20221024");
 
           },
         ),

@@ -25,7 +25,6 @@ class _MonthPageState extends State<MonthPage> {
   int index = 0;
   late DataManager dataManager;
 
-
   @override
   void initState() {
     this.index = index;
@@ -34,7 +33,6 @@ class _MonthPageState extends State<MonthPage> {
 
   @override
   Widget build(BuildContext buildContext) {
-
     return Scaffold(
       body: Center(
         child: GestureDetector(
@@ -43,13 +41,10 @@ class _MonthPageState extends State<MonthPage> {
             },
             onScaleUpdate: (details) {
               setState(() {
-                print(_scaleFactor);
                 _scaleFactor = _baseScaleFactor * details.scale;
               });
             },
             onDoubleTap: () {
-              print(_scaleFactor);
-              print(_baseScaleFactor);
               setState(() {
                 if (_scaleFactor > _baseScaleFactor * 4) {
                   _scaleFactor = _baseScaleFactor;
@@ -79,8 +74,9 @@ class AllWheelScrollView {
     return ListView.builder(
         key: PageStorageKey<String>("month page"),
         itemCount: numberOfYears,
-        itemBuilder :(context, index){
-                return YearArray(endYear - index).build(buildContext);} );
+        itemBuilder: (context, index) {
+          return YearArray(endYear - index).build(buildContext);
+        });
   }
 }
 

@@ -159,9 +159,11 @@ class MainPageState extends State<MainPage> {
             }),
         floatingActionButton: FloatingActionButton(
           onPressed: () async {
-            final Directory? directory = await getExternalStorageDirectory();
-            final files = Glob('${directory?.path}/summary_googlePhoto.csv');
-            print(files.listSync()[0].path);
+            // permissionManager.getStoragePermission();
+            permissionManager.getAudioPermission();
+            permissionManager.getStoragePermission();
+            permissionManager.getLocationPermission();
+
 
           },
         ),

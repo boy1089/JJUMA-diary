@@ -1,5 +1,3 @@
-
-
 import 'package:glob/list_local_fs.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
@@ -8,11 +6,9 @@ import 'dart:convert';
 import 'package:glob/glob.dart';
 
 class SensorDataManager {
-
   Map sensorDataAll = {};
   List<String> dates = [];
-  SensorDataManager(){
-  }
+  SensorDataManager() {}
 
   Future<String?> get _localPath async {
     final directory2 = await getExternalStorageDirectories();
@@ -22,11 +18,7 @@ class SensorDataManager {
 
   Future<List<FileSystemEntity>> getFiles() async {
     String? kRoot = await _localPath;
-
-    // String fileName = Glob("${directory?.path}/$processedFileName").listSync().elementAt(0).path;
-    // FileManager fm = FileManager(root: Directory('$kRoot/processedSensorData')); //
     final files = await Glob("$kRoot/processedSensorData/*").listSync();
-
     return files;
   }
 
@@ -50,7 +42,7 @@ class SensorDataManager {
     final Directory? directory = await getExternalStorageDirectory();
     File f = File("${directory?.path}/sensorData/${date}_sensor.csv");
 
-    if (!await f.exists()){
+    if (!await f.exists()) {
       return [[]];
     }
 
@@ -62,6 +54,7 @@ class SensorDataManager {
         .toList();
     return fields;
   }
+
   void writeSensorData(date, sensorData) async {
     final Directory? directory = await getExternalStorageDirectory();
 
@@ -71,8 +64,7 @@ class SensorDataManager {
       Directory(folder).create(recursive: true);
     }
 
-    final File file =
-    File('$folder/${date}_processedSensor.csv');
+    final File file = File('$folder/${date}_processedSensor.csv');
     print("writing Cache to Local..");
 
     print("writing sensor data : $sensorData");
@@ -92,5 +84,4 @@ class SensorDataManager {
           mode: FileMode.append);
     }
   }
-
 }

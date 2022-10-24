@@ -38,16 +38,18 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  final sensorLogger = SensorLogger();
-  final noteLogger = NoteLogger();
-  final myTextController = TextEditingController();
-  final googlePhotoDataManager = GooglePhotoDataManager();
-  final googleAccountManager = GoogleAccountManager();
   final permissionManager = PermissionManager();
+  final googleAccountManager = GoogleAccountManager();
   late final photoLibraryApiClient =
       PhotosLibraryApiClient(googleAccountManager);
+  final googlePhotoDataManager = GooglePhotoDataManager();
+
+  // final sensorLogger = SensorLogger();
   final dataManager = DataManager();
   final sensorDataManager = SensorDataManager();
+
+  final noteLogger = NoteLogger();
+  final myTextController = TextEditingController();
 
   void saveNote() {
     noteLogger.writeCache2(NoteData(DateTime.now(), myTextController.text));

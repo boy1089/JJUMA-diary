@@ -24,7 +24,7 @@ class GoogleAccountManager {
       } else {}
     });
 
-    await signInWithGoogle();
+    // await signInWithGoogle();
   }
 
   static Future<FirebaseApp> initializeFirebase() async {

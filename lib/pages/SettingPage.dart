@@ -113,7 +113,7 @@ class _AndroidSettingsScreenState extends State<AndroidSettingsScreen> {
                     ? Text('Call history is under fetching..')
                     : Text(
                     'Allow phone permission to get call history'),
-                leading: Icon(Icons.phone_outlined, color: Colors.),
+                leading: Icon(Icons.phone_outlined, color: Colors.green),
               ),
             ],
           ),

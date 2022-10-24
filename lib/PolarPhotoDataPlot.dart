@@ -33,7 +33,7 @@ class PolarPhotoDataPlot {
               scale: LinearScale(min: 0, max: 24, tickCount: 5),
             ),
             'dummy': Variable(
-              accessor: (List datum) => datum[6] as num,
+              accessor: (List datum) => datum.last as num,
             ),
           },
           elements: [

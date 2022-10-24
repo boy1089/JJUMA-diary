@@ -62,7 +62,7 @@ class MainPageState extends State<MainPage> {
   List<Widget> _widgetOptions = [];
   int a = 0;
   late MonthPage monthPage;
-  late DayPage hourPage;
+  late DayPage dayPage;
 
   @override
   void initState() {
@@ -162,14 +162,15 @@ class MainPageState extends State<MainPage> {
                 );
               }
             }),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () async {
-              // await localPhotoDataManager.getAllFiles();
-              var files = await localPhotoDataManager.getPhotoOfDate("20221025");
-              print(modifyListForPlot(transpose(files)));
-
-          },
-        ),
+        // floatingActionButton: FloatingActionButton(
+        //   onPressed: () async {
+        //       // await localPhotoDataManager.getAllFiles();
+        //       // var files = await localPhotoDataManager.getPhotoOfDate("20221025");
+        //       // print(modifyListForPlot(transpose(files)));
+        //       print(dayPage)
+        //
+        //   },
+        // ),
       ),
     );
   }

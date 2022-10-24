@@ -67,9 +67,8 @@ class polarPhotoImageContainer {
       yLocation = imageLocationFactor *
           sin((googlePhotoDataForPlot[0]) / 24 * 2 * pi - pi / 2);
     } else {
-      var radiusSign = ((index/2).floor()%2 - 0.5) *2;
-      var radius = (index % 3)/1.8;  // mag5 1.2
-
+      var radiusSign = ((index / 2).floor() % 2 - 0.5) * 2;
+      var radius = (index % 3) / 1.8; // mag5 1.2
 
       xLocation = imageLocationFactor *
           cos((googlePhotoDataForPlot[0]) / 24 * 2 * pi - pi / 2) *
@@ -97,10 +96,9 @@ class polarPhotoImageContainer {
             duration: Duration(milliseconds: 100),
             turns: -angle,
             child: GestureDetector(
-              onTap: (){
+              onTap: () {
                 print("gesture detected1");
-                if(angle != 0.0) {
-
+                if (angle != 0.0) {
                   imageSize = 300;
                 }
               },
@@ -108,19 +106,18 @@ class polarPhotoImageContainer {
                   shape: CircleBorder(),
                   elevation: 4.0,
                   clipBehavior: Clip.antiAliasWithSaveLayer,
-                  child:
-                  googlePhotoDataForPlot[1].length>200
-                  ?ExtendedImage.network(
-                    googlePhotoDataForPlot[1],
-                    // centerSlice: Rect.fromCircle(center: Offset(10.0, 10.0), radius : 10.0),
-                    fit: BoxFit.cover,
-                    enableLoadState: false,
-                  )
-                      :ExtendedImage.file(File(googlePhotoDataForPlot[1]),
-                    fit: BoxFit.cover,
-                    enableLoadState: false,
-                  )
-              ),
+                  child: googlePhotoDataForPlot[1].length > 200
+                      ? ExtendedImage.network(
+                          googlePhotoDataForPlot[1],
+                          // centerSlice: Rect.fromCircle(center: Offset(10.0, 10.0), radius : 10.0),
+                          fit: BoxFit.cover,
+                          enableLoadState: false,
+                        )
+                      : ExtendedImage.file(
+                          File(googlePhotoDataForPlot[1]),
+                          fit: BoxFit.cover,
+                          enableLoadState: false,
+                        )),
             ),
           )),
     );

@@ -19,7 +19,7 @@ class MonthPage extends StatefulWidget {
 }
 
 double _scaleFactor = 1.0;
-double _baseScaleFactor = 1.0;
+double _baseScaleFactor = 2.0;
 
 class _MonthPageState extends State<MonthPage> {
   int index = 0;

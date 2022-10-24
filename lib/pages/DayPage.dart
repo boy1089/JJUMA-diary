@@ -58,7 +58,6 @@ class _DayPageState extends State<DayPage> {
   List response = [];
   dynamic photoResponseModified = [];
   dynamic sensorDataModified = [];
-  dynamic photoDataForPlot = [[]];
   dynamic localPhotoDataForPlot = [[]];
   dynamic sensorDataForPlot = [[]];
 
@@ -70,6 +69,7 @@ class _DayPageState extends State<DayPage> {
   Future readData = Future.delayed(const Duration(seconds: 1));
   Future update = Future.delayed(const Duration(seconds: 1));
   List imagesForPlot = [];
+  List<List<dynamic>> photoDataForPlot = [];
 
   @override
   void initState() {
@@ -192,6 +192,9 @@ class _DayPageState extends State<DayPage> {
 
                                   PolarPhotoDataPlot(photoDataForPlot)
                                       .build(context),
+                                  // PolarPhotoDataPlot(imagesForPlot)
+                                  //     .build(context),
+
                                   // polarPhotoImageContainers(imagesForPlot).build(context),
                                   polarPhotoImageContainers(imagesForPlot)
                                       .build(context),
@@ -209,6 +212,12 @@ class _DayPageState extends State<DayPage> {
                       ]),
                     ),
                   ),
+            floatingActionButton: FloatingActionButton(
+              onPressed: () {
+                print("photoDataForPlot : ${photoDataForPlot[0]}");
+                print("imagsForPlot : ${imagesForPlot[0]}");
+              },
+            ),
           );
         });
   }
@@ -226,16 +235,18 @@ class _DayPageState extends State<DayPage> {
     print("isFileExists $isGooglePhotoFileExists");
     googlePhotoLinks = [];
     imagesForPlot = [];
-    photoDataForPlot = [[]];
+    photoDataForPlot = [];
     localPhotoDataForPlot = [[]];
 
     try {
       var a = await updatePhoto();
+      imagesForPlot = selectImagesForPlot(photoDataForPlot);
     } catch (e) {
-      print("while updating Ui, error is occrued : $e");
+      print("while updating Ui, error is occrued, google photo : $e");
     }
     try {
       var b = await updatePhotoFromLocal();
+      imagesForPlot = selectImagesForPlot(localPhotoDataForPlot);
     } catch (e) {
       print("while updating Ui, error is occrued : $e");
     }
@@ -243,12 +254,18 @@ class _DayPageState extends State<DayPage> {
     updateSensorData();
 
     setState(() {});
-    imagesForPlot = selectImagesForPlot(photoDataForPlot);
-    imagesForPlot = selectImagesForPlot(localPhotoDataForPlot);
+    //convert data type..
+    photoDataForPlot = List<List>.generate(imagesForPlot.length, (index)=>imagesForPlot.elementAt(index));
     print("updateUi done");
   }
 
   List selectImagesForPlot(List input) {
+    print("selectImageForPlot : ${input}");
+    if (input[0] == null) {
+      return imagesForPlot;
+    }
+
+    print(input);
     if (input[0].length == 0) {
       return imagesForPlot;
     }
@@ -257,29 +274,31 @@ class _DayPageState extends State<DayPage> {
     imagesForPlot.add(input.last);
     int j = 0;
     for (int i = 0; i < input.length; i++) {
+      print("selectImagesForPlot, ${i}, ${imagesForPlot}, ${input}");
       if ((input[i][0] - imagesForPlot[j][0]).abs() >
           kMinimumTimeDifferenceBetweenImages) {
         imagesForPlot.add(input[i]);
         j += 1;
       }
     }
+    print("selectImagesForPlot, $imagesForPlot}");
 
     return imagesForPlot;
   }
-
-  void openFile(filepath) async {
-    File f = File(filepath);
-    debugPrint("CSV to List");
-    final input = f.openRead();
-    final fields = await input
-        .transform(utf8.decoder)
-        .transform(const CsvToListConverter(eol: '\n'))
-        .toList();
-    print("open file");
-    photoDataForPlot = modifyListForPlot(fields, filterTime: true);
-    print("googlePhotoDataForPlot : $photoDataForPlot");
-    googlePhotoLinks = transpose(photoDataForPlot).elementAt(1);
-  }
+  //
+  // void openFile(filepath) async {
+  //   File f = File(filepath);
+  //   debugPrint("CSV to List");
+  //   final input = f.openRead();
+  //   final fields = await input
+  //       .transform(utf8.decoder)
+  //       .transform(const CsvToListConverter(eol: '\n'))
+  //       .toList();
+  //   print("open file");
+  //   photoDataForPlot = modifyListForPlot(fields, filterTime: true);
+  //   print("googlePhotoDataForPlot : $photoDataForPlot");
+  //   googlePhotoLinks = transpose(photoDataForPlot).elementAt(1);
+  // }
 
   Future updatePhoto() async {
     String date =
@@ -306,7 +325,7 @@ class _DayPageState extends State<DayPage> {
         await localPhotoDataManager.getPhotoOfDate(date);
     localPhotoDataForPlot = modifyListForPlot(transpose(files));
     print(photoDataForPlot);
-    photoDataForPlot.addAll(localPhotoDataForPlot);
+    // photoDataForPlot.addAll(localPhotoDataForPlot);
   }
 
   void openSensorData(filepath) async {

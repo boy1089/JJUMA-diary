@@ -7,8 +7,10 @@ import 'package:record/record.dart';
 import 'package:flutter_sensors/flutter_sensors.dart';
 import 'package:test_location_2nd/Sensor/SensorData.dart';
 import 'package:intl/intl.dart';
+import 'package:test_location_2nd/Permissions/PermissionManager.dart';
 
 class SensorLogger {
+  late PermissionManager permissionManager;
   Location location = new Location();
 
   var _serviceEnabled;
@@ -32,11 +34,24 @@ class SensorLogger {
   var accelXs;
   var accelYs;
 
-  SensorLogger() {
+  SensorLogger(permissionManager) {
+    this.permissionManager = permissionManager;
     debugPrint("sensorLogger instance created");
+    writeCache2();
+    print('sensorLogger initializing...');
+    init();
+  }
+
+  Future<int> init() async {
+    print("initializing SensorLogger...");
+    if (permissionManager.isAudioPermissionGranted)
+     return 0;
+      if(permissionManager.isLocationPermissionGranted)
+        return 0;
+
     location.enableBackgroundMode(enable: true);
     _enableLogging();
-    writeCache2();
+    return 0;
   }
 
   void _enableLogging() async {

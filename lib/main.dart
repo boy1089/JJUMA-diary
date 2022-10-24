@@ -44,12 +44,19 @@ class _MyAppState extends State<MyApp> {
       PhotosLibraryApiClient(googleAccountManager);
   final googlePhotoDataManager = GooglePhotoDataManager();
 
-  // final sensorLogger = SensorLogger();
+  //sensorLogger will be initialized after initializing PermissionManager
+  late final sensorLogger;
   final dataManager = DataManager();
   final sensorDataManager = SensorDataManager();
 
   final noteLogger = NoteLogger();
   final myTextController = TextEditingController();
+
+  _MyAppState(){
+    sensorLogger = SensorLogger(permissionManager);
+    sensorLogger.init();
+  }
+
 
   void saveNote() {
     noteLogger.writeCache2(NoteData(DateTime.now(), myTextController.text));

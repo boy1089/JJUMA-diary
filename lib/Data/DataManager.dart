@@ -52,20 +52,20 @@ class DataManager {
   void readSummaryOfGooglePhotoData() async {
     final Directory? directory = await getExternalStorageDirectory();
     // final File file = File('${directory?.path}/summary_googlePhoto.csv');
-    final fileName = Glob('${directory?.path}/summary_googlePhoto.csv').listSync().elementAt(0);
-
-    print("readSummaryOfGooglePHotoData ${fileName.path}");
-    var data = await openFile(fileName.path);
-
-    for( int i = 0; i< data.length; i++){
-      try {
-        summaryOfGooglePhotoData[data[i][0].toString()] = data[i][1];
-      } catch (e){
-        print(e);
-      }
-
-    }
-    global.summaryOfGooglePhotoData = summaryOfGooglePhotoData;
+    // final fileName = Glob('${directory?.path}/summary_googlePhoto.csv').listSync().elementAt(0);
+    //
+    // print("readSummaryOfGooglePHotoData ${fileName.path}");
+    // var data = await openFile(fileName.path);
+    //
+    // for( int i = 0; i< data.length; i++){
+    //   try {
+    //     summaryOfGooglePhotoData[data[i][0].toString()] = data[i][1];
+    //   } catch (e){
+    //     print(e);
+    //   }
+    //
+    // }
+    // global.summaryOfGooglePhotoData = summaryOfGooglePhotoData;
   }
   void writeSummaryOfGooglePhotoData() async{
     final Directory? directory = await getExternalStorageDirectory();

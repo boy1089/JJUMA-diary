@@ -52,7 +52,7 @@ class _AndroidSettingsScreenState extends State<AndroidSettingsScreen> {
           SettingsSection(
             title : Text("Common"),
             tiles : [SettingsTile(
-              leading : Icon(Icons.language_outlined, color: Colors.black26),
+              leading : Icon(Icons.language_outlined, color: Colors.black26, size: 30),
               title : Text("Language"),
             )]
           ),

@@ -52,11 +52,10 @@ class _MyAppState extends State<MyApp> {
   final noteLogger = NoteLogger();
   final myTextController = TextEditingController();
 
-  _MyAppState(){
+  _MyAppState() {
     sensorLogger = SensorLogger(permissionManager);
     sensorLogger.init();
   }
-
 
   void saveNote() {
     noteLogger.writeCache2(NoteData(DateTime.now(), myTextController.text));
@@ -79,7 +78,7 @@ class _MyAppState extends State<MyApp> {
             ),
         '/settings': (context) =>
             AndroidSettingsScreen(googleAccountManager, permissionManager),
-        '/signIn' : (context) => SignInScreen(),
+        '/signIn': (context) => SignInScreen(),
       },
     );
   }

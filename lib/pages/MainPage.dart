@@ -1,6 +1,5 @@
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
-import 'package:glob/list_local_fs.dart';
 import 'package:test_location_2nd/Permissions/GoogleAccountManager.dart';
 import '../navigation.dart';
 import 'package:test_location_2nd/pages/SettingPage.dart';

@@ -70,7 +70,7 @@ class _DayPageState extends State<DayPage> {
   Future readData = Future.delayed(const Duration(seconds: 1));
   Future update = Future.delayed(const Duration(seconds: 1));
   List imagesForPlot = [];
-  List<List<dynamic>> photoDataForPlot = [];
+  List<List<dynamic>> photoDataForPlot = [[]];
 
   @override
   void initState() {

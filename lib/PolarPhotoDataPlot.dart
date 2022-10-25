@@ -10,10 +10,13 @@ class PolarPhotoDataPlot {
   var dataForPlot;
   var isDataValid = false;
   PolarPhotoDataPlot(this.googlePhotoDataForPlot){
-    if (googlePhotoDataForPlot[0].length == 0){
+    if (googlePhotoDataForPlot.length == 0){
       dataForPlot = dummyData;
       isDataValid = false;
-    } else{
+    } else if((googlePhotoDataForPlot[0].length == 0)){
+      dataForPlot = dummyData;
+      isDataValid = false;
+    }else{
       dataForPlot = googlePhotoDataForPlot;
       isDataValid = true;
     }

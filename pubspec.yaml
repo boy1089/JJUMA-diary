@@ -63,6 +63,7 @@ dependencies:
   transparent_image:
   cached_network_image:
   extended_image:
+  circular_motion:
 
 dev_dependencies:
   flutter_test:

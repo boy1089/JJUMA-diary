@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:googleapis/cloudbuild/v1.dart';
+import 'package:graphic/graphic.dart';
 import 'package:provider/provider.dart';
 import 'package:test_location_2nd/Util/StateProvider.dart';
 import 'package:test_location_2nd/Util/Util.dart';
@@ -7,6 +9,8 @@ import 'package:test_location_2nd/Util/global.dart';
 //TODO : make navigation to day page
 import 'package:test_location_2nd/Data/DataManager.dart';
 import 'package:intl/intl.dart';
+import 'package:circular_motion/circular_motion.dart';
+import 'dart:ui' as ui;
 
 class MonthPage extends StatefulWidget {
   int index = 0;
@@ -34,33 +38,40 @@ class _MonthPageState extends State<MonthPage> {
   @override
   Widget build(BuildContext buildContext) {
     return Scaffold(
+      backgroundColor: kBackGroundColor,
       body: Center(
         child: Container(
-          color: Colors.black12,
-          child: GestureDetector(
-              onScaleStart: (details) {
-                _scaleFactor = _baseScaleFactor;
-              },
-              onScaleUpdate: (details) {
-                setState(() {
-                  _scaleFactor = _baseScaleFactor * details.scale;
-                });
-              },
-              onDoubleTap: () {
-                setState(() {
-                  if (_scaleFactor > _baseScaleFactor * 4) {
-                    _scaleFactor = _baseScaleFactor;
-                  } else {
-                    _scaleFactor = _scaleFactor * 1.5;
-                  }
-                });
-              },
-              child: AllWheelScrollView(2022, startYear).build(buildContext)),
-        ),
+            // color: kBackGroundColor,
+            child: GestureDetector(
+                onScaleStart: (details) {
+                  _scaleFactor = _baseScaleFactor;
+                },
+                onScaleUpdate: (details) {
+                  setState(() {
+                    print(_scaleFactor);
+                    if(_scaleFactor > 0.18)
+                      _scaleFactor = _baseScaleFactor * details.scale/5;
+                  });
+                },
+                onDoubleTap: () {
+                  setState(() {
+                    if (_scaleFactor > _baseScaleFactor * 4) {
+                      _scaleFactor = _baseScaleFactor;
+                    } else {
+                      _scaleFactor = _scaleFactor * 1.5;
+                    }
+                  });
+                },
+                child:
+                    AllWheelScrollView(2022, startYear).build(buildContext)
+
+            )),
       ),
     );
   }
 }
+
+
 
 class AllWheelScrollView {
   int endYear = DateTime.now().year;
@@ -74,13 +85,34 @@ class AllWheelScrollView {
 
   @override
   Widget build(BuildContext buildContext) {
+    // return CircularMotion.builder(
+    //       key: PageStorageKey<String>("month page"),
+    //       itemCount: numberOfYears,
+    //       builder: (context, index) {
+    //         return YearArray(endYear - index).build(buildContext);
+    //       });
+    // );
+    //
     return ListView.builder(
-
         key: PageStorageKey<String>("month page"),
         itemCount: numberOfYears,
         itemBuilder: (context, index) {
           return YearArray(endYear - index).build(buildContext);
         });
+    //
+
+    // return ListWheelScrollView.useDelegate(
+    //   itemExtent: 1200,
+    //   perspective : 0.00001,
+    //   squeeze: 1.2,
+    //   offAxisFraction: 5.0,
+    //   childDelegate: ListWheelChildBuilderDelegate(
+    //       childCount: 5,
+    //       builder: (BuildContext buildContext, int index) {
+    //         // return YearArray(endYear - index).build(buildContext);
+    //         return YearArray(endYear - index).build(buildContext);
+    //       }),
+    // );
   }
 }
 
@@ -163,10 +195,10 @@ class MonthArray {
       //   ),
       // ),
       Positioned(
-          child: Text(DateFormat("MMM").format(DateTime(year, month)),
-              textScaleFactor: _scaleFactor * 2,
-              style : TextStyle(color:Colors.black54)),
-
+        child: Text(DateFormat("MMM").format(DateTime(year, month)),
+            textScaleFactor: _scaleFactor * 2,
+            style:
+                TextStyle(color: Colors.black54, fontStyle: FontStyle.normal)),
       ),
 
       Column(
@@ -267,11 +299,22 @@ class DayButton {
                   // ? Color.lerp(Colors.white, Colors.yellowAccent,
                   //     (summaryOfGooglePhotoData[formatDate(today)] ) / 50)
                   ? Color.lerp(
-                      Colors.white.withAlpha(150),
-                      Colors.redAccent.withAlpha(150),
-                      (summaryOfPhotoData[formatDate(today)]) / 50)
+                      kMainColor_cool,
+                      kMainColor_warm.withAlpha(180),
+                      // Color.fromARGB(150, 140, 192, 222),
+                      // Color.fromARGB(150, 244, 191, 191),
+                      // Color.fromARGB(150, 242, 215, 217),
+                      // Color.fromARGB(150, 156, 180, 204),
+                      (summaryOfPhotoData[formatDate(today)]) / 50,
+                    )
                   : Colors.white.withAlpha(150),
-              shape: CircleBorder(),
+              shape: CircleBorder(
+
+                  // side : BorderSide.lerp(BorderSide(color:kBackGroundColor, width : 5), BorderSide(color:Colors.blueGrey, width: 5),
+                  //   summaryOfPhotoData.containsKey(formatDate(today))
+                  //     ?(summaryOfPhotoData[formatDate(today)]) / 50
+                  // : 1)
+                  ),
             ),
           )
         : SizedBox(

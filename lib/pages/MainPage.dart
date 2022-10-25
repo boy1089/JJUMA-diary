@@ -14,12 +14,10 @@ import 'package:test_location_2nd/Util/StateProvider.dart';
 import 'package:test_location_2nd/Photo/GooglePhotoDataManager.dart';
 import 'package:test_location_2nd/Sensor/SensorDataManager.dart';
 import 'DayPage.dart';
-import 'package:glob/glob.dart';
-import 'package:path_provider/path_provider.dart';
-import 'dart:io';
 //TODO : make consistency on datetime handling - datetime or date?
 //TODO : formatting list for chart data
 import 'package:test_location_2nd/Photo/LocalPhotoDataManager.dart';
+import 'CirclePage.dart';
 
 class MainPage extends StatefulWidget {
   GoogleAccountManager googleAccountManager;
@@ -85,10 +83,12 @@ class MainPageState extends State<MainPage> {
         googlePhotoDataManager,
         sensorDataManager,
         localPhotoDataManager);
+    CirclePage circlePage = CirclePage();
 
     _widgetOptions = <Widget>[
       monthPage,
       hourPage,
+      circlePage,
     ];
   }
 
@@ -128,14 +128,15 @@ class MainPageState extends State<MainPage> {
         //
         // ),
         bottomNavigationBar: Offstage(
-          offstage: true,
+          offstage: false,
           child: BottomNavigationBar(
-
             items: const <BottomNavigationBarItem>[
               BottomNavigationBarItem(
                   icon: Icon(Icons.calendar_month_outlined), label: "Month"),
               BottomNavigationBarItem(
                   icon: Icon(Icons.calendar_today_outlined), label: "Day"),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.circle), label: "Circle"),
             ],
             currentIndex:
                 context.watch<NavigationIndexProvider>().navigationIndex,

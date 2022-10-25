@@ -8,7 +8,7 @@ import 'Util/global.dart';
 class PolarSensorDataPlot {
 
   Color ColorForSensorDataOutline = Colors.black12;
-  Color ColorForDummyData = Colors.white60;
+  Color ColorForDummyData = Colors.black12.withAlpha(0);
 
   late dynamic data;
   PolarSensorDataPlot(this.data, {Key? key}); // {data = ['a'];}

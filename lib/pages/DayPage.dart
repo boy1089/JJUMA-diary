@@ -124,6 +124,7 @@ class _DayPageState extends State<DayPage> {
         future: readData,
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           return Scaffold(
+            backgroundColor: kBackGroundColor,
             body: !snapshot.hasData
                 ? Center(
                     child: SizedBox(

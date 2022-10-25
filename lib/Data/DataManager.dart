@@ -54,9 +54,9 @@ class DataManager {
     // summaryOfPhotoData = await readSummaryOfPhotoData();
     readSummaryOfPhotoData();
     // await updateSummaryFromLocal("20100101", formatDate(DateTime.now()));
-    // await updateSummaryFromGooglePhoto("20100101", formatDate(DateTime.now()));
+    await updateSummaryFromGooglePhoto("20210101", formatDate(DateTime.now()));
 
-    await updateSummary("20220101", formatDate(DateTime.now()));
+    // await updateSummary("20210101", formatDate(DateTime.now()));
   }
 
   Future<void> updateSummary(startDate, endDate) async {
@@ -157,7 +157,7 @@ class DataManager {
   void writeSummaryOfGooglePhotoData() async {
     final Directory? directory = await getExternalStorageDirectory();
     final fileName = '${directory?.path}/summary_googlePhoto.csv';
-    
+
     File file = File(fileName);
 
     print("write ${fileName}");

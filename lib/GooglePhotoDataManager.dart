@@ -19,21 +19,7 @@ class GooglePhotoDataManager {
   List photoDataAll = [];
   List<String> dates = [];
 
-  void getAndSaveAllPhoto(photoLibraryApiClient, startDate, endDate) async {
-    DataManager dataManager = DataManager();
-    var datesOfYear =
-        getDaysInBetween(DateTime.parse(startDate), DateTime.parse(endDate));
 
-    for (int i = 0; i < datesOfYear.length; i++) {
-      String date = DateFormat("yyyyMMdd").format(datesOfYear[i]);
-      print("$date is under processing...");
-      var photoResponse = await getPhoto(photoLibraryApiClient, date);
-      writePhotoResponse(date, photoResponse);
-      print(photoResponse);
-      dataManager.updateSummaryOfPhotoData(
-          date, photoResponse[0].length - 1);
-    }
-  }
 
   Future getPhoto(photoLibraryApiClient, date) async {
     response = await photoLibraryApiClient.getPhotosOfDate(

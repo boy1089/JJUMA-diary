@@ -7,6 +7,10 @@ import 'package:path_provider/path_provider.dart';
 import 'package:glob/glob.dart';
 import 'package:test_location_2nd/Util/Util.dart';
 import 'package:test_location_2nd/global.dart' as global;
+import 'package:test_location_2nd/GooglePhotoDataManager.dart';
+import 'package:test_location_2nd/Api/PhotoLibraryApiClient.dart';
+import 'package:test_location_2nd/DateHandler.dart';
+import 'package:intl/intl.dart';
 
 enum sensorType {
   longitude,
@@ -28,29 +32,59 @@ class DataManager {
   List<dynamic> dataAll = [];
   List<dynamic> processedSensorData = [];
   Map summaryOfPhotoData = {};
-
+  bool isUpdateInProgress = false;
   String processedFileName = "sensor_processed.csv";
   List<DateTime> datesOfYear = [];
   int updateIndexOfPhotoSummary = 0;
 
-  DataManager(){
-    // datesOfYear = getDaysInBetween(DateTime.parse("20220101"), DateTime.now());
+  GooglePhotoDataManager googlePhotoDataManager;
+  PhotoLibraryApiClient photoLibraryApiClient;
+
+  DataManager(this.googlePhotoDataManager, this.photoLibraryApiClient){
     // processAllSensorFiles();
     // getProcessedSensorFile();
-    readSummaryOfGooglePhotoData();
+    print("DataManager instance in under creation");
+    // init();
+    print("DataManager instance is created");
+  }
+
+  Future<void> init() async {
+    print("DataManager instance is initializing..");
+    await readSummaryOfGooglePhotoData();
+    await updateAllofSummary("20100101", formatDate(DateTime.now()));
+  }
+
+
+  Future<void> updateAllofSummary(startDate, endDate) async {
+    var datesOfYear =
+    getDaysInBetween(DateTime.parse(startDate), DateTime.parse(endDate)).reversed.toList();
+
+    for (int i = 0; i < datesOfYear.length; i++) {
+      String date = DateFormat("yyyyMMdd").format(datesOfYear[i]);
+      if (summaryOfPhotoData.containsKey(date)) {
+        // print("date $date is already contained in the dataManager");
+        continue;
+      }
+
+      print("$date is under processing...");
+      var photoResponse = await googlePhotoDataManager.getPhoto(photoLibraryApiClient, date);
+      updateSummaryOfPhotoData(
+          date, photoResponse[0].length - 1);
+    }
+
   }
 
   void updateSummaryOfPhotoData(String date, int num){
     summaryOfPhotoData[date] = num;
     updateIndexOfPhotoSummary +=1;
-    if(updateIndexOfPhotoSummary > 2){
+    if(updateIndexOfPhotoSummary > 10){
       writeSummaryOfGooglePhotoData();
       global.summaryOfPhotoData = summaryOfPhotoData;
     }
   }
 
 
-  void readSummaryOfGooglePhotoData() async {
+  Future<void> readSummaryOfGooglePhotoData() async {
     final Directory? directory = await getExternalStorageDirectory();
     // final File file = File('${directory?.path}/summary_googlePhoto.csv');
     final fileName = Glob('${directory?.path}/summary_googlePhoto.csv').listSync().elementAt(0);

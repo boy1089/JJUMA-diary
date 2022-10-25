@@ -24,7 +24,7 @@ import 'package:test_location_2nd/Photo/LocalPhotoDataManager.dart';
 class MainPage extends StatefulWidget {
   GoogleAccountManager googleAccountManager;
   PermissionManager permissionManager;
-  PhotosLibraryApiClient photoLibraryApiClient;
+  PhotoLibraryApiClient photoLibraryApiClient;
   DataManager dataManager;
   GooglePhotoDataManager googlePhotoDataManager;
   SensorDataManager sensorDataManager;
@@ -49,7 +49,7 @@ class MainPageState extends State<MainPage> {
   var response;
   late GoogleAccountManager googleAccountManager;
   late PermissionManager permissionManager;
-  late PhotosLibraryApiClient photoLibraryApiClient;
+  late PhotoLibraryApiClient photoLibraryApiClient;
   late DataManager dataManager;
   late GooglePhotoDataManager googlePhotoDataManager;
   late SensorDataManager sensorDataManager;
@@ -162,15 +162,13 @@ class MainPageState extends State<MainPage> {
                 );
               }
             }),
-        // floatingActionButton: FloatingActionButton(
-        //   onPressed: () async {
-        //       // await localPhotoDataManager.getAllFiles();
-        //       // var files = await localPhotoDataManager.getPhotoOfDate("20221025");
-        //       // print(modifyListForPlot(transpose(files)));
-        //       print(dayPage)
-        //
-        //   },
-        // ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () async {
+            // googlePhotoDataManager.getAndSaveAllPhoto(photoLibraryApiClient, "20210101", "20211231");
+
+
+          },
+        ),
       ),
     );
   }

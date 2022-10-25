@@ -44,15 +44,14 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   final permissionManager = PermissionManager();
   final googleAccountManager = GoogleAccountManager();
-  late final photoLibraryApiClient =
-      PhotosLibraryApiClient(googleAccountManager);
+  late final photoLibraryApiClient;
   final googlePhotoDataManager = GooglePhotoDataManager();
   final localPhotoDataManager = LocalPhotoDataManager();
 
   //sensorLogger will be initialized after initializing PermissionManager
   late final sensorRecorder;
   late final audioRecorder;
-  final dataManager = DataManager();
+  late final dataManager;
   final sensorDataManager = SensorDataManager();
 
   // final noteLogger = NoteLogger();
@@ -63,6 +62,17 @@ class _MyAppState extends State<MyApp> {
     // sensorRecorder.init();
     // audioRecorder = AudioRecorder(permissionManager);
     // audioRecorder.init();
+    super.initState();
+    init();
+     }
+
+  Future<void> init() async {
+    photoLibraryApiClient =
+        PhotoLibraryApiClient(googleAccountManager);
+    dataManager = DataManager(googlePhotoDataManager, photoLibraryApiClient);
+    await googleAccountManager.init();
+    await dataManager.init();
+
   }
 
   // void saveNote() {

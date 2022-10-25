@@ -25,7 +25,7 @@ import 'package:test_location_2nd/Photo/LocalPhotoDataManager.dart';
 class DayPage extends StatefulWidget {
   GoogleAccountManager googleAccountManager;
   PermissionManager permissionManager;
-  PhotosLibraryApiClient photoLibraryApiClient;
+  PhotoLibraryApiClient photoLibraryApiClient;
   DataManager dataManager;
   GooglePhotoDataManager googlePhotoDataManager;
   SensorDataManager sensorDataManager;
@@ -49,7 +49,7 @@ class DayPage extends StatefulWidget {
 class _DayPageState extends State<DayPage> {
   late GoogleAccountManager googleAccountManager;
   late PermissionManager permissionManager;
-  late PhotosLibraryApiClient photoLibraryApiClient;
+  late PhotoLibraryApiClient photoLibraryApiClient;
   late DataManager dataManager;
   late GooglePhotoDataManager googlePhotoDataManager;
   late SensorDataManager sensorDataManager;

@@ -11,22 +11,20 @@ class GoogleAccountManager {
 
   GoogleAccountManager() {
     debugPrint("creating googleAccountManager");
-    init();
+    // init();
     debugPrint("created googleAccountManager, user : ${global.currentUser?.id}");
 
   }
 
-  void init() async {
+  Future<void> init() async {
     print("googleAccountManager, init");
-    WidgetsFlutterBinding.ensureInitialized();
+    await WidgetsFlutterBinding.ensureInitialized();
     await Firebase.initializeApp();
 
     if (await FirebaseAuth.instance.currentUser != null) {
       await signInWithGoogle();
     }
     print("googleAccountManager, Initialize.. ${FirebaseAuth.instance.currentUser}");
-
-
 
     // await signInWithGoogle();
   }

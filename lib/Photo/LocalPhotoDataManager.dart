@@ -54,16 +54,16 @@ class LocalPhotoDataManager {
   }
 
   Future getAllFiles() async {
-    List files = [];
+    List<String> files = [];
     final filesFromPath1_png = await Glob("$_pathToLocalPhotoGallery1/*.png").listSync();
     final filesFromPath2_png = await Glob("$_pathToLocalPhotoGallery2/*.png").listSync();
     final filesFromPath1_jpg = await Glob("$_pathToLocalPhotoGallery1/*.jpg").listSync();
     final filesFromPath2_jpg = await Glob("$_pathToLocalPhotoGallery2/*.jpg").listSync();
 
-    files.addAll(filesFromPath1_png);
-    files.addAll(filesFromPath2_png);
-    files.addAll(filesFromPath1_jpg);
-    files.addAll(filesFromPath2_jpg);
+    files.addAll(List.generate(filesFromPath1_png.length, (index)=>filesFromPath1_png.elementAt(index).path));
+    files.addAll(List.generate(filesFromPath2_png.length, (index)=>filesFromPath2_png.elementAt(index).path));
+    files.addAll(List.generate(filesFromPath1_jpg.length, (index)=>filesFromPath1_jpg.elementAt(index).path));
+    files.addAll(List.generate(filesFromPath2_jpg.length, (index)=>filesFromPath2_jpg.elementAt(index).path));
 
     print(files);
     print(_pathToLocalPhotoGallery2);

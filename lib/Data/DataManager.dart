@@ -6,11 +6,12 @@ import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:glob/glob.dart';
 import 'package:test_location_2nd/Util/Util.dart';
-import 'package:test_location_2nd/global.dart' as global;
-import 'package:test_location_2nd/GooglePhotoDataManager.dart';
+import 'package:test_location_2nd/Util/global.dart' as global;
+import 'package:test_location_2nd/Photo/GooglePhotoDataManager.dart';
 import 'package:test_location_2nd/Api/PhotoLibraryApiClient.dart';
-import 'package:test_location_2nd/DateHandler.dart';
+import 'package:test_location_2nd/Util/DateHandler.dart';
 import 'package:intl/intl.dart';
+import 'package:test_location_2nd/Photo/LocalPhotoDataManager.dart';
 
 enum sensorType {
   longitude,
@@ -40,7 +41,7 @@ class DataManager {
   GooglePhotoDataManager googlePhotoDataManager;
   PhotoLibraryApiClient photoLibraryApiClient;
 
-  DataManager(this.googlePhotoDataManager, this.photoLibraryApiClient){
+  DataManager(this.googlePhotoDataManager, this.photoLibraryApiClient) {
     // processAllSensorFiles();
     // getProcessedSensorFile();
     print("DataManager instance in under creation");
@@ -50,74 +51,122 @@ class DataManager {
 
   Future<void> init() async {
     print("DataManager instance is initializing..");
-    await readSummaryOfGooglePhotoData();
-    await updateAllofSummary("20100101", formatDate(DateTime.now()));
+    // summaryOfPhotoData = await readSummaryOfPhotoData();
+    readSummaryOfPhotoData();
+    // await updateSummaryFromLocal("20100101", formatDate(DateTime.now()));
+    // await updateSummaryFromGooglePhoto("20100101", formatDate(DateTime.now()));
+
+    await updateSummary("20220101", formatDate(DateTime.now()));
   }
 
-
-  Future<void> updateAllofSummary(startDate, endDate) async {
+  Future<void> updateSummary(startDate, endDate) async {
     var datesOfYear =
-    getDaysInBetween(DateTime.parse(startDate), DateTime.parse(endDate)).reversed.toList();
+        getDaysInBetween(DateTime.parse(startDate), DateTime.parse(endDate))
+            .reversed
+            .toList();
 
     for (int i = 0; i < datesOfYear.length; i++) {
       String date = DateFormat("yyyyMMdd").format(datesOfYear[i]);
       if (summaryOfPhotoData.containsKey(date)) {
-        // print("date $date is already contained in the dataManager");
+        print("date $date is already contained in the dataManager");
         continue;
       }
 
       print("$date is under processing...");
-      var photoResponse = await googlePhotoDataManager.getPhoto(photoLibraryApiClient, date);
-      updateSummaryOfPhotoData(
-          date, photoResponse[0].length - 1);
-    }
+      List data = await LocalPhotoDataManager.getPhotoOfDate_static(date);
+      var photoResponse =
+          await googlePhotoDataManager.getPhoto(photoLibraryApiClient, date);
+      int numberOfImagesFromLocal = data[0].length;
+      int numberOfImagesFromGooglePhoto = photoResponse[0].length - 1;
 
+      updateSummaryOfPhotoData(
+          date,
+          numberOfImagesFromLocal > numberOfImagesFromGooglePhoto
+              ? numberOfImagesFromLocal
+              : numberOfImagesFromGooglePhoto);
+    }
   }
 
-  void updateSummaryOfPhotoData(String date, int num){
+  Future<void> updateSummaryFromGooglePhoto(startDate, endDate) async {
+    var datesOfYear =
+        getDaysInBetween(DateTime.parse(startDate), DateTime.parse(endDate))
+            .reversed
+            .toList();
+
+    for (int i = 0; i < datesOfYear.length; i++) {
+      String date = DateFormat("yyyyMMdd").format(datesOfYear[i]);
+      if (summaryOfPhotoData.containsKey(date)) {
+        print("date $date is already contained in the dataManager");
+        continue;
+      }
+
+      print("$date is under processing...");
+      var photoResponse =
+          await googlePhotoDataManager.getPhoto(photoLibraryApiClient, date);
+      updateSummaryOfPhotoData(date, photoResponse[0].length - 1);
+    }
+  }
+
+  Future<void> updateSummaryFromLocal(startDate, endDate) async {
+    var datesOfYear =
+        getDaysInBetween(DateTime.parse(startDate), DateTime.parse(endDate))
+            .reversed
+            .toList();
+    for (int i = 0; i < datesOfYear.length; i++) {
+      String date = DateFormat("yyyyMMdd").format(datesOfYear[i]);
+      if (summaryOfPhotoData.containsKey(date)) {
+        print("date $date is already contained in the dataManager");
+        continue;
+      }
+
+      print("$date is under processing...");
+      List data = await LocalPhotoDataManager.getPhotoOfDate_static(date);
+      updateSummaryOfPhotoData(date, data[0].length);
+    }
+  }
+
+  void updateSummaryOfPhotoData(String date, int num) {
     summaryOfPhotoData[date] = num;
-    updateIndexOfPhotoSummary +=1;
-    if(updateIndexOfPhotoSummary > 10){
+    updateIndexOfPhotoSummary += 1;
+    if (updateIndexOfPhotoSummary > 10) {
       writeSummaryOfGooglePhotoData();
       global.summaryOfPhotoData = summaryOfPhotoData;
     }
   }
 
-
-  Future<void> readSummaryOfGooglePhotoData() async {
+  void readSummaryOfPhotoData() async {
     final Directory? directory = await getExternalStorageDirectory();
-    // final File file = File('${directory?.path}/summary_googlePhoto.csv');
-    final fileName = Glob('${directory?.path}/summary_googlePhoto.csv').listSync().elementAt(0);
+    final fileName = Glob('${directory?.path}/summary_googlePhoto.csv')
+        .listSync()
+        .elementAt(0);
 
     print("readSummaryOfGooglePhotoData ${fileName.path}");
     var data = await openFile(fileName.path);
 
-    for( int i = 0; i< data.length; i++){
+    for (int i = 0; i < data.length; i++) {
       try {
         summaryOfPhotoData[data[i][0].toString()] = data[i][1];
-      } catch (e){
+      } catch (e) {
         print(e);
       }
-
     }
     global.summaryOfPhotoData = summaryOfPhotoData;
+    // return summaryOfPhotoData;
   }
-  void writeSummaryOfGooglePhotoData() async{
+
+  void writeSummaryOfGooglePhotoData() async {
     final Directory? directory = await getExternalStorageDirectory();
     final fileName = '${directory?.path}/summary_googlePhoto.csv';
+    
     File file = File(fileName);
-    bool isFileExists = await file.exists();
 
     print("write ${fileName}");
-    await file.writeAsString(
-        'date,numberOfImages\n',
-        mode: FileMode.write);
+    await file.writeAsString('date,numberOfImages\n', mode: FileMode.write);
 
     print("writing... ${summaryOfPhotoData}");
     for (int i = 1; i < summaryOfPhotoData.length; i++) {
       var line = summaryOfPhotoData.keys.elementAt(i);
-      await file.writeAsString(
-          '${line},${summaryOfPhotoData[line]}\n',
+      await file.writeAsString('${line},${summaryOfPhotoData[line]}\n',
           mode: FileMode.append);
     }
   }
@@ -135,9 +184,11 @@ class DataManager {
     //subsample and write each sensor file to local
 
     final Directory? directory = await getExternalStorageDirectory();
-    String fileName = Glob("${directory?.path}/$processedFileName").listSync().elementAt(0).path;
+    String fileName = Glob("${directory?.path}/$processedFileName")
+        .listSync()
+        .elementAt(0)
+        .path;
     File file = File(fileName);
-
 
     await file.writeAsString(
         'time, longitude, latitude, accelX, accelY, accelZ, light, temperature, proximity, humidity\n',
@@ -155,20 +206,26 @@ class DataManager {
       // }
     }
   }
-  Future<List> getProcessedSensorFile() async{
+
+  Future<List> getProcessedSensorFile() async {
     final Directory? directory = await getExternalStorageDirectory();
-    String fileName = Glob('${directory?.path}/$processedFileName').listSync().elementAt(0).path;
+    String fileName = Glob('${directory?.path}/$processedFileName')
+        .listSync()
+        .elementAt(0)
+        .path;
     File file = File(fileName);
 
     List data = await openFile(file.path);
     processedSensorData = data;
     return data;
-
   }
 
   Future<int> writeDataToProcessedFile(List data) async {
     final Directory? directory = await getExternalStorageDirectory();
-    String fileName = Glob('${directory?.path}/$processedFileName').listSync().elementAt(0).path;
+    String fileName = Glob('${directory?.path}/$processedFileName')
+        .listSync()
+        .elementAt(0)
+        .path;
     File file = File(fileName);
     print("write ${file.path}");
 
@@ -205,5 +262,4 @@ class DataManager {
     sensorDataAll = sensorDataReader.dailyDataAll;
     print(sensorDataAll);
   }
-
 }

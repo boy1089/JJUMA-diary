@@ -1,5 +1,5 @@
 import 'package:glob/list_local_fs.dart';
-import 'package:test_location_2nd/DateHandler.dart';
+import 'package:test_location_2nd/Util/DateHandler.dart';
 import 'package:test_location_2nd/Util/responseParser.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter/foundation.dart';
@@ -9,7 +9,7 @@ import 'package:csv/csv.dart';
 import 'dart:convert';
 import 'package:test_location_2nd/Data/DataManager.dart';
 import 'package:glob/glob.dart';
-import 'package:test_location_2nd/global.dart';
+import 'package:test_location_2nd/Util/global.dart';
 
 
 
@@ -31,6 +31,29 @@ class LocalPhotoDataManager {
   void init() async {
     files = await getAllFiles();
 
+  }
+
+
+  static Future getPhotoOfDate_static(String date) async {
+
+    List files = [];
+    List cTimes = [];
+    final filesFromPath1_png = await Glob("$_pathToLocalPhotoGallery1/*${date}*.png").listSync();
+    final filesFromPath2_png = await Glob("$_pathToLocalPhotoGallery2/*${date}*.png").listSync();
+    final filesFromPath1_jpg = await Glob("$_pathToLocalPhotoGallery1/*${date}*.jpg").listSync();
+    final filesFromPath2_jpg = await Glob("$_pathToLocalPhotoGallery2/*${date}*.jpg").listSync();
+
+    //delyay is introduced to avoid slow down in ui
+    await Future.delayed(Duration(milliseconds: 100));
+    files.addAll(filesFromPath1_png);
+    files.addAll(filesFromPath2_png);
+    files.addAll(filesFromPath1_jpg);
+    files.addAll(filesFromPath2_jpg);
+
+    //cTime of DateTime is converted to string
+    cTimes.addAll(List.generate(files.length, (index)=> DateFormat("yyyyMMdd_HHmmss").format(FileStat.statSync(files.elementAt(index).path).changed)));
+    files = List.generate(files.length, (index)=> files.elementAt(index).path);
+    return [cTimes, files];
   }
 
   Future getPhotoOfDate(String date) async {

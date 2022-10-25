@@ -4,7 +4,7 @@ import 'package:googleapis/shared.dart';
 import 'package:test_location_2nd/Util/Util.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:extended_image/extended_image.dart';
-import 'package:test_location_2nd/StateProvider.dart';
+import 'package:test_location_2nd/Util/StateProvider.dart';
 import 'package:provider/provider.dart';
 import 'dart:io';
 

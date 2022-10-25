@@ -1,12 +1,12 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:test_location_2nd/DateHandler.dart';
-import 'package:test_location_2nd/GooglePhotoDataManager.dart';
+import 'package:test_location_2nd/Util/DateHandler.dart';
+import 'package:test_location_2nd/Photo/GooglePhotoDataManager.dart';
 import 'package:test_location_2nd/Permissions/GoogleAccountManager.dart';
 import 'package:test_location_2nd/Photo/LocalPhotoDataManager.dart';
 import 'package:test_location_2nd/Sensor/SensorDataManager.dart';
-import 'package:test_location_2nd/StateProvider.dart';
+import 'package:test_location_2nd/Util/StateProvider.dart';
 import 'package:test_location_2nd/Util/Util.dart';
 import 'package:test_location_2nd/Permissions/PermissionManager.dart';
 import 'package:test_location_2nd/Api/PhotoLibraryApiClient.dart';
@@ -18,7 +18,7 @@ import 'dart:convert';
 import 'package:csv/csv.dart';
 import 'package:test_location_2nd/polarPhotoImageContainer.dart';
 import 'package:test_location_2nd/PolarPhotoDataPlot.dart';
-import 'package:test_location_2nd/global.dart';
+import 'package:test_location_2nd/Util/global.dart';
 import 'dart:math';
 import 'package:test_location_2nd/Photo/LocalPhotoDataManager.dart';
 

@@ -23,7 +23,7 @@ List<List<String>> parseResponse(response) {
       DateTime datetime = DateTime.parse(time).add(Duration(hours : 9));
       time = DateFormat('yyyyMMdd_HHmmss').format(datetime);
         datetimes.add(time);
-      print("$time, $datetime");
+      // print("$time, $datetime");
 
     }
 

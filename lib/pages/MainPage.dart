@@ -10,8 +10,8 @@ import 'package:test_location_2nd/Api/PhotoLibraryApiClient.dart';
 import 'package:test_location_2nd/Data/DataManager.dart';
 import 'MonthPage.dart';
 import 'package:provider/provider.dart';
-import 'package:test_location_2nd/StateProvider.dart';
-import 'package:test_location_2nd/GooglePhotoDataManager.dart';
+import 'package:test_location_2nd/Util/StateProvider.dart';
+import 'package:test_location_2nd/Photo/GooglePhotoDataManager.dart';
 import 'package:test_location_2nd/Sensor/SensorDataManager.dart';
 import 'DayPage.dart';
 import 'package:glob/glob.dart';
@@ -77,13 +77,14 @@ class MainPageState extends State<MainPage> {
     localPhotoDataManager = widget.localPhotoDataManager;
 
     MonthPage monthPage = MonthPage(a, dataManager);
-    DayPage hourPage = DayPage(googleAccountManager,
+    DayPage hourPage = DayPage(
+        googleAccountManager,
         permissionManager,
         photoLibraryApiClient,
         dataManager,
         googlePhotoDataManager,
         sensorDataManager,
-    localPhotoDataManager);
+        localPhotoDataManager);
 
     _widgetOptions = <Widget>[
       monthPage,
@@ -106,39 +107,43 @@ class MainPageState extends State<MainPage> {
         return Navigator.canPop(context);
       },
       child: Scaffold(
-        appBar: AppBar(
-          title: const Center(
-            child: Text(
-              "         Auto Diary",
-              style: TextStyle(color: Colors.black54),
-            ),
+        // appBar: AppBar(
+        //   title: const Center(
+        //     child: Text(
+        //       "         Late Diary",
+        //       style: TextStyle(color: Colors.black54),
+        //     ),
+        //   ),
+        //   backgroundColor: Colors.white,
+        //   actions: [
+        //     Padding(
+        //         padding: const EdgeInsets.only(right: 20.0),
+        //         child: GestureDetector(
+        //             onTap: () {
+        //               Navigator.pushNamed(context, '/settings');
+        //             },
+        //             child: const Icon(Icons.settings_outlined,
+        //                 color: Colors.black54)))
+        //   ],
+        //
+        // ),
+        bottomNavigationBar: Offstage(
+          offstage: true,
+          child: BottomNavigationBar(
+
+            items: const <BottomNavigationBarItem>[
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.calendar_month_outlined), label: "Month"),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.calendar_today_outlined), label: "Day"),
+            ],
+            currentIndex:
+                context.watch<NavigationIndexProvider>().navigationIndex,
+            onTap: (index) {
+              Provider.of<NavigationIndexProvider>(context, listen: false)
+                  .setNavigationIndex(index);
+            },
           ),
-          backgroundColor: Colors.white,
-          actions: [
-            Padding(
-                padding: const EdgeInsets.only(right: 20.0),
-                child: GestureDetector(
-                    onTap: () {
-                      Navigator.pushNamed(context, '/settings');
-                    },
-                    child: const Icon(Icons.settings_outlined,
-                        color: Colors.black54)))
-          ],
-        ),
-        bottomNavigationBar: BottomNavigationBar(
-          items: const <BottomNavigationBarItem>[
-            BottomNavigationBarItem(
-                icon: Icon(Icons.calendar_month_outlined), label: "Month"),
-            // BottomNavigationBarItem(
-            //     icon: Icon(Icons.calendar_today), label: "Day"),
-            BottomNavigationBarItem(icon: Icon(Icons.calendar_today_outlined), label: "Day"),
-          ],
-          currentIndex:
-              context.watch<NavigationIndexProvider>().navigationIndex,
-          onTap: (index) {
-            Provider.of<NavigationIndexProvider>(context, listen: false)
-                .setNavigationIndex(index);
-          },
         ),
         body: FutureBuilder(
             future: readData,
@@ -162,13 +167,11 @@ class MainPageState extends State<MainPage> {
                 );
               }
             }),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () async {
-            // googlePhotoDataManager.getAndSaveAllPhoto(photoLibraryApiClient, "20210101", "20211231");
-
-
-          },
-        ),
+        // floatingActionButton: FloatingActionButton(
+        //   onPressed: () async {
+        //     // googlePhotoDataManager.getAndSaveAllPhoto(photoLibraryApiClient, "20210101", "20211231");
+        //   },
+        // ),
       ),
     );
   }

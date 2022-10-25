@@ -4,7 +4,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
-import 'package:test_location_2nd/global.dart' as global;
+import 'package:test_location_2nd/Util/global.dart' as global;
 
 class GoogleAccountManager {
   GoogleSignInAccount? currentUser;

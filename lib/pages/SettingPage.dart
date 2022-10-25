@@ -6,7 +6,7 @@ import 'android_notifications_screen.dart';
 import '../navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:settings_ui/settings_ui.dart';
-import 'package:test_location_2nd/global.dart' as global;
+import 'package:test_location_2nd/Util/global.dart' as global;
 
 enum buttons { googleAccount, Location, Audio, Phone}
 

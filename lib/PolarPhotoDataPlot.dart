@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:graphic/graphic.dart';
 
 import 'package:test_location_2nd/Util/Util.dart';
-import 'global.dart';
+import 'Util/global.dart';
 
 class PolarPhotoDataPlot {
   var googlePhotoDataForPlot;

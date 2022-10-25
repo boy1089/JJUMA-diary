@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:test_location_2nd/StateProvider.dart';
+import 'package:test_location_2nd/Util/StateProvider.dart';
 import 'package:test_location_2nd/Util/Util.dart';
-import "package:test_location_2nd/DateHandler.dart";
-import 'package:test_location_2nd/global.dart';
+import 'package:test_location_2nd/Util/DateHandler.dart';
+import 'package:test_location_2nd/Util/global.dart';
 //TODO : make navigation to day page
 import 'package:test_location_2nd/Data/DataManager.dart';
 import 'package:intl/intl.dart';
@@ -18,7 +18,7 @@ class MonthPage extends StatefulWidget {
   MonthPage(this.index, this.dataManager, {Key? key}) : super(key: key);
 }
 
-double _scaleFactor = 1.0;
+double _scaleFactor = 2.0;
 double _baseScaleFactor = 2.0;
 
 class _MonthPageState extends State<MonthPage> {
@@ -35,25 +35,28 @@ class _MonthPageState extends State<MonthPage> {
   Widget build(BuildContext buildContext) {
     return Scaffold(
       body: Center(
-        child: GestureDetector(
-            onScaleStart: (details) {
-              _scaleFactor = _baseScaleFactor;
-            },
-            onScaleUpdate: (details) {
-              setState(() {
-                _scaleFactor = _baseScaleFactor * details.scale;
-              });
-            },
-            onDoubleTap: () {
-              setState(() {
-                if (_scaleFactor > _baseScaleFactor * 4) {
-                  _scaleFactor = _baseScaleFactor;
-                } else {
-                  _scaleFactor = _scaleFactor * 1.5;
-                }
-              });
-            },
-            child: AllWheelScrollView(2022, startYear).build(buildContext)),
+        child: Container(
+          color: Colors.black12,
+          child: GestureDetector(
+              onScaleStart: (details) {
+                _scaleFactor = _baseScaleFactor;
+              },
+              onScaleUpdate: (details) {
+                setState(() {
+                  _scaleFactor = _baseScaleFactor * details.scale;
+                });
+              },
+              onDoubleTap: () {
+                setState(() {
+                  if (_scaleFactor > _baseScaleFactor * 4) {
+                    _scaleFactor = _baseScaleFactor;
+                  } else {
+                    _scaleFactor = _scaleFactor * 1.5;
+                  }
+                });
+              },
+              child: AllWheelScrollView(2022, startYear).build(buildContext)),
+        ),
       ),
     );
   }
@@ -72,6 +75,7 @@ class AllWheelScrollView {
   @override
   Widget build(BuildContext buildContext) {
     return ListView.builder(
+
         key: PageStorageKey<String>("month page"),
         itemCount: numberOfYears,
         itemBuilder: (context, index) {
@@ -145,16 +149,26 @@ class MonthArray {
 
   @override
   Widget build(BuildContext buildContext) {
-    return Stack(children: [
+    return Stack(alignment: Alignment.center, children: [
+      // Positioned(
+      //   // left: physicalWidth / 4 - physicalHeight / 70.0 * _scaleFactor*3 + 50,
+      //   left: physicalWidth / 4 - physicalHeight / 70.0 * _scaleFactor*3 + 50,
+      //   // top: physicalHeight / 70 * 3.5 - physicalHeight / 70.0 * _scaleFactor * 3 + 30,
+      //   child: RotatedBox(
+      //       quarterTurns: 3,
+      //       child: _scaleFactor < 1
+      //           ? Text("")
+      //           : Text(DateFormat("MMM").format(DateTime(year, month)),
+      //       textScaleFactor: _scaleFactor/4 +1),
+      //   ),
+      // ),
       Positioned(
-        left: physicalWidth / 4,
-        top: physicalHeight / 70 * 3,
-        child: RotatedBox(
-            quarterTurns: 3,
-            child: _scaleFactor < 1
-                ? Text("")
-                : Text(DateFormat("MMM").format(DateTime(year, month)))),
+          child: Text(DateFormat("MMM").format(DateTime(year, month)),
+              textScaleFactor: _scaleFactor * 2,
+              style : TextStyle(color:Colors.black54)),
+
       ),
+
       Column(
           // children : [],
           children: List.generate(
@@ -252,9 +266,11 @@ class DayButton {
               fillColor: summaryOfPhotoData.containsKey(formatDate(today))
                   // ? Color.lerp(Colors.white, Colors.yellowAccent,
                   //     (summaryOfGooglePhotoData[formatDate(today)] ) / 50)
-                  ? Color.lerp(Colors.white, Colors.deepOrangeAccent,
+                  ? Color.lerp(
+                      Colors.white.withAlpha(150),
+                      Colors.redAccent.withAlpha(150),
                       (summaryOfPhotoData[formatDate(today)]) / 50)
-                  : Colors.white,
+                  : Colors.white.withAlpha(150),
               shape: CircleBorder(),
             ),
           )

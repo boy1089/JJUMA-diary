@@ -30,9 +30,9 @@ class GooglePhotoDataManager {
       var photoResponse = await getPhoto(photoLibraryApiClient, date);
       writePhotoResponse(date, photoResponse);
       print(photoResponse);
-      dataManager.updateSummaryOfGooglePhotoData(date, photoResponse[0].length-1);
+      dataManager.updateSummaryOfPhotoData(
+          date, photoResponse[0].length - 1);
     }
-
   }
 
   Future getPhoto(photoLibraryApiClient, date) async {
@@ -74,7 +74,6 @@ class GooglePhotoDataManager {
     return path;
   }
 
-
   Future<List<FileSystemEntity>> getFiles() async {
     String? kRoot = await _localPath;
     final files = await Glob("$kRoot/googlePhotoData/*.csv").listSync();
@@ -97,8 +96,6 @@ class GooglePhotoDataManager {
     debugPrint("photoManager, readFiles done");
     return photoDataAll;
   }
-
-
 
   Future<List> openFile(filepath) async {
     File f = File(filepath);

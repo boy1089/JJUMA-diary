@@ -249,11 +249,11 @@ class DayButton {
                   maxWidth: width * _scaleFactor + 1.0,
                   maxHeight: height * _scaleFactor + 1.0),
               elevation: 1.0,
-              fillColor: summaryOfGooglePhotoData.containsKey(formatDate(today))
+              fillColor: summaryOfPhotoData.containsKey(formatDate(today))
                   // ? Color.lerp(Colors.white, Colors.yellowAccent,
                   //     (summaryOfGooglePhotoData[formatDate(today)] ) / 50)
                   ? Color.lerp(Colors.white, Colors.deepOrangeAccent,
-                      (summaryOfGooglePhotoData[formatDate(today)]) / 50)
+                      (summaryOfPhotoData[formatDate(today)]) / 50)
                   : Colors.white,
               shape: CircleBorder(),
             ),

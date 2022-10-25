@@ -27,11 +27,11 @@ class DataManager {
   List<String> fileList = [];
   List<dynamic> dataAll = [];
   List<dynamic> processedSensorData = [];
-  Map summaryOfGooglePhotoData = {};
+  Map summaryOfPhotoData = {};
 
   String processedFileName = "sensor_processed.csv";
   List<DateTime> datesOfYear = [];
-  int updateIndexOfGooglePhotoSummary = 0;
+  int updateIndexOfPhotoSummary = 0;
 
   DataManager(){
     // datesOfYear = getDaysInBetween(DateTime.parse("20220101"), DateTime.now());
@@ -40,47 +40,50 @@ class DataManager {
     readSummaryOfGooglePhotoData();
   }
 
-  void updateSummaryOfGooglePhotoData(String date, int num){
-    summaryOfGooglePhotoData[date] = num;
-    updateIndexOfGooglePhotoSummary +=1;
-    if(updateIndexOfGooglePhotoSummary > 5){
+  void updateSummaryOfPhotoData(String date, int num){
+    summaryOfPhotoData[date] = num;
+    updateIndexOfPhotoSummary +=1;
+    if(updateIndexOfPhotoSummary > 2){
       writeSummaryOfGooglePhotoData();
-      global.summaryOfGooglePhotoData = summaryOfGooglePhotoData;
+      global.summaryOfPhotoData = summaryOfPhotoData;
     }
   }
+
 
   void readSummaryOfGooglePhotoData() async {
     final Directory? directory = await getExternalStorageDirectory();
     // final File file = File('${directory?.path}/summary_googlePhoto.csv');
-    // final fileName = Glob('${directory?.path}/summary_googlePhoto.csv').listSync().elementAt(0);
-    //
-    // print("readSummaryOfGooglePHotoData ${fileName.path}");
-    // var data = await openFile(fileName.path);
-    //
-    // for( int i = 0; i< data.length; i++){
-    //   try {
-    //     summaryOfGooglePhotoData[data[i][0].toString()] = data[i][1];
-    //   } catch (e){
-    //     print(e);
-    //   }
-    //
-    // }
-    // global.summaryOfGooglePhotoData = summaryOfGooglePhotoData;
+    final fileName = Glob('${directory?.path}/summary_googlePhoto.csv').listSync().elementAt(0);
+
+    print("readSummaryOfGooglePhotoData ${fileName.path}");
+    var data = await openFile(fileName.path);
+
+    for( int i = 0; i< data.length; i++){
+      try {
+        summaryOfPhotoData[data[i][0].toString()] = data[i][1];
+      } catch (e){
+        print(e);
+      }
+
+    }
+    global.summaryOfPhotoData = summaryOfPhotoData;
   }
   void writeSummaryOfGooglePhotoData() async{
     final Directory? directory = await getExternalStorageDirectory();
-    final fileName = Glob('${directory?.path}/summary_googlePhoto.csv').listSync().elementAt(0);
-    File file = File(fileName.path);
+    final fileName = '${directory?.path}/summary_googlePhoto.csv';
+    File file = File(fileName);
+    bool isFileExists = await file.exists();
 
-    print("write ${file.path}");
+    print("write ${fileName}");
     await file.writeAsString(
         'date,numberOfImages\n',
         mode: FileMode.write);
-    print("writing... ${summaryOfGooglePhotoData}");
-    for (int i = 1; i < summaryOfGooglePhotoData.length; i++) {
-      var line = summaryOfGooglePhotoData.keys.elementAt(i);
+
+    print("writing... ${summaryOfPhotoData}");
+    for (int i = 1; i < summaryOfPhotoData.length; i++) {
+      var line = summaryOfPhotoData.keys.elementAt(i);
       await file.writeAsString(
-          '${line},${summaryOfGooglePhotoData[line]}\n',
+          '${line},${summaryOfPhotoData[line]}\n',
           mode: FileMode.append);
     }
   }

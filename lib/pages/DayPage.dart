@@ -62,6 +62,7 @@ class _DayPageState extends State<DayPage> {
   dynamic sensorDataForPlot = [[]];
 
   List<dynamic> googlePhotoLinks = [];
+  List<dynamic> localPhotoLinks = [];
   List<DateTime> datesOfYear =
       getDaysInBetween(DateTime.parse("${startYear}0101"), DateTime.now())
           .reversed
@@ -214,8 +215,11 @@ class _DayPageState extends State<DayPage> {
                   ),
             floatingActionButton: FloatingActionButton(
               onPressed: () {
-                print("photoDataForPlot : ${photoDataForPlot[0]}");
-                print("imagsForPlot : ${imagesForPlot[0]}");
+                // print("photoDataForPlot : ${photoDataForPlot[0]}");
+                // print("imagsForPlot : ${imagesForPlot[0]}");
+                print(dataManager.summaryOfPhotoData);
+                dataManager.writeSummaryOfGooglePhotoData();
+
               },
             ),
           );
@@ -225,14 +229,11 @@ class _DayPageState extends State<DayPage> {
   Future updateUi() async {
     var date2 = DateTime.parse(
         Provider.of<NavigationIndexProvider>(context, listen: false).date);
-    bool isGooglePhotoFileExists = await File(
-            "/storage/emulated/0/Android/data/com.example.test_location_2nd/files/googlePhotoData/${formatDate(date2)}_googlePhoto.csv")
-        .exists();
+
     bool isProcessedSensorFileExists = await File(
             "/storage/emulated/0/Android/data/com.example.test_location_2nd/files/processedSensorData/${formatDate(date2)}_processedSensor.csv")
         .exists();
 
-    print("isFileExists $isGooglePhotoFileExists");
     googlePhotoLinks = [];
     imagesForPlot = [];
     photoDataForPlot = [];
@@ -285,20 +286,7 @@ class _DayPageState extends State<DayPage> {
 
     return imagesForPlot;
   }
-  //
-  // void openFile(filepath) async {
-  //   File f = File(filepath);
-  //   debugPrint("CSV to List");
-  //   final input = f.openRead();
-  //   final fields = await input
-  //       .transform(utf8.decoder)
-  //       .transform(const CsvToListConverter(eol: '\n'))
-  //       .toList();
-  //   print("open file");
-  //   photoDataForPlot = modifyListForPlot(fields, filterTime: true);
-  //   print("googlePhotoDataForPlot : $photoDataForPlot");
-  //   googlePhotoLinks = transpose(photoDataForPlot).elementAt(1);
-  // }
+
 
   Future updatePhoto() async {
     String date =
@@ -314,7 +302,7 @@ class _DayPageState extends State<DayPage> {
     googlePhotoLinks = transpose(photoDataForPlot).elementAt(1);
     print("googlePhotoLinks : $googlePhotoLinks");
     googlePhotoDataManager.writePhotoResponse(date, response);
-    dataManager.updateSummaryOfGooglePhotoData(date, googlePhotoLinks.length);
+    dataManager.updateSummaryOfPhotoData(date, googlePhotoLinks.length);
     return googlePhotoLinks;
   }
 
@@ -324,7 +312,8 @@ class _DayPageState extends State<DayPage> {
     List<List<dynamic>> files =
         await localPhotoDataManager.getPhotoOfDate(date);
     localPhotoDataForPlot = modifyListForPlot(transpose(files));
-    print(photoDataForPlot);
+    localPhotoLinks = transpose(localPhotoDataForPlot);
+    dataManager.updateSummaryOfPhotoData(date, localPhotoLinks.length );
     // photoDataForPlot.addAll(localPhotoDataForPlot);
   }
 

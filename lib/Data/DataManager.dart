@@ -13,17 +13,6 @@ import 'package:test_location_2nd/Util/DateHandler.dart';
 import 'package:intl/intl.dart';
 import 'package:test_location_2nd/Photo/LocalPhotoDataManager.dart';
 
-enum sensorType {
-  longitude,
-  latitude,
-  accelX,
-  accelY,
-  accelZ,
-  light,
-  temperature,
-  proximity,
-  humidity,
-}
 
 class DataManager {
   var sensorDataAll;
@@ -52,9 +41,9 @@ class DataManager {
   Future<void> init() async {
     print("DataManager instance is initializing..");
     // summaryOfPhotoData = await readSummaryOfPhotoData();
-    readSummaryOfPhotoData();
+    await readSummaryOfPhotoData();
     // await updateSummaryFromLocal("20100101", formatDate(DateTime.now()));
-    await updateSummaryFromGooglePhoto("20210101", formatDate(DateTime.now()));
+    await updateSummaryFromGooglePhoto("20150101", formatDate(DateTime.now()));
 
     // await updateSummary("20210101", formatDate(DateTime.now()));
   }
@@ -134,7 +123,7 @@ class DataManager {
     }
   }
 
-  void readSummaryOfPhotoData() async {
+  Future readSummaryOfPhotoData() async {
     final Directory? directory = await getExternalStorageDirectory();
     final fileName = Glob('${directory?.path}/summary_googlePhoto.csv')
         .listSync()

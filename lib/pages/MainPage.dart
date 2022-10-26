@@ -2,6 +2,7 @@ import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:test_location_2nd/Permissions/GoogleAccountManager.dart';
 import 'package:test_location_2nd/Util/Util.dart';
+import 'package:test_location_2nd/Util/global.dart';
 import 'package:test_location_2nd/Util/responseParser.dart';
 import '../navigation.dart';
 import 'package:test_location_2nd/pages/SettingPage.dart';
@@ -107,6 +108,7 @@ class MainPageState extends State<MainPage> {
         return Navigator.canPop(context);
       },
       child: Scaffold(
+        backgroundColor: kBackGroundColor,
         // appBar: AppBar(
         //   title: const Center(
         //     child: Text(
@@ -136,7 +138,7 @@ class MainPageState extends State<MainPage> {
               BottomNavigationBarItem(
                   icon: Icon(Icons.calendar_today_outlined), label: "Day"),
               BottomNavigationBarItem(
-                  icon: Icon(Icons.circle), label: "Circle"),
+                  icon: Icon(Icons.abc_outlined), label: "Circle"),
             ],
             currentIndex:
                 context.watch<NavigationIndexProvider>().navigationIndex,

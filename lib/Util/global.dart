@@ -13,12 +13,12 @@ int mainPageSelectionIndex = 0;
 Map summaryOfPhotoData = {};
 
 //Colors
-Color kBackGroundColor = Colors.black12;
+Color kBackGroundColor = Colors.white;
 Color kMainColor_warm = Colors.deepOrangeAccent;
 // Color kMainColor_warm = Colors.red;
 
 // Color kMainColor_cool = Colors.lightBlueAccent;
-Color kMainColor_cool = Colors.white70;
+Color kMainColor_cool = Colors.white;
 
 Color kMainColor_option =Colors.green;
 

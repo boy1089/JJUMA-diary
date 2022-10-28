@@ -38,7 +38,7 @@ class _MonthPageState extends State<MonthPage> {
   @override
   Widget build(BuildContext buildContext) {
     return Scaffold(
-      backgroundColor: kBackGroundColor,
+      // backgroundColor: kBackGroundColor,
       body: Center(
         child: Container(
             // color: kBackGroundColor,
@@ -289,6 +289,7 @@ class DayButton {
                     .setDate(selectedDate);
                 // Provider.of<NavigationIndexProvider>(buildContext, listen: false).date = DateFormat("yyyyMMdd").format(today);
               },
+              child: Text("${today.day}", style: TextStyle(fontSize: 10),),
               constraints: BoxConstraints(
                   minWidth: width * _scaleFactor,
                   minHeight: height * _scaleFactor,
@@ -299,7 +300,7 @@ class DayButton {
                   // ? Color.lerp(Colors.white, Colors.yellowAccent,
                   //     (summaryOfGooglePhotoData[formatDate(today)] ) / 50)
                   ? Color.lerp(
-                      kMainColor_cool,
+                      kMainColor_cool.withAlpha(200),
                       kMainColor_warm.withAlpha(180),
                       // Color.fromARGB(150, 140, 192, 222),
                       // Color.fromARGB(150, 244, 191, 191),

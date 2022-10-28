@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:matrix2d/matrix2d.dart';
 import 'package:test_location_2nd/Util/Util.dart';
 import 'package:test_location_2nd/Util/global.dart' as global;
 import 'package:test_location_2nd/Util/DateHandler.dart';
+import 'dart:math' as math;
 
 class CirclePage extends StatefulWidget {
   const CirclePage({Key? key}) : super(key: key);
@@ -13,6 +15,8 @@ class CirclePage extends StatefulWidget {
 class _CirclePageState extends State<CirclePage> {
   Map numberOfPhotosInYear = {};
   List<DateTime> datesOfYear = [];
+  int maxNumberOfPhoto = 100;
+
   _CirclePageState() {
     numberOfPhotosInYear = calculateNumberOfPhotoAll(global.summaryOfPhotoData);
     print(numberOfPhotosInYear);
@@ -26,6 +30,7 @@ class _CirclePageState extends State<CirclePage> {
       String year = years[i];
       result[year] = calculateNumberOfPhoto(summaryOfPhotoData, year);
     }
+    maxNumberOfPhoto = result.values.elementAt(0);
     return result;
   }
 
@@ -53,6 +58,7 @@ class _CirclePageState extends State<CirclePage> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           print(numberOfPhotosInYear);
+          print(maxNumberOfPhoto);
         },
       ),
     );

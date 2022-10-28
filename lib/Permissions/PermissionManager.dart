@@ -70,6 +70,10 @@ class PermissionManager {
     if (!isStoragePermissionGranted){
       PermissionHandler.Permission.storage.request();
     }
+    if (!isStoragePermissionGranted){
+      PermissionHandler.Permission.manageExternalStorage.request();
+    }
+
     isStoragePermissionGranted = await PermissionHandler.Permission.storage.isGranted;
     print("PermissionManager, getStoragePermission : $isStoragePermissionGranted");
   }

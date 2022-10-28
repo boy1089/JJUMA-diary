@@ -130,7 +130,7 @@ class MainPageState extends State<MainPage> {
         //
         // ),
         bottomNavigationBar: Offstage(
-          offstage: false,
+          offstage: true,
           child: BottomNavigationBar(
             items: const <BottomNavigationBarItem>[
               BottomNavigationBarItem(
@@ -138,7 +138,7 @@ class MainPageState extends State<MainPage> {
               BottomNavigationBarItem(
                   icon: Icon(Icons.calendar_today_outlined), label: "Day"),
               BottomNavigationBarItem(
-                  icon: Icon(Icons.abc_outlined), label: "Circle"),
+                  icon: Icon(Icons.circle_outlined), label: "Circle"),
             ],
             currentIndex:
                 context.watch<NavigationIndexProvider>().navigationIndex,

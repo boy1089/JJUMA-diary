@@ -41,9 +41,9 @@ class DataManager {
   Future<void> init() async {
     print("DataManager instance is initializing..");
     // summaryOfPhotoData = await readSummaryOfPhotoData();
-    await readSummaryOfPhotoData();
+    var a = await readSummaryOfPhotoData();
     // await updateSummaryFromLocal("20100101", formatDate(DateTime.now()));
-    await updateSummaryFromGooglePhoto("20150101", formatDate(DateTime.now()));
+    await updateSummaryFromGooglePhoto("20190101", formatDate(DateTime.now()));
 
     // await updateSummary("20210101", formatDate(DateTime.now()));
   }
@@ -92,6 +92,7 @@ class DataManager {
       print("$date is under processing...");
       var photoResponse =
           await googlePhotoDataManager.getPhoto(photoLibraryApiClient, date);
+      print("photoresponse : $photoResponse");
       updateSummaryOfPhotoData(date, photoResponse[0].length - 1);
     }
   }
@@ -114,11 +115,12 @@ class DataManager {
     }
   }
 
-  void updateSummaryOfPhotoData(String date, int num) {
+  void updateSummaryOfPhotoData(String date, int num) async {
     summaryOfPhotoData[date] = num;
     updateIndexOfPhotoSummary += 1;
     if (updateIndexOfPhotoSummary > 10) {
-      writeSummaryOfGooglePhotoData();
+      updateIndexOfPhotoSummary = 0;
+      await writeSummaryOfGooglePhotoData();
       global.summaryOfPhotoData = summaryOfPhotoData;
     }
   }
@@ -131,19 +133,20 @@ class DataManager {
 
     print("readSummaryOfGooglePhotoData ${fileName.path}");
     var data = await openFile(fileName.path);
-
+    print(data);
     for (int i = 0; i < data.length; i++) {
-      try {
-        summaryOfPhotoData[data[i][0].toString()] = data[i][1];
-      } catch (e) {
-        print(e);
+      print(data[i]);
+        if (data[i].length > 1) {
+          summaryOfPhotoData[data[i][0].toString()] = await data[i][1];
+
+        }
       }
-    }
+
     global.summaryOfPhotoData = summaryOfPhotoData;
-    // return summaryOfPhotoData;
+    return summaryOfPhotoData;
   }
 
-  void writeSummaryOfGooglePhotoData() async {
+  Future writeSummaryOfGooglePhotoData() async {
     final Directory? directory = await getExternalStorageDirectory();
     final fileName = '${directory?.path}/summary_googlePhoto.csv';
 

@@ -214,15 +214,15 @@ class _DayPageState extends State<DayPage> {
                       ]),
                     ),
                   ),
-            floatingActionButton: FloatingActionButton(
-              onPressed: () {
-                // print("photoDataForPlot : ${photoDataForPlot[0]}");
-                // print("imagsForPlot : ${imagesForPlot[0]}");
-                print(dataManager.summaryOfPhotoData);
-                dataManager.writeSummaryOfGooglePhotoData();
-
-              },
-            ),
+            // floatingActionButton: FloatingActionButton(
+            //   onPressed: () {
+            //     // print("photoDataForPlot : ${photoDataForPlot[0]}");
+            //     // print("imagsForPlot : ${imagesForPlot[0]}");
+            //     print(dataManager.summaryOfPhotoData);
+            //     dataManager.writeSummaryOfGooglePhotoData();
+            //
+            //   },
+            // ),
           );
         });
   }

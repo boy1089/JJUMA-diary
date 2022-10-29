@@ -49,8 +49,8 @@ class _MyAppState extends State<MyApp> {
   final localPhotoDataManager = LocalPhotoDataManager();
 
   //sensorLogger will be initialized after initializing PermissionManager
-  late final sensorRecorder;
-  late final audioRecorder;
+  // late final sensorRecorder;
+  // late final audioRecorder;
   late final dataManager;
   final sensorDataManager = SensorDataManager();
 

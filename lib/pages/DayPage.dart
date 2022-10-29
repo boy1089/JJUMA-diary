@@ -125,6 +125,7 @@ class _DayPageState extends State<DayPage> {
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           return Scaffold(
             backgroundColor: kBackGroundColor,
+
             body: !snapshot.hasData
                 ? Center(
                     child: SizedBox(
@@ -135,15 +136,15 @@ class _DayPageState extends State<DayPage> {
                         )))
                 : GestureDetector(
                     onTapUp: (details) {
-                      var dx = details.globalPosition.dx - physicalWidth / 2;
-                      var dy = details.globalPosition.dy - physicalHeight / 2;
+                      var dx = details.globalPosition.dx - physicalWidth / 2 -20;
+                      var dy = details.globalPosition.dy - physicalHeight / 2  -50;
 
                       angleZoomIn = isZoomIn
-                          ? angleZoomIn - dy / 4 / physicalHeight
+                          ? angleZoomIn - dy / 6 / physicalHeight
                           : -atan2(dy / sqrt(dx * dx + dy * dy),
                                   dx / sqrt(dx * dx + dy * dy)) /
                               (2 * pi) *
-                              0.98;
+                              0.96;
                       print("$dx, $dy, $angleZoomIn");
 
                       isZoomIn = true;
@@ -169,10 +170,13 @@ class _DayPageState extends State<DayPage> {
                           .setZoomInRotationAngle(_angle);
                       setState(() {});
                     },
+
                     child: Container(
                       width: firstContainerSize,
                       height: firstContainerSize,
-                      child: Stack(alignment: Alignment.center, children: [
+                      child: Stack(
+                          alignment: Alignment.center,
+                          children: [
                         AnimatedPositioned(
                           width: graphBackgroundWidth * magnification,
                           height: graphBackgroundHeight * magnification,
@@ -214,15 +218,6 @@ class _DayPageState extends State<DayPage> {
                       ]),
                     ),
                   ),
-            // floatingActionButton: FloatingActionButton(
-            //   onPressed: () {
-            //     // print("photoDataForPlot : ${photoDataForPlot[0]}");
-            //     // print("imagsForPlot : ${imagesForPlot[0]}");
-            //     print(dataManager.summaryOfPhotoData);
-            //     dataManager.writeSummaryOfGooglePhotoData();
-            //
-            //   },
-            // ),
           );
         });
   }
@@ -257,7 +252,8 @@ class _DayPageState extends State<DayPage> {
 
     setState(() {});
     //convert data type..
-    photoDataForPlot = List<List>.generate(imagesForPlot.length, (index)=>imagesForPlot.elementAt(index));
+    photoDataForPlot = List<List>.generate(
+        imagesForPlot.length, (index) => imagesForPlot.elementAt(index));
     print("updateUi done");
   }
 
@@ -288,7 +284,6 @@ class _DayPageState extends State<DayPage> {
     return imagesForPlot;
   }
 
-
   Future updatePhoto() async {
     String date =
         Provider.of<NavigationIndexProvider>(context, listen: false).date;
@@ -314,7 +309,7 @@ class _DayPageState extends State<DayPage> {
         await localPhotoDataManager.getPhotoOfDate(date);
     localPhotoDataForPlot = modifyListForPlot(transpose(files));
     localPhotoLinks = transpose(localPhotoDataForPlot);
-    dataManager.updateSummaryOfPhotoData(date, localPhotoLinks.length );
+    dataManager.updateSummaryOfPhotoData(date, localPhotoLinks.length);
     // photoDataForPlot.addAll(localPhotoDataForPlot);
   }
 

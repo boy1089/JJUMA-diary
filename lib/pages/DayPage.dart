@@ -21,7 +21,6 @@ import 'package:test_location_2nd/PolarPhotoDataPlot.dart';
 import 'package:test_location_2nd/Util/global.dart';
 import 'dart:math';
 import 'package:test_location_2nd/Photo/LocalPhotoDataManager.dart';
-import 'package:test_location_2nd/ZoomInImageContainer.dart';
 import 'package:flutter/gestures.dart';
 
 class DayPage extends StatefulWidget {
@@ -171,24 +170,7 @@ class _DayPageState extends State<DayPage> {
                                     listen: false)
                                 .setZoomInRotationAngle(_angle);
                             setState(() {});
-                          };
-                          instance.onSecondaryTap = () {
-                            isZoomIn = false;
-                            isZoomInImageVisible = false;
-                            left = isZoomIn
-                                ? leftPositionZoomIn
-                                : leftPositionZoomOut;
-                            top = isZoomIn
-                                ? topPositionZoomIn
-                                : topPositionZoomOut;
-                            magnification = isZoomIn
-                                ? magnificationZoomIn
-                                : magnificationZoomOut;
-                            _angle = isZoomIn ? angleZoomIn : angleZoomOut;
-                            Provider.of<NavigationIndexProvider>(context,
-                                    listen: false)
-                                .setZoomInRotationAngle(_angle);
-                            setState(() {});
+                            // indexForZoomInImage = -1;
                           };
                         },
                       )

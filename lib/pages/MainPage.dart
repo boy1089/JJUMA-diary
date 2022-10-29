@@ -105,30 +105,31 @@ class MainPageState extends State<MainPage> {
       onWillPop: () async {
         Provider.of<NavigationIndexProvider>(context, listen: false)
             .setNavigationIndex(0);
+        indexForZoomInImage = -1;
         return Navigator.canPop(context);
       },
       child: Scaffold(
         backgroundColor: kBackGroundColor,
-        appBar: AppBar(
-          title: const Center(
-            child: Text(
-              "         Late Diary",
-              style: TextStyle(color: Colors.black54),
-            ),
-          ),
-          backgroundColor: Colors.white,
-          actions: [
-            Padding(
-                padding: const EdgeInsets.only(right: 20.0),
-                child: GestureDetector(
-                    onTap: () {
-                      Navigator.pushNamed(context, '/settings');
-                    },
-                    child: const Icon(Icons.settings_outlined,
-                        color: Colors.black54)))
-          ],
-
-        ),
+        // appBar: AppBar(
+        //   title: const Center(
+        //     child: Text(
+        //       "         Late Diary",
+        //       style: TextStyle(color: Colors.black54),
+        //     ),
+        //   ),
+        //   backgroundColor: Colors.white,
+        //   actions: [
+        //     Padding(
+        //         padding: const EdgeInsets.only(right: 20.0),
+        //         child: GestureDetector(
+        //             onTap: () {
+        //               Navigator.pushNamed(context, '/settings');
+        //             },
+        //             child: const Icon(Icons.settings_outlined,
+        //                 color: Colors.black54)))
+        //   ],
+        //
+        // ),
         bottomNavigationBar: Offstage(
           offstage: true,
           child: BottomNavigationBar(

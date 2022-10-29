@@ -8,6 +8,10 @@ import 'package:extended_image/extended_image.dart';
 import 'package:test_location_2nd/Util/StateProvider.dart';
 import 'package:provider/provider.dart';
 import 'dart:io';
+import 'package:test_location_2nd/Util/global.dart';
+
+Color defaultColor = Colors.black;
+
 
 class polarPhotoImageContainers {
   var googlePhotoDataForPlot;
@@ -16,17 +20,27 @@ class polarPhotoImageContainers {
   double xLocation = 0;
   double yLocation = 0;
   double containerSize = kDefaultPolarPlotSize;
+  List stackOrder = [];
   polarPhotoImageContainers(
     @required googlePhotoDataForPlot, {
     containerSize: kDefaultPolarPlotSize,
   }) {
     this.googlePhotoDataForPlot = googlePhotoDataForPlot;
     this.containerSize = containerSize;
+
+    if (indexForZoomInImage == -1) {
+      stackOrder =
+          List.generate(googlePhotoDataForPlot.length, (int index) => index);
+    } else {
+      stackOrder = List.generate(indexForZoomInImage, (int index) => index) +
+          List.generate(googlePhotoDataForPlot.length - indexForZoomInImage-1, (int index) => indexForZoomInImage + index +1 )
+      +[indexForZoomInImage];
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    print("rebuild!!?");
+    print(stackOrder);
     double angle = Provider.of<NavigationIndexProvider>(context, listen: false)
         .zoomInAngle;
     return angle == 0
@@ -34,21 +48,19 @@ class polarPhotoImageContainers {
             children: List<Widget>.generate(
                 googlePhotoDataForPlot.length,
                 (int index) => polarPhotoImageContainer(
-                      googlePhotoDataForPlot[index], index: index
-                    ).build(context)))
+                        googlePhotoDataForPlot[stackOrder[index]],
+                        index: stackOrder[index])
+                    .build(context)))
         : Stack(
             children: List<Widget>.generate(
                 googlePhotoDataForPlot.length,
                 (int index) => polarPhotoImageContainer(
-                        googlePhotoDataForPlot[index],
+                        googlePhotoDataForPlot[stackOrder[index]],
                         applyOffset: false,
-                        index: index)
+                        index: stackOrder[index])
                     .build(context)));
   }
 }
-
-Color defaultColor = Colors.black;
-int indexForZoomIn = -1;
 
 class polarPhotoImageContainer {
   var googlePhotoDataForPlot;
@@ -60,13 +72,12 @@ class polarPhotoImageContainer {
   double yLocation = 0;
   double containerSize = kSecondPolarPlotSize;
   int index = -1;
+
   polarPhotoImageContainer(@required googlePhotoDataForPlot,
       {containerSize: kDefaultPolarPlotSize, applyOffset: true, index = 1}) {
     this.googlePhotoDataForPlot = googlePhotoDataForPlot;
     this.containerSize = containerSize;
     this.index = index;
-
-
 
     if (applyOffset) {
       xLocation = imageLocationFactor *
@@ -85,20 +96,18 @@ class polarPhotoImageContainer {
           (0.6 + 0.1 * radiusSign * radius);
     }
 
-    if (indexForZoomIn == this.index){
+    if (indexForZoomInImage == this.index) {
       imageSize = 350;
       var radiusSign = (1 - 0.7) * 2;
       var radius = (2) / 1.8; // mag5 1.2
 
       xLocation = imageLocationFactor *
-          cos((googlePhotoDataForPlot[0]) / 24 * 2 * pi - pi / 2) *
+          cos((googlePhotoDataForPlot[0]) / 24 * 2 * pi - pi / 2 - pi * 0.04) *
           (0.6 + 0.10 * radiusSign * radius);
       yLocation = imageLocationFactor *
-          sin((googlePhotoDataForPlot[0]) / 24 * 2 * pi - pi / 2) *
+          sin((googlePhotoDataForPlot[0]) / 24 * 2 * pi - pi / 2 - pi * 0.04) *
           (0.6 + 0.1 * radiusSign * radius);
     }
-
-
   }
 
   @override
@@ -119,43 +128,40 @@ class polarPhotoImageContainer {
               duration: Duration(milliseconds: 100),
               turns: -angle,
               child: RawGestureDetector(
-                gestures: {
-                  AllowMultipleGestureRecognizer:
-                      GestureRecognizerFactoryWithHandlers<
-                              AllowMultipleGestureRecognizer>(
-                          () => AllowMultipleGestureRecognizer(),
-                          (AllowMultipleGestureRecognizer instance) {
-                    instance.onTapUp = (details) {
-                      print("clicked");
-                      print(imageSize);
-                      // defaultColor = defaultColor==Colors.black ? Colors.white: Colors.black;
-                      indexForZoomIn = this.index;
+                  gestures: {
+                    AllowMultipleGestureRecognizer:
+                        GestureRecognizerFactoryWithHandlers<
+                                AllowMultipleGestureRecognizer>(
+                            () => AllowMultipleGestureRecognizer(),
+                            (AllowMultipleGestureRecognizer instance) {
+                      instance.onTapUp = (details) {
+                        print("clicked");
+                        // defaultColor = defaultColor==Colors.black ? Colors.white: Colors.black;
+                        indexForZoomInImage = this.index;
+                        print(indexForZoomInImage);
+                      };
+                    })
+                  },
+                  // child : Container(
+                  //     // width : 400, height : 400,
+                  //     color : defaultColor),
 
-                    };
-                  })
-                },
-                // child : Container(
-                //     // width : 400, height : 400,
-                //     color : defaultColor),
-
-                child: Card(
-                  shape : CircleBorder(),
-                  clipBehavior: Clip.antiAliasWithSaveLayer,
-                  child : googlePhotoDataForPlot[1].length > 200
-                    ? ExtendedImage.network(
-                        googlePhotoDataForPlot[1],
-                        // centerSlice: Rect.fromCircle(center: Offset(10.0, 10.0), radius : 10.0),
-                        fit: BoxFit.cover,
-                        enableLoadState: false,
-                      )
-                    : ExtendedImage.file(
-                        File(googlePhotoDataForPlot[1]),
-                        fit: BoxFit.cover,
-                        enableLoadState: false,
-                      ),)
-
-
-              ))),
+                  child: Card(
+                    shape: CircleBorder(),
+                    clipBehavior: Clip.antiAliasWithSaveLayer,
+                    child: googlePhotoDataForPlot[1].length > 200
+                        ? ExtendedImage.network(
+                            googlePhotoDataForPlot[1],
+                            // centerSlice: Rect.fromCircle(center: Offset(10.0, 10.0), radius : 10.0),
+                            fit: BoxFit.cover,
+                            enableLoadState: false,
+                          )
+                        : ExtendedImage.file(
+                            File(googlePhotoDataForPlot[1]),
+                            fit: BoxFit.cover,
+                            enableLoadState: false,
+                          ),
+                  )))),
     );
   }
 }

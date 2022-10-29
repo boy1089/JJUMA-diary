@@ -5,6 +5,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:matrix2d/matrix2d.dart';
 import 'dart:ui';
 import 'package:flutter/gestures.dart';
+
 const bool kDebugMode = !kReleaseMode && !kProfileMode;
 
 List<String> kTimeStamps = [
@@ -103,8 +104,6 @@ const event_color_goingOut = Colors.red;
 const event_color_backHome = Colors.blue;
 const path_phonecall = '/sdcard/Music/TPhoneCallRecords';
 
-
-
 int a = 255;
 List<Color> get colorsHotCold => [
       Colors.deepOrangeAccent,
@@ -119,7 +118,6 @@ List<Color> get colorsHotCold => [
       Colors.blue,
     ];
 
-
 // List<Color> colorsLp = Color.lerp(Colors.deepOrange, Colors.blueAccent, 2.0);
 
 List<List<double>> dummyPhotoData = [
@@ -129,8 +127,6 @@ List<List<double>> dummyPhotoData = [
   [18, kPhotoPlotRadius],
   [21, kPhotoPlotRadius],
 ];
-
-
 
 /***
  * when reading csv file with open file, resulting list is
@@ -285,9 +281,11 @@ List<List<dynamic>> subsampleList(List list, int factor) {
   return newList;
 }
 
+
 class AllowMultipleGestureRecognizer extends TapGestureRecognizer {
   @override
   void rejectGesture(int pointer) {
+    print("pointer : $pointer");
     acceptGesture(pointer);
   }
 }

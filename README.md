@@ -1,16 +1,7 @@
-# test_location_2nd
+# Late-Diary
 
-A new Flutter project.
+This is the project for Late Diary, which enables users to write diary for the past. 
 
-## Getting Started
+I'm not disciplined developer and it would be grateful if anyone can help me building this application. 
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+I'm targetting to launch this application to Play store 2022.Nov

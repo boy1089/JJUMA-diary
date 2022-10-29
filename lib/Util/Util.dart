@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:matrix2d/matrix2d.dart';
 import 'dart:ui';
-
+import 'package:flutter/gestures.dart';
 const bool kDebugMode = !kReleaseMode && !kProfileMode;
 
 List<String> kTimeStamps = [
@@ -283,4 +283,11 @@ List<List<dynamic>> subsampleList(List list, int factor) {
     if (i % factor == 0) newList.add(list[i]);
   }
   return newList;
+}
+
+class AllowMultipleGestureRecognizer extends TapGestureRecognizer {
+  @override
+  void rejectGesture(int pointer) {
+    acceptGesture(pointer);
+  }
 }

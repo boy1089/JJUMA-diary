@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:googleapis/shared.dart';
+import 'package:graphic/graphic.dart';
 import 'package:test_location_2nd/Util/Util.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:extended_image/extended_image.dart';
@@ -33,7 +34,7 @@ class polarPhotoImageContainers {
             children: List<Widget>.generate(
                 googlePhotoDataForPlot.length,
                 (int index) => polarPhotoImageContainer(
-                      googlePhotoDataForPlot[index],
+                      googlePhotoDataForPlot[index], index: index
                     ).build(context)))
         : Stack(
             children: List<Widget>.generate(
@@ -46,6 +47,9 @@ class polarPhotoImageContainers {
   }
 }
 
+Color defaultColor = Colors.black;
+int indexForZoomIn = -1;
+
 class polarPhotoImageContainer {
   var googlePhotoDataForPlot;
   double imageLocationFactor = 1.4;
@@ -55,11 +59,14 @@ class polarPhotoImageContainer {
   double xLocation = 0;
   double yLocation = 0;
   double containerSize = kSecondPolarPlotSize;
-
+  int index = -1;
   polarPhotoImageContainer(@required googlePhotoDataForPlot,
       {containerSize: kDefaultPolarPlotSize, applyOffset: true, index = 1}) {
     this.googlePhotoDataForPlot = googlePhotoDataForPlot;
     this.containerSize = containerSize;
+    this.index = index;
+
+
 
     if (applyOffset) {
       xLocation = imageLocationFactor *
@@ -77,13 +84,29 @@ class polarPhotoImageContainer {
           sin((googlePhotoDataForPlot[0]) / 24 * 2 * pi - pi / 2) *
           (0.6 + 0.1 * radiusSign * radius);
     }
+
+    if (indexForZoomIn == this.index){
+      imageSize = 350;
+      var radiusSign = (1 - 0.7) * 2;
+      var radius = (2) / 1.8; // mag5 1.2
+
+      xLocation = imageLocationFactor *
+          cos((googlePhotoDataForPlot[0]) / 24 * 2 * pi - pi / 2) *
+          (0.6 + 0.10 * radiusSign * radius);
+      yLocation = imageLocationFactor *
+          sin((googlePhotoDataForPlot[0]) / 24 * 2 * pi - pi / 2) *
+          (0.6 + 0.1 * radiusSign * radius);
+    }
+
+
   }
 
   @override
   Widget build(BuildContext context) {
     //outer container to make alignment consistent
 
-    print(googlePhotoDataForPlot);
+    // print(googlePhotoDataForPlot);
+    // print("polarPhotoImageContainer, imagesize : $imageSize");
     double angle = Provider.of<NavigationIndexProvider>(context, listen: false)
         .zoomInAngle;
     return Align(
@@ -93,13 +116,32 @@ class polarPhotoImageContainer {
           height: imageSize,
           // https://stackoverflow.com/questions/53866481/flutter-how-to-create-card-with-background-image
           child: AnimatedRotation(
-            duration: Duration(milliseconds: 100),
-            turns: -angle,
-            child: Card(
-                shape: CircleBorder(),
-                elevation: 4.0,
-                clipBehavior: Clip.antiAliasWithSaveLayer,
-                child: googlePhotoDataForPlot[1].length > 200
+              duration: Duration(milliseconds: 100),
+              turns: -angle,
+              child: RawGestureDetector(
+                gestures: {
+                  AllowMultipleGestureRecognizer:
+                      GestureRecognizerFactoryWithHandlers<
+                              AllowMultipleGestureRecognizer>(
+                          () => AllowMultipleGestureRecognizer(),
+                          (AllowMultipleGestureRecognizer instance) {
+                    instance.onTapUp = (details) {
+                      print("clicked");
+                      print(imageSize);
+                      // defaultColor = defaultColor==Colors.black ? Colors.white: Colors.black;
+                      indexForZoomIn = this.index;
+
+                    };
+                  })
+                },
+                // child : Container(
+                //     // width : 400, height : 400,
+                //     color : defaultColor),
+
+                child: Card(
+                  shape : CircleBorder(),
+                  clipBehavior: Clip.antiAliasWithSaveLayer,
+                  child : googlePhotoDataForPlot[1].length > 200
                     ? ExtendedImage.network(
                         googlePhotoDataForPlot[1],
                         // centerSlice: Rect.fromCircle(center: Offset(10.0, 10.0), radius : 10.0),
@@ -110,8 +152,10 @@ class polarPhotoImageContainer {
                         File(googlePhotoDataForPlot[1]),
                         fit: BoxFit.cover,
                         enableLoadState: false,
-                      )),
-          )),
+                      ),)
+
+
+              ))),
     );
   }
 }

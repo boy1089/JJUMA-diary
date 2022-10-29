@@ -21,6 +21,8 @@ import 'package:test_location_2nd/PolarPhotoDataPlot.dart';
 import 'package:test_location_2nd/Util/global.dart';
 import 'dart:math';
 import 'package:test_location_2nd/Photo/LocalPhotoDataManager.dart';
+import 'package:test_location_2nd/ZoomInImageContainer.dart';
+import 'package:flutter/gestures.dart';
 
 class DayPage extends StatefulWidget {
   GoogleAccountManager googleAccountManager;
@@ -98,6 +100,7 @@ class _DayPageState extends State<DayPage> {
   var left = 200.0;
   double top = 0;
   bool isZoomIn = false;
+  bool isZoomInImageVisible = false;
   double magnification = 1;
   double _angle = 0;
   int animationTime = 200;
@@ -125,7 +128,6 @@ class _DayPageState extends State<DayPage> {
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           return Scaffold(
             backgroundColor: kBackGroundColor,
-
             body: !snapshot.hasData
                 ? Center(
                     child: SizedBox(
@@ -134,49 +136,67 @@ class _DayPageState extends State<DayPage> {
                         child: CircularProgressIndicator(
                           strokeWidth: 10,
                         )))
-                : GestureDetector(
-                    onTapUp: (details) {
-                      var dx = details.globalPosition.dx - physicalWidth / 2 -20;
-                      var dy = details.globalPosition.dy - physicalHeight / 2  -50;
+                : RawGestureDetector(
+              behavior: HitTestBehavior.opaque,
 
-                      angleZoomIn = isZoomIn
-                          ? angleZoomIn - dy / 6 / physicalHeight
-                          : -atan2(dy / sqrt(dx * dx + dy * dy),
-                                  dx / sqrt(dx * dx + dy * dy)) /
-                              (2 * pi) *
-                              0.96;
-                      print("$dx, $dy, $angleZoomIn");
+              gestures: {
+                      AllowMultipleGestureRecognizer:
+                          GestureRecognizerFactoryWithHandlers<
+                              AllowMultipleGestureRecognizer>(
+                        () => AllowMultipleGestureRecognizer(),
+                        (AllowMultipleGestureRecognizer instance) {
+                          instance.onTapUp = (details) {
+                            var dx = details.globalPosition.dx -
+                                physicalWidth / 2 -
+                                20;
+                            var dy = details.globalPosition.dy -
+                                physicalHeight / 2 -
+                                50;
 
-                      isZoomIn = true;
-                      left = leftPositionZoomIn;
-                      top = topPositionZoomIn;
-                      magnification = magnificationZoomIn;
-                      _angle = angleZoomIn;
-                      Provider.of<NavigationIndexProvider>(context,
-                              listen: false)
-                          .setZoomInRotationAngle(_angle);
-                      setState(() {});
+                            angleZoomIn = isZoomIn
+                                ? angleZoomIn - dy / 6 / physicalHeight
+                                : -atan2(dy / sqrt(dx * dx + dy * dy),
+                                        dx / sqrt(dx * dx + dy * dy)) /
+                                    (2 * pi) *
+                                    0.96;
+                            print("$dx, $dy, $angleZoomIn");
+
+                            isZoomIn = true;
+                            isZoomInImageVisible = true;
+                            left = leftPositionZoomIn;
+                            top = topPositionZoomIn;
+                            magnification = magnificationZoomIn;
+                            _angle = angleZoomIn;
+                            Provider.of<NavigationIndexProvider>(context,
+                                    listen: false)
+                                .setZoomInRotationAngle(_angle);
+                            setState(() {});
+                          };
+                          instance.onSecondaryTap = () {
+                            isZoomIn = false;
+                            isZoomInImageVisible = false;
+                            left = isZoomIn
+                                ? leftPositionZoomIn
+                                : leftPositionZoomOut;
+                            top = isZoomIn
+                                ? topPositionZoomIn
+                                : topPositionZoomOut;
+                            magnification = isZoomIn
+                                ? magnificationZoomIn
+                                : magnificationZoomOut;
+                            _angle = isZoomIn ? angleZoomIn : angleZoomOut;
+                            Provider.of<NavigationIndexProvider>(context,
+                                    listen: false)
+                                .setZoomInRotationAngle(_angle);
+                            setState(() {});
+                          };
+                        },
+                      )
                     },
-                    onDoubleTap: () {
-                      isZoomIn = false;
-                      left =
-                          isZoomIn ? leftPositionZoomIn : leftPositionZoomOut;
-                      top = isZoomIn ? topPositionZoomIn : topPositionZoomOut;
-                      magnification =
-                          isZoomIn ? magnificationZoomIn : magnificationZoomOut;
-                      _angle = isZoomIn ? angleZoomIn : angleZoomOut;
-                      Provider.of<NavigationIndexProvider>(context,
-                              listen: false)
-                          .setZoomInRotationAngle(_angle);
-                      setState(() {});
-                    },
-
                     child: Container(
                       width: firstContainerSize,
                       height: firstContainerSize,
-                      child: Stack(
-                          alignment: Alignment.center,
-                          children: [
+                      child: Stack(alignment: Alignment.center, children: [
                         AnimatedPositioned(
                           width: graphBackgroundWidth * magnification,
                           height: graphBackgroundHeight * magnification,
@@ -204,14 +224,15 @@ class _DayPageState extends State<DayPage> {
                                   // polarPhotoImageContainers(imagesForPlot).build(context),
                                   polarPhotoImageContainers(imagesForPlot)
                                       .build(context),
+                                  // ZoomInImageContainer(isZoomInImageVisible, imagesForPlot).build(context),
 
-                                  Container(
-                                    width: 3000,
-                                    height: 3000,
-                                    child: Card(
-                                        color: Colors.transparent,
-                                        elevation: 0.0),
-                                  )
+                                  // Container(
+                                  //   width: 3000,
+                                  //   height: 3000,
+                                  //   child: Card(
+                                  //       color: Colors.transparent,
+                                  //       elevation: 0.0),
+                                  // )
                                 ],
                               )),
                         ),

@@ -66,15 +66,13 @@ class _MyAppState extends State<MyApp> {
     // audioRecorder.init();
     super.initState();
     init();
-     }
+  }
 
   Future<void> init() async {
-    photoLibraryApiClient =
-        PhotoLibraryApiClient(googleAccountManager);
+    photoLibraryApiClient = PhotoLibraryApiClient(googleAccountManager);
     dataManager = DataManager(googlePhotoDataManager, photoLibraryApiClient);
     await googleAccountManager.init();
     await dataManager.init();
-
   }
 
   // void saveNote() {
@@ -85,7 +83,6 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-
     return MaterialApp(
       initialRoute: '/daily',
       routes: {

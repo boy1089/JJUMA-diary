@@ -89,7 +89,7 @@ class MainPageState extends State<MainPage> {
         googlePhotoDataManager,
         sensorDataManager,
         localPhotoDataManager,
-    noteManager);
+        noteManager);
     CirclePage circlePage = CirclePage();
 
     _widgetOptions = <Widget>[
@@ -109,7 +109,8 @@ class MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        var provider = Provider.of<NavigationIndexProvider>(context, listen : false);
+        var provider =
+            Provider.of<NavigationIndexProvider>(context, listen: false);
         //when zoomed out, go to month page
         indexForZoomInImage = -1;
         isImageClicked = false;
@@ -117,7 +118,6 @@ class MainPageState extends State<MainPage> {
           provider.setNavigationIndex(0);
           return Navigator.canPop(context);
         }
-
 
         //when zoomed in, make daypage zoom out
         // provider.setZoomInState(false);
@@ -190,11 +190,6 @@ class MainPageState extends State<MainPage> {
                 );
               }
             }),
-        // floatingActionButton: FloatingActionButton(
-        //   onPressed: () async {
-        //     // googlePhotoDataManager.getAndSaveAllPhoto(photoLibraryApiClient, "20210101", "20211231");
-        //   },
-        // ),
       ),
     );
   }

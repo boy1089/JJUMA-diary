@@ -8,6 +8,7 @@ class NavigationIndexProvider with ChangeNotifier{
   String date = formatDate(DateTime.now());
   Map summaryOfGooglePhotoData = {};
   double zoomInAngle = 0.0;
+  bool isZoomIn = false;
 
   void setNavigationIndex(int index){
     navigationIndex = index;
@@ -26,6 +27,12 @@ class NavigationIndexProvider with ChangeNotifier{
   void setZoomInRotationAngle(angle){
     print("provider set zoomInAngle to $angle");
     zoomInAngle = angle;
+  }
+
+  void setZoomInState(isZoomIn){
+    print("provider set isZoomIn to $isZoomIn");
+    this.isZoomIn = isZoomIn;
+    notifyListeners();
   }
 
 }

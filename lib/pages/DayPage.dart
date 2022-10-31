@@ -20,11 +20,8 @@ import 'package:test_location_2nd/polarPhotoImageContainer.dart';
 import 'package:test_location_2nd/PolarPhotoDataPlot.dart';
 import 'package:test_location_2nd/Util/global.dart';
 import 'dart:math';
-import 'package:test_location_2nd/Photo/LocalPhotoDataManager.dart';
-import 'package:flutter/gestures.dart';
 import 'package:test_location_2nd/Note/NoteManager.dart';
 
-import 'package:intl/intl.dart';
 
 class DayPage extends StatefulWidget {
   GoogleAccountManager googleAccountManager;
@@ -93,7 +90,6 @@ class _DayPageState extends State<DayPage> {
     update = updateUi();
     print("DayPage, after initState : ${photoDataForPlot}");
     readData = _fetchData();
-    double leftPositionZoomIn = -graphBackgroundWidth * (3 / 4);
     left = leftPositionZoomOut;
     top = topPositionZoomOut;
   }
@@ -110,6 +106,13 @@ class _DayPageState extends State<DayPage> {
   double magnification = 1;
   double _angle = 0;
   int animationTime = 200;
+
+  var layout = {
+    //zoomin, zoom out
+    'magnification' : {true : 7, false : 1},
+    'left' : {true : -2000, false : 30.7},
+    'top' : {true : 105.7, false : 105.7},
+  };
 
   //circle positioned on the center
   double leftPositionZoomOut = 30.7;
@@ -140,6 +143,7 @@ class _DayPageState extends State<DayPage> {
     var date =
         Provider.of<NavigationIndexProvider>(context, listen: false).date;
     print("date : $date");
+    var isZoomIn = Provider.of<NavigationIndexProvider>(context, listen: true).isZoomIn;
 
     return FutureBuilder(
         future: readData,
@@ -179,39 +183,37 @@ class _DayPageState extends State<DayPage> {
 
                           print("$dx, $dy, $angleZoomIn");
                           print("tap?? $isZoomIn");
-
-                          isZoomIn = true;
+                          Provider.of<NavigationIndexProvider>(context, listen: false).setZoomInState(true);
                           isZoomInImageVisible = true;
-                          left = leftPositionZoomIn;
-                          top = topPositionZoomIn;
                           magnification = magnificationZoomIn;
+
                           if (!isZoomIn) {
                             _angle = angleZoomIn;
                             Provider.of<NavigationIndexProvider>(context,
                                     listen: false)
                                 .setZoomInRotationAngle(_angle);
-                          }
-                          ;
+                          };
+
                           setState(() {});
                           FocusManager.instance.primaryFocus?.unfocus();
                           // indexForZoomInImage = -1;};
                         };
                       }),
+
                       AllowMultipleGestureRecognizer2:
                           GestureRecognizerFactoryWithHandlers<
                               AllowMultipleGestureRecognizer2>(
                         () => AllowMultipleGestureRecognizer2(),
                         (AllowMultipleGestureRecognizer2 instance) {
-                          isZoomIn
-                              ? instance.onUpdate = (details) {
-                                  print(details);
-                                  _angle = _angle + details.delta.dy / 1000;
+                               instance.onUpdate = (details) {
+                                  _angle = isZoomIn
+                                      ?_angle + details.delta.dy / 1000
+                                      : _angle;
                                   Provider.of<NavigationIndexProvider>(context,
                                           listen: false)
                                       .setZoomInRotationAngle(_angle);
                                   setState(() {});
-                                }
-                              : print('aa');
+                                };
                         },
                       )
                     },
@@ -225,11 +227,11 @@ class _DayPageState extends State<DayPage> {
                           children: [
                             Positioned(top: 20.0, child: Text(date)),
                             AnimatedPositioned(
-                              width: graphBackgroundWidth * magnification,
-                              height: graphBackgroundHeight * magnification,
+                              width: graphBackgroundWidth * layout['magnification']![isZoomIn]!,
+                              height: graphBackgroundHeight * layout['magnification']![isZoomIn]!,
                               duration: Duration(milliseconds: animationTime),
-                              left: left,
-                              top : 40,
+                              left: layout['left']?[isZoomIn]?.toDouble(),
+                              top: 40,
                               curve: Curves.fastOutSlowIn,
                               child: AnimatedRotation(
                                   turns: _angle,
@@ -244,10 +246,6 @@ class _DayPageState extends State<DayPage> {
                                           .build(context),
                                       PolarPhotoDataPlot(photoDataForPlot)
                                           .build(context),
-                                      // PolarPhotoDataPlot(imagesForPlot)
-                                      //     .build(context),
-
-                                      // polarPhotoImageContainers(imagesForPlot).build(context),
                                       polarPhotoImageContainers(imagesForPlot)
                                           .build(context),
                                     ],
@@ -313,12 +311,6 @@ class _DayPageState extends State<DayPage> {
   }
 
   Future updateUi() async {
-    var date2 = DateTime.parse(
-        Provider.of<NavigationIndexProvider>(context, listen: false).date);
-
-    bool isProcessedSensorFileExists = await File(
-            "/storage/emulated/0/Android/data/com.example.test_location_2nd/files/processedSensorData/${formatDate(date2)}_processedSensor.csv")
-        .exists();
 
     googlePhotoLinks = [];
     imagesForPlot = [];

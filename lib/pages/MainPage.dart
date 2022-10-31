@@ -109,19 +109,19 @@ class MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-
-        if (Provider.of<NavigationIndexProvider>(context,
-            listen: false)
-            .zoomInAngle == 0)
-          Provider.of<NavigationIndexProvider>(context, listen: false)
-              .setNavigationIndex(0);
-
+        var provider = Provider.of<NavigationIndexProvider>(context, listen : false);
+        if (!provider.isZoomIn) {
+          provider.setNavigationIndex(0);
+          return Navigator.canPop(context);
+        }
 
         indexForZoomInImage = -1;
-        Provider.of<NavigationIndexProvider>(context,
-            listen: false)
-            .setZoomInRotationAngle(0);
-
+        // provider.setZoomInState(false);
+        setState(() {
+          provider.setZoomInState(false);
+          provider.isZoomIn = false;
+          provider.setZoomInRotationAngle(0);
+        });
         return Navigator.canPop(context);
       },
       child: Scaffold(
@@ -144,7 +144,6 @@ class MainPageState extends State<MainPage> {
         //             child: const Icon(Icons.settings_outlined,
         //                 color: Colors.black54)))
         //   ],
-        //
         // ),
         bottomNavigationBar: Offstage(
           offstage: true,

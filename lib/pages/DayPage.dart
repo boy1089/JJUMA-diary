@@ -76,7 +76,6 @@ class _DayPageState extends State<DayPage> {
   FocusNode focusNode = FocusNode();
 
   final myTextController = TextEditingController();
-  late polarPhotoImageContainers imageContainers;
 
   @override
   void initState() {
@@ -98,7 +97,6 @@ class _DayPageState extends State<DayPage> {
 
   Future<List<dynamic>> _fetchData() async {
     await updateUi();
-    imageContainers = polarPhotoImageContainers(imagesForPlot);
     return googlePhotoLinks;
   }
 
@@ -107,7 +105,7 @@ class _DayPageState extends State<DayPage> {
   double _angle = 0;
 
   double graphSize = 330;
-  double topPadding = 50;
+  double topPadding = 150;
 
   //layout for zoomIn and zoomOut state
   late Map layout = {
@@ -143,29 +141,33 @@ class _DayPageState extends State<DayPage> {
                           strokeWidth: 10,
                         )))
                 : RawGestureDetector(
-                    behavior: HitTestBehavior.opaque,
+                    behavior: HitTestBehavior.deferToChild,
                     gestures: {
                       AllowMultipleGestureRecognizer:
                           GestureRecognizerFactoryWithHandlers<
                                   AllowMultipleGestureRecognizer>(
                               () => AllowMultipleGestureRecognizer(),
                               (AllowMultipleGestureRecognizer instance) {
-                        instance.onTapUp = (details) {
-                          if (isZoomIn) return;
+                        instance.onTapDown = (details) {
+                          setState(() {
+                            print(indexForZoomInImage);
 
-                          Offset tapPosition =
-                              calculateTapPositionRefCenter(details, 0);
-                          double angleZoomIn =
-                              calculateTapAngle(tapPosition, 0, 0);
-                          // print("tap Position : ${tapPosition}");
-                          // print("angle : $angleZoomIn");
-                          // print("zoomIn : $isZoomIn");
+                            if (isZoomIn) return;
 
-                          provider.setZoomInState(true);
-                          isZoomInImageVisible = true;
-                          _angle = angleZoomIn;
-                          provider.setZoomInRotationAngle(_angle);
-                          FocusManager.instance.primaryFocus?.unfocus();
+                            Offset tapPosition =
+                                calculateTapPositionRefCenter(details, 0);
+                            double angleZoomIn =
+                                calculateTapAngle(tapPosition, 0, 0);
+                            // print("tap Position : ${tapPosition}");
+                            // print("angle : $angleZoomIn");
+                            // print("zoomIn : $isZoomIn");
+
+                            provider.setZoomInState(true);
+                            isZoomInImageVisible = true;
+                            _angle = angleZoomIn;
+                            provider.setZoomInRotationAngle(_angle);
+                            FocusManager.instance.primaryFocus?.unfocus();
+                          });
                         };
                       }),
                       AllowMultipleGestureRecognizer2:
@@ -176,7 +178,7 @@ class _DayPageState extends State<DayPage> {
                           instance.onUpdate = (details) {
                             _angle =
                                 isZoomIn ? _angle + details.delta.dy / 1000 : 0;
-                            // provider.setZoomInRotationAngle(_angle);
+                            provider.setZoomInRotationAngle(_angle);
                             setState(() {});
                           };
                         },
@@ -189,8 +191,6 @@ class _DayPageState extends State<DayPage> {
                           alignment:
                               isZoomIn ? Alignment.center : Alignment.topCenter,
                           children: [
-
-
                             AnimatedPositioned(
                               width: layout['graphSize']?[isZoomIn]?.toDouble(),
                               height:
@@ -198,7 +198,6 @@ class _DayPageState extends State<DayPage> {
                               duration: Duration(milliseconds: animationTime),
                               left: layout['left']?[isZoomIn]?.toDouble(),
                               top: layout['top']?[isZoomIn]?.toDouble(),
-
                               curve: Curves.fastOutSlowIn,
                               child: AnimatedRotation(
                                   turns: isZoomIn ? _angle : 0,
@@ -213,46 +212,55 @@ class _DayPageState extends State<DayPage> {
                                           .build(context),
                                       PolarPhotoDataPlot(photoDataForPlot)
                                           .build(context),
-                                      // polarPhotoImageContainers(imagesForPlot)
-                                      //     .build(context),
-                                      imageContainers.build(context),
+                                      polarPhotoImageContainers(imagesForPlot)
+                                          .build(context),
+                                      // imageContainers.build(context),
                                     ],
                                   )),
                             ),
                             Positioned(
                               width: physicalWidth - 20,
-                              // height: 100,
+                              height: !focusNode.hasFocus
+                                  ? physicalHeight / 2 - 200
+                                  : physicalHeight / 2 - 50,
                               left: 10,
-                              bottom : 20,
-
-                              child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Container(
-                                      color : Colors.black12,
-                                      child: EditableText(
-                                        readOnly: isZoomIn ? true : false,
-                                        maxLines: 20,
-                                        controller: myTextController,
-                                        focusNode: focusNode,
-                                        style: TextStyle(color: Colors.black),
-                                        cursorColor: Colors.black,
-                                        backgroundCursorColor: Colors.black,
-                                        textAlign: TextAlign.left,
-
-
+                              bottom: 20,
+                              child: Offstage(
+                                offstage: isZoomIn ? true : false,
+                                child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Container(
+                                        height: !focusNode.hasFocus
+                                            ? physicalHeight / 2 - 200
+                                            : physicalHeight / 2 - 50,
+                                        color: myTextController.text.isEmpty
+                                        ?Colors.transparent
+                                        :Colors.black12,
+                                        child: EditableText(
+                                          readOnly: isZoomIn ? true : false,
+                                          maxLines: 15,
+                                          controller: myTextController,
+                                          focusNode: focusNode,
+                                          style:
+                                              TextStyle(color: Colors.black54),
+                                          cursorColor: Colors.black12,
+                                          backgroundCursorColor: Colors.black12,
+                                          textAlign: TextAlign.left,
+                                        ),
                                       ),
-                                    ),
-                                  ]),
+                                    ]),
+                              ),
                             ),
                             Positioned(
-                                top : 30,
+                                top: 30,
                                 child: Text(
                                   "${DateFormat('EEEE').format(DateTime.parse(provider.date))}/"
-                                      "${DateFormat('MMM').format(DateTime.parse(provider.date))} "
-                                      "${DateFormat('dd').format(DateTime.parse(provider.date))}/"
-                                      "${DateFormat('yyyy').format(DateTime.parse(provider.date))}",
-                                  style: TextStyle(fontSize: 20),
+                                  "${DateFormat('MMM').format(DateTime.parse(provider.date))} "
+                                  "${DateFormat('dd').format(DateTime.parse(provider.date))}/"
+                                  "${DateFormat('yyyy').format(DateTime.parse(provider.date))}",
+                                  style: TextStyle(fontSize: 20, color: Colors.black54),
                                 )),
                           ]),
                     ),
@@ -265,8 +273,8 @@ class _DayPageState extends State<DayPage> {
                   dismissKeyboard();
                 } else {
                   showKeyboard();
-                }
-                ;
+                }                ;
+                setState(() {});
               },
             ),
           );

@@ -40,10 +40,13 @@ class polarPhotoImageContainers {
 
   @override
   Widget build(BuildContext context) {
+    print(googlePhotoDataForPlot.length);
     print(stackOrder);
-    double angle = Provider.of<NavigationIndexProvider>(context, listen: true)
-        .zoomInAngle;
-    return !Provider.of<NavigationIndexProvider>(context, listen: false).isZoomIn
+    print(indexForZoomInImage);
+    double angle =
+        Provider.of<NavigationIndexProvider>(context, listen: true).zoomInAngle;
+    return !Provider.of<NavigationIndexProvider>(context, listen: false)
+            .isZoomIn
         ? Stack(
             children: List<Widget>.generate(
                 googlePhotoDataForPlot.length,
@@ -109,10 +112,6 @@ class polarPhotoImageContainer {
           (0.6 + 0.1 * radiusSign * radius);
     }
   }
-  @override
-  void dispose(){
-    indexForZoomInImage = -1;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -130,7 +129,11 @@ class polarPhotoImageContainer {
           // https://stackoverflow.com/questions/53866481/flutter-how-to-create-card-with-background-image
           child: AnimatedRotation(
               duration: Duration(milliseconds: 100),
-              turns: Provider.of<NavigationIndexProvider>(context, listen: false).isZoomIn?-angle:0,
+              turns:
+                  Provider.of<NavigationIndexProvider>(context, listen: false)
+                          .isZoomIn
+                      ? -angle
+                      : 0,
               child: RawGestureDetector(
                   gestures: {
                     AllowMultipleGestureRecognizer:

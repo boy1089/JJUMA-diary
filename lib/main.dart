@@ -50,8 +50,8 @@ class _MyAppState extends State<MyApp> {
   final localPhotoDataManager = LocalPhotoDataManager();
 
   //sensorLogger will be initialized after initializing PermissionManager
-  // late final sensorRecorder;
-  // late final audioRecorder;
+  late final sensorRecorder;
+  late final audioRecorder;
   late final dataManager;
   final sensorDataManager = SensorDataManager();
   final noteManager = NoteManager();
@@ -60,10 +60,10 @@ class _MyAppState extends State<MyApp> {
   // final myTextController = TextEditingController();
 
   _MyAppState() {
-    // sensorRecorder = SensorRecorder(permissionManager);
-    // sensorRecorder.init();
-    // audioRecorder = AudioRecorder(permissionManager);
-    // audioRecorder.init();
+    sensorRecorder = SensorRecorder(permissionManager);
+    sensorRecorder.init();
+    audioRecorder = AudioRecorder(permissionManager);
+    audioRecorder.init();
     super.initState();
     init();
      }

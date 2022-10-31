@@ -119,7 +119,6 @@ class MainPageState extends State<MainPage> {
 
 
         //when zoomed in, make daypage zoom out
-        indexForZoomInImage = -1;
         // provider.setZoomInState(false);
         setState(() {
           provider.setZoomInState(false);

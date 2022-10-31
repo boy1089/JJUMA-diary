@@ -22,7 +22,6 @@ import 'package:test_location_2nd/Util/global.dart';
 import 'dart:math';
 import 'package:test_location_2nd/Note/NoteManager.dart';
 
-
 class DayPage extends StatefulWidget {
   GoogleAccountManager googleAccountManager;
   PermissionManager permissionManager;
@@ -76,6 +75,7 @@ class _DayPageState extends State<DayPage> {
   List imagesForPlot = [];
   List<List<dynamic>> photoDataForPlot = [[]];
   FocusNode focusNode = FocusNode();
+
   @override
   void initState() {
     super.initState();
@@ -88,10 +88,9 @@ class _DayPageState extends State<DayPage> {
     localPhotoDataManager = widget.localPhotoDataManager;
     noteManager = widget.noteManager;
     update = updateUi();
+
     print("DayPage, after initState : ${photoDataForPlot}");
     readData = _fetchData();
-    left = leftPositionZoomOut;
-    top = topPositionZoomOut;
   }
 
   Future<List<dynamic>> _fetchData() async {
@@ -99,51 +98,33 @@ class _DayPageState extends State<DayPage> {
     return googlePhotoLinks;
   }
 
-  var left = 200.0;
-  double top = 0;
   bool isZoomIn = false;
   bool isZoomInImageVisible = false;
-  double magnification = 1;
   double _angle = 0;
-  int animationTime = 200;
 
-  var layout = {
+  double graphSize = 350;
+  double topPadding = 50;
+  late Map layout = {
     //zoomin, zoom out
-    'magnification' : {true : 7, false : 1},
-    'left' : {true : -2000, false : 30.7},
-    'top' : {true : 105.7, false : 105.7},
+    'magnification': {true: 7, false: 1},
+    'graphSize': {true: graphSize * 7, false: graphSize},
+    'left': {true: - graphSize * 5.5, false: (physicalWidth - 350) / 2},
+    'top': {true: null, false: topPadding},
+    'graphCenter': {
+      true: Offset(0, 0),
+      false: Offset(physicalWidth / 2, graphSize / 2 + topPadding)
+    }
   };
 
-  //circle positioned on the center
-  double leftPositionZoomOut = 30.7;
-  double leftPositionZoomIn = -2000; // mag5 : -1400, mag7, -2000
-  double topPositionZoomOut = 105.7;
-  double topPositionZoomIn = 105.7;
-
-  //circle positioned on the top
-  // double leftPositionZoomOut = 30.7;
-  // double leftPositionZoomIn = -2000; // mag5 : -1400, mag7, -2000
-  // double topPositionZoomOut = 105.7;
-  // double topPositionZoomIn = 105.7;
-
-  double magnificationZoomIn = 7;
-  double magnificationZoomOut = 1;
   double angleZoomIn = 0;
-  double angleZoomOut = 0;
   double firstContainerSize = 1000;
-  double graphBackgroundWidth = 350;
-  double graphBackgroundHeight = 350;
-  double angleZoomInModify = 0;
-
   final myTextController = TextEditingController();
-  String currentText = "";
 
   @override
   Widget build(BuildContext context) {
-    var date =
-        Provider.of<NavigationIndexProvider>(context, listen: false).date;
-    print("date : $date");
-    var isZoomIn = Provider.of<NavigationIndexProvider>(context, listen: true).isZoomIn;
+    var provider = Provider.of<NavigationIndexProvider>(context, listen: true);
+    var isZoomIn =
+        Provider.of<NavigationIndexProvider>(context, listen: true).isZoomIn;
 
     return FutureBuilder(
         future: readData,
@@ -167,53 +148,35 @@ class _DayPageState extends State<DayPage> {
                               () => AllowMultipleGestureRecognizer(),
                               (AllowMultipleGestureRecognizer instance) {
                         instance.onTapUp = (details) {
-                          var dx = details.globalPosition.dx -
-                              physicalWidth / 2 -
-                              20;
-                          var dy = details.globalPosition.dy -
-                              physicalHeight / 2 -
-                              50;
+                          if (isZoomIn) return;
 
-                          angleZoomIn = isZoomIn
-                              ? angleZoomIn - dy / 6 / physicalHeight
-                              : -atan2(dy / sqrt(dx * dx + dy * dy),
-                                      dx / sqrt(dx * dx + dy * dy)) /
-                                  (2 * pi) *
-                                  0.96;
+                          Offset tapPosition =
+                              calculateTapPositionRefCenter(details, 0);
+                          double angleZoomIn =
+                              calculateTapAngle(tapPosition, 0, 0);
+                          print("tap Position : ${tapPosition}");
+                          print("angle : $angleZoomIn");
+                          print("zoomIn : $isZoomIn");
 
-                          print("$dx, $dy, $angleZoomIn");
-                          print("tap?? $isZoomIn");
-                          Provider.of<NavigationIndexProvider>(context, listen: false).setZoomInState(true);
+                          provider.setZoomInState(true);
                           isZoomInImageVisible = true;
-                          magnification = magnificationZoomIn;
-
-                          if (!isZoomIn) {
-                            _angle = angleZoomIn;
-                            Provider.of<NavigationIndexProvider>(context,
-                                    listen: false)
-                                .setZoomInRotationAngle(_angle);
-                          };
-
-                          setState(() {});
+                          _angle = angleZoomIn;
+                          provider.setZoomInRotationAngle(_angle);
                           FocusManager.instance.primaryFocus?.unfocus();
-                          // indexForZoomInImage = -1;};
                         };
                       }),
-
                       AllowMultipleGestureRecognizer2:
                           GestureRecognizerFactoryWithHandlers<
                               AllowMultipleGestureRecognizer2>(
                         () => AllowMultipleGestureRecognizer2(),
                         (AllowMultipleGestureRecognizer2 instance) {
-                               instance.onUpdate = (details) {
-                                  _angle = isZoomIn
-                                      ?_angle + details.delta.dy / 1000
-                                      : _angle;
-                                  Provider.of<NavigationIndexProvider>(context,
-                                          listen: false)
-                                      .setZoomInRotationAngle(_angle);
-                                  setState(() {});
-                                };
+                          instance.onUpdate = (details) {
+                            _angle = isZoomIn
+                                ? _angle + details.delta.dy / 1000
+                                : _angle;
+                            // provider.setZoomInRotationAngle(_angle);
+                            setState(() {});
+                          };
                         },
                       )
                     },
@@ -223,18 +186,20 @@ class _DayPageState extends State<DayPage> {
                       child: Stack(
                           alignment:
                               isZoomIn ? Alignment.center : Alignment.topCenter,
-                          // alignment : Alignment.topCenter,
                           children: [
-                            Positioned(top: 20.0, child: Text(date)),
+                            Positioned(top: 20.0, child: Text(provider.date)),
                             AnimatedPositioned(
-                              width: graphBackgroundWidth * layout['magnification']![isZoomIn]!,
-                              height: graphBackgroundHeight * layout['magnification']![isZoomIn]!,
+                              width: layout['graphSize']?[isZoomIn]?.toDouble(),
+                              height:
+                                  layout['graphSize']?[isZoomIn]?.toDouble(),
                               duration: Duration(milliseconds: animationTime),
                               left: layout['left']?[isZoomIn]?.toDouble(),
-                              top: 40,
+                              top: layout['top']?[isZoomIn]?.toDouble(),
+                              // top : 200,
+
                               curve: Curves.fastOutSlowIn,
                               child: AnimatedRotation(
-                                  turns: _angle,
+                                  turns: isZoomIn ? _angle : 0,
                                   duration: Duration(
                                       milliseconds: animationTime - 100),
                                   child: Stack(
@@ -292,6 +257,27 @@ class _DayPageState extends State<DayPage> {
         });
   }
 
+  double calculateTapAngle(Offset, referencePosition, referenceAngle) {
+    double dx = Offset.dx;
+    double dy = Offset.dy;
+
+    angleZoomIn = isZoomIn
+        ? angleZoomIn - dy / 6 / physicalHeight
+        : -atan2(dy / sqrt(dx * dx + dy * dy), dx / sqrt(dx * dx + dy * dy)) /
+            (2 * pi) *
+            0.96;
+    return angleZoomIn;
+  }
+
+  Offset calculateTapPositionRefCenter(details, reference) {
+    bool isZoomIn =
+        Provider.of<NavigationIndexProvider>(context, listen: false).isZoomIn;
+    var dx = details.globalPosition.dx - layout['graphCenter'][isZoomIn].dx;
+    var dy =
+        -1 * (details.globalPosition.dy - layout['graphCenter'][isZoomIn].dy);
+    return Offset(dx, dy.toDouble());
+  }
+
   void showKeyboard() {
     focusNode.requestFocus();
     setState(() {});
@@ -311,7 +297,6 @@ class _DayPageState extends State<DayPage> {
   }
 
   Future updateUi() async {
-
     googlePhotoLinks = [];
     imagesForPlot = [];
     photoDataForPlot = [];

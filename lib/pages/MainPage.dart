@@ -119,8 +119,8 @@ class MainPageState extends State<MainPage> {
         // provider.setZoomInState(false);
         setState(() {
           provider.setZoomInState(false);
-          provider.isZoomIn = false;
           provider.setZoomInRotationAngle(0);
+          provider.isZoomIn = false;
         });
         return Navigator.canPop(context);
       },

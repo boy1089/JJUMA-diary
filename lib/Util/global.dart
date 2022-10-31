@@ -22,6 +22,7 @@ Color kMainColor_cool = Colors.white;
 int indexForZoomInImage = -1;
 Color kMainColor_option =Colors.green;
 
+int animationTime = 200;
 double monthPageScrollOffset = 0.0;
 
 int startYear = 2013;

@@ -136,7 +136,6 @@ class polarPhotoImageContainer {
                             (AllowMultipleGestureRecognizer instance) {
                       instance.onTapUp = (details) {
                         print("clicked");
-                        // defaultColor = defaultColor==Colors.black ? Colors.white: Colors.black;
                         indexForZoomInImage = this.index;
                         print(indexForZoomInImage);
                       };

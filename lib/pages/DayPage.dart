@@ -155,42 +155,63 @@ class _DayPageState extends State<DayPage> {
                           strokeWidth: 10,
                         )))
                 : RawGestureDetector(
-                    behavior: HitTestBehavior.translucent,
+                    behavior: HitTestBehavior.opaque,
                     gestures: {
                       AllowMultipleGestureRecognizer:
                           GestureRecognizerFactoryWithHandlers<
-                              AllowMultipleGestureRecognizer>(
-                        () => AllowMultipleGestureRecognizer(),
-                        (AllowMultipleGestureRecognizer instance) {
-                          instance.onTapUp = (details) {
-                            var dx = details.globalPosition.dx -
-                                physicalWidth / 2 -
-                                20;
-                            var dy = details.globalPosition.dy -
-                                physicalHeight / 2 -
-                                50;
+                                  AllowMultipleGestureRecognizer>(
+                              () => AllowMultipleGestureRecognizer(),
+                              (AllowMultipleGestureRecognizer instance) {
+                        instance.onTapUp = (details) {
+                          var dx = details.globalPosition.dx -
+                              physicalWidth / 2 -
+                              20;
+                          var dy = details.globalPosition.dy -
+                              physicalHeight / 2 -
+                              50;
 
-                            angleZoomIn = isZoomIn
-                                ? angleZoomIn - dy / 6 / physicalHeight
-                                : -atan2(dy / sqrt(dx * dx + dy * dy),
-                                        dx / sqrt(dx * dx + dy * dy)) /
-                                    (2 * pi) *
-                                    0.96;
-                            print("$dx, $dy, $angleZoomIn");
+                          angleZoomIn = isZoomIn
+                              ? angleZoomIn - dy / 6 / physicalHeight
+                              : -atan2(dy / sqrt(dx * dx + dy * dy),
+                                      dx / sqrt(dx * dx + dy * dy)) /
+                                  (2 * pi) *
+                                  0.96;
 
-                            isZoomIn = true;
-                            isZoomInImageVisible = true;
-                            left = leftPositionZoomIn;
-                            top = topPositionZoomIn;
-                            magnification = magnificationZoomIn;
+                          print("$dx, $dy, $angleZoomIn");
+                          print("tap?? $isZoomIn");
+
+                          isZoomIn = true;
+                          isZoomInImageVisible = true;
+                          left = leftPositionZoomIn;
+                          top = topPositionZoomIn;
+                          magnification = magnificationZoomIn;
+                          if (!isZoomIn) {
                             _angle = angleZoomIn;
                             Provider.of<NavigationIndexProvider>(context,
                                     listen: false)
                                 .setZoomInRotationAngle(_angle);
-                            setState(() {});
-                            FocusManager.instance.primaryFocus?.unfocus();
-                            // indexForZoomInImage = -1;
-                          };
+                          }
+                          ;
+                          setState(() {});
+                          FocusManager.instance.primaryFocus?.unfocus();
+                          // indexForZoomInImage = -1;};
+                        };
+                      }),
+                      AllowMultipleGestureRecognizer2:
+                          GestureRecognizerFactoryWithHandlers<
+                              AllowMultipleGestureRecognizer2>(
+                        () => AllowMultipleGestureRecognizer2(),
+                        (AllowMultipleGestureRecognizer2 instance) {
+                          isZoomIn
+                              ? instance.onUpdate = (details) {
+                                  print(details);
+                                  _angle = _angle + details.delta.dy / 1000;
+                                  Provider.of<NavigationIndexProvider>(context,
+                                          listen: false)
+                                      .setZoomInRotationAngle(_angle);
+                                  setState(() {});
+                                }
+                              : print('aa');
                         },
                       )
                     },
@@ -202,12 +223,13 @@ class _DayPageState extends State<DayPage> {
                               isZoomIn ? Alignment.center : Alignment.topCenter,
                           // alignment : Alignment.topCenter,
                           children: [
+                            Positioned(top: 20.0, child: Text(date)),
                             AnimatedPositioned(
                               width: graphBackgroundWidth * magnification,
                               height: graphBackgroundHeight * magnification,
                               duration: Duration(milliseconds: animationTime),
                               left: left,
-                              // top : top,
+                              top : 40,
                               curve: Curves.fastOutSlowIn,
                               child: AnimatedRotation(
                                   turns: _angle,
@@ -220,7 +242,6 @@ class _DayPageState extends State<DayPage> {
                                                   ? dummyData
                                                   : sensorDataForPlot)
                                           .build(context),
-
                                       PolarPhotoDataPlot(photoDataForPlot)
                                           .build(context),
                                       // PolarPhotoDataPlot(imagesForPlot)
@@ -236,11 +257,14 @@ class _DayPageState extends State<DayPage> {
                               width: physicalWidth - 20,
                               // height: 100,
                               left: 10,
-                              top: isZoomIn? physicalHeight/4*3: physicalHeight / 4 * 2,
+                              top: isZoomIn
+                                  ? physicalHeight / 4 * 3
+                                  : physicalHeight / 4 * 2,
                               child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     EditableText(
+                                      readOnly: isZoomIn ? true : false,
                                       maxLines: 5,
                                       controller: myTextController,
                                       focusNode: focusNode,
@@ -266,8 +290,6 @@ class _DayPageState extends State<DayPage> {
                 ;
               },
             ),
-            // floatingActionButtonLocation:
-            //     FloatingActionButtonLocation.centerFloat,
           );
         });
   }
@@ -283,7 +305,6 @@ class _DayPageState extends State<DayPage> {
         Provider.of<NavigationIndexProvider>(context, listen: false).date,
         myTextController.text);
   }
-
 
   @override
   void dispose() {
@@ -325,10 +346,9 @@ class _DayPageState extends State<DayPage> {
         imagesForPlot.length, (index) => imagesForPlot.elementAt(index));
 
     try {
-      myTextController.text = await noteManager.readNote(Provider
-          .of<NavigationIndexProvider>(context, listen: false)
-          .date);
-    } catch(e) {
+      myTextController.text = await noteManager.readNote(
+          Provider.of<NavigationIndexProvider>(context, listen: false).date);
+    } catch (e) {
       print("while updating UI, reading note, error is occured : $e");
     }
     print("updateUi done");

@@ -109,9 +109,19 @@ class MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        Provider.of<NavigationIndexProvider>(context, listen: false)
-            .setNavigationIndex(0);
+
+        if (Provider.of<NavigationIndexProvider>(context,
+            listen: false)
+            .zoomInAngle == 0)
+          Provider.of<NavigationIndexProvider>(context, listen: false)
+              .setNavigationIndex(0);
+
+
         indexForZoomInImage = -1;
+        Provider.of<NavigationIndexProvider>(context,
+            listen: false)
+            .setZoomInRotationAngle(0);
+
         return Navigator.canPop(context);
       },
       child: Scaffold(

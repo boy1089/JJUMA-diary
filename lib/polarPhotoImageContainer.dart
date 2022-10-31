@@ -144,7 +144,8 @@ class polarPhotoImageContainer {
                       instance.onTapUp = (details) {
                         print("clicked");
                         indexForZoomInImage = this.index;
-                        print(indexForZoomInImage);
+                        isImageClicked = true;
+                        print("polarPhotoImageContainer, indexForZoomInImage $indexForZoomInImage");
                       };
                     })
                   },

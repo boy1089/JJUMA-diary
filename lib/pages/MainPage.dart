@@ -112,6 +112,7 @@ class MainPageState extends State<MainPage> {
         var provider = Provider.of<NavigationIndexProvider>(context, listen : false);
         //when zoomed out, go to month page
         indexForZoomInImage = -1;
+        isImageClicked = false;
         if (!provider.isZoomIn) {
           provider.setNavigationIndex(0);
           return Navigator.canPop(context);

@@ -88,7 +88,7 @@ class _DayPageState extends State<DayPage> {
     sensorDataManager = widget.sensorDataManager;
     localPhotoDataManager = widget.localPhotoDataManager;
     noteManager = widget.noteManager;
-    update = updateUi();
+    // update = updateUi();
 
     print("DayPage, after initState : ${photoDataForPlot}");
     readData = _fetchData();
@@ -151,7 +151,8 @@ class _DayPageState extends State<DayPage> {
                         instance.onTapDown = (details) {
                           setState(() {
                             print(indexForZoomInImage);
-
+                            if (!isImageClicked) indexForZoomInImage = -1;
+                            isImageClicked = false;
                             if (isZoomIn) return;
 
                             Offset tapPosition =
@@ -214,7 +215,6 @@ class _DayPageState extends State<DayPage> {
                                           .build(context),
                                       polarPhotoImageContainers(imagesForPlot)
                                           .build(context),
-                                      // imageContainers.build(context),
                                     ],
                                   )),
                             ),

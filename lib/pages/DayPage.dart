@@ -22,6 +22,9 @@ import 'package:test_location_2nd/Util/global.dart';
 import 'dart:math';
 import 'package:test_location_2nd/Photo/LocalPhotoDataManager.dart';
 import 'package:flutter/gestures.dart';
+import 'package:test_location_2nd/Note/NoteManager.dart';
+
+import 'package:intl/intl.dart';
 
 class DayPage extends StatefulWidget {
   GoogleAccountManager googleAccountManager;
@@ -31,6 +34,7 @@ class DayPage extends StatefulWidget {
   GooglePhotoDataManager googlePhotoDataManager;
   SensorDataManager sensorDataManager;
   LocalPhotoDataManager localPhotoDataManager;
+  NoteManager noteManager;
 
   @override
   State<DayPage> createState() => _DayPageState();
@@ -43,6 +47,7 @@ class DayPage extends StatefulWidget {
       this.googlePhotoDataManager,
       this.sensorDataManager,
       this.localPhotoDataManager,
+      this.noteManager,
       {Key? key})
       : super(key: key);
 }
@@ -55,6 +60,7 @@ class _DayPageState extends State<DayPage> {
   late GooglePhotoDataManager googlePhotoDataManager;
   late SensorDataManager sensorDataManager;
   late LocalPhotoDataManager localPhotoDataManager;
+  late NoteManager noteManager;
 
   List response = [];
   dynamic photoResponseModified = [];
@@ -72,7 +78,7 @@ class _DayPageState extends State<DayPage> {
   Future update = Future.delayed(const Duration(seconds: 1));
   List imagesForPlot = [];
   List<List<dynamic>> photoDataForPlot = [[]];
-
+  FocusNode focusNode = FocusNode();
   @override
   void initState() {
     super.initState();
@@ -83,6 +89,7 @@ class _DayPageState extends State<DayPage> {
     googlePhotoDataManager = widget.googlePhotoDataManager;
     sensorDataManager = widget.sensorDataManager;
     localPhotoDataManager = widget.localPhotoDataManager;
+    noteManager = widget.noteManager;
     update = updateUi();
     print("DayPage, after initState : ${photoDataForPlot}");
     readData = _fetchData();
@@ -103,10 +110,19 @@ class _DayPageState extends State<DayPage> {
   double magnification = 1;
   double _angle = 0;
   int animationTime = 200;
+
+  //circle positioned on the center
   double leftPositionZoomOut = 30.7;
   double leftPositionZoomIn = -2000; // mag5 : -1400, mag7, -2000
   double topPositionZoomOut = 105.7;
   double topPositionZoomIn = 105.7;
+
+  //circle positioned on the top
+  // double leftPositionZoomOut = 30.7;
+  // double leftPositionZoomIn = -2000; // mag5 : -1400, mag7, -2000
+  // double topPositionZoomOut = 105.7;
+  // double topPositionZoomIn = 105.7;
+
   double magnificationZoomIn = 7;
   double magnificationZoomOut = 1;
   double angleZoomIn = 0;
@@ -115,6 +131,9 @@ class _DayPageState extends State<DayPage> {
   double graphBackgroundWidth = 350;
   double graphBackgroundHeight = 350;
   double angleZoomInModify = 0;
+
+  final myTextController = TextEditingController();
+  String currentText = "";
 
   @override
   Widget build(BuildContext context) {
@@ -136,9 +155,8 @@ class _DayPageState extends State<DayPage> {
                           strokeWidth: 10,
                         )))
                 : RawGestureDetector(
-              behavior: HitTestBehavior.opaque,
-
-              gestures: {
+                    behavior: HitTestBehavior.translucent,
+                    gestures: {
                       AllowMultipleGestureRecognizer:
                           GestureRecognizerFactoryWithHandlers<
                               AllowMultipleGestureRecognizer>(
@@ -170,6 +188,7 @@ class _DayPageState extends State<DayPage> {
                                     listen: false)
                                 .setZoomInRotationAngle(_angle);
                             setState(() {});
+                            FocusManager.instance.primaryFocus?.unfocus();
                             // indexForZoomInImage = -1;
                           };
                         },
@@ -178,51 +197,98 @@ class _DayPageState extends State<DayPage> {
                     child: Container(
                       width: firstContainerSize,
                       height: firstContainerSize,
-                      child: Stack(alignment: Alignment.center, children: [
-                        AnimatedPositioned(
-                          width: graphBackgroundWidth * magnification,
-                          height: graphBackgroundHeight * magnification,
-                          duration: Duration(milliseconds: animationTime),
-                          left: left,
-                          // top : top,
-                          curve: Curves.fastOutSlowIn,
-                          child: AnimatedRotation(
-                              turns: _angle,
-                              duration:
-                                  Duration(milliseconds: animationTime - 100),
-                              child: Stack(
-                                children: [
-                                  PolarSensorDataPlot(
-                                          sensorDataForPlot[0].length == 0
-                                              ? dummyData
-                                              : sensorDataForPlot)
-                                      .build(context),
+                      child: Stack(
+                          alignment:
+                              isZoomIn ? Alignment.center : Alignment.topCenter,
+                          // alignment : Alignment.topCenter,
+                          children: [
+                            AnimatedPositioned(
+                              width: graphBackgroundWidth * magnification,
+                              height: graphBackgroundHeight * magnification,
+                              duration: Duration(milliseconds: animationTime),
+                              left: left,
+                              // top : top,
+                              curve: Curves.fastOutSlowIn,
+                              child: AnimatedRotation(
+                                  turns: _angle,
+                                  duration: Duration(
+                                      milliseconds: animationTime - 100),
+                                  child: Stack(
+                                    children: [
+                                      PolarSensorDataPlot(
+                                              sensorDataForPlot[0].length == 0
+                                                  ? dummyData
+                                                  : sensorDataForPlot)
+                                          .build(context),
 
-                                  PolarPhotoDataPlot(photoDataForPlot)
-                                      .build(context),
-                                  // PolarPhotoDataPlot(imagesForPlot)
-                                  //     .build(context),
+                                      PolarPhotoDataPlot(photoDataForPlot)
+                                          .build(context),
+                                      // PolarPhotoDataPlot(imagesForPlot)
+                                      //     .build(context),
 
-                                  // polarPhotoImageContainers(imagesForPlot).build(context),
-                                  polarPhotoImageContainers(imagesForPlot)
-                                      .build(context),
-                                  // ZoomInImageContainer(isZoomInImageVisible, imagesForPlot).build(context),
-
-                                  // Container(
-                                  //   width: 3000,
-                                  //   height: 3000,
-                                  //   child: Card(
-                                  //       color: Colors.transparent,
-                                  //       elevation: 0.0),
-                                  // )
-                                ],
-                              )),
-                        ),
-                      ]),
+                                      // polarPhotoImageContainers(imagesForPlot).build(context),
+                                      polarPhotoImageContainers(imagesForPlot)
+                                          .build(context),
+                                    ],
+                                  )),
+                            ),
+                            Positioned(
+                              width: physicalWidth - 20,
+                              // height: 100,
+                              left: 10,
+                              top: isZoomIn? physicalHeight/4*3: physicalHeight / 4 * 2,
+                              child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    EditableText(
+                                      maxLines: 5,
+                                      controller: myTextController,
+                                      focusNode: focusNode,
+                                      style: TextStyle(color: Colors.black),
+                                      cursorColor: Colors.black,
+                                      backgroundCursorColor: Colors.black12,
+                                      textAlign: TextAlign.left,
+                                    ),
+                                  ]),
+                            ),
+                          ]),
                     ),
                   ),
+            floatingActionButton: FloatingActionButton(
+              mini: true,
+              child: Icon(focusNode.hasFocus ? Icons.arrow_right : Icons.add),
+              onPressed: () {
+                if (focusNode.hasFocus) {
+                  dismissKeyboard();
+                } else {
+                  showKeyboard();
+                }
+                ;
+              },
+            ),
+            // floatingActionButtonLocation:
+            //     FloatingActionButtonLocation.centerFloat,
           );
         });
+  }
+
+  void showKeyboard() {
+    focusNode.requestFocus();
+    setState(() {});
+  }
+
+  void dismissKeyboard() async {
+    focusNode.unfocus();
+    await noteManager.writeNote(
+        Provider.of<NavigationIndexProvider>(context, listen: false).date,
+        myTextController.text);
+  }
+
+
+  @override
+  void dispose() {
+    focusNode.dispose();
+    super.dispose();
   }
 
   Future updateUi() async {
@@ -257,6 +323,14 @@ class _DayPageState extends State<DayPage> {
     //convert data type..
     photoDataForPlot = List<List>.generate(
         imagesForPlot.length, (index) => imagesForPlot.elementAt(index));
+
+    try {
+      myTextController.text = await noteManager.readNote(Provider
+          .of<NavigationIndexProvider>(context, listen: false)
+          .date);
+    } catch(e) {
+      print("while updating UI, reading note, error is occured : $e");
+    }
     print("updateUi done");
   }
 

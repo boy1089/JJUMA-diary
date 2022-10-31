@@ -19,6 +19,7 @@ import 'DayPage.dart';
 //TODO : formatting list for chart data
 import 'package:test_location_2nd/Photo/LocalPhotoDataManager.dart';
 import 'CirclePage.dart';
+import 'package:test_location_2nd/Note/NoteManager.dart';
 
 class MainPage extends StatefulWidget {
   GoogleAccountManager googleAccountManager;
@@ -28,6 +29,7 @@ class MainPage extends StatefulWidget {
   GooglePhotoDataManager googlePhotoDataManager;
   SensorDataManager sensorDataManager;
   LocalPhotoDataManager localPhotoDataManager;
+  NoteManager noteManager;
 
   MainPage(
       this.googleAccountManager,
@@ -37,6 +39,7 @@ class MainPage extends StatefulWidget {
       this.googlePhotoDataManager,
       this.sensorDataManager,
       this.localPhotoDataManager,
+      this.noteManager,
       {Key? key})
       : super(key: key);
 
@@ -53,6 +56,7 @@ class MainPageState extends State<MainPage> {
   late GooglePhotoDataManager googlePhotoDataManager;
   late SensorDataManager sensorDataManager;
   late LocalPhotoDataManager localPhotoDataManager;
+  late NoteManager noteManager;
 
   int dataIndex = 0;
   List<List<String>> responseResult = [];
@@ -74,6 +78,7 @@ class MainPageState extends State<MainPage> {
     googlePhotoDataManager = widget.googlePhotoDataManager;
     sensorDataManager = widget.sensorDataManager;
     localPhotoDataManager = widget.localPhotoDataManager;
+    noteManager = widget.noteManager;
 
     MonthPage monthPage = MonthPage(a, dataManager);
     DayPage hourPage = DayPage(
@@ -83,7 +88,8 @@ class MainPageState extends State<MainPage> {
         dataManager,
         googlePhotoDataManager,
         sensorDataManager,
-        localPhotoDataManager);
+        localPhotoDataManager,
+    noteManager);
     CirclePage circlePage = CirclePage();
 
     _widgetOptions = <Widget>[

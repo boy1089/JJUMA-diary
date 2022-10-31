@@ -43,7 +43,7 @@ class DataManager {
     // summaryOfPhotoData = await readSummaryOfPhotoData();
     var a = await readSummaryOfPhotoData();
     // await updateSummaryFromLocal("20100101", formatDate(DateTime.now()));
-    await updateSummaryFromGooglePhoto("20190101", formatDate(DateTime.now()));
+    await updateSummaryFromGooglePhoto("20221001", formatDate(DateTime.now()));
 
     // await updateSummary("20210101", formatDate(DateTime.now()));
   }

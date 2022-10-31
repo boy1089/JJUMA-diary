@@ -22,6 +22,7 @@ import 'package:test_location_2nd/Util/StateProvider.dart';
 import 'package:test_location_2nd/Sensor/SensorDataManager.dart';
 import 'pages/SignInPage.dart';
 import 'Photo/LocalPhotoDataManager.dart';
+import 'package:test_location_2nd/Note/NoteManager.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -53,6 +54,7 @@ class _MyAppState extends State<MyApp> {
   // late final audioRecorder;
   late final dataManager;
   final sensorDataManager = SensorDataManager();
+  final noteManager = NoteManager();
 
   // final noteLogger = NoteLogger();
   // final myTextController = TextEditingController();
@@ -95,6 +97,7 @@ class _MyAppState extends State<MyApp> {
               googlePhotoDataManager,
               sensorDataManager,
               localPhotoDataManager,
+              noteManager,
             ),
         '/settings': (context) =>
             AndroidSettingsScreen(googleAccountManager, permissionManager),

@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:test_location_2nd/Util/DateHandler.dart';
 import 'package:test_location_2nd/Photo/GooglePhotoDataManager.dart';
@@ -21,6 +19,7 @@ import 'package:test_location_2nd/PolarPhotoDataPlot.dart';
 import 'package:test_location_2nd/Util/global.dart';
 import 'dart:math';
 import 'package:test_location_2nd/Note/NoteManager.dart';
+import 'package:intl/intl.dart';
 
 class DayPage extends StatefulWidget {
   GoogleAccountManager googleAccountManager;
@@ -76,6 +75,9 @@ class _DayPageState extends State<DayPage> {
   List<List<dynamic>> photoDataForPlot = [[]];
   FocusNode focusNode = FocusNode();
 
+  final myTextController = TextEditingController();
+  late polarPhotoImageContainers imageContainers;
+
   @override
   void initState() {
     super.initState();
@@ -91,10 +93,12 @@ class _DayPageState extends State<DayPage> {
 
     print("DayPage, after initState : ${photoDataForPlot}");
     readData = _fetchData();
+    // imageContainers = polarPhotoImageContainers(imagesForPlot);
   }
 
   Future<List<dynamic>> _fetchData() async {
     await updateUi();
+    imageContainers = polarPhotoImageContainers(imagesForPlot);
     return googlePhotoLinks;
   }
 
@@ -102,13 +106,14 @@ class _DayPageState extends State<DayPage> {
   bool isZoomInImageVisible = false;
   double _angle = 0;
 
-  double graphSize = 350;
+  double graphSize = 330;
   double topPadding = 50;
+
+  //layout for zoomIn and zoomOut state
   late Map layout = {
-    //zoomin, zoom out
     'magnification': {true: 7, false: 1},
     'graphSize': {true: graphSize * 7, false: graphSize},
-    'left': {true: - graphSize * 5.5, false: (physicalWidth - 350) / 2},
+    'left': {true: -graphSize * 5.5, false: (physicalWidth - graphSize) / 2},
     'top': {true: null, false: topPadding},
     'graphCenter': {
       true: Offset(0, 0),
@@ -116,9 +121,7 @@ class _DayPageState extends State<DayPage> {
     }
   };
 
-  double angleZoomIn = 0;
   double firstContainerSize = 1000;
-  final myTextController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -154,9 +157,9 @@ class _DayPageState extends State<DayPage> {
                               calculateTapPositionRefCenter(details, 0);
                           double angleZoomIn =
                               calculateTapAngle(tapPosition, 0, 0);
-                          print("tap Position : ${tapPosition}");
-                          print("angle : $angleZoomIn");
-                          print("zoomIn : $isZoomIn");
+                          // print("tap Position : ${tapPosition}");
+                          // print("angle : $angleZoomIn");
+                          // print("zoomIn : $isZoomIn");
 
                           provider.setZoomInState(true);
                           isZoomInImageVisible = true;
@@ -171,9 +174,8 @@ class _DayPageState extends State<DayPage> {
                         () => AllowMultipleGestureRecognizer2(),
                         (AllowMultipleGestureRecognizer2 instance) {
                           instance.onUpdate = (details) {
-                            _angle = isZoomIn
-                                ? _angle + details.delta.dy / 1000
-                                : _angle;
+                            _angle =
+                                isZoomIn ? _angle + details.delta.dy / 1000 : 0;
                             // provider.setZoomInRotationAngle(_angle);
                             setState(() {});
                           };
@@ -187,7 +189,8 @@ class _DayPageState extends State<DayPage> {
                           alignment:
                               isZoomIn ? Alignment.center : Alignment.topCenter,
                           children: [
-                            Positioned(top: 20.0, child: Text(provider.date)),
+
+
                             AnimatedPositioned(
                               width: layout['graphSize']?[isZoomIn]?.toDouble(),
                               height:
@@ -195,7 +198,6 @@ class _DayPageState extends State<DayPage> {
                               duration: Duration(milliseconds: animationTime),
                               left: layout['left']?[isZoomIn]?.toDouble(),
                               top: layout['top']?[isZoomIn]?.toDouble(),
-                              // top : 200,
 
                               curve: Curves.fastOutSlowIn,
                               child: AnimatedRotation(
@@ -211,8 +213,9 @@ class _DayPageState extends State<DayPage> {
                                           .build(context),
                                       PolarPhotoDataPlot(photoDataForPlot)
                                           .build(context),
-                                      polarPhotoImageContainers(imagesForPlot)
-                                          .build(context),
+                                      // polarPhotoImageContainers(imagesForPlot)
+                                      //     .build(context),
+                                      imageContainers.build(context),
                                     ],
                                   )),
                             ),
@@ -220,24 +223,37 @@ class _DayPageState extends State<DayPage> {
                               width: physicalWidth - 20,
                               // height: 100,
                               left: 10,
-                              top: isZoomIn
-                                  ? physicalHeight / 4 * 3
-                                  : physicalHeight / 4 * 2,
+                              bottom : 20,
+
                               child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    EditableText(
-                                      readOnly: isZoomIn ? true : false,
-                                      maxLines: 5,
-                                      controller: myTextController,
-                                      focusNode: focusNode,
-                                      style: TextStyle(color: Colors.black),
-                                      cursorColor: Colors.black,
-                                      backgroundCursorColor: Colors.black12,
-                                      textAlign: TextAlign.left,
+                                    Container(
+                                      color : Colors.black12,
+                                      child: EditableText(
+                                        readOnly: isZoomIn ? true : false,
+                                        maxLines: 20,
+                                        controller: myTextController,
+                                        focusNode: focusNode,
+                                        style: TextStyle(color: Colors.black),
+                                        cursorColor: Colors.black,
+                                        backgroundCursorColor: Colors.black,
+                                        textAlign: TextAlign.left,
+
+
+                                      ),
                                     ),
                                   ]),
                             ),
+                            Positioned(
+                                top : 30,
+                                child: Text(
+                                  "${DateFormat('EEEE').format(DateTime.parse(provider.date))}/"
+                                      "${DateFormat('MMM').format(DateTime.parse(provider.date))} "
+                                      "${DateFormat('dd').format(DateTime.parse(provider.date))}/"
+                                      "${DateFormat('yyyy').format(DateTime.parse(provider.date))}",
+                                  style: TextStyle(fontSize: 20),
+                                )),
                           ]),
                     ),
                   ),
@@ -257,18 +273,18 @@ class _DayPageState extends State<DayPage> {
         });
   }
 
+  //this function calculates the tap position relative to graph
   double calculateTapAngle(Offset, referencePosition, referenceAngle) {
     double dx = Offset.dx;
     double dy = Offset.dy;
 
-    angleZoomIn = isZoomIn
-        ? angleZoomIn - dy / 6 / physicalHeight
-        : -atan2(dy / sqrt(dx * dx + dy * dy), dx / sqrt(dx * dx + dy * dy)) /
-            (2 * pi) *
-            0.96;
-    return angleZoomIn;
+    var angle =
+        atan2(dy / sqrt(dx * dx + dy * dy), dx / sqrt(dx * dx + dy * dy)) /
+            (2 * pi);
+    return angle;
   }
 
+  //this function calculates the tap position relative to center of the graph
   Offset calculateTapPositionRefCenter(details, reference) {
     bool isZoomIn =
         Provider.of<NavigationIndexProvider>(context, listen: false).isZoomIn;

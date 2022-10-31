@@ -20,6 +20,7 @@ Color kMainColor_warm = Colors.deepOrangeAccent;
 // Color kMainColor_cool = Colors.lightBlueAccent;
 Color kMainColor_cool = Colors.white;
 int indexForZoomInImage = -1;
+
 Color kMainColor_option =Colors.green;
 
 int animationTime = 200;

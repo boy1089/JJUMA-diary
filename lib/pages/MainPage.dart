@@ -110,11 +110,15 @@ class MainPageState extends State<MainPage> {
     return WillPopScope(
       onWillPop: () async {
         var provider = Provider.of<NavigationIndexProvider>(context, listen : false);
+        //when zoomed out, go to month page
+        indexForZoomInImage = -1;
         if (!provider.isZoomIn) {
           provider.setNavigationIndex(0);
           return Navigator.canPop(context);
         }
 
+
+        //when zoomed in, make daypage zoom out
         indexForZoomInImage = -1;
         // provider.setZoomInState(false);
         setState(() {

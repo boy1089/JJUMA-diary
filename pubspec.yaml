@@ -63,6 +63,7 @@ dependencies:
   extended_image:
   exif:
   image_picker:
+  badges:
 
 dev_dependencies:
   flutter_test:

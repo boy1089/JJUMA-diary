@@ -11,6 +11,7 @@ DateTime selectedDate = DateTime(2022, 1, 1);
 int mainPageSelectionIndex = 0;
 
 Map summaryOfPhotoData = {};
+Map summaryOfNoteData = {};
 
 //Colors
 Color kBackGroundColor = Colors.white;

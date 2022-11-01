@@ -25,7 +25,7 @@ class SensorRecorder {
     debugPrint("sensorRecorder instance created");
     //writing once when it's created.. to make sure that there is file to read.
     writeCache2();
-    init();
+    // init();
   }
 
   Future<int> init() async {
@@ -34,14 +34,15 @@ class SensorRecorder {
       print("initializing SensorRecorder.. location permission not allowed");
       return 0;
     }
+    print('c');
     location.enableBackgroundMode(enable: true);
+    print('d');
     _enableLogging();
     return 0;
   }
 
   void _enableLogging() async {
-
-    if(enableAccel) {
+    if (enableAccel) {
       _streamAccel = await SensorManager().sensorUpdates(
           sensorId: Sensors.ACCELEROMETER,
           interval: Sensors.SENSOR_DELAY_NORMAL);
@@ -50,11 +51,12 @@ class SensorRecorder {
         _accelData = sensorEvent.data;
       });
     }
-
-    location.onLocationChanged.listen((LocationData currentLocation) async {
+    print('e');
+    location.onLocationChanged.listen((LocationData currentLocation) {
+      print('ggg');
       _cacheCount = _cacheCount + 1;
       // _accelData = _accelData;
-
+      print(_cacheCount);
       _cacheData.add(SensorData(
         DateTime.now(),
         currentLocation.latitude,
@@ -63,14 +65,16 @@ class SensorRecorder {
         _accelData[1],
         _accelData[2],
       ));
-
-      if (_cacheCount > 500) {
+      print('eee');
+      if (_cacheCount > 10) {
         writeCache2();
         _cacheCount = 0;
       }
+      print('fff');
       debugPrint(
           "SensorLogger _cacheCount $_cacheCount, ${currentLocation.latitude}, ${currentLocation.longitude}");
     });
+    print('f');
   }
 
   void writeCache2() async {

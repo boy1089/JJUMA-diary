@@ -24,7 +24,8 @@ import 'CirclePage.dart';
 import 'package:test_location_2nd/Note/NoteManager.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
-import 'package:permission_handler/permission_handler.dart' as PermissionHandler;
+import 'package:permission_handler/permission_handler.dart'
+    as PermissionHandler;
 
 class MainPage extends StatefulWidget {
   GoogleAccountManager googleAccountManager;
@@ -195,11 +196,13 @@ class MainPageState extends State<MainPage> {
                 );
               }
             }),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () async {
-            dataManager.updateSummaryFromLocal2();
-          },
-        ),
+        // floatingActionButton: FloatingActionButton(
+        //   onPressed: () async {
+        //     var files = await noteManager.readAllNotes();
+        //     var b = await noteManager.generateSummaryOfNotes(files);
+        //
+        //   },
+        // ),
       ),
     );
   }

@@ -105,7 +105,7 @@ class _DayPageState extends State<DayPage> {
   double _angle = 0;
 
   double graphSize = 330;
-  double topPadding = 150;
+  double topPadding = 100;
 
   //layout for zoomIn and zoomOut state
   late Map layout = {
@@ -207,7 +207,7 @@ class _DayPageState extends State<DayPage> {
                                   child: Stack(
                                     children: [
                                       PolarSensorDataPlot(
-                                              sensorDataForPlot[0].length == 0
+                                              (sensorDataForPlot[0].length == 0)|(sensorDataForPlot.length == 0 )
                                                   ? dummyData
                                                   : sensorDataForPlot)
                                           .build(context),
@@ -236,8 +236,8 @@ class _DayPageState extends State<DayPage> {
                                             ? physicalHeight / 2 - 200
                                             : physicalHeight / 2 - 50,
                                         color: myTextController.text.isEmpty
-                                        ?Colors.transparent
-                                        :Colors.black12,
+                                            ? Colors.transparent
+                                            : Colors.black12,
                                         child: EditableText(
                                           readOnly: isZoomIn ? true : false,
                                           maxLines: 15,
@@ -260,7 +260,8 @@ class _DayPageState extends State<DayPage> {
                                   "${DateFormat('MMM').format(DateTime.parse(provider.date))} "
                                   "${DateFormat('dd').format(DateTime.parse(provider.date))}/"
                                   "${DateFormat('yyyy').format(DateTime.parse(provider.date))}",
-                                  style: TextStyle(fontSize: 20, color: Colors.black54),
+                                  style: TextStyle(
+                                      fontSize: 20, color: Colors.black54),
                                 )),
                           ]),
                     ),
@@ -273,7 +274,8 @@ class _DayPageState extends State<DayPage> {
                   dismissKeyboard();
                 } else {
                   showKeyboard();
-                }                ;
+                }
+                ;
                 setState(() {});
               },
             ),
@@ -339,7 +341,7 @@ class _DayPageState extends State<DayPage> {
       print("while updating Ui, error is occrued : $e");
     }
 
-    updateSensorData();
+    await updateSensorData();
 
     setState(() {});
     //convert data type..
@@ -423,12 +425,18 @@ class _DayPageState extends State<DayPage> {
     print("sensorDataForPlot : $sensorDataForPlot");
   }
 
-  void updateSensorData() async {
+  Future<void> updateSensorData() async {
     String date =
         Provider.of<NavigationIndexProvider>(context, listen: false).date;
     var sensorData = await this.sensorDataManager.openFile(date);
-    sensorDataModified = modifyListForPlot(subsampleList(sensorData, 50));
+    try {
+      sensorDataModified = modifyListForPlot(subsampleList(sensorData, 10));
+    } catch(e) {
+      sensorDataModified = [[]];
+      print("error during updating sensorData : $e");
+    }
     sensorDataForPlot = sensorDataModified;
+
     print("sensorDataForPlot : $sensorDataForPlot");
 
     // sensorDataManager.writeSensorData(date, sensorDataModified);

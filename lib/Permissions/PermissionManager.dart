@@ -17,6 +17,7 @@ class PermissionManager {
     getStoragePermission();
     // getCameraPermission();
     getMediaLibraryPermission();
+    // getLocationPermission();
   }
 
   void checkPermissions() async {

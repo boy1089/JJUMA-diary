@@ -44,7 +44,7 @@ class DataManager {
     // summaryOfPhotoData = await readSummaryOfPhotoData();
     var a = await readSummaryOfPhotoData();
     // await updateSummaryFromLocal("20220101", formatDate(DateTime.now()));
-    await updateSummaryFromLocal2();
+    await updateSummaryOfLocalPhoto2();
     // await updateSummaryFromGooglePhoto("20221001", formatDate(DateTime.now()));
 
     // await updateSummary("20210101", formatDate(DateTime.now()));
@@ -117,7 +117,7 @@ class DataManager {
     }
   }
 
-  Future<void> updateSummaryFromLocal2() async {
+  Future<void> updateSummaryOfLocalPhoto2() async {
     var data = localPhotoDataManager.modifiedDatesOfFiles;
     List newList = List.generate(
         data.length, (index) => formatDate(data.elementAt(index)));
@@ -151,7 +151,6 @@ class DataManager {
       print("readSummaryOfGooglePhotoData ${fileName.path}");
       var data = await openFile(fileName.path);
       for (int i = 0; i < data.length; i++) {
-        print("read summaryOf google Photo data $i");
         if (data[i].length > 1) {
           summaryOfPhotoData[data[i][0].toString()] = await data[i][1];
         }

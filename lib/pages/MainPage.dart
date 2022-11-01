@@ -1,5 +1,7 @@
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
+import 'package:googleapis/androidenterprise/v1.dart';
+import 'package:googleapis/vision/v1.dart';
 import 'package:test_location_2nd/Permissions/GoogleAccountManager.dart';
 import 'package:test_location_2nd/Util/Util.dart';
 import 'package:test_location_2nd/Util/global.dart';
@@ -20,6 +22,9 @@ import 'DayPage.dart';
 import 'package:test_location_2nd/Photo/LocalPhotoDataManager.dart';
 import 'CirclePage.dart';
 import 'package:test_location_2nd/Note/NoteManager.dart';
+import 'package:path_provider/path_provider.dart';
+import 'dart:io';
+import 'package:permission_handler/permission_handler.dart' as PermissionHandler;
 
 class MainPage extends StatefulWidget {
   GoogleAccountManager googleAccountManager;
@@ -190,6 +195,11 @@ class MainPageState extends State<MainPage> {
                 );
               }
             }),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () async {
+            dataManager.updateSummaryFromLocal2();
+          },
+        ),
       ),
     );
   }

@@ -62,6 +62,7 @@ dependencies:
   cached_network_image:
   extended_image:
   exif:
+  image_picker:
 
 dev_dependencies:
   flutter_test:

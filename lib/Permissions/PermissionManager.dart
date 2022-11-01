@@ -8,12 +8,15 @@ class PermissionManager {
   bool isAudioPermissionGranted = false;
   bool isStoragePermissionGranted = false;
   bool isPhonePermissionGranted = false;
+  bool isMediaLibraryPermissionGranted = false;
+  bool isCameraPermissionGranted = false;
 
   PermissionManager() {
     debugPrint("permission Manager created");
     checkPermissions();
     getStoragePermission();
-
+    // getCameraPermission();
+    getMediaLibraryPermission();
   }
 
   void checkPermissions() async {
@@ -21,6 +24,18 @@ class PermissionManager {
     checkAudioPermission();
     checkStoragePermission();
     checkPhonePermission();
+    checkMediaLibraryPermission();
+    checkCameraPermission();
+  }
+
+  void checkMediaLibraryPermission() async{
+    isMediaLibraryPermissionGranted = await PermissionHandler.Permission.mediaLibrary.isGranted;
+    print("PermissionManager, checkMediaLibraryPermission : $isMediaLibraryPermissionGranted");
+  }
+
+  void checkCameraPermission() async{
+    isCameraPermissionGranted = await PermissionHandler.Permission.camera.isGranted;
+    print("PermissionManager, checkCameraPermission : $isCameraPermissionGranted");
   }
 
   void checkLocationPermission() async{
@@ -78,12 +93,27 @@ class PermissionManager {
     print("PermissionManager, getStoragePermission : $isStoragePermissionGranted");
   }
 
+  void getMediaLibraryPermission() async{
+    if (!isMediaLibraryPermissionGranted){
+      PermissionHandler.Permission.mediaLibrary.request();
+    }
+    isMediaLibraryPermissionGranted = await PermissionHandler.Permission.mediaLibrary.isGranted;
+    print("PermissionManager, getMediaLibraryPermission : $isMediaLibraryPermissionGranted");
+  }
+
   Future getPhonePermission() async {
     if (!isPhonePermissionGranted){
       PermissionHandler.Permission.phone.request();
     }
     isPhonePermissionGranted = await PermissionHandler.Permission.phone.isGranted;
     print("PermissionManager, getPhonePermission : $isPhonePermissionGranted");
+  }
+  Future getCameraPermission() async {
+    if (!isCameraPermissionGranted){
+      PermissionHandler.Permission.camera.request();
+    }
+    isCameraPermissionGranted = await PermissionHandler.Permission.camera.isGranted;
+    print("PermissionManager, getCameraPermission : $isCameraPermissionGranted");
   }
 
 

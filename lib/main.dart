@@ -70,7 +70,7 @@ class _MyAppState extends State<MyApp> {
 
   Future<void> init() async {
     photoLibraryApiClient = PhotoLibraryApiClient(googleAccountManager);
-    dataManager = DataManager(googlePhotoDataManager, photoLibraryApiClient);
+    dataManager = DataManager(googlePhotoDataManager, photoLibraryApiClient, localPhotoDataManager);
     await googleAccountManager.init();
     await dataManager.init();
   }

@@ -13,7 +13,6 @@ import 'package:test_location_2nd/Util/DateHandler.dart';
 import 'package:intl/intl.dart';
 import 'package:test_location_2nd/Photo/LocalPhotoDataManager.dart';
 
-
 class DataManager {
   var sensorDataAll;
   var photoDataAll;
@@ -29,8 +28,10 @@ class DataManager {
 
   GooglePhotoDataManager googlePhotoDataManager;
   PhotoLibraryApiClient photoLibraryApiClient;
+  LocalPhotoDataManager localPhotoDataManager;
 
-  DataManager(this.googlePhotoDataManager, this.photoLibraryApiClient) {
+  DataManager(this.googlePhotoDataManager, this.photoLibraryApiClient,
+      this.localPhotoDataManager) {
     // processAllSensorFiles();
     // getProcessedSensorFile();
     print("DataManager instance in under creation");
@@ -42,7 +43,8 @@ class DataManager {
     print("DataManager instance is initializing..");
     // summaryOfPhotoData = await readSummaryOfPhotoData();
     var a = await readSummaryOfPhotoData();
-    await updateSummaryFromLocal("20221010", formatDate(DateTime.now()));
+    // await updateSummaryFromLocal("20220101", formatDate(DateTime.now()));
+    await updateSummaryFromLocal2();
     // await updateSummaryFromGooglePhoto("20221001", formatDate(DateTime.now()));
 
     // await updateSummary("20210101", formatDate(DateTime.now()));
@@ -115,7 +117,21 @@ class DataManager {
     }
   }
 
-  void updateSummaryOfPhotoData(String date, int num) async {
+  Future<void> updateSummaryFromLocal2() async {
+    var data = localPhotoDataManager.modifiedDatesOfFiles;
+    List newList = List.generate(
+        data.length, (index) => formatDate(data.elementAt(index)));
+    Set ListOfDates = newList.toSet();
+    // var count = data.where((c)=>c == 10).length;
+
+    final map = Map<String, int>.fromIterable(ListOfDates,
+        key: (item) => item,
+        value: (item) => newList.where((c) => c == item).length);
+    summaryOfPhotoData = map;
+    global.summaryOfPhotoData = summaryOfPhotoData;
+  }
+
+  Future<void> updateSummaryOfPhotoData(String date, int num) async {
     summaryOfPhotoData[date] = num;
     updateIndexOfPhotoSummary += 1;
     if (updateIndexOfPhotoSummary > 3) {
@@ -127,23 +143,26 @@ class DataManager {
 
   Future readSummaryOfPhotoData() async {
     final Directory? directory = await getExternalStorageDirectory();
-    final fileName = Glob('${directory?.path}/summary_googlePhoto.csv')
-        .listSync()
-        .elementAt(0);
 
-    print("readSummaryOfGooglePhotoData ${fileName.path}");
-    var data = await openFile(fileName.path);
-    print(data);
-    for (int i = 0; i < data.length; i++) {
-      print(data[i]);
+    try {
+      final fileName = Glob('${directory?.path}/summary_googlePhoto.csv')
+          .listSync()
+          .elementAt(0);
+      print("readSummaryOfGooglePhotoData ${fileName.path}");
+      var data = await openFile(fileName.path);
+      for (int i = 0; i < data.length; i++) {
+        print("read summaryOf google Photo data $i");
         if (data[i].length > 1) {
           summaryOfPhotoData[data[i][0].toString()] = await data[i][1];
-
         }
       }
-
-    global.summaryOfPhotoData = summaryOfPhotoData;
-    return summaryOfPhotoData;
+      global.summaryOfPhotoData = summaryOfPhotoData;
+      print("readSummary done");
+      return summaryOfPhotoData;
+    } catch (e) {
+      print("error during readSummaryOfPhotoData : $e");
+      return summaryOfPhotoData;
+    }
   }
 
   Future writeSummaryOfGooglePhotoData() async {

@@ -407,7 +407,7 @@ class _DayPageState extends State<DayPage> {
         await localPhotoDataManager.getPhotoOfDate(date);
     localPhotoDataForPlot = modifyListForPlot(files, executeTranspose: true);
     localPhotoLinks = transpose(localPhotoDataForPlot);
-    dataManager.updateSummaryOfPhotoData(date, localPhotoLinks[0].length);
+    await dataManager.updateSummaryOfPhotoData(date, localPhotoLinks[0].length);
     // photoDataForPlot.addAll(localPhotoDataForPlot);
   }
 

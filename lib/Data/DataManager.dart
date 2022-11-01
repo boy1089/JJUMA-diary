@@ -42,8 +42,8 @@ class DataManager {
     print("DataManager instance is initializing..");
     // summaryOfPhotoData = await readSummaryOfPhotoData();
     var a = await readSummaryOfPhotoData();
-    // await updateSummaryFromLocal("20100101", formatDate(DateTime.now()));
-    await updateSummaryFromGooglePhoto("20221001", formatDate(DateTime.now()));
+    await updateSummaryFromLocal("20221010", formatDate(DateTime.now()));
+    // await updateSummaryFromGooglePhoto("20221001", formatDate(DateTime.now()));
 
     // await updateSummary("20210101", formatDate(DateTime.now()));
   }

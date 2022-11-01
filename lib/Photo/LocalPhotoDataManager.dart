@@ -1,3 +1,4 @@
+import 'package:exif/exif.dart';
 import 'package:glob/list_local_fs.dart';
 import 'package:test_location_2nd/Util/DateHandler.dart';
 import 'package:test_location_2nd/Util/responseParser.dart';
@@ -52,6 +53,7 @@ class LocalPhotoDataManager {
 
     //cTime of DateTime is converted to string
     cTimes.addAll(List.generate(files.length, (index)=> DateFormat("yyyyMMdd_HHmmss").format(FileStat.statSync(files.elementAt(index).path).changed)));
+    print("files during GetPhotoOfDate : $files");
     files = List.generate(files.length, (index)=> files.elementAt(index).path);
     return [cTimes, files];
   }
@@ -60,6 +62,7 @@ class LocalPhotoDataManager {
 
     List files = [];
     List cTimes = [];
+    List files_new  =[];
     final filesFromPath1_png = await Glob("$_pathToLocalPhotoGallery1/*${date}*.png").listSync();
     final filesFromPath2_png = await Glob("$_pathToLocalPhotoGallery2/*${date}*.png").listSync();
     final filesFromPath1_jpg = await Glob("$_pathToLocalPhotoGallery1/*${date}*.jpg").listSync();
@@ -71,9 +74,23 @@ class LocalPhotoDataManager {
     files.addAll(filesFromPath2_jpg);
 
     //cTime of DateTime is converted to string
-    cTimes.addAll(List.generate(files.length, (index)=> DateFormat("yyyyMMdd_HHmmss").format(FileStat.statSync(files.elementAt(index).path).changed)));
-    files = List.generate(files.length, (index)=> files.elementAt(index).path);
-    return [cTimes, files];
+    for(int i = 0; i < files.length; i ++){
+      var bytes = await File(files.elementAt(i).path).readAsBytes();
+      var data = await readExifFromBytes(bytes);
+      // print("date of photo : ${data['Image DateTime'].toString().replaceAll(":", "")}");
+      String dateInExif = data['Image DateTime'].toString().replaceAll(":", "");
+
+      //exclude the images without exif data
+      if (dateInExif == "null")
+        continue;
+
+      String date = DateFormat("yyyyMMdd_HHmmss").format(DateTime.parse(dateInExif));
+      cTimes.add(date);
+      files_new.add(files.elementAt(i).path);
+    }
+    print("files during GetPhotoOfDate : $cTimes");
+    // files = List.generate(files.length, (index)=> files.elementAt(index).path);
+    return [cTimes, files_new];
   }
 
   Future getAllFiles() async {

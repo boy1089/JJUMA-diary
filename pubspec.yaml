@@ -43,7 +43,6 @@ dependencies:
   ml_dataframe: ^1.6.0
   image: ^3.2.0
   flutter_logs:
-  usage_stats: ^1.2.0
   permission_handler:
   matrix2d:
   fluttertoast: ^8.0.9
@@ -59,11 +58,10 @@ dependencies:
   provider: ^6.0.4
   matrix_gesture_detector: ^0.1.0
   animations:
-
   transparent_image:
   cached_network_image:
   extended_image:
-  circular_motion:
+  exif:
 
 dev_dependencies:
   flutter_test:

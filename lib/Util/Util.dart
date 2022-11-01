@@ -173,6 +173,7 @@ List filterList(List input) {
     try {
       // print("filterList : ${input[i][0]}");
       //exclude if filename is not in format of yyyyMMdd_HHmmSS
+      print("filterList ${input[i]}");
       if (input[i][0][8] != "_") continue;
       if (input[i][0].contains("t")) continue;
 
@@ -190,7 +191,6 @@ List filterList(List input) {
 
 List convertStringTimeToInt(List fields) {
   fields = fields.sublist(1);
-  print(fields);
   List listTime = slice(fields, [0, fields.shape[0]], [0, 1]).flatten;
   print("listTime : $listTime");
   listTime = List<List<double>>.generate(listTime.length,

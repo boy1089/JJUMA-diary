@@ -9,7 +9,6 @@ import 'package:test_location_2nd/Util/global.dart';
 //TODO : make navigation to day page
 import 'package:test_location_2nd/Data/DataManager.dart';
 import 'package:intl/intl.dart';
-import 'package:circular_motion/circular_motion.dart';
 import 'dart:ui' as ui;
 
 class MonthPage extends StatefulWidget {

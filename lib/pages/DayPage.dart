@@ -325,13 +325,13 @@ class _DayPageState extends State<DayPage> {
     imagesForPlot = [];
     photoDataForPlot = [];
     localPhotoDataForPlot = [[]];
-
-    try {
-      var a = await updatePhoto();
-      imagesForPlot = selectImagesForPlot(photoDataForPlot);
-    } catch (e) {
-      print("while updating Ui, error is occrued, google photo : $e");
-    }
+    //code to updatePhoto from google photo
+    // try {
+    //   var a = await updatePhoto();
+    //   imagesForPlot = selectImagesForPlot(photoDataForPlot);
+    // } catch (e) {
+    //   print("while updating Ui, error is occrued, google photo : $e");
+    // }
     try {
       var b = await updatePhotoFromLocal();
       imagesForPlot = selectImagesForPlot(localPhotoDataForPlot);
@@ -405,7 +405,8 @@ class _DayPageState extends State<DayPage> {
         Provider.of<NavigationIndexProvider>(context, listen: false).date;
     List<List<dynamic>> files =
         await localPhotoDataManager.getPhotoOfDate(date);
-    localPhotoDataForPlot = modifyListForPlot(transpose(files));
+    print("files : ${files}");
+    localPhotoDataForPlot = modifyListForPlot(files, executeTranspose: true);
     localPhotoLinks = transpose(localPhotoDataForPlot);
     dataManager.updateSummaryOfPhotoData(date, localPhotoLinks.length);
     // photoDataForPlot.addAll(localPhotoDataForPlot);

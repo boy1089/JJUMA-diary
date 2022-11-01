@@ -167,6 +167,10 @@ class polarPhotoImageContainer {
                             File(googlePhotoDataForPlot[1]),
                             fit: BoxFit.cover,
                             enableLoadState: false,
+                      enableMemoryCache: true,
+                      // cacheRawData: true,
+                      compressionRatio: 0.05,
+                      // scale : 0.2
                           ),
                   )))),
     );

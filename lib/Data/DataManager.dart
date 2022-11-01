@@ -118,7 +118,7 @@ class DataManager {
   void updateSummaryOfPhotoData(String date, int num) async {
     summaryOfPhotoData[date] = num;
     updateIndexOfPhotoSummary += 1;
-    if (updateIndexOfPhotoSummary > 10) {
+    if (updateIndexOfPhotoSummary > 3) {
       updateIndexOfPhotoSummary = 0;
       await writeSummaryOfGooglePhotoData();
       global.summaryOfPhotoData = summaryOfPhotoData;

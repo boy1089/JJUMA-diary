@@ -405,10 +405,9 @@ class _DayPageState extends State<DayPage> {
         Provider.of<NavigationIndexProvider>(context, listen: false).date;
     List<List<dynamic>> files =
         await localPhotoDataManager.getPhotoOfDate(date);
-    print("files : ${files}");
     localPhotoDataForPlot = modifyListForPlot(files, executeTranspose: true);
     localPhotoLinks = transpose(localPhotoDataForPlot);
-    dataManager.updateSummaryOfPhotoData(date, localPhotoLinks.length);
+    dataManager.updateSummaryOfPhotoData(date, localPhotoLinks[0].length);
     // photoDataForPlot.addAll(localPhotoDataForPlot);
   }
 

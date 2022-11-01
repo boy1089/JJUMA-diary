@@ -7,7 +7,6 @@ import 'package:test_location_2nd/Util/global.dart' as global;
 //TODO : make navigation to day page
 import 'package:test_location_2nd/Data/DataManager.dart';
 import 'package:intl/intl.dart';
-import 'dart:ui' as ui;
 import 'package:badges/badges.dart';
 
 class MonthPage extends StatefulWidget {
@@ -281,13 +280,13 @@ class DayButton {
               child: RawMaterialButton(
                 onPressed: () async {
                   global.selectedDate = today;
-                  // buildContext
-                  //     .read<NavigationIndexProvider>()
-                  //     .setNavigationIndex(1);
-                  // buildContext
-                  //     .read<NavigationIndexProvider>()
-                  //     .setDate(global.selectedDate);
-                  // Provider.of<NavigationIndexProvider>(buildContext, listen: false).date = DateFormat("yyyyMMdd").format(today);
+                  buildContext
+                      .read<NavigationIndexProvider>()
+                      .setNavigationIndex(1);
+                  buildContext
+                      .read<NavigationIndexProvider>()
+                      .setDate(global.selectedDate);
+                  Provider.of<NavigationIndexProvider>(buildContext, listen: false).date = DateFormat("yyyyMMdd").format(today);
                 },
                 // child: Text("${today.day}", style: TextStyle(fontSize: 10),),
                 constraints: BoxConstraints(
@@ -301,7 +300,7 @@ class DayButton {
                     // ? Color.lerp(Colors.white, Colors.yellowAccent,
                     //     (summaryOfGooglePhotoData[formatDate(today)] ) / 50)
                     ? Color.lerp(
-                        global.kMainColor_cool.withAlpha(200),
+                        global.kMainColor_cool.withAlpha(240),
                         global.kMainColor_warm.withAlpha(180),
                         // Color.fromARGB(150, 140, 192, 222),
                         // Color.fromARGB(150, 244, 191, 191),
@@ -309,7 +308,7 @@ class DayButton {
                         // Color.fromARGB(150, 156, 180, 204),
                         (global.summaryOfPhotoData[formatDate(today)]) / 50,
                       )
-                    : Colors.white.withAlpha(150),
+                    : Colors.white70.withAlpha(200),
                 shape: CircleBorder(),
               ),
             ),

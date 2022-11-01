@@ -52,7 +52,8 @@ class polarPhotoImageContainers {
                 googlePhotoDataForPlot.length,
                 (int index) => polarPhotoImageContainer(
                         googlePhotoDataForPlot[stackOrder[index]],
-                        index: stackOrder[index])
+                        index: stackOrder[index],
+                        numberOfImages: stackOrder.length)
                     .build(context)))
         : Stack(
             children: List<Widget>.generate(
@@ -60,7 +61,8 @@ class polarPhotoImageContainers {
                 (int index) => polarPhotoImageContainer(
                         googlePhotoDataForPlot[stackOrder[index]],
                         applyOffset: false,
-                        index: stackOrder[index])
+                        index: stackOrder[index],
+                        numberOfImages: stackOrder.length)
                     .build(context)));
   }
 }
@@ -68,19 +70,24 @@ class polarPhotoImageContainers {
 class polarPhotoImageContainer {
   var googlePhotoDataForPlot;
   double imageLocationFactor = 1.4;
-  double imageSize = 100;
+  double imageSize = 90;
   double defaultImageSize = 100;
   double zoomInImageSize = 300;
   double xLocation = 0;
   double yLocation = 0;
   double containerSize = kSecondPolarPlotSize;
   int index = -1;
+  int numberOfImages = 0;
 
   polarPhotoImageContainer(@required googlePhotoDataForPlot,
-      {containerSize: kDefaultPolarPlotSize, applyOffset: true, index = 1}) {
+      {containerSize: kDefaultPolarPlotSize,
+      applyOffset: true,
+      index = 1,
+      numberOfImages}) {
     this.googlePhotoDataForPlot = googlePhotoDataForPlot;
     this.containerSize = containerSize;
     this.index = index;
+    this.numberOfImages = numberOfImages;
 
     if (applyOffset) {
       xLocation = imageLocationFactor *
@@ -88,15 +95,15 @@ class polarPhotoImageContainer {
       yLocation = imageLocationFactor *
           sin((googlePhotoDataForPlot[0]) / 24 * 2 * pi - pi / 2);
     } else {
-      var radiusSign = ((index / 2).floor() % 2 - 0.5) * 2;
-      var radius = (index % 3) / 1.8; // mag5 1.2
+      var radiusSign = 1;
+      var radius = (index % 5) / 1.8; // mag5 1.2
 
       xLocation = imageLocationFactor *
           cos((googlePhotoDataForPlot[0]) / 24 * 2 * pi - pi / 2) *
-          (0.6 + 0.10 * radiusSign * radius);
+          (0.45 + 0.10 * radiusSign * radius);
       yLocation = imageLocationFactor *
           sin((googlePhotoDataForPlot[0]) / 24 * 2 * pi - pi / 2) *
-          (0.6 + 0.1 * radiusSign * radius);
+          (0.45 + 0.1 * radiusSign * radius);
     }
 
     if (indexForZoomInImage == this.index) {
@@ -142,10 +149,18 @@ class polarPhotoImageContainer {
                             () => AllowMultipleGestureRecognizer(),
                             (AllowMultipleGestureRecognizer instance) {
                       instance.onTapUp = (details) {
-                        print("clicked");
-                        indexForZoomInImage = this.index;
+                        print(
+                            "image container ${this.index} / ${numberOfImages} clicked");
+
+                        if (this.index == indexForZoomInImage) {
+                          indexForZoomInImage = this.index + 1;
+                          if (this.index == numberOfImages - 1) {
+                            indexForZoomInImage = 0;
+                          }
+                        } else {
+                          indexForZoomInImage = this.index;
+                        }
                         isImageClicked = true;
-                        print("polarPhotoImageContainer, indexForZoomInImage $indexForZoomInImage");
                       };
                     })
                   },
@@ -154,6 +169,7 @@ class polarPhotoImageContainer {
                   //     color : defaultColor),
 
                   child: Card(
+                    elevation: 3,
                     shape: CircleBorder(),
                     clipBehavior: Clip.antiAliasWithSaveLayer,
                     child: googlePhotoDataForPlot[1].length > 200
@@ -167,10 +183,10 @@ class polarPhotoImageContainer {
                             File(googlePhotoDataForPlot[1]),
                             fit: BoxFit.cover,
                             enableLoadState: false,
-                      enableMemoryCache: true,
-                      // cacheRawData: true,
-                      compressionRatio: 0.05,
-                      // scale : 0.2
+                            enableMemoryCache: true,
+                            // cacheRawData: true,
+                            compressionRatio: 0.05,
+                            // scale : 0.2
                           ),
                   )))),
     );

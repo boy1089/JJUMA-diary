@@ -14,6 +14,8 @@ import 'package:test_location_2nd/Util/global.dart';
 
 String _pathToLocalPhotoGallery1 = "/storage/emulated/0/DCIM/Camera";
 String _pathToLocalPhotoGallery2 = "/storage/emulated/0/Pictures";
+String _pathToLocalPhotoGallery3 = "/storage/emulated/0/Pictures/*";
+
 
 enum filetypes {
   jpg,
@@ -45,6 +47,8 @@ class LocalPhotoDataManager {
         await Glob("$_pathToLocalPhotoGallery1/*${date}*.jpg").listSync();
     final filesFromPath2_jpg =
         await Glob("$_pathToLocalPhotoGallery2/*${date}*.jpg").listSync();
+    final filesFromPath3_jpg =
+    await Glob("$_pathToLocalPhotoGallery3/*${date}*.jpg").listSync();
 
     //delyay is introduced to avoid slow down in ui
     await Future.delayed(Duration(milliseconds: 100));
@@ -52,12 +56,13 @@ class LocalPhotoDataManager {
     files.addAll(filesFromPath2_png);
     files.addAll(filesFromPath1_jpg);
     files.addAll(filesFromPath2_jpg);
+    files.addAll(filesFromPath3_jpg);
 
     //cTime of DateTime is converted to string
     cTimes.addAll(List.generate(
         files.length,
         (index) => DateFormat("yyyyMMdd_HHmmss")
-            .format(FileStat.statSync(files.elementAt(index).path).changed)));
+            .format(FileStat.statSync(files.elementAt(index).path).accessed)));
     print("files during GetPhotoOfDate : $files");
     files = List.generate(files.length, (index) => files.elementAt(index).path);
     return [cTimes, files];
@@ -75,11 +80,14 @@ class LocalPhotoDataManager {
         await Glob("$_pathToLocalPhotoGallery1/*${date}*.jpg").listSync();
     final filesFromPath2_jpg =
         await Glob("$_pathToLocalPhotoGallery2/*${date}*.jpg").listSync();
+    final filesFromPath3_jpg =
+    await Glob("$_pathToLocalPhotoGallery3/*${date}*.jpg").listSync();
 
     files.addAll(filesFromPath1_png);
     files.addAll(filesFromPath2_png);
     files.addAll(filesFromPath1_jpg);
     files.addAll(filesFromPath2_jpg);
+    files.addAll(filesFromPath3_jpg);
 
     //cTime of DateTime is converted to string
     for (int i = 0; i < files.length; i++) {
@@ -111,6 +119,8 @@ class LocalPhotoDataManager {
         await Glob("$_pathToLocalPhotoGallery1/*.jpg").listSync();
     final filesFromPath2_jpg =
         await Glob("$_pathToLocalPhotoGallery2/*.jpg").listSync();
+    final filesFromPath3_jpg =
+    await Glob("$_pathToLocalPhotoGallery3/*.jpg").listSync();
 
     files.addAll(List.generate(filesFromPath1_png.length,
         (index) => filesFromPath1_png.elementAt(index).path));
@@ -120,6 +130,8 @@ class LocalPhotoDataManager {
         (index) => filesFromPath1_jpg.elementAt(index).path));
     files.addAll(List.generate(filesFromPath2_jpg.length,
         (index) => filesFromPath2_jpg.elementAt(index).path));
+    files.addAll(List.generate(filesFromPath3_jpg.length,
+            (index) => filesFromPath3_jpg.elementAt(index).path));
 
     print(files);
     print(_pathToLocalPhotoGallery2);

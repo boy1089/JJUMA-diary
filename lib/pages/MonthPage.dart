@@ -54,13 +54,13 @@ class _MonthPageState extends State<MonthPage> {
                 child: AllWheelScrollView(2022, global.startYear)
                     .build(buildContext))),
       ),
-      floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            var a = global.summaryOfPhotoData.values.reduce(math.max);
-            print(a);
-          },
-          child : Icon(Icons.menu_book),
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //     onPressed: () {
+      //       var a = global.summaryOfPhotoData.values.reduce(math.max);
+      //       print(a);
+      //     },
+      //     child : Icon(Icons.menu_book),
+      // ),
     );
   }
 }
@@ -312,7 +312,7 @@ class DayButton {
                     ? Color.lerp(
                         global.kColor_white.withAlpha(240),
                         global.kMainColor_warm.withAlpha(180),
-                        (global.summaryOfPhotoData[formatDate(today)])! / global.summaryOfPhotoData.values.reduce(math.max),
+                        (global.summaryOfPhotoData[formatDate(today)])! / 100,//global.summaryOfPhotoData.values.reduce(math.max),
                       )
                     : global.kColor_white,
                 shape: CircleBorder(),

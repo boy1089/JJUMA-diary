@@ -6,6 +6,7 @@ import 'dart:io';
 import 'package:glob/glob.dart';
 import 'package:test_location_2nd/Util/Util.dart';
 import 'package:test_location_2nd/Util/global.dart' as global;
+import 'dart:collection';
 
 class NoteManager {
 
@@ -16,6 +17,7 @@ class NoteManager {
   Map notes = {};
   List files = [];
   Map summaryOfNotes = {};
+
   void init() async {
     print("initializing noteManager..");
     files = await getAllFiles();
@@ -46,8 +48,12 @@ class NoteManager {
       String note = await readNote(date);
       notes[date] = note;
     }
-    
-    
+
+    // notes.entries.toList().sort(((a, b) => a.key.compareTo(b.key)));
+    // var sortedKeys = notes.keys.toList()..sort();
+    notes = Map.fromEntries(
+        notes.entries.toList()..sort((e1, e2) => e2.key.compareTo(e1.key)));
+
   }
 
   Map generateSummaryOfNotes(files) {

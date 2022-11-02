@@ -11,13 +11,20 @@ class NavigationIndexProvider with ChangeNotifier{
   bool isZoomIn = false;
   bool isBottomNavigationBarShown = true;
 
+  int lastNavigationIndex = 0;
+
   void setBottomNavigationBarShown(bool isBottomNavigationBarShown){
     this.isBottomNavigationBarShown = isBottomNavigationBarShown;
     print("isBottomNavigationBarShown : $isBottomNavigationBarShown");
     notifyListeners();
   }
 
+  void setLastNavigationIndex(int index){
+    lastNavigationIndex = index;
+  }
+
   void setNavigationIndex(int index){
+    setLastNavigationIndex(navigationIndex);
     navigationIndex = index;
     print("index : $navigationIndex");
     if (index ==0){
@@ -25,6 +32,9 @@ class NavigationIndexProvider with ChangeNotifier{
     }
     if(index ==1){
       setBottomNavigationBarShown(true);
+    }
+    if(index ==2){
+      setBottomNavigationBarShown(false);
     }
     notifyListeners();
   }

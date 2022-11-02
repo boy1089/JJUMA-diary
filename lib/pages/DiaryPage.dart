@@ -32,14 +32,21 @@ class _DiaryPageState extends State<DiaryPage> {
   @override
   Widget build(BuildContext buildContext) {
     return Scaffold(
-      backgroundColor: Colors.black12.withAlpha(10),
+      // backgroundColor: Colors.black12.withAlpha(10),
       body: Center(
         child: ListView.builder(
             itemCount: noteManager.notes.length,
             itemBuilder: (BuildContext buildContext, int index) {
               String date = noteManager.notes.keys.elementAt(index);
               return MaterialButton(
-                onPressed: (){},
+                onPressed: (){
+                  buildContext
+                      .read<NavigationIndexProvider>()
+                      .setDate(formatDateString(date));
+                  buildContext
+                      .read<NavigationIndexProvider>()
+                      .setNavigationIndex(2);
+                },
                 // padding: EdgeInsets.all(5),
                 child: Container(
                   margin : EdgeInsets.all(5),

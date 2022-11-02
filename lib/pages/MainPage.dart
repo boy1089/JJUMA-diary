@@ -95,6 +95,7 @@ class MainPageState extends State<MainPage> {
         noteManager);
     DiaryPage diaryPage = DiaryPage(dataManager, noteManager);
     AndroidSettingsScreen androidSettingsScreen = AndroidSettingsScreen(googleAccountManager, permissionManager);
+
     _widgetOptions = <Widget>[
       monthPage,
       diaryPage,
@@ -115,21 +116,38 @@ class MainPageState extends State<MainPage> {
     Provider.of<NavigationIndexProvider>(context, listen: false);
     return WillPopScope(
       onWillPop: () async {
-        //when zoomed out, go to month page
-        indexForZoomInImage = -1;
-        isImageClicked = false;
-        if (!provider.isZoomIn) {
-          provider.setNavigationIndex(0);
-          return Navigator.canPop(context);
-        }
+        switch (provider.navigationIndex) {
+          case 0:
+            break;
+          case 1:
+            provider.setNavigationIndex(0);
 
-        //when zoomed in, make daypage zoom out
-        // provider.setZoomInState(false);
-        setState(() {
-          provider.setZoomInState(false);
-          provider.setZoomInRotationAngle(0);
-          provider.isZoomIn = false;
-        });
+            break;
+          case 2:
+          //when zoomed in, make daypage zoom out
+          // provider.setZoomInState(false);
+            indexForZoomInImage = -1;
+            isImageClicked = false;
+
+            if (provider.isZoomIn){
+              setState(() {
+                provider.setZoomInState(false);
+                provider.setZoomInRotationAngle(0);
+                provider.isZoomIn = false;
+              });
+            }
+
+            if(provider.lastNavigationIndex==1) {
+              provider.setNavigationIndex(provider.lastNavigationIndex);
+              break;
+            }
+            //when zoomed out, go to month page
+            if (!provider.isZoomIn) {
+              provider.setNavigationIndex(0);
+              return Navigator.canPop(context);
+            }
+            break;
+        }
         return Navigator.canPop(context);
       },
       child: Scaffold(
@@ -215,17 +233,6 @@ class MainPageState extends State<MainPage> {
     var provider =
     Provider.of<NavigationIndexProvider>(context, listen: false);
     switch (item) {
-      case 2:
-        // Navigation.navigateTo(
-        //     context: context,
-        //     screen:
-        //     AndroidSettingsScreen(googleAccountManager, permissionManager),
-        //     style: NavigationRouteStyle.material);
-        provider.setNavigationIndex(2);
-        provider.setBottomNavigationBarShown(true);
-        break;
-
-
       case 0:
         provider.setNavigationIndex(0);
         provider.setBottomNavigationBarShown(true);
@@ -234,7 +241,14 @@ class MainPageState extends State<MainPage> {
         print('bottom navigation bar 1 clicked');
         provider.setNavigationIndex(1);
         break;
-    }
+      case 2:
+        Navigation.navigateTo(
+            context: context,
+            screen:
+            AndroidSettingsScreen(googleAccountManager, permissionManager),
+            style: NavigationRouteStyle.material);
+  }
+
   }
 
 

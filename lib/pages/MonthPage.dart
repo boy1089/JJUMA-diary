@@ -285,7 +285,7 @@ class DayButton {
                   global.selectedDate = today;
                   buildContext
                       .read<NavigationIndexProvider>()
-                      .setNavigationIndex(1);
+                      .setNavigationIndex(2);
                   buildContext
                       .read<NavigationIndexProvider>()
                       .setDate(global.selectedDate);

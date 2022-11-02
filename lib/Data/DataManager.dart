@@ -20,7 +20,7 @@ class DataManager {
   List<String> fileList = [];
   List<dynamic> dataAll = [];
   List<dynamic> processedSensorData = [];
-  Map summaryOfPhotoData = {};
+  Map<String,int> summaryOfPhotoData = {};
   bool isUpdateInProgress = false;
   String processedFileName = "sensor_processed.csv";
   List<DateTime> datesOfYear = [];

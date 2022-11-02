@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:matrix2d/matrix2d.dart';
 import 'package:provider/provider.dart';
 import 'package:test_location_2nd/Util/StateProvider.dart';
 import 'package:test_location_2nd/Util/Util.dart';
@@ -8,7 +9,7 @@ import 'package:test_location_2nd/Util/global.dart' as global;
 import 'package:test_location_2nd/Data/DataManager.dart';
 import 'package:intl/intl.dart';
 import 'package:badges/badges.dart';
-
+import 'dart:math' as math;
 class MonthPage extends StatefulWidget {
   int index = 0;
   DataManager dataManager;
@@ -49,22 +50,17 @@ class _MonthPageState extends State<MonthPage> {
                   //     _scaleFactor = _baseScaleFactor * details.scale/5;
                   // });
                 },
-                // onDoubleTap: () {
-                //   setState(() {
-                //     if (_scaleFactor > _baseScaleFactor * 4) {
-                //       _scaleFactor = _baseScaleFactor;
-                //     } else {
-                //       _scaleFactor = _scaleFactor * 1.5;
-                //     }
-                //   });
-                // },
+
                 child: AllWheelScrollView(2022, global.startYear)
                     .build(buildContext))),
       ),
-      // floatingActionButton: FloatingActionButton(
-      //     onPressed: () {},
-          // child : Icon(Icons.menu_book),
-      // ),
+      floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            var a = global.summaryOfPhotoData.values.reduce(math.max);
+            print(a);
+          },
+          child : Icon(Icons.menu_book),
+      ),
     );
   }
 }
@@ -271,15 +267,27 @@ class DayButton {
     bool isValidDate = today.month == month;
     bool isNoteExists = global.summaryOfNoteData.keys.contains(formatDate(today));
     return isValidDate
-        ? SizedBox(
+        ? Container(
             width: width * _scaleFactor,
             height: height * _scaleFactor,
+
+              // color: global.summaryOfPhotoData
+              //   .containsKey(formatDate(today))
+              //   ? Color.lerp(
+              // Color.fromARGB(255, 255, 203, 196),
+              // Color.fromARGB(150, 156, 180, 204),
+              // (global.summaryOfPhotoData[formatDate(today)]) / 50,
+            // )
+            //       : Colors.white
+            //   ,
             child: Badge(
               showBadge: isNoteExists,
               position: BadgePosition.topEnd(top : 0, end: 0),
               badgeColor: isNoteExists
-                  ? global.kColor_badge.withAlpha(int.parse(global.summaryOfNoteData[formatDate(today)].toString()))
+                  ? global.kColor_badge
                   :Colors.black,
+              // shape : BadgeShape.square,
+              padding : EdgeInsets.all(3),
               child: RawMaterialButton(
                 onPressed: () async {
                   global.selectedDate = today;
@@ -298,18 +306,13 @@ class DayButton {
                     maxWidth: width * _scaleFactor + 1.0,
                     maxHeight: height * _scaleFactor + 1.0),
                 elevation: 1.0,
-                fillColor: global.summaryOfPhotoData
+                fillColor:
+                global.summaryOfPhotoData
                         .containsKey(formatDate(today))
-                    // ? Color.lerp(Colors.white, Colors.yellowAccent,
-                    //     (summaryOfGooglePhotoData[formatDate(today)] ) / 50)
                     ? Color.lerp(
-                        global.kMainColor_cool.withAlpha(240),
+                        global.kColor_white.withAlpha(240),
                         global.kMainColor_warm.withAlpha(180),
-                        // Color.fromARGB(150, 140, 192, 222),
-                        // Color.fromARGB(150, 244, 191, 191),
-                        // Color.fromARGB(150, 242, 215, 217),
-                        // Color.fromARGB(150, 156, 180, 204),
-                        (global.summaryOfPhotoData[formatDate(today)]) / 50,
+                        (global.summaryOfPhotoData[formatDate(today)])! / global.summaryOfPhotoData.values.reduce(math.max),
                       )
                     : global.kColor_white,
                 shape: CircleBorder(),

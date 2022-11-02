@@ -93,7 +93,7 @@ class MainPageState extends State<MainPage> {
         sensorDataManager,
         localPhotoDataManager,
         noteManager);
-    DiaryPage diaryPage = DiaryPage(dataManager);
+    DiaryPage diaryPage = DiaryPage(dataManager, noteManager);
     AndroidSettingsScreen androidSettingsScreen = AndroidSettingsScreen(googleAccountManager, permissionManager);
     _widgetOptions = <Widget>[
       monthPage,

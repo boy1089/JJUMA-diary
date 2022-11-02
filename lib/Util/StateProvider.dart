@@ -24,7 +24,7 @@ class NavigationIndexProvider with ChangeNotifier{
       setBottomNavigationBarShown(true);
     }
     if(index ==1){
-      setBottomNavigationBarShown(false);
+      setBottomNavigationBarShown(true);
     }
     notifyListeners();
   }

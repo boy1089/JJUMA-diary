@@ -26,3 +26,9 @@ int weekNumber(DateTime date) {
 }
 
 String formatDate(DateTime date) => new DateFormat("yyyyMMdd").format(date);
+String formateDate2(DateTime date) =>"${DateFormat('EEEE').format(date)}/"
+    "${DateFormat('MMM').format(date)} "
+    "${DateFormat('dd').format(date)}/"
+    "${DateFormat('yyyy').format(date)}";
+DateTime formatDateString(String date) => DateTime.parse(date);
+

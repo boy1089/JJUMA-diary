@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:test_location_2nd/Util/StateProvider.dart';
@@ -6,33 +7,57 @@ import 'package:test_location_2nd/Util/DateHandler.dart';
 import 'package:test_location_2nd/Util/global.dart' as global;
 import 'package:test_location_2nd/Data/DataManager.dart';
 import 'package:intl/intl.dart';
-import 'package:badges/badges.dart';
+import 'package:test_location_2nd/Note/NoteManager.dart';
 
 class DiaryPage extends StatefulWidget {
-
   DataManager dataManager;
+  NoteManager noteManager;
 
   @override
   State<DiaryPage> createState() => _DiaryPageState();
 
-  DiaryPage(this.dataManager, {Key? key}) : super(key: key);
+  DiaryPage(this.dataManager, this.noteManager, {Key? key}) : super(key: key);
 }
-
 
 class _DiaryPageState extends State<DiaryPage> {
   late DataManager dataManager;
+  late NoteManager noteManager;
 
   @override
   void initState() {
     this.dataManager = widget.dataManager;
+    this.noteManager = widget.noteManager;
   }
 
   @override
   Widget build(BuildContext buildContext) {
     return Scaffold(
-      body: Center(child:Text('aaa'),
-    ));
+      backgroundColor: Colors.black12.withAlpha(10),
+      body: Center(
+        child: ListView.builder(
+            itemCount: noteManager.notes.length,
+            itemBuilder: (BuildContext buildContext, int index) {
+              String date = noteManager.notes.keys.elementAt(index);
+              return MaterialButton(
+                onPressed: (){},
+                // padding: EdgeInsets.all(5),
+                child: Container(
+                  margin : EdgeInsets.all(5),
+                  width: physicalWidth,
+                  color: Colors.black12.withAlpha(10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                   children : [
+                     Text("${formateDate2(formatDateString(date))}",
+                     style: TextStyle( fontWeight: FontWeight.w700),),
+                   Text("${noteManager.notes[date]}",
+                     style: TextStyle( fontWeight: FontWeight.w400),)],
+                  ),
+                ),
+                );
+            }),
+      ),
+
+    );
   }
 }
-
-

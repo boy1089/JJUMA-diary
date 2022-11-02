@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:graphic/graphic.dart';
 
 import 'package:test_location_2nd/Util/Util.dart';
-import 'Util/global.dart';
+import 'Util/global.dart' as global;
 
 class PolarPhotoDataPlot {
   var googlePhotoDataForPlot;
@@ -11,10 +11,10 @@ class PolarPhotoDataPlot {
   var isDataValid = false;
   PolarPhotoDataPlot(this.googlePhotoDataForPlot){
     if (googlePhotoDataForPlot.length == 0){
-      dataForPlot = dummyData2;
+      dataForPlot = global.dummyData2;
       isDataValid = false;
     } else if((googlePhotoDataForPlot[0].length == 0)){
-      dataForPlot = dummyData2;
+      dataForPlot = global.dummyData2;
       isDataValid = false;
     }else{
       dataForPlot = googlePhotoDataForPlot;
@@ -22,16 +22,12 @@ class PolarPhotoDataPlot {
     }
   } // {data = ['a'];}
 
-  Color ColorForSensorDataOutline = Colors.black12;//Colors.lightBlueAccent;
-  Color ColorForDummyData = Colors.lightBlueAccent;
-
-
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
         Chart(
-          data : dummyData2,
+          data : global.dummyData2,
           variables: {
             '0': Variable(
               accessor: (List datum) => datum[0] as num,
@@ -45,7 +41,7 @@ class PolarPhotoDataPlot {
             LineElement(
               color: ColorAttr(
                 variable: 'dummy',
-                values:[ColorForSensorDataOutline,ColorForSensorDataOutline ],
+                values:[global.kColor_polarPlotOutline,global.kColor_polarPlotOutline],
               ),
             ),
           ],
@@ -57,7 +53,11 @@ class PolarPhotoDataPlot {
           PointElement(
             size: SizeAttr(variable: 'dummy',
                 values: isDataValid?
-                [7, 8]:[0, 1]),
+                [global.kSize_polarPlotPhotoScatter, global.kSize_polarPlotPhotoScatter+1]:[0, 1]),
+            color : ColorAttr(
+              variable : 'time',
+              values : [global.kColor_polarPlotPhotoScatter,global.kColor_polarPlotPhotoScatter,]
+            )
           ),
         ],
         variables: {

@@ -194,7 +194,7 @@ class MonthArray {
         child: Text(DateFormat("MMM").format(DateTime(year, month)),
             textScaleFactor: _scaleFactor * 2,
             style:
-                TextStyle(color: Colors.black54, fontStyle: FontStyle.normal)),
+                TextStyle(color: global.kColor_backgroundText, fontStyle: FontStyle.normal)),
       ),
 
       Column(
@@ -278,7 +278,7 @@ class DayButton {
               showBadge: isNoteExists,
               position: BadgePosition.topEnd(top : 0, end: 0),
               badgeColor: isNoteExists
-                  ?Colors.blue.withAlpha(int.parse(global.summaryOfNoteData[formatDate(today)].toString()))
+                  ? global.kColor_badge.withAlpha(int.parse(global.summaryOfNoteData[formatDate(today)].toString()))
                   :Colors.black,
               child: RawMaterialButton(
                 onPressed: () async {
@@ -311,7 +311,7 @@ class DayButton {
                         // Color.fromARGB(150, 156, 180, 204),
                         (global.summaryOfPhotoData[formatDate(today)]) / 50,
                       )
-                    : Colors.white70.withAlpha(200),
+                    : global.kColor_white,
                 shape: CircleBorder(),
               ),
             ),

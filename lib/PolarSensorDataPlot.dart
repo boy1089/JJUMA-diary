@@ -3,7 +3,7 @@ import 'package:graphic/graphic.dart';
 
 import 'package:flutter/foundation.dart';
 import 'package:test_location_2nd/Util/Util.dart';
-import 'Util/global.dart';
+import 'Util/global.dart' as global;
 
 class PolarSensorDataPlot {
   Color ColorForSensorDataOutline = Colors.black12;
@@ -26,7 +26,7 @@ class PolarSensorDataPlot {
     print("polarSensorDataPlot, ${data[0]}, ${data[0].length}");
     return Stack(children: [
       Chart(
-        data: dummyData1,
+        data: global.dummyData1,
         variables: {
           '0': Variable(
             accessor: (List datum) => datum[0] as num,
@@ -40,7 +40,7 @@ class PolarSensorDataPlot {
           LineElement(
             color: ColorAttr(
               variable: 'dummy',
-              values: [ColorForSensorDataOutline, ColorForSensorDataOutline],
+              values: [global.kColor_polarPlotOutline, global.kColor_polarPlotOutline],
             ),
           ),
         ],
@@ -67,9 +67,9 @@ class PolarSensorDataPlot {
           PointElement(
             color: ColorAttr(
                 variable: 'latitude',
-                values: data == dummyData1
+                values: data == global.dummyData1
                     ? [ColorForDummyData, ColorForDummyData]
-                    : colorsHotCold),
+                    : global.colorsHotCold),
           ),
         ],
         axes: [

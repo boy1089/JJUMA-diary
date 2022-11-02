@@ -16,7 +16,7 @@ import 'dart:convert';
 import 'package:csv/csv.dart';
 import 'package:test_location_2nd/polarPhotoImageContainer.dart';
 import 'package:test_location_2nd/PolarPhotoDataPlot.dart';
-import 'package:test_location_2nd/Util/global.dart';
+import 'package:test_location_2nd/Util/global.dart' as global;
 import 'dart:math';
 import 'package:test_location_2nd/Note/NoteManager.dart';
 import 'package:intl/intl.dart';
@@ -66,10 +66,10 @@ class _DayPageState extends State<DayPage> {
 
   List<dynamic> googlePhotoLinks = [];
   List<dynamic> localPhotoLinks = [];
-  List<DateTime> datesOfYear =
-      getDaysInBetween(DateTime.parse("${startYear}0101"), DateTime.now())
-          .reversed
-          .toList();
+  List<DateTime> datesOfYear = getDaysInBetween(
+          DateTime.parse("${global.startYear}0101"), DateTime.now())
+      .reversed
+      .toList();
   Future readData = Future.delayed(const Duration(seconds: 1));
   Future update = Future.delayed(const Duration(seconds: 1));
   List imagesForPlot = [];
@@ -132,7 +132,7 @@ class _DayPageState extends State<DayPage> {
         future: readData,
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           return Scaffold(
-            backgroundColor: kBackGroundColor,
+            backgroundColor: global.kBackGroundColor,
             body: !snapshot.hasData
                 ? Center(
                     child: SizedBox(
@@ -151,18 +151,16 @@ class _DayPageState extends State<DayPage> {
                               (AllowMultipleGestureRecognizer instance) {
                         instance.onTapDown = (details) {
                           setState(() {
-                            print(indexForZoomInImage);
-                            if (!isImageClicked) indexForZoomInImage = -1;
-                            isImageClicked = false;
+                            print(global.indexForZoomInImage);
+                            if (!global.isImageClicked)
+                              global.indexForZoomInImage = -1;
+                            global.isImageClicked = false;
                             if (isZoomIn) return;
 
                             Offset tapPosition =
                                 calculateTapPositionRefCenter(details, 0);
                             double angleZoomIn =
                                 calculateTapAngle(tapPosition, 0, 0);
-                            // print("tap Position : ${tapPosition}");
-                            // print("angle : $angleZoomIn");
-                            // print("zoomIn : $isZoomIn");
 
                             provider.setZoomInState(true);
                             isZoomInImageVisible = true;
@@ -197,21 +195,25 @@ class _DayPageState extends State<DayPage> {
                               width: layout['graphSize']?[isZoomIn]?.toDouble(),
                               height:
                                   layout['graphSize']?[isZoomIn]?.toDouble(),
-                              duration: Duration(milliseconds: animationTime),
+                              duration:
+                                  Duration(milliseconds: global.animationTime),
                               left: layout['left']?[isZoomIn]?.toDouble(),
                               top: layout['top']?[isZoomIn]?.toDouble(),
                               curve: Curves.fastOutSlowIn,
                               child: AnimatedRotation(
                                   turns: isZoomIn ? _angle : 0,
                                   duration: Duration(
-                                      milliseconds: animationTime - 100),
+                                      milliseconds: global.animationTime - 100),
                                   child: Stack(
                                     children: [
                                       PolarTimeIndicators().build(context),
-                                      PolarSensorDataPlot(
-                                              (sensorDataForPlot[0].length == 0)|(sensorDataForPlot.length == 0 )
-                                                  ? dummyData1
-                                                  : sensorDataForPlot)
+                                      PolarSensorDataPlot((sensorDataForPlot[0]
+                                                          .length ==
+                                                      0) |
+                                                  (sensorDataForPlot.length ==
+                                                      0)
+                                              ? global.dummyData1
+                                              : sensorDataForPlot)
                                           .build(context),
                                       PolarPhotoDataPlot(photoDataForPlot)
                                           .build(context),
@@ -237,16 +239,16 @@ class _DayPageState extends State<DayPage> {
                                         height: !focusNode.hasFocus
                                             ? physicalHeight / 2 - 200
                                             : physicalHeight / 2 - 50,
-                                        color: myTextController.text.isEmpty
-                                            ? Colors.transparent
-                                            : Colors.black12,
+                                        color: focusNode.hasFocus
+                                            ? global.kColor_containerFocused
+                                            : global.kColor_container,
                                         child: EditableText(
                                           readOnly: isZoomIn ? true : false,
                                           maxLines: 15,
                                           controller: myTextController,
                                           focusNode: focusNode,
                                           style:
-                                              TextStyle(color: Colors.black54),
+                                              TextStyle(color:global.kColor_diaryText),
                                           cursorColor: Colors.black12,
                                           backgroundCursorColor: Colors.black12,
                                           textAlign: TextAlign.left,
@@ -263,7 +265,8 @@ class _DayPageState extends State<DayPage> {
                                   "${DateFormat('dd').format(DateTime.parse(provider.date))}/"
                                   "${DateFormat('yyyy').format(DateTime.parse(provider.date))}",
                                   style: TextStyle(
-                                      fontSize: 20, color: Colors.black54),
+                                      fontSize: 20,
+                                      color: global.kColor_backgroundText),
                                 )),
                           ]),
                     ),
@@ -376,7 +379,7 @@ class _DayPageState extends State<DayPage> {
     for (int i = 0; i < input.length; i++) {
       print("selectImagesForPlot, ${i}, ${imagesForPlot}, ${input}");
       if ((input[i][0] - imagesForPlot[j][0]).abs() >
-          kMinimumTimeDifferenceBetweenImages) {
+          global.kMinimumTimeDifferenceBetweenImages) {
         imagesForPlot.add(input[i]);
         j += 1;
       }
@@ -433,7 +436,7 @@ class _DayPageState extends State<DayPage> {
     var sensorData = await this.sensorDataManager.openFile(date);
     try {
       sensorDataModified = modifyListForPlot(subsampleList(sensorData, 10));
-    } catch(e) {
+    } catch (e) {
       sensorDataModified = [[]];
       print("error during updating sensorData : $e");
     }

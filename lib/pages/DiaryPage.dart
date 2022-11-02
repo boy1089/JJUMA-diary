@@ -51,14 +51,14 @@ class _DiaryPageState extends State<DiaryPage> {
                 child: Container(
                   margin : EdgeInsets.all(5),
                   width: physicalWidth,
-                  color: Colors.black12.withAlpha(10),
+                  color: global.kColor_container, //Colors.black12.withAlpha(10),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                    children : [
                      Text("${formateDate2(formatDateString(date))}",
-                     style: TextStyle( fontWeight: FontWeight.w700),),
+                     style: TextStyle( fontWeight: global.kFontWeight_diaryTitle, color : global.kColor_diaryText),),
                    Text("${noteManager.notes[date]}",
-                     style: TextStyle( fontWeight: FontWeight.w400),)],
+                     style: TextStyle( fontWeight: global.kFontWeight_diaryContents, color : global.kColor_diaryText),)],
                   ),
                 ),
                 );

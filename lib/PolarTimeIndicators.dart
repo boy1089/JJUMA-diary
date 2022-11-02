@@ -8,9 +8,7 @@ import 'package:extended_image/extended_image.dart';
 import 'package:test_location_2nd/Util/StateProvider.dart';
 import 'package:provider/provider.dart';
 import 'dart:io';
-import 'package:test_location_2nd/Util/global.dart';
-
-Color defaultColor = Colors.black;
+import 'package:test_location_2nd/Util/global.dart' as global;
 
 class PolarTimeIndicators {
   @override
@@ -20,7 +18,7 @@ class PolarTimeIndicators {
               .isZoomIn
         ?Stack(
         children: List<Widget>.generate(
-            23, (int index) => PolarTimeIndicator(index).build(context)))
+            24, (int index) => PolarTimeIndicator(index).build(context)))
         :Text("");
   }
 }
@@ -63,7 +61,7 @@ class PolarTimeIndicator {
               : 0,
           child: Text(
             "$index",
-            style: TextStyle(fontSize: 60, color: Colors.black12.withAlpha(50)),
+            style: TextStyle(fontSize: 60, color: global.kColor_backgroundText),
           )),
     );
   }

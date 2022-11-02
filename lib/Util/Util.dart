@@ -100,23 +100,9 @@ const kDefaultPolarPlotSize = 250.0;
 const kSecondPolarPlotSize = kDefaultPolarPlotSize * 1.3;
 const kThirdPolarPlotSize = kDefaultPolarPlotSize * 2;
 
-const event_color_goingOut = Colors.red;
-const event_color_backHome = Colors.blue;
 const path_phonecall = '/sdcard/Music/TPhoneCallRecords';
 
 int a = 255;
-List<Color> get colorsHotCold => [
-      Colors.deepOrangeAccent,
-      // Color.fromARGB(a, 220, 255, 0),
-      // Color.fromARGB(a, 200, 255, 0),
-      // Color.fromARGB(a, 180, 255, 0),
-      // Color.fromARGB(a, 160, 255, 0),
-      // Color.fromARGB(a, 140, 255, 0),
-      // Color.fromARGB(a, 120, 255, 20),
-      // Color.fromARGB(a, 100, 255, 40),
-      // Color.fromARGB(a, 80, 255, 60),
-      Colors.blue,
-    ];
 
 // List<Color> colorsLp = Color.lerp(Colors.deepOrange, Colors.blueAccent, 2.0);
 
@@ -281,7 +267,6 @@ List<List<dynamic>> subsampleList(List list, int factor) {
   return newList;
 }
 
-
 class AllowMultipleGestureRecognizer extends TapGestureRecognizer {
   @override
   void rejectGesture(int pointer) {
@@ -296,5 +281,4 @@ class AllowMultipleGestureRecognizer2 extends PanGestureRecognizer {
     print("pointer : $pointer");
     acceptGesture(pointer);
   }
-
 }

@@ -1,16 +1,12 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:googleapis/shared.dart';
-import 'package:graphic/graphic.dart';
 import 'package:test_location_2nd/Util/Util.dart';
-import 'package:transparent_image/transparent_image.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:test_location_2nd/Util/StateProvider.dart';
 import 'package:provider/provider.dart';
 import 'dart:io';
 import 'package:test_location_2nd/Util/global.dart';
 
-Color defaultColor = Colors.black;
 
 class polarPhotoImageContainers {
   var googlePhotoDataForPlot;

@@ -23,8 +23,10 @@ class SensorRecorder {
   SensorRecorder(permissionManager, {enableAccel = false}) {
     this.permissionManager = permissionManager;
     debugPrint("sensorRecorder instance created");
+
     //writing once when it's created.. to make sure that there is file to read.
     writeCache2();
+
     // init();
   }
 
@@ -51,9 +53,7 @@ class SensorRecorder {
         _accelData = sensorEvent.data;
       });
     }
-    print('e');
     location.onLocationChanged.listen((LocationData currentLocation) {
-      print('ggg');
       _cacheCount = _cacheCount + 1;
       // _accelData = _accelData;
       print(_cacheCount);
@@ -65,12 +65,10 @@ class SensorRecorder {
         _accelData[1],
         _accelData[2],
       ));
-      print('eee');
       if (_cacheCount > 10) {
         writeCache2();
         _cacheCount = 0;
       }
-      print('fff');
       debugPrint(
           "SensorLogger _cacheCount $_cacheCount, ${currentLocation.latitude}, ${currentLocation.longitude}");
     });

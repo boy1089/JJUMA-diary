@@ -164,9 +164,6 @@ class polarPhotoImageContainer {
                       };
                     })
                   },
-                  // child : Container(
-                  //     // width : 400, height : 400,
-                  //     color : defaultColor),
 
                   child: Card(
                     elevation: 3,

@@ -5,7 +5,6 @@ import 'package:googleapis/vision/v1.dart';
 import 'package:test_location_2nd/Permissions/GoogleAccountManager.dart';
 import 'package:test_location_2nd/Util/Util.dart';
 import 'package:test_location_2nd/Util/global.dart';
-import 'package:test_location_2nd/Util/responseParser.dart';
 import '../navigation.dart';
 import 'package:test_location_2nd/pages/SettingPage.dart';
 import 'package:test_location_2nd/Permissions/PermissionManager.dart';
@@ -23,9 +22,7 @@ import 'package:test_location_2nd/Photo/LocalPhotoDataManager.dart';
 import 'CirclePage.dart';
 import 'package:test_location_2nd/Note/NoteManager.dart';
 import 'package:path_provider/path_provider.dart';
-import 'dart:io';
-import 'package:permission_handler/permission_handler.dart'
-    as PermissionHandler;
+import 'DiaryPage.dart';
 
 class MainPage extends StatefulWidget {
   GoogleAccountManager googleAccountManager;
@@ -96,12 +93,13 @@ class MainPageState extends State<MainPage> {
         sensorDataManager,
         localPhotoDataManager,
         noteManager);
-    CirclePage circlePage = CirclePage();
-
+    DiaryPage diaryPage = DiaryPage(dataManager);
+    AndroidSettingsScreen androidSettingsScreen = AndroidSettingsScreen(googleAccountManager, permissionManager);
     _widgetOptions = <Widget>[
       monthPage,
+      diaryPage,
       hourPage,
-      circlePage,
+      androidSettingsScreen,
     ];
   }
 
@@ -113,10 +111,10 @@ class MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
+    var provider =
+    Provider.of<NavigationIndexProvider>(context, listen: false);
     return WillPopScope(
       onWillPop: () async {
-        var provider =
-            Provider.of<NavigationIndexProvider>(context, listen: false);
         //when zoomed out, go to month page
         indexForZoomInImage = -1;
         isImageClicked = false;
@@ -156,24 +154,36 @@ class MainPageState extends State<MainPage> {
         //   ],
         // ),
         bottomNavigationBar: Offstage(
-          offstage: true,
-          child: BottomNavigationBar(
-            items: const <BottomNavigationBarItem>[
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.calendar_month_outlined), label: "Month"),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.calendar_today_outlined), label: "Day"),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.circle_outlined), label: "Circle"),
-            ],
-            currentIndex:
-                context.watch<NavigationIndexProvider>().navigationIndex,
-            onTap: (index) {
-              Provider.of<NavigationIndexProvider>(context, listen: false)
-                  .setNavigationIndex(index);
-            },
+          offstage: !provider.isBottomNavigationBarShown,
+          child: SizedBox(
+            height : 30,
+            // width : 200,
+            child: BottomNavigationBar(
+              selectedFontSize: 0,
+              type: BottomNavigationBarType.fixed,
+              items: const <BottomNavigationBarItem>[
+                BottomNavigationBarItem(
+                    icon: Icon(Icons.photo_camera_back_outlined), label: "Photo"),
+                BottomNavigationBarItem(
+                    icon: Icon(Icons.bookmark), label: "Diary"),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.settings), label: "Settings"),
+                // BottomNavigationBarItem(
+                //     icon: Icon(Icons.settings_accessibility, color: Colors.black,), label: "Settings")
+
+                // BottomNavigationBarItem(
+                //     icon: Icon(Icons.circle_outlined), label: "Circle"),
+              ],
+              currentIndex:
+                  context.watch<NavigationIndexProvider>().navigationIndex,
+              onTap: (index) {
+                onTap(context, index);
+              },
+            ),
           ),
         ),
+
+
         body: FutureBuilder(
             future: readData,
             builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -196,27 +206,57 @@ class MainPageState extends State<MainPage> {
                 );
               }
             }),
-        // floatingActionButton: FloatingActionButton(
-        //   onPressed: () async {
-        //     var files = await noteManager.readAllNotes();
-        //     var b = await noteManager.generateSummaryOfNotes(files);
-        //
-        //   },
-        // ),
       ),
     );
   }
 
+  void onTap(BuildContext context, int item){
+    debugPrint(item.toString());
+    var provider =
+    Provider.of<NavigationIndexProvider>(context, listen: false);
+    switch (item) {
+      case 2:
+        // Navigation.navigateTo(
+        //     context: context,
+        //     screen:
+        //     AndroidSettingsScreen(googleAccountManager, permissionManager),
+        //     style: NavigationRouteStyle.material);
+        provider.setNavigationIndex(2);
+        provider.setBottomNavigationBarShown(true);
+        break;
+
+
+      case 0:
+        provider.setNavigationIndex(0);
+        provider.setBottomNavigationBarShown(true);
+        break;
+      case 1:
+        print('bottom navigation bar 1 clicked');
+        provider.setNavigationIndex(1);
+        break;
+    }
+  }
+
+
+
   void onSelected(BuildContext context, int item) {
     debugPrint(item.toString());
+    var provider =
+    Provider.of<NavigationIndexProvider>(context, listen: false);
     switch (item) {
-      case 0:
+      case 2:
         Navigation.navigateTo(
             context: context,
             screen:
                 AndroidSettingsScreen(googleAccountManager, permissionManager),
             style: NavigationRouteStyle.material);
         break;
+      case 0:
+        provider.setNavigationIndex(0);
+        break;
+
+
+
     }
   }
 }

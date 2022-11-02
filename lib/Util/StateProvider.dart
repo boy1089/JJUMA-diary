@@ -9,10 +9,23 @@ class NavigationIndexProvider with ChangeNotifier{
   Map summaryOfGooglePhotoData = {};
   double zoomInAngle = 0.0;
   bool isZoomIn = false;
+  bool isBottomNavigationBarShown = true;
+
+  void setBottomNavigationBarShown(bool isBottomNavigationBarShown){
+    this.isBottomNavigationBarShown = isBottomNavigationBarShown;
+    print("isBottomNavigationBarShown : $isBottomNavigationBarShown");
+    notifyListeners();
+  }
 
   void setNavigationIndex(int index){
     navigationIndex = index;
     print("index : $navigationIndex");
+    if (index ==0){
+      setBottomNavigationBarShown(true);
+    }
+    if(index ==1){
+      setBottomNavigationBarShown(false);
+    }
     notifyListeners();
   }
   void setDate(DateTime date){

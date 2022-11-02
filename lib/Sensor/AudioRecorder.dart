@@ -16,7 +16,7 @@ class AudioRecorder {
 
   AudioRecorder(this.permissionManager) {
     debugPrint("AudioRecorder instance created");
-    init();
+    // init();
   }
 
   Future<int> init() async {

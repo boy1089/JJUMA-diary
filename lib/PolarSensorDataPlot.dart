@@ -80,8 +80,9 @@ class PolarSensorDataPlot {
               }
               return LabelStyle(style: Defaults.textStyle);
             }
-            ..label = null
+          ..label = null
           ..grid = null
+          // ..grid = null
           // ..line = null
         ],
         coord: PolarCoord(),

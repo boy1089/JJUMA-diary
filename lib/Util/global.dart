@@ -6,6 +6,8 @@
 import 'package:intl/intl.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter/material.dart';
+
+
 DateTime selectedDate = DateTime(2022, 1, 1);
 
 int mainPageSelectionIndex = 0;
@@ -17,13 +19,15 @@ Map summaryOfNoteData = {};
 Color kBackGroundColor = Colors.white;
 Color kMainColor_warm = Colors.deepOrangeAccent;
 // Color kMainColor_warm = Colors.red;
-
 // Color kMainColor_cool = Colors.lightBlueAccent;
 Color kMainColor_cool = Colors.white;
+Color kMainColor_option =Colors.green;
+
+
+
 int indexForZoomInImage = -1;
 bool isImageClicked = false;
 
-Color kMainColor_option =Colors.green;
 
 int animationTime = 200;
 double monthPageScrollOffset = 0.0;

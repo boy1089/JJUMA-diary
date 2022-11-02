@@ -121,7 +121,6 @@ class MainPageState extends State<MainPage> {
             break;
           case 1:
             provider.setNavigationIndex(0);
-
             break;
           case 2:
           //when zoomed in, make daypage zoom out

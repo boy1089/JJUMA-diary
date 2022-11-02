@@ -22,8 +22,10 @@ class PolarPhotoDataPlot {
     }
   } // {data = ['a'];}
 
-  Color ColorForSensorDataOutline = Colors.lightBlueAccent;
+  Color ColorForSensorDataOutline = Colors.black12;//Colors.lightBlueAccent;
   Color ColorForDummyData = Colors.lightBlueAccent;
+
+
   @override
   Widget build(BuildContext context) {
     return Stack(

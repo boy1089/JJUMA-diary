@@ -4,12 +4,12 @@ import 'package:test_location_2nd/Util/DateHandler.dart';
 
 
 class NavigationIndexProvider with ChangeNotifier{
-  int navigationIndex = 1;
+  int navigationIndex = 2;
   String date = formatDate(DateTime.now());
   Map summaryOfGooglePhotoData = {};
   double zoomInAngle = 0.0;
   bool isZoomIn = false;
-  bool isBottomNavigationBarShown = true;
+  bool isBottomNavigationBarShown = false;
 
   int lastNavigationIndex = 0;
 

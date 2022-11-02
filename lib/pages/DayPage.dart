@@ -20,6 +20,7 @@ import 'package:test_location_2nd/Util/global.dart';
 import 'dart:math';
 import 'package:test_location_2nd/Note/NoteManager.dart';
 import 'package:intl/intl.dart';
+import 'package:test_location_2nd/PolarTimeIndicators.dart';
 
 class DayPage extends StatefulWidget {
   GoogleAccountManager googleAccountManager;
@@ -206,9 +207,10 @@ class _DayPageState extends State<DayPage> {
                                       milliseconds: animationTime - 100),
                                   child: Stack(
                                     children: [
+                                      PolarTimeIndicators().build(context),
                                       PolarSensorDataPlot(
                                               (sensorDataForPlot[0].length == 0)|(sensorDataForPlot.length == 0 )
-                                                  ? dummyData
+                                                  ? dummyData1
                                                   : sensorDataForPlot)
                                           .build(context),
                                       PolarPhotoDataPlot(photoDataForPlot)

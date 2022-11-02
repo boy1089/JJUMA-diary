@@ -11,10 +11,10 @@ class PolarPhotoDataPlot {
   var isDataValid = false;
   PolarPhotoDataPlot(this.googlePhotoDataForPlot){
     if (googlePhotoDataForPlot.length == 0){
-      dataForPlot = dummyData;
+      dataForPlot = dummyData2;
       isDataValid = false;
     } else if((googlePhotoDataForPlot[0].length == 0)){
-      dataForPlot = dummyData;
+      dataForPlot = dummyData2;
       isDataValid = false;
     }else{
       dataForPlot = googlePhotoDataForPlot;
@@ -29,7 +29,7 @@ class PolarPhotoDataPlot {
     return Stack(
       children: [
         Chart(
-          data : dummyData,
+          data : dummyData2,
           variables: {
             '0': Variable(
               accessor: (List datum) => datum[0] as num,
@@ -53,7 +53,6 @@ class PolarPhotoDataPlot {
         data: dataForPlot,
         elements: [
           PointElement(
-
             size: SizeAttr(variable: 'dummy',
                 values: isDataValid?
                 [7, 8]:[0, 1]),

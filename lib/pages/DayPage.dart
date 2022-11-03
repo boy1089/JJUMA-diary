@@ -48,7 +48,7 @@ class DayPage extends StatefulWidget {
       : super(key: key);
 }
 
-class _DayPageState extends State<DayPage> {
+class _DayPageState extends State<DayPage>  {
   late GoogleAccountManager googleAccountManager;
   late PermissionManager permissionManager;
   late PhotoLibraryApiClient photoLibraryApiClient;
@@ -76,7 +76,8 @@ class _DayPageState extends State<DayPage> {
   List<List<dynamic>> photoDataForPlot = [[]];
   FocusNode focusNode = FocusNode();
 
-  final myTextController = TextEditingController();
+  final myTextController = TextEditingController(
+  );
 
   @override
   void initState() {
@@ -90,7 +91,6 @@ class _DayPageState extends State<DayPage> {
     localPhotoDataManager = widget.localPhotoDataManager;
     noteManager = widget.noteManager;
     // update = updateUi();
-
     print("DayPage, after initState : ${photoDataForPlot}");
     readData = _fetchData();
     // imageContainers = polarPhotoImageContainers(imagesForPlot);
@@ -149,7 +149,8 @@ class _DayPageState extends State<DayPage> {
                                   AllowMultipleGestureRecognizer>(
                               () => AllowMultipleGestureRecognizer(),
                               (AllowMultipleGestureRecognizer instance) {
-                        instance.onTapDown = (details) {
+
+                          instance.onTapDown = (details) {
                           print(global.indexForZoomInImage);
                           if (!global.isImageClicked)
                             global.indexForZoomInImage = -1;
@@ -162,6 +163,13 @@ class _DayPageState extends State<DayPage> {
                               calculateTapAngle(tapPosition, 0, 0);
 
                           if (tapPosition.dy < -200) return;
+                          //if editing text, doesn't zoom in.
+                          if (focusNode.hasFocus) {
+                            print("has focus? ${focusNode.hasFocus}");
+                            dismissKeyboard();
+                            setState(() {});
+                            return;
+                          }
                           setState(() {
                             provider.setZoomInState(true);
                             isZoomInImageVisible = true;
@@ -185,7 +193,7 @@ class _DayPageState extends State<DayPage> {
                         },
                       )
                     },
-                    child: Container(
+                    child: SizedBox(
                       width: firstContainerSize,
                       height: firstContainerSize,
                       child: Stack(
@@ -241,7 +249,15 @@ class _DayPageState extends State<DayPage> {
                                   // readOnly: isZoomIn ? true : false,
                                   maxLines: 15,
                                   controller: myTextController,
-                                  onEditingComplete: (){dismissKeyboard();},
+                                  onSelectionChanged: (a, b){
+                                    if(!focusNode.hasFocus)
+                                      setState((){});
+                                  },
+
+                                  onEditingComplete: (){
+                                    print("editing completed");
+                                    dismissKeyboard();},
+
                                   focusNode: focusNode,
                                   style: TextStyle(
                                       color: global.kColor_diaryText),
@@ -267,7 +283,11 @@ class _DayPageState extends State<DayPage> {
                   ),
             floatingActionButton: FloatingActionButton(
               mini: true,
-              child: Icon(focusNode.hasFocus ? Icons.arrow_right : Icons.add),
+              backgroundColor: global.kMainColor_warm,
+
+              child: focusNode.hasFocus? Text("save"):Icon(Icons.add),
+              shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(15.0)),),
               onPressed: () {
                 if (focusNode.hasFocus) {
                   dismissKeyboard();
@@ -314,11 +334,22 @@ class _DayPageState extends State<DayPage> {
         myTextController.text);
   }
 
+
   @override
   void dispose() {
+    print("dispose..");
+    noteManager.writeNote(
+        Provider.of<NavigationIndexProvider>(context, listen: false).date,
+        myTextController.text);
     focusNode.dispose();
     super.dispose();
   }
+  //
+  // @override
+  // void dispose() {
+  //   focusNode.dispose();
+  //   super.dispose();
+  // }
 
   Future updateUi() async {
     googlePhotoLinks = [];

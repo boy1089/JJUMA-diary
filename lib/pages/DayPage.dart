@@ -150,18 +150,19 @@ class _DayPageState extends State<DayPage> {
                               () => AllowMultipleGestureRecognizer(),
                               (AllowMultipleGestureRecognizer instance) {
                         instance.onTapDown = (details) {
+                          print(global.indexForZoomInImage);
+                          if (!global.isImageClicked)
+                            global.indexForZoomInImage = -1;
+                          global.isImageClicked = false;
+                          if (isZoomIn) return;
+
+                          Offset tapPosition =
+                              calculateTapPositionRefCenter(details, 0);
+                          double angleZoomIn =
+                              calculateTapAngle(tapPosition, 0, 0);
+
+                          if (tapPosition.dy < -200) return;
                           setState(() {
-                            print(global.indexForZoomInImage);
-                            if (!global.isImageClicked)
-                              global.indexForZoomInImage = -1;
-                            global.isImageClicked = false;
-                            if (isZoomIn) return;
-
-                            Offset tapPosition =
-                                calculateTapPositionRefCenter(details, 0);
-                            double angleZoomIn =
-                                calculateTapAngle(tapPosition, 0, 0);
-
                             provider.setZoomInState(true);
                             isZoomInImageVisible = true;
                             _angle = angleZoomIn;
@@ -223,38 +224,31 @@ class _DayPageState extends State<DayPage> {
                                   )),
                             ),
                             Positioned(
-                              width: physicalWidth - 20,
+                              width: physicalWidth,
                               height: !focusNode.hasFocus
-                                  ? physicalHeight / 2 - 200
+                                  ? physicalHeight / 2 - 120
                                   : physicalHeight / 2 - 50,
-                              left: 10,
                               bottom: 20,
-                              child: Offstage(
-                                offstage: isZoomIn ? true : false,
-                                child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Container(
-                                        height: !focusNode.hasFocus
-                                            ? physicalHeight / 2 - 200
-                                            : physicalHeight / 2 - 50,
-                                        color: focusNode.hasFocus
-                                            ? global.kColor_containerFocused
-                                            : global.kColor_container,
-                                        child: EditableText(
-                                          readOnly: isZoomIn ? true : false,
-                                          maxLines: 15,
-                                          controller: myTextController,
-                                          focusNode: focusNode,
-                                          style:
-                                              TextStyle(color:global.kColor_diaryText),
-                                          cursorColor: Colors.black12,
-                                          backgroundCursorColor: Colors.black12,
-                                          textAlign: TextAlign.left,
-                                        ),
-                                      ),
-                                    ]),
+                              child: Container(
+                                margin: EdgeInsets.all(10),
+                                height: !focusNode.hasFocus
+                                    ? physicalHeight / 2 - 200
+                                    : physicalHeight / 2 - 50,
+                                color: focusNode.hasFocus
+                                    ? global.kColor_containerFocused
+                                    : global.kColor_container,
+                                child: EditableText(
+                                  // readOnly: isZoomIn ? true : false,
+                                  maxLines: 15,
+                                  controller: myTextController,
+                                  onEditingComplete: (){dismissKeyboard();},
+                                  focusNode: focusNode,
+                                  style: TextStyle(
+                                      color: global.kColor_diaryText),
+                                  cursorColor: Colors.black12,
+                                  backgroundCursorColor: Colors.black12,
+                                  textAlign: TextAlign.left,
+                                ),
                               ),
                             ),
                             Positioned(
@@ -279,8 +273,7 @@ class _DayPageState extends State<DayPage> {
                   dismissKeyboard();
                 } else {
                   showKeyboard();
-                }
-                ;
+                };
                 setState(() {});
               },
             ),

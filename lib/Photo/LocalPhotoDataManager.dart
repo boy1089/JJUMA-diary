@@ -109,6 +109,15 @@ class LocalPhotoDataManager {
     return [cTimes, files_new];
   }
 
+  Future<String> getExifDateOfFile(String file) async {
+    var bytes = await File(file).readAsBytes();
+    var data = await readExifFromBytes(bytes);
+    // print("date of photo : ${data['Image DateTime'].toString().replaceAll(":", "")}");
+    String dateInExif = data['Image DateTime'].toString().replaceAll(":", "");
+    return dateInExif;
+  }
+
+
   Future getAllFiles() async {
     List<String> files = [];
     final filesFromPath1_png =
@@ -138,11 +147,21 @@ class LocalPhotoDataManager {
     return files;
   }
 
+
+
   List getModifiedDatesOfFiles(files) {
+
+
     List modifiedDatesOfFiles = List.generate(
         files.length, (index) => FileStat.statSync(files[index]).modified);
+
+    // List exifDateOfFiles = List.generate(files.length, (index) => getExifDateOfFile(files[index]));
+    // exifDateOfFiles.where((e) => e==null? e )
+
     modifiedDatesOfFiles.sort((a, b) => a.compareTo(b));
+    // exifDateOfFiles.sort((a, b) => a.comparedTo(b));
     this.modifiedDatesOfFiles = modifiedDatesOfFiles;
+    // this.modifiedDatesOfFiles = exifDateOfFiles;
     return modifiedDatesOfFiles;
   }
 }

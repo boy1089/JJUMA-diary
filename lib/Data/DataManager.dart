@@ -126,13 +126,12 @@ class DataManager {
     List newList = data;
     Set ListOfDates = newList.toSet();
     // var count = data.where((c)=>c == 10).length;
-
+    print("updateSummaryOfLocalPhoto2 ListOfDates $ListOfDates");
     final map = Map<String, int>.fromIterable(ListOfDates,
         key: (item) => item,
         value: (item) => newList.where((c) => c == item).length);
     summaryOfPhotoData = map;
     global.summaryOfPhotoData = summaryOfPhotoData;
-    print(summaryOfPhotoData);
   }
 
   Future<void> updateSummaryOfPhotoData(String date, int num) async {

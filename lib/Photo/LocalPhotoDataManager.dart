@@ -96,6 +96,7 @@ class LocalPhotoDataManager {
       // print("date of photo : ${data['Image DateTime'].toString().replaceAll(":", "")}");
       String dateInExif = data['Image DateTime'].toString().replaceAll(":", "");
 
+      print("getPhotoOfDate $i, ${dateInExif}");
       //exclude the images without exif data
       if (dateInExif == "null") continue;
 
@@ -131,6 +132,7 @@ class LocalPhotoDataManager {
     final filesFromPath3_jpg =
     await Glob("$_pathToLocalPhotoGallery3/*.jpg").listSync();
 
+    print("getAllFiles, filesFromPath3 : ${filesFromPath3_jpg}");
     files.addAll(List.generate(filesFromPath1_png.length,
         (index) => filesFromPath1_png.elementAt(index).path));
     files.addAll(List.generate(filesFromPath2_png.length,
@@ -141,9 +143,6 @@ class LocalPhotoDataManager {
         (index) => filesFromPath2_jpg.elementAt(index).path));
     files.addAll(List.generate(filesFromPath3_jpg.length,
             (index) => filesFromPath3_jpg.elementAt(index).path));
-
-    print(files);
-    print(_pathToLocalPhotoGallery2);
     return files;
   }
 
@@ -158,6 +157,7 @@ class LocalPhotoDataManager {
 
   List getDatesFromFilnames(files){
     print("getDAtesFromFilenames : $files");
+
     List modifiedDatesOfFiles = List.generate(
         files.length, (index) =>
         inferDateFromFilename(files.elementAt(index)));
@@ -166,6 +166,7 @@ class LocalPhotoDataManager {
     modifiedDatesOfFiles = List.generate(
       modifiedDatesOfFiles.length, (index) => modifiedDatesOfFiles.elementAt(index)?? formatDate(FileStat.statSync(files[index]).modified)
     );
+
     print("getDatesFromFilenames : $modifiedDatesOfFiles");
     // modifiedDatesOfFiles = List.generate(
     //   modifiedDatesOfFiles.length, (index) => formatDateString(modifiedDatesOfFiles.elementAt(index))
@@ -178,21 +179,41 @@ class LocalPhotoDataManager {
     return modifiedDatesOfFiles;
   }
 
-  String? inferDateFromFilename(filename){
+  String? inferDateFromFilename(filename) {
     https://soooprmx.com/%EC%A0%95%EA%B7%9C%ED%91%9C%ED%98%84%EC%8B%9D%EC%9D%98-%EA%B0%9C%EB%85%90%EA%B3%BC-%EA%B8%B0%EC%B4%88-%EB%AC%B8%EB%B2%95/
     // RegExp exp = RegExp(r"[0-9]{8}\D?[0-9]{6}");
-    RegExp exp = RegExp(r"[0-9]{8}");
-    Iterable<RegExpMatch> matches = exp.allMatches(filename);
-    print("inferDateFromFilename : ${matches.length}");
-    return matches.length==0? null:matches.first.group(0);
+    RegExp exp1 = RegExp(r"[0-9]{8}\D");
+    RegExp exp2 = RegExp(r"[0-9]{4}\D[0-9]{2}\D[0-9]{2}");
+    RegExp exp3 = RegExp(r"[0-9]{13}");
+
+    if(filename.contains("thumbnail")){
+      return null;
+    }
+
+    Iterable<RegExpMatch> matches = exp3.allMatches(filename);
+    if(matches.length!=0){
+      var date = new DateTime.fromMicrosecondsSinceEpoch(int.parse(matches.first.group(0)!)*1000);
+      return formatDate(date);
+    }
+
+    matches = exp1.allMatches(filename);
+    if( matches.length!=0) {
+      // print("${matches.first.group(0).toString().replaceAll(
+      //     RegExp(r"[^0-9]"), "")}, $filename");
+      return matches.first.group(0).toString().replaceAll(RegExp(r"[^0-9]") , "");
+    }
+    matches = exp2.allMatches(filename);
+    if( matches.length!=0) {
+      // print("${matches.first.group(0).toString().replaceAll(RegExp(r"[^0-9]"), "")}, $filename");
+      return matches.first.group(0).toString().replaceAll(RegExp(r"[^0-9]"), "");
+    }
+    return null;
   }
 
   List getModifiedDatesOfFiles(files) {
     List modifiedDatesOfFiles = List.generate(
         files.length, (index) => FileStat.statSync(files[index]).modified);
 
-    // List exifDateOfFiles = List.generate(files.length, (index) => getExifDateOfFile(files[index]));
-    // exifDateOfFiles.where((e) => e==null? e )
 
     modifiedDatesOfFiles.sort((a, b) => a.compareTo(b));
     // exifDateOfFiles.sort((a, b) => a.comparedTo(b));

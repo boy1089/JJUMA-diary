@@ -44,7 +44,7 @@ class PolarSensorDataPlot {
             ),
           ),
         ],
-        coord: PolarCoord(),
+        coord: PolarCoord()..radiusRange = [0.0, 1.3],
       ),
       Chart(
         data: data,
@@ -85,7 +85,7 @@ class PolarSensorDataPlot {
           // ..grid = null
           // ..line = null
         ],
-        coord: PolarCoord(),
+        coord: PolarCoord()..radiusRange = [0.0, 1.3],
       ),
     ]);
   }

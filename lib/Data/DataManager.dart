@@ -118,6 +118,7 @@ class DataManager {
   }
 
   Future<void> updateSummaryOfLocalPhoto2() async {
+    print("updateSummaryOfLocaoPhoto..");
     var data = localPhotoDataManager.modifiedDatesOfFiles;
     List newList = List.generate(
         data.length, (index) => formatDate(data.elementAt(index)));

@@ -33,7 +33,7 @@ class LocalPhotoDataManager {
   }
   void init() async {
     files = await getAllFiles();
-    modifiedDatesOfFiles = getModifiedDatesOfFiles(files);
+    modifiedDatesOfFiles = getDatesFromFilnames(files);
   }
 
   static Future getPhotoOfDate_static(String date) async {
@@ -148,10 +148,41 @@ class LocalPhotoDataManager {
   }
 
 
+  void test(){
+    print('test function');
+    print("test : ${files}");
+    // print(getDatesFromFilnames(files));
+    print(modifiedDatesOfFiles);
+  }
+
+  List getDatesFromFilnames(files){
+    List modifiedDatesOfFiles = List.generate(
+        files.length, (index) =>
+        inferDateFromFilename(files.elementAt(index)));
+
+    modifiedDatesOfFiles = List.generate(
+      modifiedDatesOfFiles.length, (index) => modifiedDatesOfFiles.elementAt(index)?? FileStat.statSync(files[index]).modified
+    );
+
+    modifiedDatesOfFiles = List.generate(
+      modifiedDatesOfFiles.length, (index) => formatDateString(modifiedDatesOfFiles.elementAt(index))
+    );
+
+    modifiedDatesOfFiles.sort((a, b) => a.compareTo(b));
+    // exifDateOfFiles.sort((a, b) => a.comparedTo(b));
+    this.modifiedDatesOfFiles = modifiedDatesOfFiles;
+    return modifiedDatesOfFiles;
+  }
+
+  String? inferDateFromFilename(filename){
+    https://soooprmx.com/%EC%A0%95%EA%B7%9C%ED%91%9C%ED%98%84%EC%8B%9D%EC%9D%98-%EA%B0%9C%EB%85%90%EA%B3%BC-%EA%B8%B0%EC%B4%88-%EB%AC%B8%EB%B2%95/
+    // RegExp exp = RegExp(r"[0-9]{8}\D?[0-9]{6}");
+    RegExp exp = RegExp(r"[0-9]{8}");
+    Iterable<RegExpMatch> matches = exp.allMatches(filename);
+    return matches.first.group(0);
+  }
 
   List getModifiedDatesOfFiles(files) {
-
-
     List modifiedDatesOfFiles = List.generate(
         files.length, (index) => FileStat.statSync(files[index]).modified);
 

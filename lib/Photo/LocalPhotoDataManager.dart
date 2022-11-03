@@ -31,7 +31,7 @@ class LocalPhotoDataManager {
   LocalPhotoDataManager() {
     init();
   }
-  void init() async {
+  Future init() async {
     files = await getAllFiles();
     modifiedDatesOfFiles = getDatesFromFilnames(files);
   }
@@ -152,25 +152,29 @@ class LocalPhotoDataManager {
     print('test function');
     print("test : ${files}");
     // print(getDatesFromFilnames(files));
+    getDatesFromFilnames(files);
     print(modifiedDatesOfFiles);
   }
 
   List getDatesFromFilnames(files){
+    print("getDAtesFromFilenames : $files");
     List modifiedDatesOfFiles = List.generate(
         files.length, (index) =>
         inferDateFromFilename(files.elementAt(index)));
 
+    print("getDatesFromFilenames : $modifiedDatesOfFiles");
     modifiedDatesOfFiles = List.generate(
-      modifiedDatesOfFiles.length, (index) => modifiedDatesOfFiles.elementAt(index)?? FileStat.statSync(files[index]).modified
+      modifiedDatesOfFiles.length, (index) => modifiedDatesOfFiles.elementAt(index)?? formatDate(FileStat.statSync(files[index]).modified)
     );
-
-    modifiedDatesOfFiles = List.generate(
-      modifiedDatesOfFiles.length, (index) => formatDateString(modifiedDatesOfFiles.elementAt(index))
-    );
-
-    modifiedDatesOfFiles.sort((a, b) => a.compareTo(b));
+    print("getDatesFromFilenames : $modifiedDatesOfFiles");
+    // modifiedDatesOfFiles = List.generate(
+    //   modifiedDatesOfFiles.length, (index) => formatDateString(modifiedDatesOfFiles.elementAt(index))
+    // );
+    print("getDatesFromFilenames : $modifiedDatesOfFiles");
+    // modifiedDatesOfFiles.sort((a, b) => a.compareTo(b));
     // exifDateOfFiles.sort((a, b) => a.comparedTo(b));
     this.modifiedDatesOfFiles = modifiedDatesOfFiles;
+    print("getDatesFromFilnames : $modifiedDatesOfFiles");
     return modifiedDatesOfFiles;
   }
 
@@ -179,7 +183,8 @@ class LocalPhotoDataManager {
     // RegExp exp = RegExp(r"[0-9]{8}\D?[0-9]{6}");
     RegExp exp = RegExp(r"[0-9]{8}");
     Iterable<RegExpMatch> matches = exp.allMatches(filename);
-    return matches.first.group(0);
+    print("inferDateFromFilename : ${matches.length}");
+    return matches.length==0? null:matches.first.group(0);
   }
 
   List getModifiedDatesOfFiles(files) {

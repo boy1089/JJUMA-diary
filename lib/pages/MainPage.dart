@@ -223,12 +223,13 @@ class MainPageState extends State<MainPage> {
                 );
               }
             }),
-      floatingActionButton: FloatingActionButton(
-        onPressed: (){
-          localPhotoDataManager.test();
-          print(summaryOfPhotoData);
-          },
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () async {
+      //     // localPhotoDataManager.test();
+      //     await localPhotoDataManager.init();
+      //     dataManager.updateSummaryOfLocalPhoto2();
+      //     },
+      // ),
 
       ),
     );

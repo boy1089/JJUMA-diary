@@ -120,8 +120,10 @@ class DataManager {
   Future<void> updateSummaryOfLocalPhoto2() async {
     print("updateSummaryOfLocaoPhoto..");
     var data = localPhotoDataManager.modifiedDatesOfFiles;
-    List newList = List.generate(
-        data.length, (index) => formatDate(data.elementAt(index)));
+    print(data);
+    // List newList = List.generate(
+    //     data.length, (index) => formatDate(data.elementAt(index)));
+    List newList = data;
     Set ListOfDates = newList.toSet();
     // var count = data.where((c)=>c == 10).length;
 
@@ -130,6 +132,7 @@ class DataManager {
         value: (item) => newList.where((c) => c == item).length);
     summaryOfPhotoData = map;
     global.summaryOfPhotoData = summaryOfPhotoData;
+    print(summaryOfPhotoData);
   }
 
   Future<void> updateSummaryOfPhotoData(String date, int num) async {

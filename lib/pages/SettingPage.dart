@@ -17,10 +17,9 @@ class AndroidSettingsScreen extends StatefulWidget {
   var googleAccountManager;
   PermissionManager permissionManager;
   AndroidSettingsScreen(
-    GoogleAccountManager googleAccountManager,
     PermissionManager permissionManager, {
     Key? key,
-  })  : this.googleAccountManager = googleAccountManager,
+  })  :
         this.permissionManager = permissionManager,
         super(key: key);
 

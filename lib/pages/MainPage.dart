@@ -1,45 +1,31 @@
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
-import 'package:googleapis/androidenterprise/v1.dart';
-import 'package:googleapis/vision/v1.dart';
-import 'package:test_location_2nd/Permissions/GoogleAccountManager.dart';
 import 'package:test_location_2nd/Util/Util.dart';
 import 'package:test_location_2nd/Util/global.dart';
 import '../navigation.dart';
 import 'package:test_location_2nd/pages/SettingPage.dart';
 import 'package:test_location_2nd/Permissions/PermissionManager.dart';
-import 'package:test_location_2nd/Api/PhotoLibraryApiClient.dart';
 import 'package:test_location_2nd/Data/DataManager.dart';
 import 'MonthPage.dart';
 import 'package:provider/provider.dart';
 import 'package:test_location_2nd/Util/StateProvider.dart';
-import 'package:test_location_2nd/Photo/GooglePhotoDataManager.dart';
 import 'package:test_location_2nd/Sensor/SensorDataManager.dart';
 import 'DayPage.dart';
-//TODO : make consistency on datetime handling - datetime or date?
-//TODO : formatting list for chart data
 import 'package:test_location_2nd/Photo/LocalPhotoDataManager.dart';
-import 'CirclePage.dart';
 import 'package:test_location_2nd/Note/NoteManager.dart';
 import 'package:path_provider/path_provider.dart';
 import 'DiaryPage.dart';
 
 class MainPage extends StatefulWidget {
-  GoogleAccountManager googleAccountManager;
   PermissionManager permissionManager;
-  PhotoLibraryApiClient photoLibraryApiClient;
   DataManager dataManager;
-  GooglePhotoDataManager googlePhotoDataManager;
   SensorDataManager sensorDataManager;
   LocalPhotoDataManager localPhotoDataManager;
   NoteManager noteManager;
 
   MainPage(
-      this.googleAccountManager,
       this.permissionManager,
-      this.photoLibraryApiClient,
       this.dataManager,
-      this.googlePhotoDataManager,
       this.sensorDataManager,
       this.localPhotoDataManager,
       this.noteManager,
@@ -52,11 +38,8 @@ class MainPage extends StatefulWidget {
 
 class MainPageState extends State<MainPage> {
   var response;
-  late GoogleAccountManager googleAccountManager;
   late PermissionManager permissionManager;
-  late PhotoLibraryApiClient photoLibraryApiClient;
   late DataManager dataManager;
-  late GooglePhotoDataManager googlePhotoDataManager;
   late SensorDataManager sensorDataManager;
   late LocalPhotoDataManager localPhotoDataManager;
   late NoteManager noteManager;
@@ -74,27 +57,21 @@ class MainPageState extends State<MainPage> {
   void initState() {
     readData = _fetchData();
     super.initState();
-    googleAccountManager = widget.googleAccountManager;
     permissionManager = widget.permissionManager;
-    photoLibraryApiClient = widget.photoLibraryApiClient;
     dataManager = widget.dataManager;
-    googlePhotoDataManager = widget.googlePhotoDataManager;
     sensorDataManager = widget.sensorDataManager;
     localPhotoDataManager = widget.localPhotoDataManager;
     noteManager = widget.noteManager;
 
     MonthPage monthPage = MonthPage(a, dataManager);
     DayPage hourPage = DayPage(
-        googleAccountManager,
         permissionManager,
-        photoLibraryApiClient,
         dataManager,
-        googlePhotoDataManager,
         sensorDataManager,
         localPhotoDataManager,
         noteManager);
     DiaryPage diaryPage = DiaryPage(dataManager, noteManager);
-    AndroidSettingsScreen androidSettingsScreen = AndroidSettingsScreen(googleAccountManager, permissionManager);
+    AndroidSettingsScreen androidSettingsScreen = AndroidSettingsScreen(permissionManager);
 
     _widgetOptions = <Widget>[
       monthPage,
@@ -254,7 +231,7 @@ class MainPageState extends State<MainPage> {
         Navigation.navigateTo(
             context: context,
             screen:
-            AndroidSettingsScreen(googleAccountManager, permissionManager),
+            AndroidSettingsScreen(permissionManager),
             style: NavigationRouteStyle.material);
   }
 
@@ -271,7 +248,7 @@ class MainPageState extends State<MainPage> {
         Navigation.navigateTo(
             context: context,
             screen:
-                AndroidSettingsScreen(googleAccountManager, permissionManager),
+                AndroidSettingsScreen(permissionManager),
             style: NavigationRouteStyle.material);
         break;
       case 0:

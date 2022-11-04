@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:test_location_2nd/Util/DateHandler.dart';
-import 'package:test_location_2nd/Photo/GooglePhotoDataManager.dart';
-import 'package:test_location_2nd/Permissions/GoogleAccountManager.dart';
 import 'package:test_location_2nd/Photo/LocalPhotoDataManager.dart';
 import 'package:test_location_2nd/Sensor/SensorDataManager.dart';
 import 'package:test_location_2nd/Util/StateProvider.dart';
 import 'package:test_location_2nd/Util/Util.dart';
 import 'package:test_location_2nd/Permissions/PermissionManager.dart';
-import 'package:test_location_2nd/Api/PhotoLibraryApiClient.dart';
 import 'package:test_location_2nd/PolarSensorDataPlot.dart';
 import 'package:test_location_2nd/Data/DataManager.dart';
 import 'package:provider/provider.dart';
@@ -23,11 +20,8 @@ import 'package:intl/intl.dart';
 import 'package:test_location_2nd/PolarTimeIndicators.dart';
 
 class DayPage extends StatefulWidget {
-  GoogleAccountManager googleAccountManager;
   PermissionManager permissionManager;
-  PhotoLibraryApiClient photoLibraryApiClient;
   DataManager dataManager;
-  GooglePhotoDataManager googlePhotoDataManager;
   SensorDataManager sensorDataManager;
   LocalPhotoDataManager localPhotoDataManager;
   NoteManager noteManager;
@@ -36,11 +30,8 @@ class DayPage extends StatefulWidget {
   State<DayPage> createState() => _DayPageState();
 
   DayPage(
-      this.googleAccountManager,
       this.permissionManager,
-      this.photoLibraryApiClient,
       this.dataManager,
-      this.googlePhotoDataManager,
       this.sensorDataManager,
       this.localPhotoDataManager,
       this.noteManager,
@@ -49,11 +40,8 @@ class DayPage extends StatefulWidget {
 }
 
 class _DayPageState extends State<DayPage>  {
-  late GoogleAccountManager googleAccountManager;
   late PermissionManager permissionManager;
-  late PhotoLibraryApiClient photoLibraryApiClient;
   late DataManager dataManager;
-  late GooglePhotoDataManager googlePhotoDataManager;
   late SensorDataManager sensorDataManager;
   late LocalPhotoDataManager localPhotoDataManager;
   late NoteManager noteManager;
@@ -82,11 +70,8 @@ class _DayPageState extends State<DayPage>  {
   @override
   void initState() {
     super.initState();
-    googleAccountManager = widget.googleAccountManager;
     permissionManager = widget.permissionManager;
-    photoLibraryApiClient = widget.photoLibraryApiClient;
     dataManager = widget.dataManager;
-    googlePhotoDataManager = widget.googlePhotoDataManager;
     sensorDataManager = widget.sensorDataManager;
     localPhotoDataManager = widget.localPhotoDataManager;
     noteManager = widget.noteManager;
@@ -344,25 +329,14 @@ class _DayPageState extends State<DayPage>  {
     focusNode.dispose();
     super.dispose();
   }
-  //
-  // @override
-  // void dispose() {
-  //   focusNode.dispose();
-  //   super.dispose();
-  // }
+
 
   Future updateUi() async {
     googlePhotoLinks = [];
     imagesForPlot = [];
     photoDataForPlot = [];
     localPhotoDataForPlot = [[]];
-    //code to updatePhoto from google photo
-    // try {
-    //   var a = await updatePhoto();
-    //   imagesForPlot = selectImagesForPlot(photoDataForPlot);
-    // } catch (e) {
-    //   print("while updating Ui, error is occrued, google photo : $e");
-    // }
+
     try {
       var b = await updatePhotoFromLocal();
       imagesForPlot = selectImagesForPlot(localPhotoDataForPlot);
@@ -413,23 +387,6 @@ class _DayPageState extends State<DayPage>  {
     return imagesForPlot;
   }
 
-  Future updatePhoto() async {
-    String date =
-        Provider.of<NavigationIndexProvider>(context, listen: false).date;
-    response =
-        await this.googlePhotoDataManager.getPhoto(photoLibraryApiClient, date);
-    print("updatePhoto");
-    photoResponseModified =
-        modifyListForPlot(response, executeTranspose: true, filterTime: true);
-
-    photoDataForPlot = photoResponseModified;
-    print("dataForPlot : $photoDataForPlot");
-    googlePhotoLinks = transpose(photoDataForPlot).elementAt(1);
-    print("googlePhotoLinks : $googlePhotoLinks");
-    googlePhotoDataManager.writePhotoResponse(date, response);
-    dataManager.updateSummaryOfPhotoData(date, googlePhotoLinks.length);
-    return googlePhotoLinks;
-  }
 
   Future updatePhotoFromLocal() async {
     String date =

@@ -60,10 +60,10 @@ class _MyAppState extends State<MyApp> {
   // final myTextController = TextEditingController();
 
   _MyAppState() {
-    sensorRecorder = SensorRecorder(permissionManager);
-    sensorRecorder.init();
-    audioRecorder = AudioRecorder(permissionManager);
-    audioRecorder.init();
+    // sensorRecorder = SensorRecorder(permissionManager);
+    // sensorRecorder.init();
+    // audioRecorder = AudioRecorder(permissionManager);
+    // audioRecorder.init();
     super.initState();
     init();
   }
@@ -87,17 +87,14 @@ class _MyAppState extends State<MyApp> {
       initialRoute: '/daily',
       routes: {
         '/daily': (context) => MainPage(
-              googleAccountManager,
               permissionManager,
-              photoLibraryApiClient,
               dataManager,
-              googlePhotoDataManager,
               sensorDataManager,
               localPhotoDataManager,
               noteManager,
             ),
         '/settings': (context) =>
-            AndroidSettingsScreen(googleAccountManager, permissionManager),
+            AndroidSettingsScreen(permissionManager),
         '/signIn': (context) => SignInScreen(),
       },
     );

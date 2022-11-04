@@ -10,6 +10,7 @@ import 'package:test_location_2nd/Data/DataManager.dart';
 import 'package:intl/intl.dart';
 import 'package:badges/badges.dart';
 import 'dart:math' as math;
+
 class MonthPage extends StatefulWidget {
   int index = 0;
   DataManager dataManager;

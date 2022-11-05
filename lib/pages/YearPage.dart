@@ -7,6 +7,7 @@ import 'package:test_location_2nd/Util/StateProvider.dart';
 import 'package:provider/provider.dart';
 import 'dart:async';
 import 'package:test_location_2nd/Util/DateHandler.dart';
+import 'package:test_location_2nd/PolarMonthIndicator.dart';
 
 dynamic dummy2 = global.summaryOfPhotoData.values.toList();
 
@@ -144,6 +145,7 @@ class _YearPageState extends State<YearPage> {
                         Duration(milliseconds: global.animationTime - 100),
                     child: Stack(alignment: Alignment.center, children: [
                       Text("$year"),
+                      PolarMonthIndicators().build(context),
                       Chart(
                         data: dummy,
                         // selections : Selection(),
@@ -153,6 +155,7 @@ class _YearPageState extends State<YearPage> {
                               variable: 'value',
                               values: !isZoomIn ? [1, 20] : [3.5, 60],
                             ),
+
                             color: ColorAttr(
                               variable: 'value',
                               values: [
@@ -163,6 +166,10 @@ class _YearPageState extends State<YearPage> {
                               //   'tap': {true: (a) => Colors.blue}
                               // },
                             ),
+                            // label: LabelAttr(
+                            //     encoder: (tuple) => Label((tuple['week']*7 + tuple['day']).toString(),
+                            //     LabelStyle(style: TextStyle(fontSize: 20, color: Colors.black)))),
+
                             // selected: Selected(),
                             selectionChannel: heatmapChannel,
                           ),

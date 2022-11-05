@@ -1,5 +1,4 @@
 import 'package:permission_handler/permission_handler.dart';
-import 'package:test_location_2nd/Permissions/GoogleAccountManager.dart';
 import 'package:test_location_2nd/Permissions/PermissionManager.dart';
 
 import 'android_notifications_screen.dart';
@@ -36,7 +35,6 @@ class _AndroidSettingsScreenState extends State<AndroidSettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print("setting page build : ${global.currentUser}");
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -55,25 +53,7 @@ class _AndroidSettingsScreenState extends State<AndroidSettingsScreen> {
               title : Text("Language"),
             )]
           ),
-          SettingsSection(
-            title : Text('Account'),
-            tiles : [SettingsTile(
-              onPressed: (context) async {
-                await _onPressed(context, buttons.googleAccount);
-                setState(() {});
-              },
-              title: Text('Google Account'),
-              description: global.currentUser == null
-                  ? Text('Click to sign in')
-                  : Text('Signed in with ${global.currentUser?.email}'),
-              leading: Container(
-                  width: 30,
-                  height: 30,
-                  child: Image.network(
-                      'http://pngimg.com/uploads/google/google_PNG19635.png',
-                      fit: BoxFit.cover)),
-            ),],
-          ),
+
           SettingsSection(
             title : Text('Permissions'),
             tiles: [
@@ -123,19 +103,7 @@ class _AndroidSettingsScreenState extends State<AndroidSettingsScreen> {
 
   Future _onPressed(BuildContext context, button) async {
     switch (button) {
-      case buttons.googleAccount:
-        {
-          if (global.currentUser == null) {
-            await GoogleAccountManager.signInWithGoogle();
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                content: Text("Signed in with ${global.currentUser?.email}")));
-          } else {
-            await GoogleAccountManager.signOut(context: context);
-            ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text("Signed out of google account")));
-          }
-        }
-        break;
+
 
       case buttons.Location:
         {

@@ -13,7 +13,6 @@ import 'pages/SettingPage.dart';
 
 import 'package:test_location_2nd/Api/PhotoLibraryApiClient.dart';
 import 'package:test_location_2nd/Permissions/PermissionManager.dart';
-import 'package:test_location_2nd/Permissions/GoogleAccountManager.dart';
 import 'Api/PhotoLibraryApiClient.dart';
 import 'Photo/GooglePhotoDataManager.dart';
 import 'package:test_location_2nd/Note/NoteData.dart';
@@ -44,9 +43,6 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   final permissionManager = PermissionManager();
-  final googleAccountManager = GoogleAccountManager();
-  late final photoLibraryApiClient;
-  final googlePhotoDataManager = GooglePhotoDataManager();
   final localPhotoDataManager = LocalPhotoDataManager();
 
   //sensorLogger will be initialized after initializing PermissionManager
@@ -69,9 +65,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<void> init() async {
-    photoLibraryApiClient = PhotoLibraryApiClient(googleAccountManager);
-    dataManager = DataManager(googlePhotoDataManager, photoLibraryApiClient, localPhotoDataManager);
-    await googleAccountManager.init();
+    dataManager = DataManager(localPhotoDataManager);
     await dataManager.init();
   }
 

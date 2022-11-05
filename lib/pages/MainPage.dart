@@ -37,7 +37,6 @@ class MainPage extends StatefulWidget {
 }
 
 class MainPageState extends State<MainPage> {
-  var response;
   late PermissionManager permissionManager;
   late DataManager dataManager;
   late SensorDataManager sensorDataManager;
@@ -235,28 +234,5 @@ class MainPageState extends State<MainPage> {
             style: NavigationRouteStyle.material);
   }
 
-  }
-
-
-
-  void onSelected(BuildContext context, int item) {
-    debugPrint(item.toString());
-    var provider =
-    Provider.of<NavigationIndexProvider>(context, listen: false);
-    switch (item) {
-      case 2:
-        Navigation.navigateTo(
-            context: context,
-            screen:
-                AndroidSettingsScreen(permissionManager),
-            style: NavigationRouteStyle.material);
-        break;
-      case 0:
-        provider.setNavigationIndex(0);
-        break;
-
-
-
-    }
   }
 }

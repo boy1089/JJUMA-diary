@@ -7,7 +7,6 @@ import 'package:provider/provider.dart';
 import 'dart:io';
 import 'package:test_location_2nd/Util/global.dart';
 
-
 class polarPhotoImageContainers {
   var googlePhotoDataForPlot;
   double imageLocationFactor = 2.2;
@@ -160,27 +159,19 @@ class polarPhotoImageContainer {
                       };
                     })
                   },
-
                   child: Card(
                     elevation: 3,
                     shape: CircleBorder(),
                     clipBehavior: Clip.antiAliasWithSaveLayer,
-                    child: googlePhotoDataForPlot[1].length > 200
-                        ? ExtendedImage.network(
-                            googlePhotoDataForPlot[1],
-                            // centerSlice: Rect.fromCircle(center: Offset(10.0, 10.0), radius : 10.0),
-                            fit: BoxFit.cover,
-                            enableLoadState: false,
-                          )
-                        : ExtendedImage.file(
-                            File(googlePhotoDataForPlot[1]),
-                            fit: BoxFit.cover,
-                            enableLoadState: false,
-                            enableMemoryCache: true,
-                            // cacheRawData: true,
-                            compressionRatio: 0.05,
-                            // scale : 0.2
-                          ),
+                    child: ExtendedImage.file(
+                      File(googlePhotoDataForPlot[1]),
+                      fit: BoxFit.cover,
+                      enableLoadState: false,
+                      enableMemoryCache: true,
+                      // cacheRawData: true,
+                      compressionRatio: 0.05,
+                      // scale : 0.2
+                    ),
                   )))),
     );
   }

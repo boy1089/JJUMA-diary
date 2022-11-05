@@ -1,5 +1,4 @@
 import 'package:intl/intl.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter/material.dart';
 
 DateTime selectedDate = DateTime(2022, 1, 1);
@@ -67,7 +66,6 @@ int startYear = 2013;
 
 double kMinimumTimeDifferenceBetweenImages = 0.05; //unit is hour
 
-GoogleSignInAccount? currentUser;
 
 double value = 0.8;
 double value2 = 0.6;

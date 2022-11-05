@@ -46,20 +46,12 @@ dependencies:
   permission_handler:
   matrix2d:
   fluttertoast: ^8.0.9
-  http: ^0.13.5
-  html: ^0.15.0
-  googleapis: ^9.2.0
-  googleapis_auth: ^1.3.1
-  firebase_core: ^1.24.0
-  firebase_auth: ^3.11.0
-  google_sign_in: ^5.4.2
   settings_ui:
   glob:
   provider: ^6.0.4
   matrix_gesture_detector: ^0.1.0
   animations:
   transparent_image:
-  cached_network_image:
   extended_image:
   exif:
   image_picker:

@@ -25,13 +25,9 @@ class DataManager {
   String processedFileName = "sensor_processed.csv";
   List<DateTime> datesOfYear = [];
   int updateIndexOfPhotoSummary = 0;
-
-  GooglePhotoDataManager googlePhotoDataManager;
-  PhotoLibraryApiClient photoLibraryApiClient;
   LocalPhotoDataManager localPhotoDataManager;
 
-  DataManager(this.googlePhotoDataManager, this.photoLibraryApiClient,
-      this.localPhotoDataManager) {
+  DataManager(      this.localPhotoDataManager) {
     // processAllSensorFiles();
     // getProcessedSensorFile();
     print("DataManager instance in under creation");
@@ -45,59 +41,8 @@ class DataManager {
     var a = await readSummaryOfPhotoData();
     // await updateSummaryFromLocal("20220101", formatDate(DateTime.now()));
     await updateSummaryOfLocalPhoto2();
-    // await updateSummaryFromGooglePhoto("20221001", formatDate(DateTime.now()));
-
-    // await updateSummary("20210101", formatDate(DateTime.now()));
   }
 
-  Future<void> updateSummary(startDate, endDate) async {
-    var datesOfYear =
-        getDaysInBetween(DateTime.parse(startDate), DateTime.parse(endDate))
-            .reversed
-            .toList();
-
-    for (int i = 0; i < datesOfYear.length; i++) {
-      String date = DateFormat("yyyyMMdd").format(datesOfYear[i]);
-      if (summaryOfPhotoData.containsKey(date)) {
-        print("date $date is already contained in the dataManager");
-        continue;
-      }
-
-      print("$date is under processing...");
-      List data = await LocalPhotoDataManager.getPhotoOfDate_static(date);
-      var photoResponse =
-          await googlePhotoDataManager.getPhoto(photoLibraryApiClient, date);
-      int numberOfImagesFromLocal = data[0].length;
-      int numberOfImagesFromGooglePhoto = photoResponse[0].length - 1;
-
-      updateSummaryOfPhotoData(
-          date,
-          numberOfImagesFromLocal > numberOfImagesFromGooglePhoto
-              ? numberOfImagesFromLocal
-              : numberOfImagesFromGooglePhoto);
-    }
-  }
-
-  Future<void> updateSummaryFromGooglePhoto(startDate, endDate) async {
-    var datesOfYear =
-        getDaysInBetween(DateTime.parse(startDate), DateTime.parse(endDate))
-            .reversed
-            .toList();
-
-    for (int i = 0; i < datesOfYear.length; i++) {
-      String date = DateFormat("yyyyMMdd").format(datesOfYear[i]);
-      if (summaryOfPhotoData.containsKey(date)) {
-        print("date $date is already contained in the dataManager");
-        continue;
-      }
-
-      print("$date is under processing...");
-      var photoResponse =
-          await googlePhotoDataManager.getPhoto(photoLibraryApiClient, date);
-      print("photoresponse : $photoResponse");
-      updateSummaryOfPhotoData(date, photoResponse[0].length - 1);
-    }
-  }
 
   Future<void> updateSummaryFromLocal(startDate, endDate) async {
     var datesOfYear =

@@ -96,6 +96,13 @@ class MainPageState extends State<MainPage> {
       onWillPop: () async {
         switch (provider.navigationIndex) {
           case 0:
+            if (provider.isZoomIn){
+              setState(() {
+                provider.setZoomInState(false);
+                provider.setZoomInRotationAngle(0);
+                provider.isZoomIn = false;
+              });
+            }
             break;
           case 1:
             provider.setNavigationIndex(0);

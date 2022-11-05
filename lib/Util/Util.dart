@@ -5,7 +5,8 @@ import 'package:path_provider/path_provider.dart';
 import 'package:matrix2d/matrix2d.dart';
 import 'dart:ui';
 import 'package:flutter/gestures.dart';
-
+import 'package:test_location_2nd/Util/Util.dart';
+import 'dart:math';
 const bool kDebugMode = !kReleaseMode && !kProfileMode;
 
 List<String> kTimeStamps = [
@@ -282,3 +283,22 @@ class AllowMultipleGestureRecognizer2 extends PanGestureRecognizer {
     acceptGesture(pointer);
   }
 }
+
+double calculateTapAngle(Offset, referencePosition, referenceAngle) {
+  double dx = Offset.dx;
+  double dy = Offset.dy;
+
+  var angle =
+      atan2(dy / sqrt(dx * dx + dy * dy), dx / sqrt(dx * dx + dy * dy)) /
+          (2 * pi);
+  return angle;
+}
+
+Offset calculateTapPositionRefCenter(details, reference, layout) {
+  bool isZoomIn = false;
+  var dx = details.globalPosition.dx - layout['graphCenter'][isZoomIn].dx;
+  var dy =
+      -1 * (details.globalPosition.dy - layout['graphCenter'][isZoomIn].dy);
+  return Offset(dx, dy.toDouble());
+}
+

@@ -89,7 +89,7 @@ class _DayPageState extends State<DayPage> {
   double topPadding = 100;
 
   //layout for zoomIn and zoomOut state
-  late Map layout = {
+  late Map layout_dayPage = {
     'magnification': {true: 7, false: 1},
     'graphSize': {true: graphSize * 7, false: graphSize},
     'left': {true: -graphSize * 5.5, false: (physicalWidth - graphSize) / 2},
@@ -137,7 +137,7 @@ class _DayPageState extends State<DayPage> {
                           if (isZoomIn) return;
 
                           Offset tapPosition =
-                              calculateTapPositionRefCenter(details, 0);
+                              calculateTapPositionRefCenter(details, 0, layout_dayPage);
                           double angleZoomIn =
                               calculateTapAngle(tapPosition, 0, 0);
 
@@ -180,13 +180,13 @@ class _DayPageState extends State<DayPage> {
                               isZoomIn ? Alignment.center : Alignment.topCenter,
                           children: [
                             AnimatedPositioned(
-                              width: layout['graphSize']?[isZoomIn]?.toDouble(),
+                              width: layout_dayPage['graphSize']?[isZoomIn]?.toDouble(),
                               height:
-                                  layout['graphSize']?[isZoomIn]?.toDouble(),
+                                  layout_dayPage['graphSize']?[isZoomIn]?.toDouble(),
                               duration:
                                   Duration(milliseconds: global.animationTime),
-                              left: layout['left']?[isZoomIn]?.toDouble(),
-                              top: layout['top']?[isZoomIn]?.toDouble(),
+                              left: layout_dayPage['left']?[isZoomIn]?.toDouble(),
+                              top: layout_dayPage['top']?[isZoomIn]?.toDouble(),
                               curve: Curves.fastOutSlowIn,
                               child: AnimatedRotation(
                                   turns: isZoomIn ? _angle : 0,
@@ -282,25 +282,8 @@ class _DayPageState extends State<DayPage> {
   }
 
   //this function calculates the tap position relative to graph
-  double calculateTapAngle(Offset, referencePosition, referenceAngle) {
-    double dx = Offset.dx;
-    double dy = Offset.dy;
 
-    var angle =
-        atan2(dy / sqrt(dx * dx + dy * dy), dx / sqrt(dx * dx + dy * dy)) /
-            (2 * pi);
-    return angle;
-  }
 
-  //this function calculates the tap position relative to center of the graph
-  Offset calculateTapPositionRefCenter(details, reference) {
-    bool isZoomIn =
-        Provider.of<NavigationIndexProvider>(context, listen: false).isZoomIn;
-    var dx = details.globalPosition.dx - layout['graphCenter'][isZoomIn].dx;
-    var dy =
-        -1 * (details.globalPosition.dy - layout['graphCenter'][isZoomIn].dy);
-    return Offset(dx, dy.toDouble());
-  }
 
   void showKeyboard() {
     focusNode.requestFocus();

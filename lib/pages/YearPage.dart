@@ -9,27 +9,28 @@ import 'dart:async';
 import 'package:test_location_2nd/Util/DateHandler.dart';
 
 dynamic dummy2 = global.summaryOfPhotoData.values.toList();
+
 List daysInYear = getDaysInBetween(
     DateTime(2022), DateTime(2023).subtract(Duration(days: 1)));
 
 dynamic dummy = List.generate(365, (index) {
   DateTime date = daysInYear[index];
-  return [
-    (index / 7).floor(),
-    index % 7,
-    global.summaryOfPhotoData.containsKey(formatDate(date))
-        ? global.summaryOfPhotoData[formatDate(date)]
-        : 0
-  ];
-});
+  if (!global.summaryOfPhotoData.containsKey(formatDate(date)))
+    return [(index / 7).floor(),
+      index % 7,
+    0,];
 
-dynamic dummyDataForTest2 = List.generate(
-    52 * 7,
-    (index) => [
-          (index / 7).floor(),
-          index % 7,
-          index > dummy2.length - 1 ? 0 : dummy2.elementAt(index)
-        ]);
+  int value = global.summaryOfPhotoData[formatDate(date)]!> 200
+      ?200
+      :global.summaryOfPhotoData[formatDate(date)]!;
+
+  return [
+  (index / 7).floor(),
+  index % 7,
+  value,];
+}
+);
+
 
 class YearPage extends StatefulWidget {
   const YearPage({Key? key}) : super(key: key);
@@ -158,9 +159,9 @@ class _YearPageState extends State<YearPage> {
                                 global.kMainColor_warm,
                                 global.kMainColor_warm
                               ],
-                              updaters: {
-                                'tap': {true: (a) => Colors.blue}
-                              },
+                              // updaters: {
+                              //   'tap': {true: (a) => Colors.blue}
+                              // },
                             ),
                             // selected: Selected(),
                             selectionChannel: heatmapChannel,
@@ -193,6 +194,13 @@ class _YearPageState extends State<YearPage> {
                   ),
                 ),
               ])),
+    floatingActionButton: FloatingActionButton(
+      onPressed: (){
+        print('aaa');
+        print(global.summaryOfPhotoData["20221104"]);
+        },
+    ),
+
     );
   }
 }

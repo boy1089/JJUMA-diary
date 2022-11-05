@@ -8,7 +8,6 @@ import 'package:glob/glob.dart';
 import 'package:test_location_2nd/Util/Util.dart';
 import 'package:test_location_2nd/Util/global.dart' as global;
 import 'package:test_location_2nd/Photo/GooglePhotoDataManager.dart';
-import 'package:test_location_2nd/Api/PhotoLibraryApiClient.dart';
 import 'package:test_location_2nd/Util/DateHandler.dart';
 import 'package:intl/intl.dart';
 import 'package:test_location_2nd/Photo/LocalPhotoDataManager.dart';

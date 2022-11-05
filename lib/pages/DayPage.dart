@@ -29,17 +29,13 @@ class DayPage extends StatefulWidget {
   @override
   State<DayPage> createState() => _DayPageState();
 
-  DayPage(
-      this.permissionManager,
-      this.dataManager,
-      this.sensorDataManager,
-      this.localPhotoDataManager,
-      this.noteManager,
+  DayPage(this.permissionManager, this.dataManager, this.sensorDataManager,
+      this.localPhotoDataManager, this.noteManager,
       {Key? key})
       : super(key: key);
 }
 
-class _DayPageState extends State<DayPage>  {
+class _DayPageState extends State<DayPage> {
   late PermissionManager permissionManager;
   late DataManager dataManager;
   late SensorDataManager sensorDataManager;
@@ -64,8 +60,7 @@ class _DayPageState extends State<DayPage>  {
   List<List<dynamic>> photoDataForPlot = [[]];
   FocusNode focusNode = FocusNode();
 
-  final myTextController = TextEditingController(
-  );
+  final myTextController = TextEditingController();
 
   @override
   void initState() {
@@ -134,8 +129,7 @@ class _DayPageState extends State<DayPage>  {
                                   AllowMultipleGestureRecognizer>(
                               () => AllowMultipleGestureRecognizer(),
                               (AllowMultipleGestureRecognizer instance) {
-
-                          instance.onTapDown = (details) {
+                        instance.onTapDown = (details) {
                           print(global.indexForZoomInImage);
                           if (!global.isImageClicked)
                             global.indexForZoomInImage = -1;
@@ -234,18 +228,18 @@ class _DayPageState extends State<DayPage>  {
                                   // readOnly: isZoomIn ? true : false,
                                   maxLines: 15,
                                   controller: myTextController,
-                                  onSelectionChanged: (a, b){
-                                    if(!focusNode.hasFocus)
-                                      setState((){});
+                                  onSelectionChanged: (a, b) {
+                                    if (!focusNode.hasFocus) setState(() {});
                                   },
 
-                                  onEditingComplete: (){
+                                  onEditingComplete: () {
                                     print("editing completed");
-                                    dismissKeyboard();},
+                                    dismissKeyboard();
+                                  },
 
                                   focusNode: focusNode,
-                                  style: TextStyle(
-                                      color: global.kColor_diaryText),
+                                  style:
+                                      TextStyle(color: global.kColor_diaryText),
                                   cursorColor: Colors.black12,
                                   backgroundCursorColor: Colors.black12,
                                   textAlign: TextAlign.left,
@@ -269,16 +263,17 @@ class _DayPageState extends State<DayPage>  {
             floatingActionButton: FloatingActionButton(
               mini: true,
               backgroundColor: global.kMainColor_warm,
-
-              child: focusNode.hasFocus? Text("save"):Icon(Icons.add),
+              child: focusNode.hasFocus ? Text("save") : Icon(Icons.add),
               shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(15.0)),),
+                borderRadius: BorderRadius.all(Radius.circular(15.0)),
+              ),
               onPressed: () {
                 if (focusNode.hasFocus) {
                   dismissKeyboard();
                 } else {
                   showKeyboard();
-                };
+                }
+                ;
                 setState(() {});
               },
             ),
@@ -319,7 +314,6 @@ class _DayPageState extends State<DayPage>  {
         myTextController.text);
   }
 
-
   @override
   void dispose() {
     print("dispose..");
@@ -329,7 +323,6 @@ class _DayPageState extends State<DayPage>  {
     focusNode.dispose();
     super.dispose();
   }
-
 
   Future updateUi() async {
     googlePhotoLinks = [];
@@ -387,7 +380,6 @@ class _DayPageState extends State<DayPage>  {
     return imagesForPlot;
   }
 
-
   Future updatePhotoFromLocal() async {
     String date =
         Provider.of<NavigationIndexProvider>(context, listen: false).date;
@@ -422,9 +414,6 @@ class _DayPageState extends State<DayPage>  {
       print("error during updating sensorData : $e");
     }
     sensorDataForPlot = sensorDataModified;
-
     print("sensorDataForPlot : $sensorDataForPlot");
-
-    // sensorDataManager.writeSensorData(date, sensorDataModified);
   }
 }

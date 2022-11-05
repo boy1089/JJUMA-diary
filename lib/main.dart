@@ -11,15 +11,12 @@ import 'package:test_location_2nd/Sensor/SensorDataReader.dart';
 import 'package:test_location_2nd/pages/MainPage.dart';
 import 'pages/SettingPage.dart';
 
-import 'package:test_location_2nd/Api/PhotoLibraryApiClient.dart';
 import 'package:test_location_2nd/Permissions/PermissionManager.dart';
-import 'Api/PhotoLibraryApiClient.dart';
 import 'Photo/GooglePhotoDataManager.dart';
 import 'package:test_location_2nd/Note/NoteData.dart';
 import 'package:test_location_2nd/Data/DataManager.dart';
 import 'package:test_location_2nd/Util/StateProvider.dart';
 import 'package:test_location_2nd/Sensor/SensorDataManager.dart';
-import 'pages/SignInPage.dart';
 import 'Photo/LocalPhotoDataManager.dart';
 import 'package:test_location_2nd/Note/NoteManager.dart';
 
@@ -89,7 +86,6 @@ class _MyAppState extends State<MyApp> {
             ),
         '/settings': (context) =>
             AndroidSettingsScreen(permissionManager),
-        '/signIn': (context) => SignInScreen(),
       },
     );
   }

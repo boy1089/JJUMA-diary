@@ -74,10 +74,16 @@ class _DayPageState extends State<DayPage> {
     print("DayPage, after initState : ${photoDataForPlot}");
     readData = _fetchData();
     // imageContainers = polarPhotoImageContainers(imagesForPlot);
+
   }
 
   Future<List<dynamic>> _fetchData() async {
+
     await updateUi();
+    var provider =
+    Provider.of<NavigationIndexProvider>(context, listen: false);
+
+    provider.setZoomInState(false);
     return googlePhotoLinks;
   }
 

@@ -62,11 +62,10 @@ class _YearPageState extends State<YearPage> {
             "streaming value to date : ${DateTime(year = 2022).add(Duration(days: value.values.first.first))}");
         DateTime date =
             DateTime(year = 2022).add(Duration(days: value.values.first.first));
-        // global.selectedDate = formatDate(date);
         if (!provider.isZoomIn) return;
-
         provider.setNavigationIndex(2);
         provider.setDate(date);
+        // provider.setZoomInState(false);
       },
     );
   }
@@ -112,7 +111,6 @@ class _YearPageState extends State<YearPage> {
                   _angle = angleZoomIn;
                   provider.setZoomInRotationAngle(_angle);
                   isZoomIn = true;
-                  FocusManager.instance.primaryFocus?.unfocus();
                 });
               };
             }),
@@ -183,7 +181,7 @@ class _YearPageState extends State<YearPage> {
                         selections: {
                           'tap': PointSelection(
                             nearest: false,
-                            testRadius: 3,
+                            testRadius: isZoomIn?5:0,
                           )
                         },
                         coord: PolarCoord()..radiusRange = [0.4, 1],

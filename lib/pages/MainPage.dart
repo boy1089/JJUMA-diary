@@ -1,6 +1,5 @@
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
-import 'package:test_location_2nd/Util/Util.dart';
 import 'package:test_location_2nd/Util/global.dart';
 import '../navigation.dart';
 import 'package:test_location_2nd/pages/SettingPage.dart';
@@ -15,6 +14,7 @@ import 'package:test_location_2nd/Photo/LocalPhotoDataManager.dart';
 import 'package:test_location_2nd/Note/NoteManager.dart';
 import 'package:path_provider/path_provider.dart';
 import 'DiaryPage.dart';
+import 'YearPage.dart';
 
 class MainPage extends StatefulWidget {
   PermissionManager permissionManager;
@@ -63,6 +63,7 @@ class MainPageState extends State<MainPage> {
     noteManager = widget.noteManager;
 
     MonthPage monthPage = MonthPage(a, dataManager);
+    YearPage yearPage = YearPage();
     DayPage hourPage = DayPage(
         permissionManager,
         dataManager,
@@ -73,7 +74,8 @@ class MainPageState extends State<MainPage> {
     AndroidSettingsScreen androidSettingsScreen = AndroidSettingsScreen(permissionManager);
 
     _widgetOptions = <Widget>[
-      monthPage,
+      // monthPage,
+      yearPage,
       diaryPage,
       hourPage,
       androidSettingsScreen,

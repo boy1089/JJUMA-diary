@@ -25,7 +25,7 @@ void main() {
   runApp(ChangeNotifierProvider(
     // Initialize the model in the builder. That way, Provider
     // can own Counter's lifecycle, making sure to call `dispose`
-    // when not needed anymore.
+    // when not needed awnymore.
     create: (context) => NavigationIndexProvider(),
     child: const MyApp(),
   ));

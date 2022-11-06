@@ -53,10 +53,10 @@ class _MyAppState extends State<MyApp> {
   // final myTextController = TextEditingController();
 
   _MyAppState() {
-    // sensorRecorder = SensorRecorder(permissionManager);
-    // sensorRecorder.init();
-    // audioRecorder = AudioRecorder(permissionManager);
-    // audioRecorder.init();
+    sensorRecorder = SensorRecorder(permissionManager);
+    sensorRecorder.init();
+    audioRecorder = AudioRecorder(permissionManager);
+    audioRecorder.init();
     super.initState();
     init();
   }

@@ -9,30 +9,6 @@ import 'dart:async';
 import 'package:test_location_2nd/Util/DateHandler.dart';
 import 'package:test_location_2nd/PolarMonthIndicator.dart';
 
-dynamic dummy2 = global.summaryOfPhotoData.values.toList();
-
-List daysInYear = getDaysInBetween(
-    DateTime(2022), DateTime(2023).subtract(Duration(days: 1)));
-
-dynamic dummy = List.generate(365, (index) {
-  DateTime date = daysInYear[index];
-  if (!global.summaryOfPhotoData.containsKey(formatDate(date)))
-    return [(index / 7).floor(),
-      index % 7,
-    0,];
-
-  int value = global.summaryOfPhotoData[formatDate(date)]!> 200
-      ?200
-      :global.summaryOfPhotoData[formatDate(date)]!;
-
-  return [
-  (index / 7).floor(),
-  index % 7,
-  value,];
-}
-);
-
-
 class YearPage extends StatefulWidget {
   const YearPage({Key? key}) : super(key: key);
 
@@ -44,13 +20,41 @@ class _YearPageState extends State<YearPage> {
   int year = DateTime.now().year;
   double _angle = 0;
   bool isZoomIn = false;
-
-  double graphSize = 400;
-  double topPadding = 100;
+  List daysInYear = [];
+  int maxOfSummary = 0;
+  dynamic dummy;
 
   var heatmapChannel = StreamController<Selected?>.broadcast();
 
+  void updateYear(year) {
+    daysInYear = getDaysInBetween(
+        DateTime(year), DateTime(year + 1).subtract(Duration(days: 1)));
+
+    dummy = List.generate(365, (index) {
+      DateTime date = daysInYear[index];
+      if (!global.summaryOfPhotoData.containsKey(formatDate(date)))
+        return [
+          (index / 7).floor(),
+          index % 7,
+          0,
+        ];
+      int value = global.summaryOfPhotoData[formatDate(date)]! > 200
+          ? 200
+          : global.summaryOfPhotoData[formatDate(date)]!;
+      return [
+        (index / 7).floor(),
+        index % 7,
+        value,
+      ];
+    });
+    List<int> dummy3 = List<int>.generate(transpose(dummy)[0].length, (index) => int.parse(transpose(dummy)[2][index].toString()));
+    print("dummy3 : $dummy3");
+    maxOfSummary = dummy3.reduce(max);
+    print("MaxOfSUmmary : $maxOfSummary");
+  }
+
   _YearPageState() {
+    updateYear(year);
     heatmapChannel.stream.listen(
       (value) {
         var provider =
@@ -67,10 +71,12 @@ class _YearPageState extends State<YearPage> {
         if (!provider.isZoomIn) return;
         provider.setNavigationIndex(2);
         provider.setDate(date);
-        // provider.setZoomInState(false);
       },
     );
   }
+
+  double graphSize = 400;
+  double topPadding = 100;
 
   late Map layout_yearPage = {
     'magnification': {true: 7, false: 1},
@@ -85,129 +91,154 @@ class _YearPageState extends State<YearPage> {
 
   @override
   Widget build(BuildContext context) {
-    var provider = Provider.of<NavigationIndexProvider>(context, listen: true);
+    var provider = Provider.of<NavigationIndexProvider>(context, listen: false);
     var isZoomIn =
         Provider.of<NavigationIndexProvider>(context, listen: true).isZoomIn;
 
     return Scaffold(
-      body: RawGestureDetector(
-          behavior: HitTestBehavior.deferToChild,
-          gestures: {
-            AllowMultipleGestureRecognizer:
-                GestureRecognizerFactoryWithHandlers<
-                        AllowMultipleGestureRecognizer>(
-                    () => AllowMultipleGestureRecognizer(),
-                    (AllowMultipleGestureRecognizer instance) {
-              instance.onTapDown = (details) {
-                print(global.indexForZoomInImage);
-                if (isZoomIn) return;
+      body: Stack(
+        alignment: Alignment.center,
+        children: [
+          RawGestureDetector(
+              behavior: HitTestBehavior.opaque,
+              gestures: {
+                AllowMultipleGestureRecognizer:
+                    GestureRecognizerFactoryWithHandlers<
+                            AllowMultipleGestureRecognizer>(
+                        () => AllowMultipleGestureRecognizer(),
+                        (AllowMultipleGestureRecognizer instance) {
+                  instance.onTapDown = (details) {
+                    print(global.indexForZoomInImage);
+                    if (isZoomIn) return;
 
-                Offset tapPosition =
-                    calculateTapPositionRefCenter(details, 0, layout_yearPage);
-                double angleZoomIn = calculateTapAngle(tapPosition, 0, 0);
+                    Offset tapPosition = calculateTapPositionRefCenter(
+                        details, 0, layout_yearPage);
+                    double angleZoomIn = calculateTapAngle(tapPosition, 0, 0);
 
-                if (tapPosition.dy < -200) return;
-                //if editing text, doesn't zoom in.
-                setState(() {
-                  provider.setZoomInState(true);
-                  _angle = angleZoomIn;
-                  provider.setZoomInRotationAngle(_angle);
-                  isZoomIn = true;
-                });
-              };
-            }),
-            AllowMultipleGestureRecognizer2:
-                GestureRecognizerFactoryWithHandlers<
-                    AllowMultipleGestureRecognizer2>(
-              () => AllowMultipleGestureRecognizer2(),
-              (AllowMultipleGestureRecognizer2 instance) {
-                instance.onUpdate = (details) {
-                  _angle = isZoomIn ? _angle + details.delta.dy / 1000 : 0;
-                  provider.setZoomInRotationAngle(_angle);
-                  setState(() {});
-                };
+                    // if (tapPosition.dy < -200) return;
+                    //if editing text, doesn't zoom in.
+                    setState(() {
+                      provider.setZoomInState(true);
+                      _angle = angleZoomIn;
+                      provider.setZoomInRotationAngle(_angle);
+                      isZoomIn = true;
+                    });
+                  };
+                }),
+                AllowMultipleGestureRecognizer2:
+                    GestureRecognizerFactoryWithHandlers<
+                        AllowMultipleGestureRecognizer2>(
+                  () => AllowMultipleGestureRecognizer2(),
+                  (AllowMultipleGestureRecognizer2 instance) {
+                    instance.onUpdate = (details) {
+                      _angle = isZoomIn ? _angle + details.delta.dy / 400 : 0;
+                      setState(() {});
+                    };
+                  },
+                )
               },
-            )
-          },
-          child: Stack(
-              alignment: isZoomIn ? Alignment.center : Alignment.topCenter,
-              children: [
-                AnimatedPositioned(
-                  duration: Duration(milliseconds: global.animationTime),
-                  width: layout_yearPage['graphSize']?[isZoomIn]?.toDouble(),
-                  height: layout_yearPage['graphSize']?[isZoomIn]?.toDouble(),
-                  left: layout_yearPage['left']?[isZoomIn]?.toDouble(),
-                  top: layout_yearPage['top']?[isZoomIn]?.toDouble(),
-                  curve: Curves.fastOutSlowIn,
-                  child: AnimatedRotation(
-                    turns: isZoomIn ? _angle : 0,
-                    duration:
-                        Duration(milliseconds: global.animationTime - 100),
-                    child: Stack(alignment: Alignment.center, children: [
-                      Text("$year"),
-                      PolarMonthIndicators().build(context),
-                      Chart(
-                        data: dummy,
-                        // selections : Selection(),
-                        elements: [
-                          PointElement(
-                            size: SizeAttr(
-                              variable: 'value',
-                              values: !isZoomIn ? [1, 20] : [3.5, 60],
+              child: Stack(
+                  alignment: isZoomIn ? Alignment.center : Alignment.topCenter,
+                  children: [
+                    Positioned(
+                      // duration: Duration(milliseconds: global.animationTime),
+                      width:
+                          layout_yearPage['graphSize']?[isZoomIn]?.toDouble(),
+                      height:
+                          layout_yearPage['graphSize']?[isZoomIn]?.toDouble(),
+                      left: layout_yearPage['left']?[isZoomIn]?.toDouble(),
+                      top: layout_yearPage['top']?[isZoomIn]?.toDouble(),
+                      // curve: Curves.fastOutSlowIn,
+                      child: Transform.rotate(
+                        angle: isZoomIn ? _angle * 2 * pi : 0,
+                        // turns: isZoomIn ? _angle : 0,
+                        // duration:
+                        //     Duration(milliseconds: global.animationTime - 100),
+                        child: Stack(alignment: Alignment.center, children: [
+                          PolarMonthIndicators().build(context),
+                          Chart(
+                            data: dummy,
+                            // selections : Selection(),
+                            elements: [
+                              PointElement(
+                                size: SizeAttr(
+                                  variable: 'value',
+                                  values: !isZoomIn ? [1, maxOfSummary/3] : [3.5, maxOfSummary/10 *3],
+                                ),
+                                color: ColorAttr(
+                                  variable: 'value',
+                                  values: [
+                                    Colors.white24.withAlpha(200),
+                                    global.kMainColor_warm.withAlpha(255),
+                                  ],
+                                ),
+                                selectionChannel: heatmapChannel,
+                              ),
+                            ],
+                            variables: {
+                              'week': Variable(
+                                accessor: (List datum) => datum[0] as num,
+                                scale:
+                                    LinearScale(min: 0, max: 52, tickCount: 10),
+                              ),
+                              'day': Variable(
+                                accessor: (List datum) => datum[1] as num,
+                              ),
+                              'value': Variable(
+                                accessor: (List datum) => datum[2] as num,
+                              ),
+                            },
+                            selections: {
+                              'tap': PointSelection(
+                                nearest: false,
+                                testRadius: isZoomIn ? 5 : 0,
+                              )
+                            },
+                            coord: PolarCoord()..radiusRange = [0.4, 1],
+                            tooltip: TooltipGuide(
+                              anchor: (_) => Offset.zero,
                             ),
-
-                            color: ColorAttr(
-                              variable: 'value',
-                              values: [
-                                global.kMainColor_warm,
-                                global.kMainColor_warm
-                              ],
-                              // updaters: {
-                              //   'tap': {true: (a) => Colors.blue}
-                              // },
-                            ),
-                            // label: LabelAttr(
-                            //     encoder: (tuple) => Label((tuple['week']*7 + tuple['day']).toString(),
-                            //     LabelStyle(style: TextStyle(fontSize: 20, color: Colors.black)))),
-
-                            // selected: Selected(),
-                            selectionChannel: heatmapChannel,
                           ),
-                        ],
-                        variables: {
-                          'week': Variable(
-                            accessor: (List datum) => datum[0] as num,
-                            scale: LinearScale(min: 0, max: 52, tickCount: 10),
-                          ),
-                          'day': Variable(
-                            accessor: (List datum) => datum[1] as num,
-                          ),
-                          'value': Variable(
-                            accessor: (List datum) => datum[2] as num,
-                          ),
-                        },
-                        selections: {
-                          'tap': PointSelection(
-                            nearest: false,
-                            testRadius: isZoomIn?5:0,
-                          )
-                        },
-                        coord: PolarCoord()..radiusRange = [0.4, 1],
-                        tooltip: TooltipGuide(
-                          anchor: (_) => Offset.zero,
-                        ),
+                        ]),
                       ),
-                    ]),
+                    ),
+                  ])),
+          Positioned(
+            width: layout_yearPage['graphSize'][false].toDouble(),
+            height: layout_yearPage['graphSize'][false].toDouble(),
+            top: layout_yearPage['top'][false].toDouble(),
+            child: Offstage(
+              offstage: isZoomIn ? true : false,
+              child:
+                  Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                IconButton(
+                  onPressed: () {
+                    year = year - 1;
+                    updateYear(year);
+                    setState(() {});
+                  },
+                  icon: Icon(
+                    Icons.arrow_left,
+                    color: global.kMainColor_cool,
                   ),
                 ),
-              ])),
-    floatingActionButton: FloatingActionButton(
-      onPressed: (){
-        print('aaa');
-        print(global.summaryOfPhotoData["20221104"]);
-        },
-    ),
-
+                Text(
+                  "$year",
+                  style: TextStyle(fontSize: 30),
+                ),
+                IconButton(
+                    onPressed: () {
+                      year = year + 1;
+                      updateYear(year);
+                      setState(() {});
+                    },
+                    icon: Icon(Icons.arrow_right),
+                    color: global.kMainColor_cool),
+              ]),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

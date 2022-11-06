@@ -23,12 +23,8 @@ class MainPage extends StatefulWidget {
   LocalPhotoDataManager localPhotoDataManager;
   NoteManager noteManager;
 
-  MainPage(
-      this.permissionManager,
-      this.dataManager,
-      this.sensorDataManager,
-      this.localPhotoDataManager,
-      this.noteManager,
+  MainPage(this.permissionManager, this.dataManager, this.sensorDataManager,
+      this.localPhotoDataManager, this.noteManager,
       {Key? key})
       : super(key: key);
 
@@ -64,14 +60,11 @@ class MainPageState extends State<MainPage> {
 
     MonthPage monthPage = MonthPage(a, dataManager);
     YearPage yearPage = YearPage();
-    DayPage hourPage = DayPage(
-        permissionManager,
-        dataManager,
-        sensorDataManager,
-        localPhotoDataManager,
-        noteManager);
+    DayPage hourPage = DayPage(permissionManager, dataManager,
+        sensorDataManager, localPhotoDataManager, noteManager);
     DiaryPage diaryPage = DiaryPage(dataManager, noteManager);
-    AndroidSettingsScreen androidSettingsScreen = AndroidSettingsScreen(permissionManager);
+    AndroidSettingsScreen androidSettingsScreen =
+        AndroidSettingsScreen(permissionManager);
 
     _widgetOptions = <Widget>[
       // monthPage,
@@ -90,17 +83,16 @@ class MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
-    var provider =
-    Provider.of<NavigationIndexProvider>(context, listen: false);
+    var provider = Provider.of<NavigationIndexProvider>(context, listen: false);
     return WillPopScope(
       onWillPop: () async {
         switch (provider.navigationIndex) {
           case 0:
-            if (provider.isZoomIn){
+            if (provider.isZoomIn) {
               setState(() {
                 provider.setZoomInState(false);
                 provider.setZoomInRotationAngle(0);
-                provider.isZoomIn = false;
+                // provider.isZoomIn = false;
               });
             }
             break;
@@ -108,12 +100,12 @@ class MainPageState extends State<MainPage> {
             provider.setNavigationIndex(0);
             break;
           case 2:
-          //when zoomed in, make daypage zoom out
-          // provider.setZoomInState(false);
+            //when zoomed in, make daypage zoom out
+            // provider.setZoomInState(false);
             indexForZoomInImage = -1;
             isImageClicked = false;
 
-            if (provider.isZoomIn){
+            if (provider.isZoomIn) {
               setState(() {
                 provider.setZoomInState(false);
                 provider.setZoomInRotationAngle(0);
@@ -121,7 +113,7 @@ class MainPageState extends State<MainPage> {
               });
             }
 
-            if(provider.lastNavigationIndex==1) {
+            if (provider.lastNavigationIndex == 1) {
               provider.setNavigationIndex(provider.lastNavigationIndex);
               break;
             }
@@ -158,18 +150,19 @@ class MainPageState extends State<MainPage> {
         bottomNavigationBar: Offstage(
           offstage: !provider.isBottomNavigationBarShown,
           child: SizedBox(
-            height : 30,
+            height: 30,
             // width : 200,
             child: BottomNavigationBar(
               selectedFontSize: 0,
               type: BottomNavigationBarType.fixed,
               items: const <BottomNavigationBarItem>[
                 BottomNavigationBarItem(
-                    icon: Icon(Icons.photo_camera_back_outlined), label: "Photo"),
+                    icon: Icon(Icons.photo_camera_back_outlined),
+                    label: "Photo"),
                 BottomNavigationBarItem(
                     icon: Icon(Icons.bookmark), label: "Diary"),
                 BottomNavigationBarItem(
-                  icon: Icon(Icons.settings), label: "Settings"),
+                    icon: Icon(Icons.settings), label: "Settings"),
                 // BottomNavigationBarItem(
                 //     icon: Icon(Icons.settings_accessibility, color: Colors.black,), label: "Settings")
 
@@ -184,7 +177,6 @@ class MainPageState extends State<MainPage> {
             ),
           ),
         ),
-
 
         body: FutureBuilder(
             future: readData,
@@ -208,24 +200,22 @@ class MainPageState extends State<MainPage> {
                 );
               }
             }),
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: () async {
-      //     // localPhotoDataManager.test();
-      //     // await localPhotoDataManager.init();
-      //     await localPhotoDataManager.getDatesFromFilnames(localPhotoDataManager.files);
-      //     // dataManager.updateSummaryOfLocalPhoto2();
-      //     // print(summaryOfPhotoData['20220312']);
-      //     },
-      // ),
-
+        // floatingActionButton: FloatingActionButton(
+        //   onPressed: () async {
+        //     // localPhotoDataManager.test();
+        //     // await localPhotoDataManager.init();
+        //     await localPhotoDataManager.getDatesFromFilnames(localPhotoDataManager.files);
+        //     // dataManager.updateSummaryOfLocalPhoto2();
+        //     // print(summaryOfPhotoData['20220312']);
+        //     },
+        // ),
       ),
     );
   }
 
-  void onTap(BuildContext context, int item){
+  void onTap(BuildContext context, int item) {
     debugPrint(item.toString());
-    var provider =
-    Provider.of<NavigationIndexProvider>(context, listen: false);
+    var provider = Provider.of<NavigationIndexProvider>(context, listen: false);
     switch (item) {
       case 0:
         provider.setNavigationIndex(0);
@@ -238,10 +228,8 @@ class MainPageState extends State<MainPage> {
       case 2:
         Navigation.navigateTo(
             context: context,
-            screen:
-            AndroidSettingsScreen(permissionManager),
+            screen: AndroidSettingsScreen(permissionManager),
             style: NavigationRouteStyle.material);
-  }
-
+    }
   }
 }

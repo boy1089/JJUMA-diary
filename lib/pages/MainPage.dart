@@ -200,15 +200,14 @@ class MainPageState extends State<MainPage> {
                 );
               }
             }),
-        // floatingActionButton: FloatingActionButton(
-        //   onPressed: () async {
-        //     // localPhotoDataManager.test();
-        //     // await localPhotoDataManager.init();
-        //     await localPhotoDataManager.getDatesFromFilnames(localPhotoDataManager.files);
-        //     // dataManager.updateSummaryOfLocalPhoto2();
-        //     // print(summaryOfPhotoData['20220312']);
-        //     },
-        // ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () async {
+            // localPhotoDataManager.test();
+            await localPhotoDataManager.init();
+            // dataManager.updateSummaryOfLocalPhoto2();
+            // print(summaryOfPhotoData['20220312']);
+            },
+        ),
       ),
     );
   }

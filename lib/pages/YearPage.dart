@@ -48,9 +48,7 @@ class _YearPageState extends State<YearPage> {
       ];
     });
     List<int> dummy3 = List<int>.generate(transpose(dummy)[0].length, (index) => int.parse(transpose(dummy)[2][index].toString()));
-    print("dummy3 : $dummy3");
     maxOfSummary = dummy3.reduce(max);
-    print("MaxOfSUmmary : $maxOfSummary");
   }
 
   _YearPageState() {
@@ -140,20 +138,21 @@ class _YearPageState extends State<YearPage> {
               child: Stack(
                   alignment: isZoomIn ? Alignment.center : Alignment.topCenter,
                   children: [
-                    Positioned(
-                      // duration: Duration(milliseconds: global.animationTime),
+                    AnimatedPositioned(
+                      duration: Duration(milliseconds: global.animationTime),
                       width:
                           layout_yearPage['graphSize']?[isZoomIn]?.toDouble(),
                       height:
                           layout_yearPage['graphSize']?[isZoomIn]?.toDouble(),
                       left: layout_yearPage['left']?[isZoomIn]?.toDouble(),
                       top: layout_yearPage['top']?[isZoomIn]?.toDouble(),
-                      // curve: Curves.fastOutSlowIn,
-                      child: Transform.rotate(
-                        angle: isZoomIn ? _angle * 2 * pi : 0,
-                        // turns: isZoomIn ? _angle : 0,
-                        // duration:
-                        //     Duration(milliseconds: global.animationTime - 100),
+                      curve: Curves.fastOutSlowIn,
+                      // child: Transform.rotate(
+                        child : AnimatedRotation(
+                        // angle: isZoomIn ? _angle * 2 * pi : 0,
+                        turns: isZoomIn ? _angle : 0,
+                        duration:
+                            Duration(milliseconds: global.animationTime - 100),
                         child: Stack(alignment: Alignment.center, children: [
                           PolarMonthIndicators().build(context),
                           Chart(
@@ -163,12 +162,13 @@ class _YearPageState extends State<YearPage> {
                               PointElement(
                                 size: SizeAttr(
                                   variable: 'value',
-                                  values: !isZoomIn ? [1, maxOfSummary/3] : [3.5, maxOfSummary/10 *3],
+                                  values: !isZoomIn ? [1, maxOfSummary/5] : [3.5, maxOfSummary/10 *3],
                                 ),
                                 color: ColorAttr(
                                   variable: 'value',
                                   values: [
-                                    Colors.white24.withAlpha(200),
+                                    // Colors.white24.withAlpha(200),
+                                    global.kMainColor_warm.withAlpha(255),
                                     global.kMainColor_warm.withAlpha(255),
                                   ],
                                 ),

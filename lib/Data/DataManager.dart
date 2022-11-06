@@ -14,21 +14,16 @@ import 'package:test_location_2nd/Photo/LocalPhotoDataManager.dart';
 
 class DataManager {
   var sensorDataAll;
-  var photoDataAll;
 
   List<String> fileList = [];
-  List<dynamic> dataAll = [];
   List<dynamic> processedSensorData = [];
-  Map<String,int> summaryOfPhotoData = {};
+  Map<String, int> summaryOfPhotoData = {};
   bool isUpdateInProgress = false;
   String processedFileName = "sensor_processed.csv";
-  List<DateTime> datesOfYear = [];
   int updateIndexOfPhotoSummary = 0;
   LocalPhotoDataManager localPhotoDataManager;
 
-  DataManager(      this.localPhotoDataManager) {
-    // processAllSensorFiles();
-    // getProcessedSensorFile();
+  DataManager(this.localPhotoDataManager) {
     print("DataManager instance in under creation");
     // init();
     print("DataManager instance is created");
@@ -42,34 +37,10 @@ class DataManager {
     await updateSummaryOfLocalPhoto2();
   }
 
-
-  Future<void> updateSummaryFromLocal(startDate, endDate) async {
-    var datesOfYear =
-        getDaysInBetween(DateTime.parse(startDate), DateTime.parse(endDate))
-            .reversed
-            .toList();
-    for (int i = 0; i < datesOfYear.length; i++) {
-      String date = DateFormat("yyyyMMdd").format(datesOfYear[i]);
-      if (summaryOfPhotoData.containsKey(date)) {
-        print("date $date is already contained in the dataManager");
-        continue;
-      }
-
-      print("$date is under processing...");
-      List data = await LocalPhotoDataManager.getPhotoOfDate_static(date);
-      updateSummaryOfPhotoData(date, data[0].length);
-    }
-  }
-
   Future<void> updateSummaryOfLocalPhoto2() async {
     print("updateSummaryOfLocaoPhoto..");
-    var data = localPhotoDataManager.modifiedDatesOfFiles;
-    print(data);
-    // List newList = List.generate(
-    //     data.length, (index) => formatDate(data.elementAt(index)));
-    List newList = data;
+    List newList = localPhotoDataManager.datetimes;
     Set ListOfDates = newList.toSet();
-    // var count = data.where((c)=>c == 10).length;
     print("updateSummaryOfLocalPhoto2 ListOfDates $ListOfDates");
     final map = Map<String, int>.fromIterable(ListOfDates,
         key: (item) => item,
@@ -90,7 +61,6 @@ class DataManager {
 
   Future readSummaryOfPhotoData() async {
     final Directory? directory = await getExternalStorageDirectory();
-
     try {
       final fileName = Glob('${directory?.path}/summary_googlePhoto.csv')
           .listSync()

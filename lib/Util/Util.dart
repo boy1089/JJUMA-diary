@@ -207,7 +207,7 @@ double convertStringTimeToDouble(String time) {
 }
 
 List<List<dynamic>> transpose(list) {
-  print("transpose, $list");
+  // print("transpose, $list");
   if (list.length == 0) return [[], []];
 
   int columnNumber = list.elementAt(0).length;

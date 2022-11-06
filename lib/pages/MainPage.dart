@@ -45,7 +45,6 @@ class MainPageState extends State<MainPage> {
 
   List<Widget> _widgetOptions = [];
   int a = 0;
-  late MonthPage monthPage;
   late DayPage dayPage;
 
   @override
@@ -58,7 +57,6 @@ class MainPageState extends State<MainPage> {
     localPhotoDataManager = widget.localPhotoDataManager;
     noteManager = widget.noteManager;
 
-    MonthPage monthPage = MonthPage(a, dataManager);
     YearPage yearPage = YearPage();
     DayPage hourPage = DayPage(permissionManager, dataManager,
         sensorDataManager, localPhotoDataManager, noteManager);
@@ -203,10 +201,11 @@ class MainPageState extends State<MainPage> {
         floatingActionButton: FloatingActionButton(
           onPressed: () async {
             // localPhotoDataManager.test();
-            await localPhotoDataManager.init();
+            // await localPhotoDataManager.init();
             // dataManager.updateSummaryOfLocalPhoto2();
             // print(summaryOfPhotoData['20220312']);
-            },
+            print(summaryOfPhotoData);
+          },
         ),
       ),
     );

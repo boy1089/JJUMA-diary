@@ -27,7 +27,7 @@ class DataManager {
 
   Future<void> updateSummaryOfPhoto() async {
     print("updateSummaryOfLocalPhoto..");
-    List newList = localPhotoDataManager.datetimes;
+    List newList = localPhotoDataManager.dates;
     Set ListOfDates = newList.toSet();
     print("updateSummaryOfLocalPhoto2 ListOfDates $ListOfDates");
     final map = Map<String, int>.fromIterable(ListOfDates,
@@ -36,9 +36,6 @@ class DataManager {
     summaryOfPhotoData = map;
     global.summaryOfPhotoData = summaryOfPhotoData;
   }
-
-
-
 
   Future<List> openFile(filePath) async {
     File f = File(filePath);

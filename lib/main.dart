@@ -40,7 +40,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   final permissionManager = PermissionManager();
-  final localPhotoDataManager = LocalPhotoDataManager();
+  late final localPhotoDataManager = LocalPhotoDataManager();
 
   //sensorLogger will be initialized after initializing PermissionManager
   late final sensorRecorder;
@@ -57,11 +57,12 @@ class _MyAppState extends State<MyApp> {
     // sensorRecorder.init();
     // audioRecorder = AudioRecorder(permissionManager);
     // audioRecorder.init();
-    super.initState();
     init();
+    super.initState();
   }
 
   Future<void> init() async {
+    await localPhotoDataManager.init();
     dataManager = DataManager(localPhotoDataManager);
     await dataManager.init();
   }

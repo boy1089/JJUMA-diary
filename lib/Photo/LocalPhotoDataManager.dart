@@ -17,12 +17,13 @@ class LocalPhotoDataManager {
   List<String> files = [];
 
   LocalPhotoDataManager() {
-    init();
+    // init();
   }
 
   Future init() async {
     files = await getAllFiles();
     datetimes = getDatetimesFromFilnames(files);
+    print("localPHotoDataManager, datetime : $datetimes");
   }
 
   Future getAllFiles() async {
@@ -54,7 +55,8 @@ class LocalPhotoDataManager {
     print("getDatesFromFilenames : $inferredDatetimesOfFiles");
     this.datetimes = inferredDatetimesOfFiles;
     this.dates = List.generate(inferredDatetimesOfFiles.length,
-        (i) => inferredDatetimesOfFiles.elementAt(i).subString(0, 8));
+        (i) => inferredDatetimesOfFiles.elementAt(i).substring(0, 8));
+    print(dates);
     return inferredDatetimesOfFiles;
   }
 
@@ -75,14 +77,14 @@ class LocalPhotoDataManager {
     if (matches.length != 0) {
       var date = new DateTime.fromMicrosecondsSinceEpoch(
           int.parse(matches.first.group(0)!) * 1000);
-      print(formatDatetime(date));
+      // print(formatDatetime(date));
       return formatDatetime(date);
     }
 
     matches = exp1.allMatches(filename);
     if (matches.length != 0) {
-      print(
-          matches.first.group(0).toString().replaceAll(RegExp(r"[^0-9]"), "_"));
+      // print(
+      //     matches.first.group(0).toString().replaceAll(RegExp(r"[^0-9]"), "_"));
       return matches.first
           .group(0)
           .toString()
@@ -91,8 +93,8 @@ class LocalPhotoDataManager {
 
     matches = exp2.allMatches(filename);
     if (matches.length != 0) {
-      print(
-          matches.first.group(0).toString().replaceAll(RegExp(r"[^0-9]"), ""));
+      // print(
+      //     matches.first.group(0).toString().replaceAll(RegExp(r"[^0-9]"), ""));
       return matches.first
           .group(0)
           .toString()

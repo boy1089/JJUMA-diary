@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'dart:async';
 import 'package:test_location_2nd/Util/DateHandler.dart';
 import 'package:test_location_2nd/PolarMonthIndicator.dart';
+import 'package:intl/intl.dart';
 
 class YearPage extends StatefulWidget {
   const YearPage({Key? key}) : super(key: key);
@@ -26,33 +27,35 @@ class _YearPageState extends State<YearPage> {
 
   var heatmapChannel = StreamController<Selected?>.broadcast();
 
-  void updateYear(year) {
+  void updateData(year) {
     daysInYear = getDaysInBetween(
         DateTime(year), DateTime(year + 1).subtract(Duration(days: 1)));
 
-    dummy = List.generate(365, (index) {
-      DateTime date = daysInYear[index];
-      if (!global.summaryOfPhotoData.containsKey(formatDate(date)))
-        return [
-          (index / 7).floor(),
-          index % 7,
-          0,
-        ];
-      int value = global.summaryOfPhotoData[formatDate(date)]! > 200
+    List<String> availableDates =
+        global.summaryOfPhotoData.keys.where((element) {
+      return element.contains(year.toString());
+    }).toList();
+    dummy = List.generate(availableDates.length, (index) {
+      String date = availableDates[index];
+      int days = int.parse(DateFormat("D").format(DateTime.parse(date)));
+      int value = global.summaryOfPhotoData[date]! > 200
           ? 200
-          : global.summaryOfPhotoData[formatDate(date)]!;
+          : global.summaryOfPhotoData[date]!;
       return [
-        (index / 7).floor(),
-        index % 7,
+        days / 7.floor(),
+        days % 7,
         value,
       ];
     });
-    List<int> dummy3 = List<int>.generate(transpose(dummy)[0].length, (index) => int.parse(transpose(dummy)[2][index].toString()));
+
+    List<int> dummy3 = List<int>.generate(transpose(dummy)[0].length,
+        (index) => int.parse(transpose(dummy)[2][index].toString()));
     maxOfSummary = dummy3.reduce(max);
+    print("year page, dummy3 : $maxOfSummary");
   }
 
   _YearPageState() {
-    updateYear(year);
+    updateData(year);
     heatmapChannel.stream.listen(
       (value) {
         var provider =
@@ -148,7 +151,7 @@ class _YearPageState extends State<YearPage> {
                       top: layout_yearPage['top']?[isZoomIn]?.toDouble(),
                       curve: Curves.fastOutSlowIn,
                       // child: Transform.rotate(
-                        child : AnimatedRotation(
+                      child: AnimatedRotation(
                         // angle: isZoomIn ? _angle * 2 * pi : 0,
                         turns: isZoomIn ? _angle : 0,
                         duration:
@@ -162,7 +165,9 @@ class _YearPageState extends State<YearPage> {
                               PointElement(
                                 size: SizeAttr(
                                   variable: 'value',
-                                  values: !isZoomIn ? [1, maxOfSummary/5] : [3.5, maxOfSummary/10 *3],
+                                  values: !isZoomIn
+                                      ? [1, maxOfSummary / 5]
+                                      : [3.5, maxOfSummary / 10 * 3],
                                 ),
                                 color: ColorAttr(
                                   variable: 'value',
@@ -214,7 +219,7 @@ class _YearPageState extends State<YearPage> {
                 IconButton(
                   onPressed: () {
                     year = year - 1;
-                    updateYear(year);
+                    updateData(year);
                     setState(() {});
                   },
                   icon: Icon(
@@ -229,7 +234,7 @@ class _YearPageState extends State<YearPage> {
                 IconButton(
                     onPressed: () {
                       year = year + 1;
-                      updateYear(year);
+                      updateData(year);
                       setState(() {});
                     },
                     icon: Icon(Icons.arrow_right),

@@ -182,8 +182,9 @@ List convertStringTimeToInt(List fields) {
   print("listTime : $listTime");
   listTime = List<List<double>>.generate(listTime.length,
       (int index) => [convertStringTimeToDouble(listTime[index])]);
-
+  print('c');
   List listValues = slice(fields, [0, fields.shape[0]], [1, fields.shape[1]]);
+  print('d');
   List output = const Matrix2d().concatenate(listTime, listValues, axis: 1);
 
   return output;

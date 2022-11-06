@@ -50,7 +50,7 @@ class LocalPhotoDataManager {
         inferredDatetimesOfFiles.length,
         (index) =>
             inferredDatetimesOfFiles.elementAt(index) ??
-            formatDate(FileStat.statSync(files[index]).modified));
+            formatDate(FileStat.statSync(files[index]).changed));
 
     print("getDatesFromFilenames : $inferredDatetimesOfFiles");
     this.datetimes = inferredDatetimesOfFiles;
@@ -72,6 +72,7 @@ class LocalPhotoDataManager {
     if (filename.contains("thumbnail")) {
       return null;
     }
+
     //order if matching is important. 3->1->2.
     Iterable<RegExpMatch> matches = exp3.allMatches(filename);
     if (matches.length != 0) {
@@ -103,16 +104,27 @@ class LocalPhotoDataManager {
     return null;
   }
 
+  List filterInvalidFiles(files){
+
+    return files;
+  }
+
   Future getPhotoOfDate(String date) async {
+    print('a');
     Set indexOfDate = List.generate(
         datetimes.length,
-        (i) => datetimes.elementAt(i).subString(0, 8).contains(date)
+        (i) => datetimes.elementAt(i).substring(0, 8).contains(date)
             ? i
             : null).toSet();
+    indexOfDate.remove(null);
+    print(datetimes);
+    print(indexOfDate);
     List filesOfDate = List.generate(
         indexOfDate.length, (i) => files.elementAt(indexOfDate.elementAt(i)));
+    print('c');
     List dateOfDate = List.generate(indexOfDate.length,
         (i) => datetimes.elementAt(indexOfDate.elementAt(i)));
+    print(dateOfDate);
     return [dateOfDate, filesOfDate];
   }
 

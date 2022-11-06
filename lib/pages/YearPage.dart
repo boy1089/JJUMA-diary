@@ -21,33 +21,40 @@ class _YearPageState extends State<YearPage> {
   int year = DateTime.now().year;
   double _angle = 0;
   bool isZoomIn = false;
-  List daysInYear = [];
   int maxOfSummary = 0;
+  List<String> availableDates = [];
   dynamic dummy;
 
   var heatmapChannel = StreamController<Selected?>.broadcast();
 
   void updateData(year) {
-    daysInYear = getDaysInBetween(
-        DateTime(year), DateTime(year + 1).subtract(Duration(days: 1)));
 
-    List<String> availableDates =
+    availableDates =
         global.summaryOfPhotoData.keys.where((element) {
       return element.contains(year.toString());
     }).toList();
-    dummy = List.generate(availableDates.length, (index) {
-      String date = availableDates[index];
-      int days = int.parse(DateFormat("D").format(DateTime.parse(date)));
-      int value = global.summaryOfPhotoData[date]! > 200
-          ? 200
-          : global.summaryOfPhotoData[date]!;
+
+    dummy = List.generate(52, (index) {
       return [
-        days / 7.floor(),
-        days % 7,
-        value,
+        index,
+        1,
+        10,
       ];
     });
-
+    if (availableDates.length != 0) {
+      dummy = List.generate(availableDates.length, (index) {
+        String date = availableDates[index];
+        int days = int.parse(DateFormat("D").format(DateTime.parse(date)));
+        int value = global.summaryOfPhotoData[date]! > 200
+            ? 200
+            : global.summaryOfPhotoData[date]!;
+        return [
+          days / 7.floor(),
+          days % 7,
+          value,
+        ];
+      });
+    }
     List<int> dummy3 = List<int>.generate(transpose(dummy)[0].length,
         (index) => int.parse(transpose(dummy)[2][index].toString()));
     maxOfSummary = dummy3.reduce(max);
@@ -65,10 +72,8 @@ class _YearPageState extends State<YearPage> {
         if (isZoomIn) return;
         print("aaa : ${value}");
         print("streaming value : ${value.values.first.first.toString()}");
-        print(
-            "streaming value to date : ${DateTime(year = 2022).add(Duration(days: value.values.first.first))}");
         DateTime date =
-            DateTime(year = 2022).add(Duration(days: value.values.first.first));
+            DateTime.parse(availableDates.elementAt(int.parse(value.values.first.first.toString())));
         if (!provider.isZoomIn) return;
         provider.setNavigationIndex(2);
         provider.setDate(date);

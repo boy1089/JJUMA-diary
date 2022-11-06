@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:test_location_2nd/Util/DateHandler.dart';
 import 'package:test_location_2nd/Photo/LocalPhotoDataManager.dart';
 import 'package:test_location_2nd/Sensor/SensorDataManager.dart';
 import 'package:test_location_2nd/Util/StateProvider.dart';
@@ -8,16 +7,13 @@ import 'package:test_location_2nd/Permissions/PermissionManager.dart';
 import 'package:test_location_2nd/PolarSensorDataPlot.dart';
 import 'package:test_location_2nd/Data/DataManager.dart';
 import 'package:provider/provider.dart';
-import 'dart:io';
-import 'dart:convert';
-import 'package:csv/csv.dart';
 import 'package:test_location_2nd/polarPhotoImageContainer.dart';
 import 'package:test_location_2nd/PolarPhotoDataPlot.dart';
 import 'package:test_location_2nd/Util/global.dart' as global;
-import 'dart:math';
 import 'package:test_location_2nd/Note/NoteManager.dart';
 import 'package:intl/intl.dart';
 import 'package:test_location_2nd/PolarTimeIndicators.dart';
+import 'package:test_location_2nd/Util/DateHandler.dart';
 
 class DayPage extends StatefulWidget {
   PermissionManager permissionManager;
@@ -42,25 +38,17 @@ class _DayPageState extends State<DayPage> {
   late LocalPhotoDataManager localPhotoDataManager;
   late NoteManager noteManager;
 
-  List response = [];
-  dynamic photoResponseModified = [];
-  dynamic sensorDataModified = [];
-  dynamic localPhotoDataForPlot = [[]];
-  dynamic sensorDataForPlot = [[]];
 
-  List<dynamic> googlePhotoLinks = [];
-  List<dynamic> localPhotoLinks = [];
-  List<DateTime> datesOfYear = getDaysInBetween(
-          DateTime.parse("${global.startYear}0101"), DateTime.now())
-      .reversed
-      .toList();
+  String date = formatDate(DateTime.now());
   Future readData = Future.delayed(const Duration(seconds: 1));
-  Future update = Future.delayed(const Duration(seconds: 1));
-  List imagesForPlot = [];
+  List photoForPlot = [];
+  dynamic photoData = [[]];
+  dynamic sensorDataForPlot = [[]];
   List<List<dynamic>> photoDataForPlot = [[]];
-  FocusNode focusNode = FocusNode();
 
+  FocusNode focusNode = FocusNode();
   final myTextController = TextEditingController();
+
 
   @override
   void initState() {
@@ -70,21 +58,17 @@ class _DayPageState extends State<DayPage> {
     sensorDataManager = widget.sensorDataManager;
     localPhotoDataManager = widget.localPhotoDataManager;
     noteManager = widget.noteManager;
-    // update = updateUi();
     print("DayPage, after initState : ${photoDataForPlot}");
     readData = _fetchData();
-    // imageContainers = polarPhotoImageContainers(imagesForPlot);
-
+    date = Provider.of<NavigationIndexProvider>(context, listen: false).date;
   }
 
   Future<List<dynamic>> _fetchData() async {
-
-    await updateUi();
-    var provider =
-    Provider.of<NavigationIndexProvider>(context, listen: false);
-
+    date = Provider.of<NavigationIndexProvider>(context, listen: false).date;
+    await updateDataForUi();
+    var provider = Provider.of<NavigationIndexProvider>(context, listen: false);
     provider.setZoomInState(false);
-    return googlePhotoLinks;
+    return photoDataForPlot;
   }
 
   bool isZoomIn = false;
@@ -136,14 +120,25 @@ class _DayPageState extends State<DayPage> {
                               () => AllowMultipleGestureRecognizer(),
                               (AllowMultipleGestureRecognizer instance) {
                         instance.onTapDown = (details) {
-                          print(global.indexForZoomInImage);
+                          //action expected
+                          //1. if not zoom in
+                          //1-1. if image is clicked, then zoom in that location (angle)
+                          //1-2. if note is clicked. focus on the editable text
+                          //1-3 if image is clicked, when note is focused, dismiss the focus
+
+                          //2. if zoom in
+                          //2-1 if image is clicked enlarge the image
+                          //2-2 if image is not clicked, dismiss the enlarged image
+                          //2-3 if text is clicked, focus on the editable text
+                          //2-4 if text is not clicked when note is focused, dismiss the focus
+
                           if (!global.isImageClicked)
                             global.indexForZoomInImage = -1;
                           global.isImageClicked = false;
                           if (isZoomIn) return;
 
-                          Offset tapPosition =
-                              calculateTapPositionRefCenter(details, 0, layout_dayPage);
+                          Offset tapPosition = calculateTapPositionRefCenter(
+                              details, 0, layout_dayPage);
                           double angleZoomIn =
                               calculateTapAngle(tapPosition, 0, 0);
 
@@ -186,12 +181,14 @@ class _DayPageState extends State<DayPage> {
                               isZoomIn ? Alignment.center : Alignment.topCenter,
                           children: [
                             AnimatedPositioned(
-                              width: layout_dayPage['graphSize']?[isZoomIn]?.toDouble(),
-                              height:
-                                  layout_dayPage['graphSize']?[isZoomIn]?.toDouble(),
+                              width: layout_dayPage['graphSize']?[isZoomIn]
+                                  ?.toDouble(),
+                              height: layout_dayPage['graphSize']?[isZoomIn]
+                                  ?.toDouble(),
                               duration:
                                   Duration(milliseconds: global.animationTime),
-                              left: layout_dayPage['left']?[isZoomIn]?.toDouble(),
+                              left:
+                                  layout_dayPage['left']?[isZoomIn]?.toDouble(),
                               top: layout_dayPage['top']?[isZoomIn]?.toDouble(),
                               curve: Curves.fastOutSlowIn,
                               child: AnimatedRotation(
@@ -211,7 +208,7 @@ class _DayPageState extends State<DayPage> {
                                           .build(context),
                                       PolarPhotoDataPlot(photoDataForPlot)
                                           .build(context),
-                                      polarPhotoImageContainers(imagesForPlot)
+                                      polarPhotoImageContainers(photoForPlot)
                                           .build(context),
                                     ],
                                   )),
@@ -255,10 +252,10 @@ class _DayPageState extends State<DayPage> {
                             Positioned(
                                 top: 30,
                                 child: Text(
-                                  "${DateFormat('EEEE').format(DateTime.parse(provider.date))}/"
-                                  "${DateFormat('MMM').format(DateTime.parse(provider.date))} "
-                                  "${DateFormat('dd').format(DateTime.parse(provider.date))}/"
-                                  "${DateFormat('yyyy').format(DateTime.parse(provider.date))}",
+                                  "${DateFormat('EEEE').format(DateTime.parse(date))}/"
+                                  "${DateFormat('MMM').format(DateTime.parse(date))} "
+                                  "${DateFormat('dd').format(DateTime.parse(date))}/"
+                                  "${DateFormat('yyyy').format(DateTime.parse(date))}",
                                   style: TextStyle(
                                       fontSize: 20,
                                       color: global.kColor_backgroundText),
@@ -287,10 +284,6 @@ class _DayPageState extends State<DayPage> {
         });
   }
 
-  //this function calculates the tap position relative to graph
-
-
-
   void showKeyboard() {
     focusNode.requestFocus();
     setState(() {});
@@ -298,109 +291,83 @@ class _DayPageState extends State<DayPage> {
 
   void dismissKeyboard() async {
     focusNode.unfocus();
-    await noteManager.writeNote(
-        Provider.of<NavigationIndexProvider>(context, listen: false).date,
-        myTextController.text);
+    await noteManager.writeNote(date, myTextController.text);
   }
 
   @override
   void dispose() {
     print("dispose..");
-    noteManager.writeNote(
-        Provider.of<NavigationIndexProvider>(context, listen: false).date,
-        myTextController.text);
+    noteManager.writeNote(date, myTextController.text);
     focusNode.dispose();
     super.dispose();
   }
 
-  Future updateUi() async {
-    googlePhotoLinks = [];
-    imagesForPlot = [];
+  Future updateDataForUi() async {
+    photoForPlot = [];
     photoDataForPlot = [];
-    localPhotoDataForPlot = [[]];
+    photoData = [[]];
 
     try {
-      var b = await updatePhotoFromLocal();
-      imagesForPlot = selectImagesForPlot(localPhotoDataForPlot);
+      photoData = await updatePhotoData();
+      photoForPlot = selectPhotoForPlot(photoData);
     } catch (e) {
       print("while updating Ui, error is occrued : $e");
     }
+    // //convert data type..
+    photoDataForPlot = List<List>.generate(
+        photoForPlot.length, (index) => photoForPlot.elementAt(index));
 
     await updateSensorData();
 
-    setState(() {});
-    //convert data type..
-    photoDataForPlot = List<List>.generate(
-        imagesForPlot.length, (index) => imagesForPlot.elementAt(index));
 
     try {
-      myTextController.text = await noteManager.readNote(
-          Provider.of<NavigationIndexProvider>(context, listen: false).date);
+      myTextController.text = await noteManager.readNote(date);
     } catch (e) {
       print("while updating UI, reading note, error is occured : $e");
     }
     print("updateUi done");
   }
 
-  List selectImagesForPlot(List input) {
-    print("selectImageForPlot : ${input}");
-    if (input[0] == null) {
-      return imagesForPlot;
-    }
+  Future updatePhotoData() async {
+    print("dayPage, updatePhotoFromLocal, date : $date");
+    List<List<dynamic>> data = await localPhotoDataManager.getPhotoOfDate(date);
+    print("dayPage, updatePhotoFromLocal, files : $data");
+    photoData = modifyListForPlot(data, executeTranspose: true);
+    return photoData;
+  }
 
-    print(input);
-    if (input[0].length == 0) {
-      return imagesForPlot;
-    }
+  List selectPhotoForPlot(List input) {
+    print("DayPage selectImageForPlot : ${input}");
+    if (input[0] == null) return photoForPlot;
+    if (input[0].length == 0) return photoForPlot;
 
-    imagesForPlot.add(input.first);
-    imagesForPlot.add(input.last);
+    photoForPlot.add([input.first[0], input.first[1], input.first[2], true]);
+
     int j = 0;
-    for (int i = 0; i < input.length; i++) {
-      print("selectImagesForPlot, ${i}, ${imagesForPlot}, ${input}");
-      if ((input[i][0] - imagesForPlot[j][0]).abs() >
+    for (int i = 1; i < input.length - 2; i++) {
+      print("selectImagesForPlot, ${i}, ${photoForPlot}, ${input}");
+      print("time difference : ${(input[i][0] - photoForPlot[j][0]).abs()}");
+      if ((input[i][0] - photoForPlot[i - 1][0]).abs() >
           global.kMinimumTimeDifferenceBetweenImages) {
-        imagesForPlot.add(input[i]);
-        j += 1;
+        photoForPlot.add([input[i][0], input[i][1], input[i][2], true]);
+      } else {
+        photoForPlot.add([input[i][0], input[i][1], input[i][2], false]);
       }
     }
-    print("selectImagesForPlot, $imagesForPlot}");
 
-    return imagesForPlot;
-  }
-
-  Future updatePhotoFromLocal() async {
-    String date =
-        Provider.of<NavigationIndexProvider>(context, listen: false).date;
-    List<List<dynamic>> files =
-        await localPhotoDataManager.getPhotoOfDate(date);
-    localPhotoDataForPlot = modifyListForPlot(files, executeTranspose: true);
-    localPhotoLinks = transpose(localPhotoDataForPlot);
-  }
-
-  void openSensorData(filepath) async {
-    File f = File(filepath);
-    debugPrint("CSV to List");
-    final input = f.openRead();
-    final fields = await input
-        .transform(utf8.decoder)
-        .transform(const CsvToListConverter(eol: '\n'))
-        .toList();
-    sensorDataForPlot = modifyListForPlot(fields);
-    print("sensorDataForPlot : $sensorDataForPlot");
+    photoForPlot.add([input.last[0], input.last[1], input.last[2], true]);
+    print("selectImagesForPlot done, $photoDataForPlot");
+    return photoForPlot;
   }
 
   Future<void> updateSensorData() async {
-    String date =
-        Provider.of<NavigationIndexProvider>(context, listen: false).date;
     var sensorData = await this.sensorDataManager.openFile(date);
     try {
-      sensorDataModified = modifyListForPlot(subsampleList(sensorData, 10));
+      sensorDataForPlot = modifyListForPlot(subsampleList(sensorData, 10));
     } catch (e) {
-      sensorDataModified = [[]];
+      sensorDataForPlot = [[]];
       print("error during updating sensorData : $e");
     }
-    sensorDataForPlot = sensorDataModified;
     print("sensorDataForPlot : $sensorDataForPlot");
   }
 }

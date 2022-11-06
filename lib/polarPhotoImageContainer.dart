@@ -16,18 +16,18 @@ class polarPhotoImageContainers {
   double containerSize = kDefaultPolarPlotSize;
   List stackOrder = [];
   polarPhotoImageContainers(
-    @required googlePhotoDataForPlot, {
+    @required photoDataForPlot, {
     containerSize: kDefaultPolarPlotSize,
   }) {
-    this.googlePhotoDataForPlot = googlePhotoDataForPlot;
+    this.googlePhotoDataForPlot = photoDataForPlot;
     this.containerSize = containerSize;
 
     if (indexForZoomInImage == -1) {
       stackOrder =
-          List.generate(googlePhotoDataForPlot.length, (int index) => index);
+          List.generate(photoDataForPlot.length, (int index) => index);
     } else {
       stackOrder = List.generate(indexForZoomInImage, (int index) => index) +
-          List.generate(googlePhotoDataForPlot.length - indexForZoomInImage - 1,
+          List.generate(photoDataForPlot.length - indexForZoomInImage - 1,
               (int index) => indexForZoomInImage + index + 1) +
           [indexForZoomInImage];
     }
@@ -63,7 +63,7 @@ class polarPhotoImageContainers {
 }
 
 class polarPhotoImageContainer {
-  var googlePhotoDataForPlot;
+  var photoDataForPlot;
   double imageLocationFactor = 1.4;
   double imageSize = 90;
   double defaultImageSize = 100;
@@ -79,7 +79,8 @@ class polarPhotoImageContainer {
       applyOffset: true,
       index = 1,
       numberOfImages}) {
-    this.googlePhotoDataForPlot = googlePhotoDataForPlot;
+
+    this.photoDataForPlot = googlePhotoDataForPlot;
     this.containerSize = containerSize;
     this.index = index;
     this.numberOfImages = numberOfImages;
@@ -136,43 +137,47 @@ class polarPhotoImageContainer {
                           .isZoomIn
                       ? -angle
                       : 0,
-              child: RawGestureDetector(
-                  gestures: {
-                    AllowMultipleGestureRecognizer:
-                        GestureRecognizerFactoryWithHandlers<
-                                AllowMultipleGestureRecognizer>(
-                            () => AllowMultipleGestureRecognizer(),
-                            (AllowMultipleGestureRecognizer instance) {
-                      instance.onTapUp = (details) {
-                        print(
-                            "image container ${this.index} / ${numberOfImages} clicked");
+              child: Offstage(
+                offstage: Provider.of<NavigationIndexProvider>(context, listen: false)
+                    .isZoomIn? false : !photoDataForPlot[3],
+                child: RawGestureDetector(
+                    gestures: {
+                      AllowMultipleGestureRecognizer:
+                          GestureRecognizerFactoryWithHandlers<
+                                  AllowMultipleGestureRecognizer>(
+                              () => AllowMultipleGestureRecognizer(),
+                              (AllowMultipleGestureRecognizer instance) {
+                        instance.onTapUp = (details) {
+                          print(
+                              "image container ${this.index} / ${numberOfImages} clicked");
 
-                        if (this.index == indexForZoomInImage) {
-                          indexForZoomInImage = this.index + 1;
-                          if (this.index == numberOfImages - 1) {
-                            indexForZoomInImage = 0;
+                          if (this.index == indexForZoomInImage) {
+                            indexForZoomInImage = this.index + 1;
+                            if (this.index == numberOfImages - 1) {
+                              indexForZoomInImage = 0;
+                            }
+                          } else {
+                            indexForZoomInImage = this.index;
                           }
-                        } else {
-                          indexForZoomInImage = this.index;
-                        }
-                        isImageClicked = true;
-                      };
-                    })
-                  },
-                  child: Card(
-                    elevation: 3,
-                    shape: CircleBorder(),
-                    clipBehavior: Clip.antiAliasWithSaveLayer,
-                    child: ExtendedImage.file(
-                      File(googlePhotoDataForPlot[1]),
-                      fit: BoxFit.cover,
-                      enableLoadState: false,
-                      enableMemoryCache: true,
-                      // cacheRawData: true,
-                      compressionRatio: 0.05,
-                      // scale : 0.2
-                    ),
-                  )))),
+                          isImageClicked = true;
+                        };
+                      })
+                    },
+                    child: Card(
+                      elevation: 3,
+                      shape: CircleBorder(),
+                      clipBehavior: Clip.antiAliasWithSaveLayer,
+                      child: ExtendedImage.file(
+                        File(photoDataForPlot[1]),
+                        fit: BoxFit.cover,
+                        enableLoadState: false,
+                        enableMemoryCache: true,
+                        // cacheRawData: true,
+                        compressionRatio: 0.05,
+                        // scale : 0.2
+                      ),
+                    )),
+              ))),
     );
   }
 }

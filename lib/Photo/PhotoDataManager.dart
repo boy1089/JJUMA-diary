@@ -41,7 +41,6 @@ class PhotoDataManager {
           newFiles.length, (index) => newFiles.elementAt(index).path));
     }
     newFiles = newFiles.where((element)=>!element.path.contains('thumbnail')).toList();
-
     return files;
   }
 
@@ -115,21 +114,22 @@ class PhotoDataManager {
   }
 
   Future getPhotoOfDate(String date) async {
-    print('a');
     Set indexOfDate = List.generate(
         datetimes.length,
-        (i) => datetimes.elementAt(i).substring(0, 8).contains(date)
+        (i) => (datetimes.elementAt(i).substring(0, 8).contains(date) & (datetimes.elementAt(i).length>8))
             ? i
             : null).toSet();
     indexOfDate.remove(null);
-    print(datetimes);
-    print(indexOfDate);
+
     List filesOfDate = List.generate(
         indexOfDate.length, (i) => files.elementAt(indexOfDate.elementAt(i)));
-    print('c');
     List dateOfDate = List.generate(indexOfDate.length,
         (i) => datetimes.elementAt(indexOfDate.elementAt(i)));
-    print(dateOfDate);
+
+          for(int i = 0; i<indexOfDate.length; i++){
+        print("${dateOfDate[i]}, ${filesOfDate[i]}");
+    }
+
     return [dateOfDate, filesOfDate];
   }
 

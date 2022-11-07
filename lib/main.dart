@@ -1,23 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:test_location_2nd/Photo/LocalPhotoDataManager.dart';
+import 'package:test_location_2nd/Photo/PhotoDataManager.dart';
 
 import 'package:test_location_2nd/Sensor/AudioRecorder.dart';
 import 'package:test_location_2nd/Sensor/SensorRecorder.dart';
 
-import 'package:test_location_2nd/Loggers/NoteLogger.dart';
-import 'package:test_location_2nd/Sensor/SensorDataReader.dart';
 
 import 'package:test_location_2nd/pages/MainPage.dart';
 import 'pages/SettingPage.dart';
 
 import 'package:test_location_2nd/Permissions/PermissionManager.dart';
-import 'Photo/GooglePhotoDataManager.dart';
-import 'package:test_location_2nd/Note/NoteData.dart';
 import 'package:test_location_2nd/Data/DataManager.dart';
 import 'package:test_location_2nd/Util/StateProvider.dart';
 import 'package:test_location_2nd/Sensor/SensorDataManager.dart';
-import 'Photo/LocalPhotoDataManager.dart';
+import 'Photo/PhotoDataManager.dart';
 import 'package:test_location_2nd/Note/NoteManager.dart';
 
 void main() {
@@ -40,7 +36,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   final permissionManager = PermissionManager();
-  late final localPhotoDataManager = LocalPhotoDataManager();
+  late final photoDataManager = PhotoDataManager();
 
   //sensorLogger will be initialized after initializing PermissionManager
   late final sensorRecorder;
@@ -62,8 +58,8 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<void> init() async {
-    await localPhotoDataManager.init();
-    dataManager = DataManager(localPhotoDataManager);
+    await photoDataManager.init();
+    dataManager = DataManager(photoDataManager);
     await dataManager.init();
   }
 
@@ -82,7 +78,7 @@ class _MyAppState extends State<MyApp> {
               permissionManager,
               dataManager,
               sensorDataManager,
-              localPhotoDataManager,
+              photoDataManager,
               noteManager,
             ),
         '/settings': (context) =>

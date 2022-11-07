@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:test_location_2nd/Photo/LocalPhotoDataManager.dart';
+import 'package:test_location_2nd/Photo/PhotoDataManager.dart';
 import 'package:test_location_2nd/Sensor/SensorDataManager.dart';
 import 'package:test_location_2nd/Util/StateProvider.dart';
 import 'package:test_location_2nd/Util/Util.dart';
@@ -19,7 +19,7 @@ class DayPage extends StatefulWidget {
   PermissionManager permissionManager;
   DataManager dataManager;
   SensorDataManager sensorDataManager;
-  LocalPhotoDataManager localPhotoDataManager;
+  PhotoDataManager localPhotoDataManager;
   NoteManager noteManager;
 
   @override
@@ -35,7 +35,7 @@ class _DayPageState extends State<DayPage> {
   late PermissionManager permissionManager;
   late DataManager dataManager;
   late SensorDataManager sensorDataManager;
-  late LocalPhotoDataManager localPhotoDataManager;
+  late PhotoDataManager localPhotoDataManager;
   late NoteManager noteManager;
 
 
@@ -135,6 +135,7 @@ class _DayPageState extends State<DayPage> {
                           if (!global.isImageClicked)
                             global.indexForZoomInImage = -1;
                           global.isImageClicked = false;
+                          setState((){});
                           if (isZoomIn) return;
 
                           Offset tapPosition = calculateTapPositionRefCenter(
@@ -345,8 +346,6 @@ class _DayPageState extends State<DayPage> {
 
     int j = 0;
     for (int i = 1; i < input.length - 2; i++) {
-      print("selectImagesForPlot, ${i}, ${photoForPlot}, ${input}");
-      print("time difference : ${(input[i][0] - photoForPlot[j][0]).abs()}");
       if ((input[i][0] - photoForPlot[i - 1][0]).abs() >
           global.kMinimumTimeDifferenceBetweenImages) {
         photoForPlot.add([input[i][0], input[i][1], input[i][2], true]);

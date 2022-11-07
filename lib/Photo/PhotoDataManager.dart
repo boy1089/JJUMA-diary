@@ -11,12 +11,12 @@ List<String> pathsToLocalPhoto = [
   "/storage/emulated/0/Pictures/*",
 ];
 
-class LocalPhotoDataManager {
+class PhotoDataManager {
   List datetimes = [];
   List dates = [];
   List<String> files = [];
 
-  LocalPhotoDataManager() {
+  PhotoDataManager() {
     // init();
   }
 

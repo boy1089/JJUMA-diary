@@ -23,8 +23,7 @@ class polarPhotoImageContainers {
     this.containerSize = containerSize;
 
     if (indexForZoomInImage == -1) {
-      stackOrder =
-          List.generate(photoDataForPlot.length, (int index) => index);
+      stackOrder = List.generate(photoDataForPlot.length, (int index) => index);
     } else {
       stackOrder = List.generate(indexForZoomInImage, (int index) => index) +
           List.generate(photoDataForPlot.length - indexForZoomInImage - 1,
@@ -35,11 +34,9 @@ class polarPhotoImageContainers {
 
   @override
   Widget build(BuildContext context) {
-    print(googlePhotoDataForPlot.length);
-    print(stackOrder);
-    print(indexForZoomInImage);
-    double angle =
-        Provider.of<NavigationIndexProvider>(context, listen: true).zoomInAngle;
+    // print(googlePhotoDataForPlot.length);
+    // print(stackOrder);
+    // print(indexForZoomInImage);
     return !Provider.of<NavigationIndexProvider>(context, listen: false)
             .isZoomIn
         ? Stack(
@@ -79,7 +76,6 @@ class polarPhotoImageContainer {
       applyOffset: true,
       index = 1,
       numberOfImages}) {
-
     this.photoDataForPlot = googlePhotoDataForPlot;
     this.containerSize = containerSize;
     this.index = index;
@@ -91,15 +87,14 @@ class polarPhotoImageContainer {
       yLocation = imageLocationFactor *
           sin((googlePhotoDataForPlot[0]) / 24 * 2 * pi - pi / 2);
     } else {
-      var radiusSign = 1;
       var radius = (index % 5) / 1.8; // mag5 1.2
 
       xLocation = imageLocationFactor *
           cos((googlePhotoDataForPlot[0]) / 24 * 2 * pi - pi / 2) *
-          (0.45 + 0.10 * radiusSign * radius);
+          (0.45 + 0.10 *  radius);
       yLocation = imageLocationFactor *
           sin((googlePhotoDataForPlot[0]) / 24 * 2 * pi - pi / 2) *
-          (0.45 + 0.1 * radiusSign * radius);
+          (0.45 + 0.1 * radius);
     }
 
     if (indexForZoomInImage == this.index) {
@@ -138,8 +133,11 @@ class polarPhotoImageContainer {
                       ? -angle
                       : 0,
               child: Offstage(
-                offstage: Provider.of<NavigationIndexProvider>(context, listen: false)
-                    .isZoomIn? false : !photoDataForPlot[3],
+                offstage:
+                    Provider.of<NavigationIndexProvider>(context, listen: false)
+                            .isZoomIn
+                        ? false
+                        : !photoDataForPlot[3],
                 child: RawGestureDetector(
                     gestures: {
                       AllowMultipleGestureRecognizer:
@@ -150,7 +148,6 @@ class polarPhotoImageContainer {
                         instance.onTapUp = (details) {
                           print(
                               "image container ${this.index} / ${numberOfImages} clicked");
-
                           if (this.index == indexForZoomInImage) {
                             indexForZoomInImage = this.index + 1;
                             if (this.index == numberOfImages - 1) {
@@ -172,9 +169,7 @@ class polarPhotoImageContainer {
                         fit: BoxFit.cover,
                         enableLoadState: false,
                         enableMemoryCache: true,
-                        // cacheRawData: true,
                         compressionRatio: 0.05,
-                        // scale : 0.2
                       ),
                     )),
               ))),

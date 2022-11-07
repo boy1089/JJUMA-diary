@@ -10,7 +10,7 @@ import 'package:provider/provider.dart';
 import 'package:test_location_2nd/Util/StateProvider.dart';
 import 'package:test_location_2nd/Sensor/SensorDataManager.dart';
 import 'DayPage.dart';
-import 'package:test_location_2nd/Photo/LocalPhotoDataManager.dart';
+import 'package:test_location_2nd/Photo/PhotoDataManager.dart';
 import 'package:test_location_2nd/Note/NoteManager.dart';
 import 'package:path_provider/path_provider.dart';
 import 'DiaryPage.dart';
@@ -20,7 +20,7 @@ class MainPage extends StatefulWidget {
   PermissionManager permissionManager;
   DataManager dataManager;
   SensorDataManager sensorDataManager;
-  LocalPhotoDataManager localPhotoDataManager;
+  PhotoDataManager localPhotoDataManager;
   NoteManager noteManager;
 
   MainPage(this.permissionManager, this.dataManager, this.sensorDataManager,
@@ -36,7 +36,7 @@ class MainPageState extends State<MainPage> {
   late PermissionManager permissionManager;
   late DataManager dataManager;
   late SensorDataManager sensorDataManager;
-  late LocalPhotoDataManager localPhotoDataManager;
+  late PhotoDataManager localPhotoDataManager;
   late NoteManager noteManager;
 
   int dataIndex = 0;

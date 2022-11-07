@@ -6,12 +6,12 @@ import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:glob/glob.dart';
 import 'package:test_location_2nd/Util/global.dart' as global;
-import 'package:test_location_2nd/Photo/LocalPhotoDataManager.dart';
+import 'package:test_location_2nd/Photo/PhotoDataManager.dart';
 
 class DataManager {
 
   Map<String, int> summaryOfPhotoData = {};
-  LocalPhotoDataManager localPhotoDataManager;
+  PhotoDataManager localPhotoDataManager;
 
   DataManager(this.localPhotoDataManager) {
     print("DataManager instance in under creation");

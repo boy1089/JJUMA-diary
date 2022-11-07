@@ -271,8 +271,8 @@ class _YearPageState extends State<YearPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          print(dummy);
-          print(global.summaryOfLocationData);
+          // print(dummy);
+          print(global.locations);
         },
       ),
     );

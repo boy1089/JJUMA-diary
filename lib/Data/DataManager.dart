@@ -29,7 +29,11 @@ class DataManager {
     print("DataManager, updatingSummaryOfPhoto..");
     var a = await updateSummaryOfPhoto();
     print("DataManager, updatingSummaryOfCoordinate..");
-    var b = await updateSummaryOfCoordinate();
+    while(global.isLocationUpadating) {
+      await Future.delayed(Duration(seconds : 1));
+      print("updating summaryOfLocation...");
+      updateSummaryOfCoordinate();
+    };
     print("DataManager, updatingSummaryOfPhoto.. done");
   }
 
@@ -46,9 +50,9 @@ class DataManager {
     print("udpatesSummaryOfPhtoo data done, summary : ${summaryOfPhotoData}");
   }
 
-  Future updateSummaryOfCoordinate() async {
+  void updateSummaryOfCoordinate() async {
     print("updateSummaryOfCoordinate..");
-    List listOfDates = photoDataManager.dates;
+    List listOfDates = global.dates;
     Set setOfDates = listOfDates.toSet();
     print("updateSummaryOfCoordinate ListOfDates $setOfDates");
     // final map = Map<String, List>.fromIterable(setOfDates,
@@ -65,7 +69,7 @@ class DataManager {
     Map<String,double> map = {};
     for(int i = 0; i<setOfDates.length; i++){
       String date = setOfDates.elementAt(i);
-      map[date]=locationDataManager.getMaxDistanceOfDate(date);
+      map[date]= locationDataManager.getMaxDistanceOfDate(date);
       if(i%100 ==0){
         global.summaryOfLocationData = map;
       }

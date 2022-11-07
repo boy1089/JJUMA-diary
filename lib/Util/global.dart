@@ -10,9 +10,12 @@ Map<String, int> summaryOfPhotoData = {};
 Map<String, int> summaryOfNoteData = {};
 Map summaryOfLocationData = {};
 Map<String, double> summaryOfDistanceData = {};
+bool isLocationUpadating = false;
+
 List files = [];
 List dates = [];
 List datetimes = [];
+List locations = [];
 
 Coordinate referenceCoordinate = Coordinate(37.364, 126.718);
 

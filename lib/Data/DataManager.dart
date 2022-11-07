@@ -46,7 +46,7 @@ class DataManager {
     print("udpatesSummaryOfPhtoo data done, summary : ${summaryOfPhotoData}");
   }
 
-  Future<void> updateSummaryOfCoordinate() async {
+  Future updateSummaryOfCoordinate() async {
     print("updateSummaryOfCoordinate..");
     List listOfDates = photoDataManager.dates;
     Set setOfDates = listOfDates.toSet();
@@ -58,10 +58,18 @@ class DataManager {
     //     key: (item) => item,
     //     value: (item) => locationDataManager.getCoordinatesOfDate(item).first);
 
-    final map = Map<String, double>.fromIterable(setOfDates,
-        key: (item) => item,
-        value: (item) => locationDataManager.getMaxDistanceOfDate(item));
-    
+    // final map = Map<String, double>.fromIterable(setOfDates,
+    //     key: (item) => item,
+    //     value: (item) => locationDataManager.getMaxDistanceOfDate(item));
+    //
+    Map<String,double> map = {};
+    for(int i = 0; i<setOfDates.length; i++){
+      String date = setOfDates.elementAt(i);
+      map[date]=locationDataManager.getMaxDistanceOfDate(date);
+      if(i%100 ==0){
+        global.summaryOfLocationData = map;
+      }
+    }
     print("updateSummaryOfCoordinate : $map");
     global.summaryOfLocationData = map;
   }

@@ -49,10 +49,18 @@ class _YearPageState extends State<YearPage> {
         int value = global.summaryOfPhotoData[date]! > 200
             ? 200
             : global.summaryOfPhotoData[date]!;
-        double distance =            global.summaryOfLocationData[date]>100
-            ?100
-            :global.summaryOfLocationData[date];
-        print("date : $date, distance $distance");
+
+        double distance = 0;
+        print("date : $date, ${global.summaryOfLocationData[date]}");
+
+        if (global.summaryOfLocationData[date] == null) {
+          distance = 0.1;
+        } else {
+          distance = global.summaryOfLocationData[date] > 100
+              ? 100
+              : global.summaryOfLocationData[date];
+          print("date : $date, distance $distance");
+        }
         return [
           days / 7.floor(),
           days % 7,
@@ -206,7 +214,7 @@ class _YearPageState extends State<YearPage> {
                               'value': Variable(
                                 accessor: (List datum) => datum[2] as num,
                               ),
-                              'distance' : Variable(
+                              'distance': Variable(
                                 accessor: (List datum) => log(datum[3]) as num,
                               ),
                             },
@@ -261,11 +269,12 @@ class _YearPageState extends State<YearPage> {
           ),
         ],
       ),
-    floatingActionButton: FloatingActionButton(
-      onPressed: (){
-        print(dummy);
-        print(global.summaryOfLocationData);},
-    ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          print(dummy);
+          print(global.summaryOfLocationData);
+        },
+      ),
     );
   }
 }

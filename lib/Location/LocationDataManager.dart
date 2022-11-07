@@ -21,12 +21,11 @@ class LocationDataManager {
 
   Future<void> init() async {
     files = await getAllFiles();
-    coordinateOfFiles = await getCoordinatesFromFiles(files);
+    getCoordinatesFromFiles(files);
 
   }
 
-  Future<List<Coordinate?>> getCoordinatesFromFiles(files) async {
-    List<Coordinate?> coordinateOfFiles = [];
+  void getCoordinatesFromFiles(files) async {
     for(int i= 0; i<files.length; i++){
       Coordinate? coordinate = await AddressFinder.getCoordinateFromExif(files[i]);
       print("getCoordinatesFromFiles : $i/${files.length}, ${coordinate
@@ -34,7 +33,6 @@ class LocationDataManager {
       print("getCoordinatesFromFiles : $i/${files.length}, $coordinate ");
       coordinateOfFiles.add(coordinate);
     }
-    return coordinateOfFiles;
   }
 
   List getCoordinatesOfDate(String date) {

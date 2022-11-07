@@ -45,15 +45,14 @@ class _MyAppState extends State<MyApp> {
   final sensorDataManager = SensorDataManager();
   final noteManager = NoteManager();
 
-  // final noteLogger = NoteLogger();
-  // final myTextController = TextEditingController();
+  Future initApp = Future.delayed(const Duration(seconds: 1));
 
   _MyAppState() {
     // sensorRecorder = SensorRecorder(permissionManager);
     // sensorRecorder.init();
     // audioRecorder = AudioRecorder(permissionManager);
     // audioRecorder.init();
-    init();
+    initApp = init();
     super.initState();
   }
 
@@ -70,20 +69,42 @@ class _MyAppState extends State<MyApp> {
   // }
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      initialRoute: '/daily',
-      routes: {
-        '/daily': (context) => MainPage(
-              permissionManager,
-              dataManager,
-              sensorDataManager,
-              photoDataManager,
-              noteManager,
-            ),
-        '/settings': (context) =>
-            AndroidSettingsScreen(permissionManager),
-      },
-    );
+  Widget build(BuildContext context){
+    return FutureBuilder(
+        future: initApp,
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          return MaterialApp(
+            initialRoute: '/daily',
+            routes: {
+              '/daily': (context) => MainPage(
+                permissionManager,
+                dataManager,
+                sensorDataManager,
+                photoDataManager,
+                noteManager,
+              ),
+              '/settings': (context) =>
+                  AndroidSettingsScreen(permissionManager),
+            },
+          );
+        });
   }
+
+  // @override
+  // Widget build(BuildContext context) {
+  //   return MaterialApp(
+  //     initialRoute: '/daily',
+  //     routes: {
+  //       '/daily': (context) => MainPage(
+  //             permissionManager,
+  //             dataManager,
+  //             sensorDataManager,
+  //             photoDataManager,
+  //             noteManager,
+  //           ),
+  //       '/settings': (context) =>
+  //           AndroidSettingsScreen(permissionManager),
+  //     },
+  //   );
+  // }
 }

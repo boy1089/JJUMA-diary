@@ -14,6 +14,8 @@ import 'package:test_location_2nd/Util/StateProvider.dart';
 import 'package:test_location_2nd/Sensor/SensorDataManager.dart';
 import 'Photo/PhotoDataManager.dart';
 import 'package:test_location_2nd/Note/NoteManager.dart';
+import 'Location/AddressFinder.dart';
+
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -36,7 +38,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   final permissionManager = PermissionManager();
   late final photoDataManager;
-
+  final locationDataManager =AddressFinder();
   //sensorLogger will be initialized after initializing PermissionManager
   late final sensorRecorder;
   late final audioRecorder;
@@ -47,10 +49,10 @@ class _MyAppState extends State<MyApp> {
   Future initApp = Future.delayed(const Duration(seconds: 5));
 
   _MyAppState() {
-    sensorRecorder = SensorRecorder(permissionManager);
-    sensorRecorder.init();
-    audioRecorder = AudioRecorder(permissionManager);
-    audioRecorder.init();
+    // sensorRecorder = SensorRecorder(permissionManager);
+    // sensorRecorder.init();
+    // audioRecorder = AudioRecorder(permissionManager);
+    // audioRecorder.init();
     photoDataManager = PhotoDataManager();
     dataManager = DataManager(photoDataManager);
     initApp = init();

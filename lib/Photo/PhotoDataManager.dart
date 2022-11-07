@@ -6,6 +6,7 @@ import 'dart:io';
 import 'package:glob/glob.dart';
 
 List<String> pathsToLocalPhoto = [
+  "/storage/emulated/0/DCIM",
   "/storage/emulated/0/DCIM/Camera",
   "/storage/emulated/0/Pictures",
   "/storage/emulated/0/Pictures/*",

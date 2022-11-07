@@ -1,5 +1,6 @@
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
+import 'package:test_location_2nd/Location/AddressFinder.dart';
 import 'package:test_location_2nd/Util/global.dart';
 import '../navigation.dart';
 import 'package:test_location_2nd/pages/SettingPage.dart';
@@ -200,11 +201,8 @@ class MainPageState extends State<MainPage> {
             }),
         floatingActionButton: FloatingActionButton(
           onPressed: () async {
-            // localPhotoDataManager.test();
-            // await localPhotoDataManager.init();
-            // dataManager.updateSummaryOfLocalPhoto2();
-            // print(summaryOfPhotoData['20220312']);
-            print(summaryOfPhotoData);
+            await AddressFinder.getAddressFromExif(localPhotoDataManager.files[0]);
+
           },
         ),
       ),

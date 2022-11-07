@@ -8,7 +8,8 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
     <uses-permission android:name="android.permission.ACCESS_MEDIA_LOCATION"/>
-
+    <meta-data android:name="com.google.android.geo.API_KEY"
+        android:value="AIzaSyC0uiUc1qYZhRXgRi-TEpa6ZkltHuj76zI"/>
    <application
         android:label="test_location_2nd"
         android:name="${applicationName}"

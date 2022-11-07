@@ -7,9 +7,9 @@ import 'package:path_provider/path_provider.dart';
 import 'package:glob/glob.dart';
 import 'package:test_location_2nd/Util/global.dart' as global;
 import 'package:test_location_2nd/Photo/PhotoDataManager.dart';
+import 'package:test_location_2nd/Location/AddressFinder.dart';
 
 class DataManager {
-
   Map<String, int> summaryOfPhotoData = {};
   PhotoDataManager localPhotoDataManager;
 

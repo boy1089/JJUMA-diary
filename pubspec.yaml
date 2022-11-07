@@ -56,7 +56,9 @@ dependencies:
   exif:
   image_picker:
   badges:
-
+  geolocator:
+  google_maps_flutter: ^2.1.8
+  geocoding: ^2.0.5
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:location/location.dart';
 import 'package:provider/provider.dart';
+import 'package:test_location_2nd/Location/LocationDataManager.dart';
 import 'package:test_location_2nd/Photo/PhotoDataManager.dart';
 
 import 'package:test_location_2nd/Sensor/AudioRecorder.dart';
@@ -38,7 +40,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   final permissionManager = PermissionManager();
   late final photoDataManager;
-  final locationDataManager =AddressFinder();
+  late final locationDataManager;
   //sensorLogger will be initialized after initializing PermissionManager
   late final sensorRecorder;
   late final audioRecorder;
@@ -54,15 +56,19 @@ class _MyAppState extends State<MyApp> {
     // audioRecorder = AudioRecorder(permissionManager);
     // audioRecorder.init();
     photoDataManager = PhotoDataManager();
-    dataManager = DataManager(photoDataManager);
+    locationDataManager = LocationDataManager();
+    dataManager = DataManager(photoDataManager, locationDataManager);
     initApp = init();
     super.initState();
   }
 
   Future<int> init() async {
     print("init");
-    await photoDataManager.init();
-    await dataManager.init();
+    var a = await photoDataManager.init();
+    print('a');
+    var b = await locationDataManager.init();
+    print('b done');
+    var c = await dataManager.init();
     print("init done");
     return 0;
   }

@@ -1,6 +1,7 @@
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:test_location_2nd/Location/AddressFinder.dart';
+import 'package:test_location_2nd/Location/LocationDataManager.dart';
 import 'package:test_location_2nd/Util/global.dart';
 import '../navigation.dart';
 import 'package:test_location_2nd/pages/SettingPage.dart';
@@ -199,12 +200,16 @@ class MainPageState extends State<MainPage> {
                 );
               }
             }),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () async {
-            await AddressFinder.getAddressFromExif(localPhotoDataManager.files[0]);
-
-          },
-        ),
+        // floatingActionButton: FloatingActionButton(
+        //   onPressed: () async {
+        //     // await AddressFinder.getAddressFromExif(localPhotoDataManager.files[0]);
+        //     // var locationDataManager = LocationDataManager();
+        //     // await locationDataManager.init();
+        //     // dataManager.init();
+        //     // dataManager.locationDataManager.getCoordinatesOfDate("20221022");
+        //     print(summaryOfLocationData);
+        //   },
+        // ),
       ),
     );
   }

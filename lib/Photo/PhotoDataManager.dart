@@ -4,8 +4,9 @@ import 'package:test_location_2nd/Util/DateHandler.dart';
 import 'package:intl/intl.dart';
 import 'dart:io';
 import 'package:glob/glob.dart';
+import 'package:test_location_2nd/Util/global.dart' as global;
 
-List<String> pathsToLocalPhoto = [
+List<String> pathsToPhoto = [
   "/storage/emulated/0/DCIM",
   "/storage/emulated/0/DCIM/Camera",
   "/storage/emulated/0/Pictures",
@@ -21,7 +22,7 @@ class PhotoDataManager {
     // init();
   }
 
-  Future init() async {
+  Future<void> init() async {
     files = await getAllFiles();
     datetimes = getDatetimesFromFilnames(files);
     print("localPHotoDataManager, datetime : $datetimes");
@@ -30,8 +31,8 @@ class PhotoDataManager {
   Future getAllFiles() async {
     List<String> files = [];
     List newFiles = [];
-    for (int i = 0; i < pathsToLocalPhoto.length; i++) {
-      String path = pathsToLocalPhoto.elementAt(i);
+    for (int i = 0; i < pathsToPhoto.length; i++) {
+      String path = pathsToPhoto.elementAt(i);
 
       newFiles = await Glob("$path/*.jpg").listSync();
       files.addAll(List.generate(
@@ -62,6 +63,11 @@ class PhotoDataManager {
     this.dates = List.generate(inferredDatetimesOfFiles.length,
         (i) => inferredDatetimesOfFiles.elementAt(i).substring(0, 8));
     print(dates);
+
+    global.files = this.files;
+    global.dates = this.dates;
+    global.datetimes = this.datetimes;
+
     return inferredDatetimesOfFiles;
   }
 

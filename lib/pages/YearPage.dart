@@ -9,6 +9,7 @@ import 'dart:async';
 import 'package:test_location_2nd/Util/DateHandler.dart';
 import 'package:test_location_2nd/PolarMonthIndicator.dart';
 import 'package:intl/intl.dart';
+import 'package:test_location_2nd/Location/Coordinate.dart';
 
 class YearPage extends StatefulWidget {
   const YearPage({Key? key}) : super(key: key);
@@ -28,30 +29,35 @@ class _YearPageState extends State<YearPage> {
   var heatmapChannel = StreamController<Selected?>.broadcast();
 
   void updateData(year) {
-
-    availableDates =
-        global.summaryOfPhotoData.keys.where((element) {
+    availableDates = global.summaryOfPhotoData.keys.where((element) {
       return element.contains(year.toString());
     }).toList();
-
     dummy = List.generate(52, (index) {
       return [
         index,
         1,
         10,
+        0,
       ];
     });
+    print('c');
     if (availableDates.length != 0) {
+      print('d');
       dummy = List.generate(availableDates.length, (index) {
         String date = availableDates[index];
         int days = int.parse(DateFormat("D").format(DateTime.parse(date)));
         int value = global.summaryOfPhotoData[date]! > 200
             ? 200
             : global.summaryOfPhotoData[date]!;
+        double distance =            global.summaryOfLocationData[date]>100
+            ?100
+            :global.summaryOfLocationData[date];
+        print("date : $date, distance $distance");
         return [
           days / 7.floor(),
           days % 7,
           value,
+          distance,
         ];
       });
     }
@@ -72,8 +78,8 @@ class _YearPageState extends State<YearPage> {
         if (isZoomIn) return;
         print("aaa : ${value}");
         print("streaming value : ${value.values.first.first.toString()}");
-        DateTime date =
-            DateTime.parse(availableDates.elementAt(int.parse(value.values.first.first.toString())));
+        DateTime date = DateTime.parse(availableDates
+            .elementAt(int.parse(value.values.first.first.toString())));
         if (!provider.isZoomIn) return;
         provider.setNavigationIndex(2);
         provider.setDate(date);
@@ -175,11 +181,14 @@ class _YearPageState extends State<YearPage> {
                                       : [3.5, maxOfSummary / 10 * 3],
                                 ),
                                 color: ColorAttr(
-                                  variable: 'value',
+                                  variable: 'distance',
                                   values: [
                                     // Colors.white24.withAlpha(200),
-                                    global.kMainColor_warm.withAlpha(255),
-                                    global.kMainColor_warm.withAlpha(255),
+                                    // global.kMainColor_warm.withAlpha(255),
+                                    // global.kMainColor_cool,
+                                    Colors.blue,
+                                    Colors.red,
+                                    // global.kMainColor_warm.withAlpha(255),
                                   ],
                                 ),
                                 selectionChannel: heatmapChannel,
@@ -196,6 +205,9 @@ class _YearPageState extends State<YearPage> {
                               ),
                               'value': Variable(
                                 accessor: (List datum) => datum[2] as num,
+                              ),
+                              'distance' : Variable(
+                                accessor: (List datum) => log(datum[3]) as num,
                               ),
                             },
                             selections: {
@@ -249,6 +261,11 @@ class _YearPageState extends State<YearPage> {
           ),
         ],
       ),
+    floatingActionButton: FloatingActionButton(
+      onPressed: (){
+        print(dummy);
+        print(global.summaryOfLocationData);},
+    ),
     );
   }
 }

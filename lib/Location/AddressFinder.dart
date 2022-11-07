@@ -1,8 +1,7 @@
 import 'dart:io';
 import 'package:exif/exif.dart';
 import 'package:geocoding/geocoding.dart';
-import 'package:http/http.dart';
-
+import 'Coordinate.dart';
 
 class AddressFinder {
   static Future getAddressFromExif(filename) async{
@@ -20,6 +19,10 @@ class AddressFinder {
     Coordinate coordinate = Coordinate(
         convertTagToValue(data['GPS GPSLatitude']),
         convertTagToValue(data['GPS GPSLongitude']));
+
+    if(coordinate.latitude==null)
+      return null;
+
     return coordinate;
   }
 
@@ -30,7 +33,9 @@ class AddressFinder {
     return address[0];
   }
 
-  static double convertTagToValue(tag) {
+  static double? convertTagToValue(tag) {
+    if(tag==null) return null;
+
     List values = tag.printable
         .replaceAll("[", "")
         .replaceAll("]", "")
@@ -40,16 +45,6 @@ class AddressFinder {
     double value = double.parse(values[0]) +
         double.parse(values[1]) / 60 +
         double.parse(values[2].split('/')[0]) / 1e6/3600;
-    print("$values, $value");
     return value;
   }
-}
-
-class Coordinate {
-  final double? latitude;
-  final double? longitude;
-  Coordinate(
-      this.latitude,
-      this.longitude,
-      );
 }

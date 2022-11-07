@@ -62,7 +62,7 @@ class GooglePhotoDataManager {
 
   Future<List<FileSystemEntity>> getFiles() async {
     String? kRoot = await _localPath;
-    final files = await Glob("$kRoot/googlePhotoData/*.csv").listSync();
+    final files = Glob("$kRoot/googlePhotoData/*.csv").listSync();
 
     return files;
   }

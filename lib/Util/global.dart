@@ -1,5 +1,6 @@
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
+import "package:test_location_2nd/Location/Coordinate.dart";
 
 DateTime selectedDate = DateTime(2022, 1, 1);
 
@@ -7,6 +8,13 @@ int mainPageSelectionIndex = 0;
 
 Map<String, int> summaryOfPhotoData = {};
 Map<String, int> summaryOfNoteData = {};
+Map summaryOfLocationData = {};
+Map<String, double> summaryOfDistanceData = {};
+List files = [];
+List dates = [];
+List datetimes = [];
+
+Coordinate referenceCoordinate = Coordinate(37.364, 126.718);
 
 //Colors
 Color kBackGroundColor = Colors.white;
@@ -18,15 +26,14 @@ Color kBackGroundColor = Colors.white;
 // Color kMainColor_warm = Color.fromARGB(200, 100, 100, 100);
 // Color kMainColor_warm = Color.fromARGB(255, 255, 203, 196); //peach color1
 Color kMainColor_warm = Color.fromARGB(255, 255, 167, 166); //peach color2
-Color kMainColor_cool = Color.fromARGB(255, 108, 245, 151); // complementary of peach color2;
+Color kMainColor_cool =
+    Color.fromARGB(255, 108, 245, 151); // complementary of peach color2;
 // Color kMainColor_cool = Color.fromARGB(255, 149, 166, 230);
 // Color kMainColor_cool = Color.fromARGB(255, 166, 166, 255);
 // Color kMainColor_cool = Color.fromARGB(255, 190, 194, 255);
 
-
 // Color kMainColor_cool = Colors.white.withOpacity(0.8);
 Color kMainColor_option = Colors.green.withAlpha(180);
-
 
 Color kColor_grey = Colors.black12.withAlpha(10);
 Color kColor_white = Colors.white.withOpacity(0.85);
@@ -38,9 +45,7 @@ Color kColor_diaryText = Colors.black87;
 Color kColor_polarPlotOutline = Colors.black12;
 Color kColor_polarPlotPhotoScatter = kMainColor_warm;
 
-
 Color kColor_badge = kMainColor_cool.withAlpha(255);
-
 
 FontWeight kFontWeight_diaryContents = FontWeight.w400;
 FontWeight kFontWeight_diaryTitle = FontWeight.w700;
@@ -49,7 +54,6 @@ double kSize_polarPlotPhotoScatter = 5;
 
 const event_color_goingOut = Colors.red;
 const event_color_backHome = Colors.blue;
-
 
 List<Color> get colorsHotCold => [
       Colors.deepOrangeAccent,
@@ -65,7 +69,6 @@ double monthPageScrollOffset = 0.0;
 int startYear = 2013;
 
 double kMinimumTimeDifferenceBetweenImages = 1; //unit is hour
-
 
 double value = 0.8;
 double value2 = 0.6;

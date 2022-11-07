@@ -8,12 +8,16 @@ import 'package:glob/glob.dart';
 import 'package:test_location_2nd/Util/global.dart' as global;
 import 'package:test_location_2nd/Photo/PhotoDataManager.dart';
 import 'package:test_location_2nd/Location/AddressFinder.dart';
+import 'package:test_location_2nd/Location/LocationDataManager.dart';
+import "package:test_location_2nd/Location/Coordinate.dart";
 
 class DataManager {
   Map<String, int> summaryOfPhotoData = {};
-  PhotoDataManager localPhotoDataManager;
+  Map<String, Coordinate> summaryOfCoordinate = {};
+  PhotoDataManager photoDataManager;
+  LocationDataManager locationDataManager;
 
-  DataManager(this.localPhotoDataManager) {
+  DataManager(this.photoDataManager, this.locationDataManager) {
     print("DataManager instance in under creation");
     // init();
     print("DataManager instance is created");
@@ -22,12 +26,16 @@ class DataManager {
   Future<void> init() async {
     print("DataManager instance is initializing..");
     // var a = await readSummaryOfPhotoData();
-    await updateSummaryOfPhoto();
+    print("DataManager, updatingSummaryOfPhoto..");
+    var a = await updateSummaryOfPhoto();
+    print("DataManager, updatingSummaryOfCoordinate..");
+    var b = await updateSummaryOfCoordinate();
+    print("DataManager, updatingSummaryOfPhoto.. done");
   }
 
   Future<void> updateSummaryOfPhoto() async {
     print("updateSummaryOfLocalPhoto..");
-    List newList = localPhotoDataManager.dates;
+    List newList = photoDataManager.dates;
     Set ListOfDates = newList.toSet();
     print("updateSummaryOfLocalPhoto2 ListOfDates $ListOfDates");
     final map = Map<String, int>.fromIterable(ListOfDates,
@@ -35,6 +43,27 @@ class DataManager {
         value: (item) => newList.where((c) => c == item).length);
     summaryOfPhotoData = map;
     global.summaryOfPhotoData = summaryOfPhotoData;
+    print("udpatesSummaryOfPhtoo data done, summary : ${summaryOfPhotoData}");
+  }
+
+  Future<void> updateSummaryOfCoordinate() async {
+    print("updateSummaryOfCoordinate..");
+    List listOfDates = photoDataManager.dates;
+    Set setOfDates = listOfDates.toSet();
+    print("updateSummaryOfCoordinate ListOfDates $setOfDates");
+    // final map = Map<String, List>.fromIterable(setOfDates,
+    //     key: (item) => item,
+    //     value: (item) => locationDataManager.getCoordinatesOfDate(item));
+    // final map = Map<String, Coordinate?>.fromIterable(setOfDates,
+    //     key: (item) => item,
+    //     value: (item) => locationDataManager.getCoordinatesOfDate(item).first);
+
+    final map = Map<String, double>.fromIterable(setOfDates,
+        key: (item) => item,
+        value: (item) => locationDataManager.getMaxDistanceOfDate(item));
+    
+    print("updateSummaryOfCoordinate : $map");
+    global.summaryOfLocationData = map;
   }
 
   Future<List> openFile(filePath) async {
@@ -70,5 +99,4 @@ class DataManager {
       return summaryOfPhotoData;
     }
   }
-
 }

@@ -21,7 +21,7 @@ void main() {
   runApp(ChangeNotifierProvider(
     // Initialize the model in the builder. That way, Provider
     // can own Counter's lifecycle, making sure to call `dispose`
-    // when not needed awnymore.
+    // when not needed anymore.
     create: (context) => NavigationIndexProvider(),
     child: const MyApp(),
   ));
@@ -36,7 +36,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   final permissionManager = PermissionManager();
-  late final photoDataManager = PhotoDataManager();
+  late final photoDataManager;
 
   //sensorLogger will be initialized after initializing PermissionManager
   late final sensorRecorder;
@@ -45,21 +45,26 @@ class _MyAppState extends State<MyApp> {
   final sensorDataManager = SensorDataManager();
   final noteManager = NoteManager();
 
-  Future initApp = Future.delayed(const Duration(seconds: 1));
+  Future initApp = Future.delayed(const Duration(seconds: 5));
+
 
   _MyAppState() {
     // sensorRecorder = SensorRecorder(permissionManager);
     // sensorRecorder.init();
     // audioRecorder = AudioRecorder(permissionManager);
     // audioRecorder.init();
+    photoDataManager = PhotoDataManager();
+    dataManager = DataManager(photoDataManager);
     initApp = init();
     super.initState();
   }
 
-  Future<void> init() async {
+  Future<int> init() async {
+    print("init");
     await photoDataManager.init();
-    dataManager = DataManager(photoDataManager);
     await dataManager.init();
+    print("init done");
+    return 0;
   }
 
   // void saveNote() {
@@ -73,6 +78,7 @@ class _MyAppState extends State<MyApp> {
     return FutureBuilder(
         future: initApp,
         builder: (BuildContext context, AsyncSnapshot snapshot) {
+          // print("snapshot.hasData? ${snapshot.hasData}, ${snapshot.data}");
           return MaterialApp(
             initialRoute: '/daily',
             routes: {

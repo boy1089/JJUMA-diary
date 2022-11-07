@@ -28,15 +28,20 @@ class PhotoDataManager {
 
   Future getAllFiles() async {
     List<String> files = [];
+    List newFiles = [];
     for (int i = 0; i < pathsToLocalPhoto.length; i++) {
       String path = pathsToLocalPhoto.elementAt(i);
-      List newFiles = await Glob("$path/*.jpg").listSync();
+
+      newFiles = await Glob("$path/*.jpg").listSync();
       files.addAll(List.generate(
           newFiles.length, (index) => newFiles.elementAt(index).path));
+
       newFiles = await Glob("$path/*.png").listSync();
       files.addAll(List.generate(
           newFiles.length, (index) => newFiles.elementAt(index).path));
     }
+    newFiles = newFiles.where((element)=>!element.path.contains('thumbnail')).toList();
+
     return files;
   }
 

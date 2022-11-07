@@ -346,12 +346,14 @@ class _DayPageState extends State<DayPage> {
 
     int j = 0;
     for (int i = 1; i < input.length - 2; i++) {
-      if ((input[i][0] - photoForPlot[i - 1][0]).abs() >
+      if ((input[i][0] - photoForPlot[j][0]).abs() >
           global.kMinimumTimeDifferenceBetweenImages) {
         photoForPlot.add([input[i][0], input[i][1], input[i][2], true]);
+        j = i;
       } else {
         photoForPlot.add([input[i][0], input[i][1], input[i][2], false]);
       }
+
     }
 
     photoForPlot.add([input.last[0], input.last[1], input.last[2], true]);

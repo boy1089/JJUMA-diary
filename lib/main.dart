@@ -5,7 +5,6 @@ import 'package:test_location_2nd/Photo/PhotoDataManager.dart';
 import 'package:test_location_2nd/Sensor/AudioRecorder.dart';
 import 'package:test_location_2nd/Sensor/SensorRecorder.dart';
 
-
 import 'package:test_location_2nd/pages/MainPage.dart';
 import 'pages/SettingPage.dart';
 
@@ -47,12 +46,11 @@ class _MyAppState extends State<MyApp> {
 
   Future initApp = Future.delayed(const Duration(seconds: 5));
 
-
   _MyAppState() {
-    // sensorRecorder = SensorRecorder(permissionManager);
-    // sensorRecorder.init();
-    // audioRecorder = AudioRecorder(permissionManager);
-    // audioRecorder.init();
+    sensorRecorder = SensorRecorder(permissionManager);
+    sensorRecorder.init();
+    audioRecorder = AudioRecorder(permissionManager);
+    audioRecorder.init();
     photoDataManager = PhotoDataManager();
     dataManager = DataManager(photoDataManager);
     initApp = init();
@@ -74,7 +72,7 @@ class _MyAppState extends State<MyApp> {
   // }
 
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return FutureBuilder(
         future: initApp,
         builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -83,12 +81,12 @@ class _MyAppState extends State<MyApp> {
             initialRoute: '/daily',
             routes: {
               '/daily': (context) => MainPage(
-                permissionManager,
-                dataManager,
-                sensorDataManager,
-                photoDataManager,
-                noteManager,
-              ),
+                    permissionManager,
+                    dataManager,
+                    sensorDataManager,
+                    photoDataManager,
+                    noteManager,
+                  ),
               '/settings': (context) =>
                   AndroidSettingsScreen(permissionManager),
             },

@@ -29,11 +29,11 @@ class DataManager {
     print("DataManager, updatingSummaryOfPhoto..");
     var a = await updateSummaryOfPhoto();
     print("DataManager, updatingSummaryOfCoordinate..");
-    while(global.isLocationUpadating) {
-      await Future.delayed(Duration(seconds : 1));
-      print("updating summaryOfLocation...");
-      updateSummaryOfCoordinate();
-    };
+    // while (global.isLocationUpadating) {
+    //   await Future.delayed(Duration(seconds: 5));
+    //   print("updating summaryOfLocation...");
+    //   updateSummaryOfCoordinate();
+    // };
     print("DataManager, updatingSummaryOfPhoto.. done");
   }
 
@@ -66,13 +66,13 @@ class DataManager {
     //     key: (item) => item,
     //     value: (item) => locationDataManager.getMaxDistanceOfDate(item));
     //
-    Map<String,double> map = {};
-    for(int i = 0; i<setOfDates.length; i++){
+    Map<String, double> map = {};
+    for (int i = 0; i < setOfDates.length; i++) {
       String date = setOfDates.elementAt(i);
-      map[date]= locationDataManager.getMaxDistanceOfDate(date);
-      if(i%100 ==0){
-        global.summaryOfLocationData = map;
-      }
+      try {
+        map[date] = locationDataManager.getMaxDistanceOfDate(date);
+      } catch (e) {};
+
     }
     print("updateSummaryOfCoordinate : $map");
     global.summaryOfLocationData = map;

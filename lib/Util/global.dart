@@ -10,6 +10,7 @@ Map<String, int> summaryOfPhotoData = {};
 Map<String, int> summaryOfNoteData = {};
 Map summaryOfLocationData = {};
 Map<String, double> summaryOfDistanceData = {};
+Map locationDataAll = {};
 bool isLocationUpadating = false;
 
 List files = [];

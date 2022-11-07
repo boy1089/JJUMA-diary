@@ -32,12 +32,13 @@ class _YearPageState extends State<YearPage> {
     availableDates = global.summaryOfPhotoData.keys.where((element) {
       return element.contains(year.toString());
     }).toList();
+
     dummy = List.generate(52, (index) {
       return [
         index,
         1,
         10,
-        0,
+        0.2,
       ];
     });
     print('c');
@@ -50,7 +51,7 @@ class _YearPageState extends State<YearPage> {
             ? 200
             : global.summaryOfPhotoData[date]!;
 
-        double distance = 0;
+        double distance = 0.1;
         print("date : $date, ${global.summaryOfLocationData[date]}");
 
         if (global.summaryOfLocationData[date] == null) {
@@ -215,7 +216,8 @@ class _YearPageState extends State<YearPage> {
                                 accessor: (List datum) => datum[2] as num,
                               ),
                               'distance': Variable(
-                                accessor: (List datum) => log(datum[3]) as num,
+                                accessor: (List datum) =>
+                                    log(datum[3]) + 0.1 as num,
                               ),
                             },
                             selections: {
@@ -272,7 +274,12 @@ class _YearPageState extends State<YearPage> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           // print(dummy);
-          print(global.locations);
+          var a = global.locationDataAll;
+          print(a);
+          for (int i = 0; i < a.length; i++) {
+            print(a[i]);
+
+          }
         },
       ),
     );

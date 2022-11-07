@@ -24,6 +24,7 @@ class LocationDataManager {
   }
 
   Future<void> init() async {
+    var c = await readLocationData();
     files = await getAllFiles();
     getCoordinatesFromFiles(files);
   }
@@ -31,11 +32,15 @@ class LocationDataManager {
   void getCoordinatesFromFiles(files) async {
     global.isLocationUpadating = true;
     for (int i = 0; i < files.length; i++) {
+      if(global.locationDataAll.containsKey(files[i])) {
+        print("${files[i]} is already in the saved data");
+        continue;
+      }
       Coordinate? coordinate =
           await AddressFinder.getCoordinateFromExif(files[i]);
-      print(
-          "getCoordinatesFromFiles : $i/${files.length}, ${coordinate?.latitude}, ${coordinate?.longitude} ");
-      print("getCoordinatesFromFiles : $i/${files.length}, $coordinate ");
+      // print(
+      //     "getCoordinatesFromFiles : $i/${files.length}, ${coordinate?.latitude}, ${coordinate?.longitude} ");
+      // print("getCoordinatesFromFiles : $i/${files.length}, $coordinate ");
       coordinateOfFiles.add(coordinate);
       if (i % 100 == 0) {
         await writeLocationData(files, coordinateOfFiles);
@@ -55,7 +60,6 @@ class LocationDataManager {
             ? i
             : null).toSet();
     indexOfDate.remove(null);
-    print(indexOfDate);
     List coordinateOfDate = List.generate(indexOfDate.length,
         (i) => coordinateOfFiles.elementAt(indexOfDate.elementAt(i)));
     // List coordinateOfDate = List.generate(indexOfDate.length,
@@ -99,31 +103,43 @@ class LocationDataManager {
     final File file = File('${directory?.path}/locationData.csv');
     print("writing location data to local..");
 
-    await file.writeAsString('filename,location\n', mode: FileMode.write);
+    await file.writeAsString('filename,latitude,longitude\n',
+        mode: FileMode.write);
 
     for (int i = 0; i < locations.length; i++) {
-      await file.writeAsString(
-          '${filenames.elementAt(i)},${locations.elementAt(i)}\n',
-          mode: FileMode.append);
+      if (locations.elementAt(i) == null) {
+        await file.writeAsString(
+            '${filenames.elementAt(i)},'
+            '${global.referenceCoordinate.latitude},'
+            '${global.referenceCoordinate.longitude}\n',
+            mode: FileMode.append);
+      } else {
+        await file.writeAsString(
+            '${filenames.elementAt(i)},'
+            '${locations.elementAt(i).latitude},'
+            '${locations.elementAt(i).longitude}\n',
+            mode: FileMode.append);
+      }
     }
   }
 
-  Future readLocationData() async {
+  Future<void> readLocationData() async {
     final Directory? directory = await getExternalStorageDirectory();
     try {
       final fileName =
           Glob('${directory?.path}/locationData.csv').listSync().elementAt(0);
       print("read ${fileName.path}");
       var data = await openFile(fileName.path);
-      for (int i = 0; i < data.length; i++) {
+      for (int i = 1; i < data.length; i++) {
         if (data[i].length > 1) {
-          global.summaryOfLocationData[data[i][0].toString()] =
-              await data[i][1];
+          print("${data[i][0]},${data[i][1]}, ${data[i][2]}");
+          global.locationDataAll[data[i][0]] =
+              Coordinate(data[i][1], data[i][2]);
         }
       }
-      print("readSummary done");
+      print("readLocation done");
     } catch (e) {
-      print("error during readSummaryOfPhotoData : $e");
+      print("error during readLocationData : $e");
     }
   }
 

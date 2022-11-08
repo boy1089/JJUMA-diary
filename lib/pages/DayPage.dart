@@ -44,10 +44,12 @@ class _DayPageState extends State<DayPage> {
   dynamic photoData = [[]];
   dynamic sensorDataForPlot = [[]];
   List<List<dynamic>> photoDataForPlot = [[]];
+  List<List<dynamic>> dummy = [[]];
 
   FocusNode focusNode = FocusNode();
   final myTextController = TextEditingController();
   var provider;
+
   @override
   void initState() {
     super.initState();
@@ -67,6 +69,8 @@ class _DayPageState extends State<DayPage> {
     await updateDataForUi();
     var provider = Provider.of<NavigationIndexProvider>(context, listen: false);
     provider.setZoomInState(false);
+    print("fetchData done, $photoDataForPlot");
+    await Future.delayed(Duration(seconds: 1));
     return photoDataForPlot;
   }
 
@@ -99,9 +103,10 @@ class _DayPageState extends State<DayPage> {
     return FutureBuilder(
         future: readData,
         builder: (BuildContext context, AsyncSnapshot snapshot) {
+          print("snapshot : ${snapshot.data}. ${snapshot.hasData}");
           return Scaffold(
             backgroundColor: global.kBackGroundColor,
-            body: !snapshot.hasData
+            body: (!snapshot.hasData)
                 ? Center(
                     child: SizedBox(
                         width: 140,
@@ -300,7 +305,7 @@ class _DayPageState extends State<DayPage> {
     super.dispose();
   }
 
-  Future updateDataForUi() async {
+  Future<void> updateDataForUi() async {
     photoForPlot = [];
     photoDataForPlot = [];
     photoData = [[]];

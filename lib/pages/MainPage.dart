@@ -121,6 +121,7 @@ class MainPageState extends State<MainPage> {
             //when zoomed out, go to month page
             if (!provider.isZoomIn) {
               provider.setNavigationIndex(0);
+              // provider.setZoomInState(true);
               setState((){});
               return Navigator.canPop(context);
             }

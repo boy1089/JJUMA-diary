@@ -154,7 +154,19 @@ class polarPhotoImageContainer {
                       clipBehavior: Clip.antiAliasWithSaveLayer,
                       child: ExtendedImage.file(
                         File(photoDataForPlot[1]),
-                        fit: BoxFit.cover,
+                        loadStateChanged: (ExtendedImageState state){
+                          switch (state.extendedImageLoadState){
+                            case LoadState.loading:
+                              break;
+                            case LoadState.completed:
+                              return ExtendedRawImage(
+                                image:state.extendedImageInfo?.image,
+                                fit: BoxFit.cover,
+                                // imageCacheName: photoDataForPlot[1],
+                              );
+
+                          }
+                        },
                         // imageCacheName: photoDataForPlot[1],
                         enableLoadState: false,
                         enableMemoryCache: true,

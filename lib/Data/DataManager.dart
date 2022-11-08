@@ -18,23 +18,14 @@ class DataManager {
   LocationDataManager locationDataManager;
 
   DataManager(this.photoDataManager, this.locationDataManager) {
-    print("DataManager instance in under creation");
-    // init();
-    print("DataManager instance is created");
   }
 
   Future<void> init() async {
     print("DataManager instance is initializing..");
     // var a = await readSummaryOfPhotoData();
     print("DataManager, updatingSummaryOfPhoto..");
-    var a = await updateSummaryOfPhoto();
-    print("DataManager, updatingSummaryOfCoordinate..");
-    // while (global.isLocationUpadating) {
-    //   await Future.delayed(Duration(seconds: 5));
-    //   print("updating summaryOfLocation...");
-    //   updateSummaryOfCoordinate();
-    // };
-    print("DataManager, updatingSummaryOfPhoto.. done");
+    await updateSummaryOfPhoto();
+    print("DataManager initialization done");
   }
 
   Future<void> updateSummaryOfPhoto() async {
@@ -65,18 +56,37 @@ class DataManager {
     // final map = Map<String, double>.fromIterable(setOfDates,
     //     key: (item) => item,
     //     value: (item) => locationDataManager.getMaxDistanceOfDate(item));
-    //
-    Map<String, double> map = {};
     for (int i = 0; i < setOfDates.length; i++) {
       String date = setOfDates.elementAt(i);
-      try {
-        map[date] = locationDataManager.getMaxDistanceOfDate(date);
-      } catch (e) {};
-
+      if (global.summaryOfLocationData.containsKey(date)) {
+        continue;
+      } else {
+        try {
+          global.summaryOfLocationData[date] =
+              locationDataManager.getMaxDistanceOfDate(date);
+        } catch (e) {}
+      }
     }
-    print("updateSummaryOfCoordinate : $map");
-    global.summaryOfLocationData = map;
   }
+  //
+  // static void updateSummaryOfCoordinate_static() async {
+  //   print("updateSummaryOfCoordinate..");
+  //   List listOfDates = global.dates;
+  //   Set setOfDates = listOfDates.toSet();
+  //   print("updateSummaryOfCoordinate ListOfDates $setOfDates");
+  //
+  //   for (int i = 0; i < setOfDates.length; i++) {
+  //     String date = setOfDates.elementAt(i);
+  //     if (global.summaryOfLocationData.containsKey(date)) {
+  //       continue;
+  //     } else {
+  //       try {
+  //         global.summaryOfLocationData[date] =
+  //             locationDataManager.getMaxDistanceOfDate(date);
+  //       } catch (e) {}
+  //     }
+  //   }
+  // }
 
   Future<List> openFile(filePath) async {
     File f = File(filePath);

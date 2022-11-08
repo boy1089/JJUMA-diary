@@ -10,15 +10,20 @@ import 'package:test_location_2nd/Util/DateHandler.dart';
 import 'package:test_location_2nd/PolarMonthIndicator.dart';
 import 'package:intl/intl.dart';
 import 'package:test_location_2nd/Location/Coordinate.dart';
+import 'package:test_location_2nd/Data/DataManager.dart';
 
 class YearPage extends StatefulWidget {
-  const YearPage({Key? key}) : super(key: key);
+  // DataManager dataManager;
 
+  // YearPage(this.dataManager, {Key? key}) : super(key: key);
+  YearPage({Key? key}) : super(key: key);
   @override
   State<YearPage> createState() => _YearPageState();
 }
 
 class _YearPageState extends State<YearPage> {
+  // late DataManager dataManager;
+
   int year = DateTime.now().year;
   double _angle = 0;
   bool isZoomIn = false;
@@ -28,7 +33,30 @@ class _YearPageState extends State<YearPage> {
 
   var heatmapChannel = StreamController<Selected?>.broadcast();
 
+  _YearPageState() {
+    // dataManager = widget.dataManager;
+    updateData(year);
+    heatmapChannel.stream.listen(
+          (value) {
+        var provider =
+        Provider.of<NavigationIndexProvider>(context, listen: false);
+
+        if (value == null) return;
+        if (isZoomIn) return;
+        print("aaa : ${value}");
+        print("streaming value : ${value.values.first.first.toString()}");
+        DateTime date = DateTime.parse(availableDates
+            .elementAt(int.parse(value.values.first.first.toString())));
+        if (!provider.isZoomIn) return;
+        provider.setNavigationIndex(2);
+        provider.setDate(date);
+      },
+    );
+  }
+
   void updateData(year) {
+    // dataManager.updateSummaryOfCoordinate();
+
     availableDates = global.summaryOfPhotoData.keys.where((element) {
       return element.contains(year.toString());
     }).toList();
@@ -76,25 +104,6 @@ class _YearPageState extends State<YearPage> {
     print("year page, dummy3 : $maxOfSummary");
   }
 
-  _YearPageState() {
-    updateData(year);
-    heatmapChannel.stream.listen(
-      (value) {
-        var provider =
-            Provider.of<NavigationIndexProvider>(context, listen: false);
-
-        if (value == null) return;
-        if (isZoomIn) return;
-        print("aaa : ${value}");
-        print("streaming value : ${value.values.first.first.toString()}");
-        DateTime date = DateTime.parse(availableDates
-            .elementAt(int.parse(value.values.first.first.toString())));
-        if (!provider.isZoomIn) return;
-        provider.setNavigationIndex(2);
-        provider.setDate(date);
-      },
-    );
-  }
 
   double graphSize = 400;
   double topPadding = 100;
@@ -115,7 +124,6 @@ class _YearPageState extends State<YearPage> {
     var provider = Provider.of<NavigationIndexProvider>(context, listen: false);
     var isZoomIn =
         Provider.of<NavigationIndexProvider>(context, listen: true).isZoomIn;
-
     return Scaffold(
       body: Stack(
         alignment: Alignment.center,
@@ -152,8 +160,8 @@ class _YearPageState extends State<YearPage> {
                   () => AllowMultipleGestureRecognizer2(),
                   (AllowMultipleGestureRecognizer2 instance) {
                     instance.onUpdate = (details) {
-                      _angle = isZoomIn ? _angle + details.delta.dy / 400 : 0;
-                      setState(() {});
+                      setState(() {_angle = isZoomIn ? _angle + details.delta.dy / 400 : 0;
+                      });
                     };
                   },
                 )
@@ -277,8 +285,7 @@ class _YearPageState extends State<YearPage> {
           var a = global.locationDataAll;
           print(a);
           for (int i = 0; i < a.length; i++) {
-            print(a[i]);
-
+            print(a.keys.elementAt(i));
           }
         },
       ),

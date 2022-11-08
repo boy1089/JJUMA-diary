@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:test_location_2nd/Location/AddressFinder.dart';
 import 'package:glob/glob.dart';
 import 'package:glob/list_local_fs.dart';
@@ -19,28 +20,29 @@ List<String> pathsToPhoto = [
 class LocationDataManager {
   List<String> files = [];
   List<Coordinate?> coordinateOfFiles = [];
+
   LocationDataManager() {
     // init();
   }
 
   Future<void> init() async {
-    var c = await readLocationData();
-    files = await getAllFiles();
-    getCoordinatesFromFiles(files);
+    await readLocationData();
+    await getCoordinatesFromPhotoFiles();
+    print("locationDataManager initializaton done");
   }
 
-  void getCoordinatesFromFiles(files) async {
+  Future<void> getCoordinatesFromPhotoFiles() async {
     global.isLocationUpadating = true;
+    List<String> files = global.files;
     for (int i = 0; i < files.length; i++) {
       if(global.locationDataAll.containsKey(files[i])) {
-        print("${files[i]} is already in the saved data");
+        // print("${files[i]} is already in the saved data");
         continue;
       }
+
       Coordinate? coordinate =
           await AddressFinder.getCoordinateFromExif(files[i]);
-      // print(
-      //     "getCoordinatesFromFiles : $i/${files.length}, ${coordinate?.latitude}, ${coordinate?.longitude} ");
-      // print("getCoordinatesFromFiles : $i/${files.length}, $coordinate ");
+      global.locationDataAll[files[i]] = coordinate;
       coordinateOfFiles.add(coordinate);
       if (i % 100 == 0) {
         await writeLocationData(files, coordinateOfFiles);
@@ -78,27 +80,8 @@ class LocationDataManager {
     return maxDistance;
   }
 
-  Future<List<String>> getAllFiles() async {
-    List<String> files = [];
-    List newFiles = [];
-    for (int i = 0; i < pathsToPhoto.length; i++) {
-      String path = pathsToPhoto.elementAt(i);
 
-      newFiles = await Glob("$path/*.jpg").listSync();
-      files.addAll(List.generate(
-          newFiles.length, (index) => newFiles.elementAt(index).path));
-
-      newFiles = await Glob("$path/*.png").listSync();
-      files.addAll(List.generate(
-          newFiles.length, (index) => newFiles.elementAt(index).path));
-    }
-    newFiles = newFiles
-        .where((element) => !element.path.contains('thumbnail'))
-        .toList();
-    return files;
-  }
-
-  Future writeLocationData(List filenames, List locations) async {
+  Future<void> writeLocationData(List filenames, List locations) async {
     final Directory? directory = await getExternalStorageDirectory();
     final File file = File('${directory?.path}/locationData.csv');
     print("writing location data to local..");

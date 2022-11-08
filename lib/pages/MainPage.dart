@@ -59,6 +59,7 @@ class MainPageState extends State<MainPage> {
     localPhotoDataManager = widget.localPhotoDataManager;
     noteManager = widget.noteManager;
 
+    // YearPage yearPage = YearPage(dataManager);
     YearPage yearPage = YearPage();
     DayPage hourPage = DayPage(permissionManager, dataManager,
         sensorDataManager, localPhotoDataManager, noteManager);

@@ -12,24 +12,27 @@ class PermissionManager {
   bool isCameraPermissionGranted = false;
 
   PermissionManager() {
-    debugPrint("permission Manager created");
-    checkPermissions();
-    getStoragePermission();
+    // init();
+  }
+
+  Future<void> init() async {
+    await checkPermissions();
+    await getStoragePermission();
     // getCameraPermission();
-    getMediaLibraryPermission();
+    await getMediaLibraryPermission();
     // getLocationPermission();
+    debugPrint("permissionManager initiation done");
+  }
+ Future<void> checkPermissions() async {
+    // checkLocationPermission();
+    // checkAudioPermission();
+    await checkStoragePermission();
+    // checkPhonePermission();
+    await checkMediaLibraryPermission();
+    // checkCameraPermission();
   }
 
-  void checkPermissions() async {
-    checkLocationPermission();
-    checkAudioPermission();
-    checkStoragePermission();
-    checkPhonePermission();
-    checkMediaLibraryPermission();
-    checkCameraPermission();
-  }
-
-  void checkMediaLibraryPermission() async{
+  Future<void> checkMediaLibraryPermission() async{
     isMediaLibraryPermissionGranted = await PermissionHandler.Permission.mediaLibrary.isGranted;
     print("PermissionManager, checkMediaLibraryPermission : $isMediaLibraryPermissionGranted");
   }
@@ -51,7 +54,7 @@ class PermissionManager {
     }
   }
 
-  void checkStoragePermission() async {
+  Future<void> checkStoragePermission() async {
     isStoragePermissionGranted = await PermissionHandler.Permission.storage.isGranted;
     print("PermissionManager, checkStoragePermission : $isStoragePermissionGranted");
 
@@ -82,7 +85,7 @@ class PermissionManager {
 
   }
 
-  void getStoragePermission() async {
+  Future<void> getStoragePermission() async {
     if (!isStoragePermissionGranted){
       PermissionHandler.Permission.storage.request();
     }
@@ -94,7 +97,7 @@ class PermissionManager {
     print("PermissionManager, getStoragePermission : $isStoragePermissionGranted");
   }
 
-  void getMediaLibraryPermission() async{
+  Future<void> getMediaLibraryPermission() async{
     if (!isMediaLibraryPermissionGranted){
       PermissionHandler.Permission.mediaLibrary.request();
     }

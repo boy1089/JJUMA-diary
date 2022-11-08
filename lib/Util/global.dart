@@ -13,7 +13,7 @@ Map<String, double> summaryOfDistanceData = {};
 Map locationDataAll = {};
 bool isLocationUpadating = false;
 
-List files = [];
+List<String> files = [];
 List dates = [];
 List datetimes = [];
 List locations = [];

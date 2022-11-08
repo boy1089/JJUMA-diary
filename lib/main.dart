@@ -16,7 +16,6 @@ import 'package:test_location_2nd/Util/StateProvider.dart';
 import 'package:test_location_2nd/Sensor/SensorDataManager.dart';
 import 'Photo/PhotoDataManager.dart';
 import 'package:test_location_2nd/Note/NoteManager.dart';
-import 'Location/AddressFinder.dart';
 
 
 void main() {
@@ -39,14 +38,15 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   final permissionManager = PermissionManager();
+  final sensorDataManager = SensorDataManager();
+  final noteManager = NoteManager();
   late final photoDataManager;
   late final locationDataManager;
   //sensorLogger will be initialized after initializing PermissionManager
   late final sensorRecorder;
   late final audioRecorder;
   late final dataManager;
-  final sensorDataManager = SensorDataManager();
-  final noteManager = NoteManager();
+
 
   Future initApp = Future.delayed(const Duration(seconds: 5));
 
@@ -63,12 +63,11 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<int> init() async {
-    print("init");
-    var a = await photoDataManager.init();
-    print('a');
-    var b = await locationDataManager.init();
-    print('b done');
-    var c = await dataManager.init();
+    await permissionManager.init();
+    await noteManager.init();
+    await photoDataManager.init();
+    await locationDataManager.init();
+    await dataManager.init();
     print("init done");
     return 0;
   }
@@ -81,10 +80,13 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+    print("start building app..");
     return FutureBuilder(
         future: initApp,
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           // print("snapshot.hasData? ${snapshot.hasData}, ${snapshot.data}");
+          print(snapshot.data);
+          print(dataManager.summaryOfPhotoData);
           return MaterialApp(
             initialRoute: '/daily',
             routes: {

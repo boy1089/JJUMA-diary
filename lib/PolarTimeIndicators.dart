@@ -10,16 +10,18 @@ import 'package:provider/provider.dart';
 import 'dart:io';
 import 'package:test_location_2nd/Util/global.dart' as global;
 
-class PolarTimeIndicators {
+class PolarTimeIndicators extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-        return
-          Provider.of<NavigationIndexProvider>(context, listen: false)
-              .isZoomIn
-        ?Stack(
-        children: List<Widget>.generate(
-            24, (int index) => PolarTimeIndicator(index).build(context)))
-        :Text("");
+    // print("PolarTimeIndicators build");
+    return Provider.of<NavigationIndexProvider>(context, listen: true).isZoomIn
+        ? Stack(
+            children: List<Widget>.generate(
+                24, (int index) => PolarTimeIndicator(index).build(context)))
+        : Text("");
+    // return Stack(
+    // children: List<Widget>.generate(
+    //     24, (int index) => PolarTimeIndicator(index).build(context)));
   }
 }
 
@@ -49,16 +51,15 @@ class PolarTimeIndicator {
 
   @override
   Widget build(BuildContext context) {
-    double angle = Provider.of<NavigationIndexProvider>(context, listen: false)
-        .zoomInAngle;
+    var provider = Provider.of<NavigationIndexProvider>(context, listen: true);
     return Align(
-      alignment: Alignment(xLocation, yLocation),
+      alignment:  Alignment(xLocation, yLocation),
       child: AnimatedRotation(
-          duration: Duration(milliseconds: 100),
-          turns: Provider.of<NavigationIndexProvider>(context, listen: false)
-                  .isZoomIn
-              ? -angle
+          duration: const Duration(milliseconds: 100),
+          turns: provider.isZoomIn
+              ? -provider.zoomInAngle
               : 0,
+          // turns : 0,
           child: Text(
             "$index",
             style: TextStyle(fontSize: 60, color: global.kColor_backgroundText),

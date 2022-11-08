@@ -48,8 +48,9 @@ class NavigationIndexProvider with ChangeNotifier{
   }
 
   void setZoomInRotationAngle(angle){
-    print("provider set zoomInAngle to $angle");
+    // print("provider set zoomInAngle to $angle");
     zoomInAngle = angle;
+    notifyListeners();
   }
 
   void setZoomInState(isZoomIn){

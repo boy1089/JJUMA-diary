@@ -35,6 +35,7 @@ class _AndroidSettingsScreenState extends State<AndroidSettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print("settingScreen build");
     return Scaffold(
       appBar: AppBar(
         title: Text(

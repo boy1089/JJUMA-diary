@@ -38,7 +38,6 @@ class _DayPageState extends State<DayPage> {
   late PhotoDataManager localPhotoDataManager;
   late NoteManager noteManager;
 
-
   String date = formatDate(DateTime.now());
   Future readData = Future.delayed(const Duration(seconds: 1));
   List photoForPlot = [];
@@ -48,8 +47,7 @@ class _DayPageState extends State<DayPage> {
 
   FocusNode focusNode = FocusNode();
   final myTextController = TextEditingController();
-
-
+  var provider;
   @override
   void initState() {
     super.initState();
@@ -60,7 +58,8 @@ class _DayPageState extends State<DayPage> {
     noteManager = widget.noteManager;
     print("DayPage, after initState : ${photoDataForPlot}");
     readData = _fetchData();
-    date = Provider.of<NavigationIndexProvider>(context, listen: false).date;
+    provider = Provider.of<NavigationIndexProvider>(context, listen: false);
+    date = provider.date;
   }
 
   Future<List<dynamic>> _fetchData() async {
@@ -94,10 +93,9 @@ class _DayPageState extends State<DayPage> {
 
   @override
   Widget build(BuildContext context) {
-    var provider = Provider.of<NavigationIndexProvider>(context, listen: true);
-    var isZoomIn =
+    bool isZoomIn =
         Provider.of<NavigationIndexProvider>(context, listen: true).isZoomIn;
-
+    print("building DayPage..");
     return FutureBuilder(
         future: readData,
         builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -135,9 +133,9 @@ class _DayPageState extends State<DayPage> {
                           if (!global.isImageClicked)
                             global.indexForZoomInImage = -1;
                           global.isImageClicked = false;
-                          setState((){});
+                          setState(() {});
                           if (isZoomIn) return;
-
+                          // setState(() {});
                           Offset tapPosition = calculateTapPositionRefCenter(
                               details, 0, layout_dayPage);
                           double angleZoomIn =
@@ -169,7 +167,6 @@ class _DayPageState extends State<DayPage> {
                             _angle =
                                 isZoomIn ? _angle + details.delta.dy / 1000 : 0;
                             provider.setZoomInRotationAngle(_angle);
-                            setState(() {});
                           };
                         },
                       )
@@ -320,7 +317,6 @@ class _DayPageState extends State<DayPage> {
 
     await updateSensorData();
 
-
     try {
       myTextController.text = await noteManager.readNote(date);
     } catch (e) {
@@ -353,7 +349,6 @@ class _DayPageState extends State<DayPage> {
       } else {
         photoForPlot.add([input[i][0], input[i][1], input[i][2], false]);
       }
-
     }
 
     photoForPlot.add([input.last[0], input.last[1], input.last[2], true]);

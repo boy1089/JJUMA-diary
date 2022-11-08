@@ -34,9 +34,7 @@ class polarPhotoImageContainers {
 
   @override
   Widget build(BuildContext context) {
-    // print(googlePhotoDataForPlot.length);
-    // print(stackOrder);
-    // print(indexForZoomInImage);
+    // print("imageContainers build");
     return !Provider.of<NavigationIndexProvider>(context, listen: false)
             .isZoomIn
         ? Stack(
@@ -91,7 +89,7 @@ class polarPhotoImageContainer {
 
       xLocation = imageLocationFactor *
           cos((googlePhotoDataForPlot[0]) / 24 * 2 * pi - pi / 2) *
-          (0.45 + 0.10 *  radius);
+          (0.45 + 0.10 * radius);
       yLocation = imageLocationFactor *
           sin((googlePhotoDataForPlot[0]) / 24 * 2 * pi - pi / 2) *
           (0.45 + 0.1 * radius);
@@ -113,12 +111,10 @@ class polarPhotoImageContainer {
 
   @override
   Widget build(BuildContext context) {
-    //outer container to make alignment consistent
-
-    // print(googlePhotoDataForPlot);
-    // print("polarPhotoImageContainer, imagesize : $imageSize");
     double angle = Provider.of<NavigationIndexProvider>(context, listen: false)
         .zoomInAngle;
+    bool isZoomIn =
+        Provider.of<NavigationIndexProvider>(context, listen: false).isZoomIn;
     return Align(
       alignment: Alignment(xLocation, yLocation),
       child: SizedBox(
@@ -127,17 +123,9 @@ class polarPhotoImageContainer {
           // https://stackoverflow.com/questions/53866481/flutter-how-to-create-card-with-background-image
           child: AnimatedRotation(
               duration: Duration(milliseconds: 100),
-              turns:
-                  Provider.of<NavigationIndexProvider>(context, listen: false)
-                          .isZoomIn
-                      ? -angle
-                      : 0,
+              turns: isZoomIn ? -angle : 0,
               child: Offstage(
-                offstage:
-                    Provider.of<NavigationIndexProvider>(context, listen: false)
-                            .isZoomIn
-                        ? false
-                        : !photoDataForPlot[3],
+                offstage: isZoomIn ? false : !photoDataForPlot[3],
                 child: RawGestureDetector(
                     gestures: {
                       AllowMultipleGestureRecognizer:
@@ -167,12 +155,18 @@ class polarPhotoImageContainer {
                       child: ExtendedImage.file(
                         File(photoDataForPlot[1]),
                         fit: BoxFit.cover,
+                        // imageCacheName: photoDataForPlot[1],
                         enableLoadState: false,
                         enableMemoryCache: true,
-                        compressionRatio: 0.05,
+                        compressionRatio: 0.01,
                       ),
                     )),
               ))),
     );
+  }
+
+  @override
+  void dispose() {
+    clearMemoryImageCache(photoDataForPlot[1]);
   }
 }

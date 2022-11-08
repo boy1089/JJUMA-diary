@@ -84,6 +84,7 @@ class MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
+    print("build MainPage");
     var provider = Provider.of<NavigationIndexProvider>(context, listen: false);
     return WillPopScope(
       onWillPop: () async {
@@ -110,7 +111,6 @@ class MainPageState extends State<MainPage> {
               setState(() {
                 provider.setZoomInState(false);
                 provider.setZoomInRotationAngle(0);
-                provider.isZoomIn = false;
               });
             }
 
@@ -121,33 +121,16 @@ class MainPageState extends State<MainPage> {
             //when zoomed out, go to month page
             if (!provider.isZoomIn) {
               provider.setNavigationIndex(0);
+              setState((){});
               return Navigator.canPop(context);
             }
+
             break;
         }
         return Navigator.canPop(context);
       },
       child: Scaffold(
         backgroundColor: kBackGroundColor,
-        // appBar: AppBar(
-        //   title: const Center(
-        //     child: Text(
-        //       "         Late Diary",
-        //       style: TextStyle(color: Colors.black54),
-        //     ),
-        //   ),
-        //   backgroundColor: Colors.white,
-        //   actions: [
-        //     Padding(
-        //         padding: const EdgeInsets.only(right: 20.0),
-        //         child: GestureDetector(
-        //             onTap: () {
-        //               Navigator.pushNamed(context, '/settings');
-        //             },
-        //             child: const Icon(Icons.settings_outlined,
-        //                 color: Colors.black54)))
-        //   ],
-        // ),
         bottomNavigationBar: Offstage(
           offstage: !provider.isBottomNavigationBarShown,
           child: SizedBox(
@@ -157,12 +140,12 @@ class MainPageState extends State<MainPage> {
               selectedFontSize: 0,
               type: BottomNavigationBarType.fixed,
               items: const <BottomNavigationBarItem>[
-                BottomNavigationBarItem(
+                const BottomNavigationBarItem(
                     icon: Icon(Icons.photo_camera_back_outlined),
                     label: "Photo"),
-                BottomNavigationBarItem(
+                const BottomNavigationBarItem(
                     icon: Icon(Icons.bookmark), label: "Diary"),
-                BottomNavigationBarItem(
+                const BottomNavigationBarItem(
                     icon: Icon(Icons.settings), label: "Settings"),
                 // BottomNavigationBarItem(
                 //     icon: Icon(Icons.settings_accessibility, color: Colors.black,), label: "Settings")
@@ -171,7 +154,8 @@ class MainPageState extends State<MainPage> {
                 //     icon: Icon(Icons.circle_outlined), label: "Circle"),
               ],
               currentIndex:
-                  context.watch<NavigationIndexProvider>().navigationIndex,
+                  // 2,
+              Provider.of<NavigationIndexProvider>(context, listen: true).navigationIndex,
               onTap: (index) {
                 onTap(context, index);
               },
@@ -182,8 +166,8 @@ class MainPageState extends State<MainPage> {
         body: FutureBuilder(
             future: readData,
             builder: (BuildContext context, AsyncSnapshot snapshot) {
-              print(
-                  "value from provider : ${context.watch<NavigationIndexProvider>().navigationIndex}");
+              // print(
+              //     "value from provider : ${context.watch<NavigationIndexProvider>().navigationIndex}");
               if (snapshot.hasData == false) {
                 return Center(child: CircularProgressIndicator());
               } else {
@@ -196,8 +180,10 @@ class MainPageState extends State<MainPage> {
                     secondaryAnimation: secondaryAnimation,
                     child: child,
                   ),
-                  child: _widgetOptions[
-                      context.watch<NavigationIndexProvider>().navigationIndex],
+                  child:
+                  // _widgetOptions[2]
+                    _widgetOptions[
+                    Provider.of<NavigationIndexProvider>(context, listen: false).navigationIndex],
                 );
               }
             }),

@@ -7,6 +7,11 @@ import 'dart:ui';
 import 'package:flutter/gestures.dart';
 import 'package:test_location_2nd/Util/Util.dart';
 import 'dart:math';
+import 'dart:io';
+import 'package:csv/csv.dart';
+import 'dart:convert';
+
+
 const bool kDebugMode = !kReleaseMode && !kProfileMode;
 
 List<String> kTimeStamps = [
@@ -301,5 +306,18 @@ Offset calculateTapPositionRefCenter(details, reference, layout) {
   var dy =
       -1 * (details.globalPosition.dy - layout['graphCenter'][isZoomIn].dy);
   return Offset(dx, dy.toDouble());
+}
+
+
+Future<List> openFile(filePath) async {
+  File f = File(filePath);
+  debugPrint("CSV to List");
+  final input = f.openRead();
+  final fields = await input
+      .transform(utf8.decoder)
+      .transform(const CsvToListConverter(eol: '\n'))
+      .toList();
+  // print(slice(fields, [0, fields.shape[0]], [1]));
+  return fields;
 }
 

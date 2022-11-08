@@ -13,16 +13,12 @@ import 'package:test_location_2nd/Location/Coordinate.dart';
 import 'package:test_location_2nd/Data/DataManager.dart';
 
 class YearPage extends StatefulWidget {
-  // DataManager dataManager;
-
-  // YearPage(this.dataManager, {Key? key}) : super(key: key);
   YearPage({Key? key}) : super(key: key);
   @override
   State<YearPage> createState() => _YearPageState();
 }
 
 class _YearPageState extends State<YearPage> {
-  // late DataManager dataManager;
 
   int year = DateTime.now().year;
   double _angle = 0;
@@ -34,12 +30,11 @@ class _YearPageState extends State<YearPage> {
   var heatmapChannel = StreamController<Selected?>.broadcast();
 
   _YearPageState() {
-    // dataManager = widget.dataManager;
     updateData(year);
     heatmapChannel.stream.listen(
-          (value) {
+      (value) {
         var provider =
-        Provider.of<NavigationIndexProvider>(context, listen: false);
+            Provider.of<NavigationIndexProvider>(context, listen: false);
 
         if (value == null) return;
         if (isZoomIn) return;
@@ -55,8 +50,6 @@ class _YearPageState extends State<YearPage> {
   }
 
   void updateData(year) {
-    // dataManager.updateSummaryOfCoordinate();
-
     availableDates = global.summaryOfPhotoData.keys.where((element) {
       return element.contains(year.toString());
     }).toList();
@@ -69,7 +62,7 @@ class _YearPageState extends State<YearPage> {
         0.2,
       ];
     });
-    print('c');
+
     if (availableDates.length != 0) {
       print('d');
       dummy = List.generate(availableDates.length, (index) {
@@ -80,15 +73,15 @@ class _YearPageState extends State<YearPage> {
             : global.summaryOfPhotoData[date]!;
 
         double distance = 0.1;
-        print("date : $date, ${global.summaryOfLocationData[date]}");
+        // print("date : $date, ${global.summaryOfLocationData[date]}");
 
-        if (global.summaryOfLocationData[date] == null) {
+        if (global.summaryOfLocationData[date] == null ||global.summaryOfLocationData[date] == 0  ) {
           distance = 0.1;
         } else {
           distance = global.summaryOfLocationData[date] > 100
               ? 100
               : global.summaryOfLocationData[date];
-          print("date : $date, distance $distance");
+          // print("date : $date, distance $distance");
         }
         return [
           days / 7.floor(),
@@ -103,7 +96,6 @@ class _YearPageState extends State<YearPage> {
     maxOfSummary = dummy3.reduce(max);
     print("year page, dummy3 : $maxOfSummary");
   }
-
 
   double graphSize = 400;
   double topPadding = 100;
@@ -160,7 +152,8 @@ class _YearPageState extends State<YearPage> {
                   () => AllowMultipleGestureRecognizer2(),
                   (AllowMultipleGestureRecognizer2 instance) {
                     instance.onUpdate = (details) {
-                      setState(() {_angle = isZoomIn ? _angle + details.delta.dy / 400 : 0;
+                      setState(() {
+                        _angle = isZoomIn ? _angle + details.delta.dy / 400 : 0;
                       });
                     };
                   },
@@ -282,10 +275,13 @@ class _YearPageState extends State<YearPage> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           // print(dummy);
-          var a = global.locationDataAll;
+          // var a = global.summaryOfPhotoData;
+          var a= global.summaryOfLocationData;
           print(a);
           for (int i = 0; i < a.length; i++) {
-            print(a.keys.elementAt(i));
+            // print("${a.keys.elementAt(i)}, ${a.values.elementAt(i).latitude}");
+            print("${a.keys.elementAt(i)}, ${a.values.elementAt(i)}");
+
           }
         },
       ),

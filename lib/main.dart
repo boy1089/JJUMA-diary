@@ -72,12 +72,6 @@ class _MyAppState extends State<MyApp> {
     return 0;
   }
 
-  // void saveNote() {
-  //   noteLogger.writeCache2(NoteData(DateTime.now(), myTextController.text));
-  //   myTextController.clear();
-  //   setState(() {});
-  // }
-
   @override
   Widget build(BuildContext context) {
     print("start building app..");

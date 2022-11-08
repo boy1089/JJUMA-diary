@@ -16,15 +16,14 @@ class DataManager {
   Map<String, Coordinate> summaryOfCoordinate = {};
   PhotoDataManager photoDataManager;
   LocationDataManager locationDataManager;
-
-  DataManager(this.photoDataManager, this.locationDataManager) {
-  }
+  DataManager(this.photoDataManager, this.locationDataManager) {}
 
   Future<void> init() async {
     print("DataManager instance is initializing..");
     // var a = await readSummaryOfPhotoData();
     print("DataManager, updatingSummaryOfPhoto..");
     await updateSummaryOfPhoto();
+    await updateSummaryOfCoordinate();
     print("DataManager initialization done");
   }
 
@@ -32,61 +31,29 @@ class DataManager {
     print("updateSummaryOfLocalPhoto..");
     List newList = photoDataManager.dates;
     Set ListOfDates = newList.toSet();
-    print("updateSummaryOfLocalPhoto2 ListOfDates $ListOfDates");
     final map = Map<String, int>.fromIterable(ListOfDates,
         key: (item) => item,
         value: (item) => newList.where((c) => c == item).length);
     summaryOfPhotoData = map;
     global.summaryOfPhotoData = summaryOfPhotoData;
-    print("udpatesSummaryOfPhtoo data done, summary : ${summaryOfPhotoData}");
+    print("updateSummaryOfPhoto done, summary : ${summaryOfPhotoData}");
   }
 
-  void updateSummaryOfCoordinate() async {
+  Future<void> updateSummaryOfCoordinate() async {
     print("updateSummaryOfCoordinate..");
     List listOfDates = global.dates;
     Set setOfDates = listOfDates.toSet();
-    print("updateSummaryOfCoordinate ListOfDates $setOfDates");
-    // final map = Map<String, List>.fromIterable(setOfDates,
-    //     key: (item) => item,
-    //     value: (item) => locationDataManager.getCoordinatesOfDate(item));
-    // final map = Map<String, Coordinate?>.fromIterable(setOfDates,
-    //     key: (item) => item,
-    //     value: (item) => locationDataManager.getCoordinatesOfDate(item).first);
-
-    // final map = Map<String, double>.fromIterable(setOfDates,
-    //     key: (item) => item,
-    //     value: (item) => locationDataManager.getMaxDistanceOfDate(item));
     for (int i = 0; i < setOfDates.length; i++) {
       String date = setOfDates.elementAt(i);
-      if (global.summaryOfLocationData.containsKey(date)) {
-        continue;
-      } else {
-        try {
-          global.summaryOfLocationData[date] =
-              locationDataManager.getMaxDistanceOfDate(date);
-        } catch (e) {}
-      }
+      if (global.summaryOfLocationData.containsKey(date)) continue;
+
+      try {
+        global.summaryOfLocationData[date] =
+            locationDataManager.getMaxDistanceOfDate(date);
+      } catch (e) {}
+      ;
     }
   }
-  //
-  // static void updateSummaryOfCoordinate_static() async {
-  //   print("updateSummaryOfCoordinate..");
-  //   List listOfDates = global.dates;
-  //   Set setOfDates = listOfDates.toSet();
-  //   print("updateSummaryOfCoordinate ListOfDates $setOfDates");
-  //
-  //   for (int i = 0; i < setOfDates.length; i++) {
-  //     String date = setOfDates.elementAt(i);
-  //     if (global.summaryOfLocationData.containsKey(date)) {
-  //       continue;
-  //     } else {
-  //       try {
-  //         global.summaryOfLocationData[date] =
-  //             locationDataManager.getMaxDistanceOfDate(date);
-  //       } catch (e) {}
-  //     }
-  //   }
-  // }
 
   Future<List> openFile(filePath) async {
     File f = File(filePath);

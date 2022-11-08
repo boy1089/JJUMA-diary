@@ -9,6 +9,7 @@ import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 import 'package:csv/csv.dart';
 import 'dart:convert';
+import 'package:test_location_2nd/Util/Util.dart';
 
 List<String> pathsToPhoto = [
   "/storage/emulated/0/DCIM",
@@ -27,19 +28,18 @@ class LocationDataManager {
 
   Future<void> init() async {
     await readLocationData();
-    await getCoordinatesFromPhotoFiles();
+    getCoordinatesFromPhotoFiles();
     print("locationDataManager initializaton done");
   }
 
-  Future<void> getCoordinatesFromPhotoFiles() async {
+  void getCoordinatesFromPhotoFiles() async {
     global.isLocationUpadating = true;
     List<String> files = global.files;
     for (int i = 0; i < files.length; i++) {
-      if(global.locationDataAll.containsKey(files[i])) {
+      if (global.locationDataAll.containsKey(files[i])) {
         // print("${files[i]} is already in the saved data");
         continue;
       }
-
       Coordinate? coordinate =
           await AddressFinder.getCoordinateFromExif(files[i]);
       global.locationDataAll[files[i]] = coordinate;
@@ -80,7 +80,6 @@ class LocationDataManager {
     return maxDistance;
   }
 
-
   Future<void> writeLocationData(List filenames, List locations) async {
     final Directory? directory = await getExternalStorageDirectory();
     final File file = File('${directory?.path}/locationData.csv');
@@ -115,25 +114,15 @@ class LocationDataManager {
       var data = await openFile(fileName.path);
       for (int i = 1; i < data.length; i++) {
         if (data[i].length > 1) {
-          print("${data[i][0]},${data[i][1]}, ${data[i][2]}");
+          // print("${data[i][0]},${data[i][1]}, ${data[i][2]}");
           global.locationDataAll[data[i][0]] =
               Coordinate(data[i][1], data[i][2]);
+          coordinateOfFiles.add(Coordinate(data[i][1], data[i][2]));
         }
       }
       print("readLocation done");
     } catch (e) {
       print("error during readLocationData : $e");
     }
-  }
-
-  Future<List> openFile(filepath) async {
-    File f = File(filepath);
-    print("CSV to List");
-    final input = f.openRead();
-    final fields = await input
-        .transform(utf8.decoder)
-        .transform(const CsvToListConverter(eol: '\n'))
-        .toList();
-    return fields;
   }
 }

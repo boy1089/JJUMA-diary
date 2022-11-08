@@ -22,7 +22,6 @@ class YearPage extends StatefulWidget {
 class _YearPageState extends State<YearPage> {
   int year = DateTime.now().year;
   double _angle = 0;
-  bool isZoomIn = false;
   int maxOfSummary = 0;
   List<String> availableDates = [];
   dynamic dataForPlot;
@@ -35,14 +34,15 @@ class _YearPageState extends State<YearPage> {
       (value) {
         var provider =
             Provider.of<NavigationIndexProvider>(context, listen: false);
+        var uiStateProivder = Provider.of<UiStateProvider>(context, listen: false);
 
         if (value == null) return;
-        if (isZoomIn) return;
+        if (!uiStateProivder.isZoomIn) return;
         print("aaa : ${value}");
         print("streaming value : ${value.values.first.first.toString()}");
         DateTime date = DateTime.parse(availableDates
             .elementAt(int.parse(value.values.first.first.toString())));
-        if (!provider.isZoomIn) return;
+        if (!uiStateProivder.isZoomIn) return;
         provider.setNavigationIndex(2);
         provider.setDate(date);
       },

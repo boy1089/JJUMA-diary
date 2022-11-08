@@ -20,16 +20,6 @@ import 'package:test_location_2nd/Note/NoteManager.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  // runApp(ChangeNotifierProvider(
-  //   // Initialize the model in the builder. That way, Provider
-  //   // can own Counter's lifecycle, making sure to call `dispose`
-  //   // when not needed anymore.
-  //   create: (context) {
-  //     NavigationIndexProvider();
-  //     UiStateProvider();
-  //   },
-  //   child: const MyApp(),
-  // ));
 
   runApp(
     MultiProvider(

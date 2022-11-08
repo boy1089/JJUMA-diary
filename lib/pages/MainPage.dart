@@ -94,9 +94,10 @@ class MainPageState extends State<MainPage> {
 
     return WillPopScope(
       onWillPop: () async {
+        print("back button pressed : ${provider.navigationIndex}");
         switch (provider.navigationIndex) {
           case 0:
-            if (provider.isZoomIn) {
+            if (uiStateProvider.isZoomIn) {
               setState(() {
                 uiStateProvider.setZoomInState(false);
                 uiStateProvider.setZoomInRotationAngle(0);
@@ -113,7 +114,7 @@ class MainPageState extends State<MainPage> {
             indexForZoomInImage = -1;
             isImageClicked = false;
 
-            if (provider.isZoomIn) {
+            if (uiStateProvider.isZoomIn) {
               setState(() {
                 uiStateProvider.setZoomInState(false);
                 uiStateProvider.setZoomInRotationAngle(0);
@@ -125,7 +126,7 @@ class MainPageState extends State<MainPage> {
               break;
             }
             //when zoomed out, go to month page
-            if (!provider.isZoomIn) {
+            if (!uiStateProvider.isZoomIn) {
               provider.setNavigationIndex(0);
               // provider.setZoomInState(true);
               setState(() {});

@@ -67,7 +67,7 @@ class _DayPageState extends State<DayPage> {
   Future<List<dynamic>> _fetchData() async {
     date = Provider.of<NavigationIndexProvider>(context, listen: false).date;
     await updateDataForUi();
-    var provider = Provider.of<NavigationIndexProvider>(context, listen: false);
+    var provider = Provider.of<UiStateProvider>(context, listen: false);
     provider.setZoomInState(false);
     print("fetchData done, $photoDataForPlot");
     await Future.delayed(Duration(seconds: 1));

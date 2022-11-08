@@ -35,7 +35,7 @@ class polarPhotoImageContainers {
   @override
   Widget build(BuildContext context) {
     // print("imageContainers build");
-    return !Provider.of<NavigationIndexProvider>(context, listen: false)
+    return !Provider.of<UiStateProvider>(context, listen: false)
             .isZoomIn
         ? Stack(
             children: List<Widget>.generate(
@@ -111,10 +111,10 @@ class polarPhotoImageContainer {
 
   @override
   Widget build(BuildContext context) {
-    double angle = Provider.of<NavigationIndexProvider>(context, listen: false)
+    double angle = Provider.of<UiStateProvider>(context, listen: false)
         .zoomInAngle;
     bool isZoomIn =
-        Provider.of<NavigationIndexProvider>(context, listen: false).isZoomIn;
+        Provider.of<UiStateProvider>(context, listen: false).isZoomIn;
     return Align(
       alignment: Alignment(xLocation, yLocation),
       child: SizedBox(

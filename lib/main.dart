@@ -18,16 +18,36 @@ import 'package:test_location_2nd/Sensor/SensorDataManager.dart';
 import 'Photo/PhotoDataManager.dart';
 import 'package:test_location_2nd/Note/NoteManager.dart';
 
-
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(ChangeNotifierProvider(
-    // Initialize the model in the builder. That way, Provider
-    // can own Counter's lifecycle, making sure to call `dispose`
-    // when not needed anymore.
-    create: (context) => NavigationIndexProvider(),
-    child: const MyApp(),
-  ));
+  // runApp(ChangeNotifierProvider(
+  //   // Initialize the model in the builder. That way, Provider
+  //   // can own Counter's lifecycle, making sure to call `dispose`
+  //   // when not needed anymore.
+  //   create: (context) {
+  //     NavigationIndexProvider();
+  //     UiStateProvider();
+  //   },
+  //   child: const MyApp(),
+  // ));
+
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider<NavigationIndexProvider>(
+          create: (context) {
+            return NavigationIndexProvider();
+          },
+        ),
+        ChangeNotifierProvider<UiStateProvider>(
+          create: (context) {
+            return UiStateProvider();
+          },
+        ),
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatefulWidget {
@@ -47,7 +67,6 @@ class _MyAppState extends State<MyApp> {
   late final sensorRecorder;
   late final audioRecorder;
   late final dataManager;
-
 
   Future initApp = Future.delayed(const Duration(seconds: 5));
 

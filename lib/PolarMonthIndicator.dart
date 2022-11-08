@@ -15,7 +15,7 @@ class PolarMonthIndicators {
   @override
   Widget build(BuildContext context) {
     return
-      Provider.of<NavigationIndexProvider>(context, listen: false)
+      Provider.of<UiStateProvider>(context, listen: false)
           .isZoomIn
           ?Stack(
           children: List<Widget>.generate(

@@ -90,14 +90,16 @@ class MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     print("build MainPage");
     var provider = Provider.of<NavigationIndexProvider>(context, listen: false);
+    var uiStateProvider = Provider.of<UiStateProvider>(context, listen: false);
+
     return WillPopScope(
       onWillPop: () async {
         switch (provider.navigationIndex) {
           case 0:
             if (provider.isZoomIn) {
               setState(() {
-                provider.setZoomInState(false);
-                provider.setZoomInRotationAngle(0);
+                uiStateProvider.setZoomInState(false);
+                uiStateProvider.setZoomInRotationAngle(0);
                 // provider.isZoomIn = false;
               });
             }
@@ -113,8 +115,8 @@ class MainPageState extends State<MainPage> {
 
             if (provider.isZoomIn) {
               setState(() {
-                provider.setZoomInState(false);
-                provider.setZoomInRotationAngle(0);
+                uiStateProvider.setZoomInState(false);
+                uiStateProvider.setZoomInRotationAngle(0);
               });
             }
 

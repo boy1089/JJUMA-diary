@@ -113,9 +113,9 @@ class _YearPageState extends State<YearPage> {
   @override
   Widget build(BuildContext context) {
     print("yearPage built");
-    var provider = Provider.of<NavigationIndexProvider>(context, listen: true);
+    var provider = Provider.of<UiStateProvider>(context, listen: true);
     var isZoomIn =
-        Provider.of<NavigationIndexProvider>(context, listen: false).isZoomIn;
+        Provider.of<UiStateProvider>(context, listen: false).isZoomIn;
 
     return Scaffold(
       body: Stack(

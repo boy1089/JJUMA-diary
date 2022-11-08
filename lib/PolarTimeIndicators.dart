@@ -14,7 +14,7 @@ class PolarTimeIndicators extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // print("PolarTimeIndicators build");
-    return Provider.of<NavigationIndexProvider>(context, listen: true).isZoomIn
+    return Provider.of<UiStateProvider>(context, listen: true).isZoomIn
         ? Stack(
             children: List<Widget>.generate(
                 24, (int index) => PolarTimeIndicator(index).build(context)))
@@ -51,7 +51,7 @@ class PolarTimeIndicator {
 
   @override
   Widget build(BuildContext context) {
-    var provider = Provider.of<NavigationIndexProvider>(context, listen: true);
+    var provider = Provider.of<UiStateProvider>(context, listen: true);
     return Align(
       alignment:  Alignment(xLocation, yLocation),
       child: AnimatedRotation(

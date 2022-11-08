@@ -23,7 +23,7 @@ class DataManager {
     // var a = await readSummaryOfPhotoData();
     print("DataManager, updatingSummaryOfPhoto..");
     await updateSummaryOfPhoto();
-    await updateSummaryOfCoordinate();
+    await updateSummaryOfLocationData();
     print("DataManager initialization done");
   }
 
@@ -39,19 +39,21 @@ class DataManager {
     print("updateSummaryOfPhoto done, summary : ${summaryOfPhotoData}");
   }
 
-  Future<void> updateSummaryOfCoordinate() async {
+
+  //updateSummaryOfLocationData is seperated from reading, updating location data
+  //as the meaning of summary can get different
+  Future<void> updateSummaryOfLocationData() async {
     print("updateSummaryOfCoordinate..");
     List listOfDates = global.dates;
     Set setOfDates = listOfDates.toSet();
     for (int i = 0; i < setOfDates.length; i++) {
       String date = setOfDates.elementAt(i);
-      if (global.summaryOfLocationData.containsKey(date)) continue;
-
+      if (global.summaryOfLocationData.containsKey(date))
       try {
+        print("updateSummaryOfLocation, date : $date");
         global.summaryOfLocationData[date] =
             locationDataManager.getMaxDistanceOfDate(date);
-      } catch (e) {}
-      ;
+      } catch (e) {};
     }
   }
 

@@ -51,10 +51,11 @@ class _MyAppState extends State<MyApp> {
   Future initApp = Future.delayed(const Duration(seconds: 5));
 
   _MyAppState() {
-    sensorRecorder = SensorRecorder(permissionManager);
-    sensorRecorder.init();
-    audioRecorder = AudioRecorder(permissionManager);
-    audioRecorder.init();
+    // sensorRecorder = SensorRecorder(permissionManager);
+    // sensorRecorder.init();
+    // audioRecorder = AudioRecorder(permissionManager);
+    // audioRecorder.init();
+
     photoDataManager = PhotoDataManager();
     locationDataManager = LocationDataManager();
     dataManager = DataManager(photoDataManager, locationDataManager);

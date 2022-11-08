@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:test_location_2nd/Location/AddressFinder.dart';
 import 'package:glob/glob.dart';
 import 'package:glob/list_local_fs.dart';
+import 'package:test_location_2nd/Util/DateHandler.dart';
 import 'package:test_location_2nd/Util/global.dart' as global;
 import "package:test_location_2nd/Location/Coordinate.dart";
 import 'dart:math';
@@ -70,6 +71,7 @@ class LocationDataManager {
     return coordinateOfDate;
   }
 
+
   double getMaxDistanceOfDate(String date) {
     List coordinateOfDate = getCoordinatesOfDate(date);
     coordinateOfDate = coordinateOfDate.whereType<Coordinate>().toList();
@@ -117,6 +119,8 @@ class LocationDataManager {
           // print("${data[i][0]},${data[i][1]}, ${data[i][2]}");
           global.locationDataAll[data[i][0]] =
               Coordinate(data[i][1], data[i][2]);
+          //updating summaryOfLocationData with reading data so as facilitate followup update.
+          global.summaryOfLocationData[inferDatetimeFromFilename(data[i][0])!.substring(0, 8)] = 0;
           coordinateOfFiles.add(Coordinate(data[i][1], data[i][2]));
         }
       }

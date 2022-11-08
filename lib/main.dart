@@ -6,6 +6,7 @@ import 'package:test_location_2nd/Photo/PhotoDataManager.dart';
 
 import 'package:test_location_2nd/Sensor/AudioRecorder.dart';
 import 'package:test_location_2nd/Sensor/SensorRecorder.dart';
+import 'package:test_location_2nd/Util/global.dart';
 
 import 'package:test_location_2nd/pages/MainPage.dart';
 import 'pages/SettingPage.dart';
@@ -64,11 +65,13 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<int> init() async {
+    isInitializationDone = false;
     await permissionManager.init();
     await noteManager.init();
     await photoDataManager.init();
     await locationDataManager.init();
     await dataManager.init();
+    isInitializationDone = true;
     print("init done");
     return 0;
   }

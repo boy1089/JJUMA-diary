@@ -279,13 +279,33 @@ class _YearPageState extends State<YearPage> {
           // var a = global.summaryOfPhotoData;
           var a = global.summaryOfLocationData;
           print(a);
-          for (int i = 0; i < a.length; i++) {
+          Timeline.timeSync("Aa", () async {
+            provider.setZoomInState(true);
+            setState((){});
+            await Future.delayed(Duration(seconds: 1));
+            provider.setZoomInRotationAngle(_angle+0.01);
+            provider.setZoomInRotationAngle(_angle+0.01);
+            provider.setZoomInRotationAngle(_angle+0.01);
+            provider.setZoomInRotationAngle(_angle+0.01);
+            provider.setZoomInRotationAngle(_angle+0.01);
+
+            setState((){});
+            await Future.delayed(Duration(seconds: 1));
+            provider.setZoomInState(false);
+            setState((){});
+          });
+          // for (int i = 0; i < a.length; i++) {
             // print("${a.keys.elementAt(i)}, ${a.values.elementAt(i).latitude}");
             // print("${a.keys.elementAt(i)}, ${a.values.elementAt(i)}");
-            debugDumpRenderTree();
+            // debugDumpRenderTree();
+            // Timeline.timeSync("Aa", () => {
+            //   provider.setZoomInState(true),
+            //     provider.setZoomInState(false)
+            // }
+            // );
             // print('aaa');
             // Timeline.finishSync();
-          }
+
         },
       ),
     );

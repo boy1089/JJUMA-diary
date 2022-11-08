@@ -76,10 +76,14 @@ class MainPageState extends State<MainPage> {
     ];
   }
 
-  Future<List<List<dynamic>>> _fetchData() async {
-    await Future.delayed(const Duration(seconds: 2));
-    // return dataReader.readFiles();
-    return [[]];
+  Future<int> _fetchData() async {
+    print("initialization : $isInitializationDone");
+    while (!isInitializationDone) {
+      print("initialization on going..");
+      await Future.delayed(const Duration(seconds: 1));
+    }
+    await Future.delayed(const Duration(seconds: 1));
+    return 0;
   }
 
   @override
@@ -122,7 +126,7 @@ class MainPageState extends State<MainPage> {
             if (!provider.isZoomIn) {
               provider.setNavigationIndex(0);
               // provider.setZoomInState(true);
-              setState((){});
+              setState(() {});
               return Navigator.canPop(context);
             }
 
@@ -131,6 +135,31 @@ class MainPageState extends State<MainPage> {
         return Navigator.canPop(context);
       },
       child: Scaffold(
+        body: FutureBuilder(
+            future: readData,
+            builder: (BuildContext context, AsyncSnapshot snapshot) {
+              print("building MAinPage.. ${snapshot.hasData}");
+              if (snapshot.hasData == false) {
+                return Center(child: CircularProgressIndicator());
+              } else {
+                return PageTransitionSwitcher(
+                  duration: Duration(milliseconds: 1000),
+                  transitionBuilder:
+                      (child, primaryAnimation, secondaryAnimation) =>
+                          FadeThroughTransition(
+                    animation: primaryAnimation,
+                    secondaryAnimation: secondaryAnimation,
+                    child: child,
+                  ),
+                  child:
+                      // _widgetOptions[2]
+                      _widgetOptions[Provider.of<NavigationIndexProvider>(
+                              context,
+                              listen: false)
+                          .navigationIndex],
+                );
+              }
+            }),
         backgroundColor: kBackGroundColor,
         bottomNavigationBar: Offstage(
           offstage: !provider.isBottomNavigationBarShown,
@@ -148,15 +177,10 @@ class MainPageState extends State<MainPage> {
                     icon: Icon(Icons.bookmark), label: "Diary"),
                 const BottomNavigationBarItem(
                     icon: Icon(Icons.settings), label: "Settings"),
-                // BottomNavigationBarItem(
-                //     icon: Icon(Icons.settings_accessibility, color: Colors.black,), label: "Settings")
-
-                // BottomNavigationBarItem(
-                //     icon: Icon(Icons.circle_outlined), label: "Circle"),
               ],
               currentIndex:
-                  // 2,
-              Provider.of<NavigationIndexProvider>(context, listen: true).navigationIndex,
+                  Provider.of<NavigationIndexProvider>(context, listen: true)
+                      .navigationIndex,
               onTap: (index) {
                 onTap(context, index);
               },
@@ -164,30 +188,6 @@ class MainPageState extends State<MainPage> {
           ),
         ),
 
-        body: FutureBuilder(
-            future: readData,
-            builder: (BuildContext context, AsyncSnapshot snapshot) {
-              // print(
-              //     "value from provider : ${context.watch<NavigationIndexProvider>().navigationIndex}");
-              if (snapshot.hasData == false) {
-                return Center(child: CircularProgressIndicator());
-              } else {
-                return PageTransitionSwitcher(
-                  duration: Duration(milliseconds: 1000),
-                  transitionBuilder:
-                      (child, primaryAnimation, secondaryAnimation) =>
-                          FadeThroughTransition(
-                    animation: primaryAnimation,
-                    secondaryAnimation: secondaryAnimation,
-                    child: child,
-                  ),
-                  child:
-                  // _widgetOptions[2]
-                    _widgetOptions[
-                    Provider.of<NavigationIndexProvider>(context, listen: false).navigationIndex],
-                );
-              }
-            }),
         // floatingActionButton: FloatingActionButton(
         //   onPressed: () async {
         //     // await AddressFinder.getAddressFromExif(localPhotoDataManager.files[0]);

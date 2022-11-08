@@ -193,7 +193,7 @@ class _DayPageState extends State<DayPage> {
                               left:
                                   layout_dayPage['left']?[isZoomIn]?.toDouble(),
                               top: layout_dayPage['top']?[isZoomIn]?.toDouble(),
-                              curve: Curves.fastOutSlowIn,
+                              // curve: Curves.fastOutSlowIn,
                               child: AnimatedRotation(
                                   turns: isZoomIn ? _angle : 0,
                                   duration: Duration(

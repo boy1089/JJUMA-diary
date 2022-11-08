@@ -43,7 +43,7 @@ Color kColor_grey = Colors.black12.withAlpha(10);
 Color kColor_white = Colors.white.withOpacity(0.85);
 Color kColor_container = Colors.black12.withAlpha(10);
 Color kColor_containerFocused = Colors.white.withAlpha(150);
-Color kColor_backgroundText = Colors.black45;
+const Color kColor_backgroundText = Colors.black45;
 Color kColor_diaryText = Colors.black87;
 
 Color kColor_polarPlotOutline = Colors.black12;

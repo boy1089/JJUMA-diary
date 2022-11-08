@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:graphic/graphic.dart';
 import 'package:test_location_2nd/Util/Util.dart';
-import 'dart:math';
+import 'dart:math' as math;
 import 'package:test_location_2nd/Util/global.dart' as global;
 import 'package:test_location_2nd/Util/StateProvider.dart';
 import 'package:provider/provider.dart';
@@ -11,6 +11,7 @@ import 'package:test_location_2nd/PolarMonthIndicator.dart';
 import 'package:intl/intl.dart';
 import 'package:test_location_2nd/Location/Coordinate.dart';
 import 'package:test_location_2nd/Data/DataManager.dart';
+import 'dart:developer';
 
 class YearPage extends StatefulWidget {
   YearPage({Key? key}) : super(key: key);
@@ -91,7 +92,7 @@ class _YearPageState extends State<YearPage> {
     });
     List<int> dummy3 = List<int>.generate(transpose(dataForPlot)[0].length,
         (index) => int.parse(transpose(dataForPlot)[2][index].toString()));
-    maxOfSummary = dummy3.reduce(max);
+    maxOfSummary = dummy3.reduce(math.max);
     print("year page, dummy3 : $maxOfSummary");
   }
 
@@ -112,9 +113,10 @@ class _YearPageState extends State<YearPage> {
   @override
   Widget build(BuildContext context) {
     print("yearPage built");
-    var provider = Provider.of<NavigationIndexProvider>(context, listen: false);
+    var provider = Provider.of<NavigationIndexProvider>(context, listen: true);
     var isZoomIn =
         Provider.of<NavigationIndexProvider>(context, listen: false).isZoomIn;
+
     return Scaffold(
       body: Stack(
         alignment: Alignment.center,
@@ -151,9 +153,8 @@ class _YearPageState extends State<YearPage> {
                   () => AllowMultipleGestureRecognizer2(),
                   (AllowMultipleGestureRecognizer2 instance) {
                     instance.onUpdate = (details) {
-                      setState(() {
                         _angle = isZoomIn ? _angle + details.delta.dy / 400 : 0;
-                      });
+                        provider.setZoomInRotationAngle(_angle);
                     };
                   },
                 )
@@ -169,11 +170,12 @@ class _YearPageState extends State<YearPage> {
                           layout_yearPage['graphSize']?[isZoomIn]?.toDouble(),
                       left: layout_yearPage['left']?[isZoomIn]?.toDouble(),
                       top: layout_yearPage['top']?[isZoomIn]?.toDouble(),
-                      curve: Curves.fastOutSlowIn,
+                      // curve: Curves.fastOutSlowIn,
+
                       // child: Transform.rotate(
                       child: AnimatedRotation(
                         // angle: isZoomIn ? _angle * 2 * pi : 0,
-                        turns: isZoomIn ? _angle : 0,
+                        turns: isZoomIn ? provider.zoomInAngle : 0,
                         duration:
                             Duration(milliseconds: global.animationTime - 100),
                         child: Stack(alignment: Alignment.center, children: [
@@ -195,8 +197,8 @@ class _YearPageState extends State<YearPage> {
                                     // Colors.white24.withAlpha(200),
                                     // global.kMainColor_warm.withAlpha(255),
                                     // global.kMainColor_cool,
-                                    Colors.blue,
-                                    Colors.red,
+                                    Colors.blue.withAlpha(150),
+                                    Colors.red.withAlpha(150),
                                     // global.kMainColor_warm.withAlpha(255),
                                   ],
                                 ),
@@ -217,7 +219,7 @@ class _YearPageState extends State<YearPage> {
                               ),
                               'distance': Variable(
                                 accessor: (List datum) =>
-                                    log(datum[3]) + 0.1 as num,
+                                    math.log(datum[3]) + 0.1 as num,
                               ),
                             },
                             selections: {
@@ -279,7 +281,10 @@ class _YearPageState extends State<YearPage> {
           print(a);
           for (int i = 0; i < a.length; i++) {
             // print("${a.keys.elementAt(i)}, ${a.values.elementAt(i).latitude}");
-            print("${a.keys.elementAt(i)}, ${a.values.elementAt(i)}");
+            // print("${a.keys.elementAt(i)}, ${a.values.elementAt(i)}");
+            debugDumpRenderTree();
+            // print('aaa');
+            // Timeline.finishSync();
           }
         },
       ),

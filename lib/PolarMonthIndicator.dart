@@ -50,20 +50,24 @@ class PolarMonthIndicator {
 
   @override
   Widget build(BuildContext context) {
-    double angle = Provider.of<NavigationIndexProvider>(context, listen: false)
-        .zoomInAngle;
+    // double angle = Provider.of<NavigationIndexProvider>(context, listen: false)
+    //     .zoomInAngle;
     return Align(
       alignment: Alignment(xLocation, yLocation),
-      child: AnimatedRotation(
-          duration: Duration(milliseconds: 100),
-          turns: Provider.of<NavigationIndexProvider>(context, listen: false)
-              .isZoomIn
-              ? -angle
-              : 0,
-          child: Text(
-            "${DateFormat('MMM').format(DateTime(2022, index+1))}",
-            style: TextStyle(fontSize: 60, color: global.kColor_backgroundText),
-          )),
+      child: Text(
+        "${DateFormat('MMM').format(DateTime(2022, index+1))}",
+        style: const TextStyle(fontSize: 60, color: global.kColor_backgroundText),
+      ),
+      // child: AnimatedRotation(
+      //     duration: Duration(milliseconds: 100),
+      //     turns: Provider.of<NavigationIndexProvider>(context, listen: false)
+      //         .isZoomIn
+      //         ? -angle
+      //         : 0,
+      //     child: Text(
+      //       "${DateFormat('MMM').format(DateTime(2022, index+1))}",
+      //       style: TextStyle(fontSize: 60, color: global.kColor_backgroundText),
+      //     )),
     );
   }
 }

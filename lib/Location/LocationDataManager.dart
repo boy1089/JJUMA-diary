@@ -71,13 +71,13 @@ class LocationDataManager {
     return coordinateOfDate;
   }
 
-
   double getMaxDistanceOfDate(String date) {
     List coordinateOfDate = getCoordinatesOfDate(date);
     coordinateOfDate = coordinateOfDate.whereType<Coordinate>().toList();
-    print("CoordinateOfDate : $coordinateOfDate");
-    List<double> distanceOfDate = List.generate(coordinateOfDate.length,
-        (i) => calculateDistanceToRef(coordinateOfDate[i]));
+    List<double> distanceOfDate = List.generate(coordinateOfDate.length, (i) {
+      print(coordinateOfDate[i].latitude);
+      return calculateDistanceToRef(coordinateOfDate[i]);
+    });
     double maxDistance = distanceOfDate.reduce(max);
     return maxDistance;
   }
@@ -116,11 +116,18 @@ class LocationDataManager {
       var data = await openFile(fileName.path);
       for (int i = 1; i < data.length; i++) {
         if (data[i].length > 1) {
-          // print("${data[i][0]},${data[i][1]}, ${data[i][2]}");
+          print("${data[i][0]},${data[i][1]}, ${data[i][2]}");
+          // print(data[i]);
           global.locationDataAll[data[i][0]] =
               Coordinate(data[i][1], data[i][2]);
           //updating summaryOfLocationData with reading data so as facilitate followup update.
-          global.summaryOfLocationData[inferDatetimeFromFilename(data[i][0])!.substring(0, 8)] = 0;
+          String? inferredDatetime = inferDatetimeFromFilename(data[i][0]);
+
+          inferredDatetime = inferredDatetime == null
+              ? null
+              : inferredDatetime!.substring(0, 8);
+
+          global.summaryOfLocationData[inferredDatetime] = 0;
           coordinateOfFiles.add(Coordinate(data[i][1], data[i][2]));
         }
       }

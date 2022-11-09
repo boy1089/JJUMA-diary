@@ -43,14 +43,14 @@ class DataManager {
   //updateSummaryOfLocationData is seperated from reading, updating location data
   //as the meaning of summary can get different
   Future<void> updateSummaryOfLocationData() async {
-    print("updateSummaryOfCoordinate..");
+    print("updateSummaryOfLocationData..");
     List listOfDates = global.dates;
     Set setOfDates = listOfDates.toSet();
     for (int i = 0; i < setOfDates.length; i++) {
       String date = setOfDates.elementAt(i);
       if (global.summaryOfLocationData.containsKey(date))
       try {
-        print("updateSummaryOfLocation, date : $date");
+        print("updateSummaryOfLocation, date : $date, ${locationDataManager.getMaxDistanceOfDate(date)}");
         global.summaryOfLocationData[date] =
             locationDataManager.getMaxDistanceOfDate(date);
       } catch (e) {};

@@ -60,7 +60,7 @@ class _YearPageState extends State<YearPage> {
         index,
         1,
         10,
-        0.2,
+        0.01,
       ];
     });
 
@@ -73,11 +73,12 @@ class _YearPageState extends State<YearPage> {
           ? 200
           : global.summaryOfPhotoData[date]!;
 
-      double distance = 0.1;
-
+      double distance = 0.01;
+      var temp = global.summaryOfLocationData[date];
+      print("$date, $temp");
       if (global.summaryOfLocationData[date] == null ||
           global.summaryOfLocationData[date] == 0) {
-        distance = 0.1;
+        distance = 0.01;
       } else {
         distance = global.summaryOfLocationData[date] > 100
             ? 100
@@ -279,14 +280,21 @@ class _YearPageState extends State<YearPage> {
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          print(heatmapChannel.stream.isBroadcast);
-          print(heatmapChannel.stream.drain());
-           // print(heatmapChannel.onListen);
-          // subscription.resume();
-        },
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () {
+      //
+      //     // var temp = global.summaryOfLocationData;
+      //     // var temp = global.locationDataAll;
+      //     // var temp = global.;
+      //     var temp = availableDates;
+      //     updateData("2022");
+      //     // for(int i = 0 ; i<temp.length; i++){
+      //       // if(temp.keys.elementAt(i).contains("20220928"))
+      //       //   print("${temp.keys.elementAt(i)}, ${temp.values.elementAt(i).latitude}");
+      //     // }
+      //
+      //   },
+      // ),
     );
   }
 }

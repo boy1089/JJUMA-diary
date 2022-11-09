@@ -8,7 +8,7 @@ int mainPageSelectionIndex = 0;
 
 Map<String, int> summaryOfPhotoData = {};
 Map<String, int> summaryOfNoteData = {};
-Map summaryOfLocationData = {};
+Map<String, double> summaryOfLocationData = {};
 Map<String, double> summaryOfDistanceData = {};
 
 Map locationDataAll = {};

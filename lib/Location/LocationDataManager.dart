@@ -138,33 +138,33 @@ class LocationDataManager {
       }
     }
   }
-
-  Future<void> readLocationData() async {
-    final Directory? directory = await getExternalStorageDirectory();
-    try {
-      final fileName =
-          Glob('${directory?.path}/locationData.csv').listSync().elementAt(0);
-      print("read ${fileName.path}");
-      var data = await openFile(fileName.path);
-      for (int i = 1; i < data.length; i++) {
-        if (data[i].length > 1) {
-          // print("${data[i][0]},${data[i][1]}, ${data[i][2]}");
-          // print(data[i]);
-          global.locationDataAll[data[i][0]] =
-              Coordinate(data[i][1], data[i][2]);
-          //updating summaryOfLocationData with reading data so as facilitate followup update.
-          String? inferredDatetime = inferDatetimeFromFilename(data[i][0]);
-
-          inferredDatetime = inferredDatetime == null
-              ? null
-              : inferredDatetime!.substring(0, 8);
-          global.summaryOfLocationData[inferredDatetime] = 0;
-          coordinateOfFiles.add(Coordinate(data[i][1], data[i][2]));
-        }
-      }
-      print("readLocation done");
-    } catch (e) {
-      print("error during readLocationData : $e");
-    }
-  }
+  //
+  // Future<void> readLocationData() async {
+  //   final Directory? directory = await getExternalStorageDirectory();
+  //   try {
+  //     final fileName =
+  //         Glob('${directory?.path}/locationData.csv').listSync().elementAt(0);
+  //     print("read ${fileName.path}");
+  //     var data = await openFile(fileName.path);
+  //     for (int i = 1; i < data.length; i++) {
+  //       if (data[i].length > 1) {
+  //         // print("${data[i][0]},${data[i][1]}, ${data[i][2]}");
+  //         // print(data[i]);
+  //         global.locationDataAll[data[i][0]] =
+  //             Coordinate(data[i][1], data[i][2]);
+  //         //updating summaryOfLocationData with reading data so as facilitate followup update.
+  //         String? inferredDatetime = inferDatetimeFromFilename(data[i][0]);
+  //
+  //         inferredDatetime = inferredDatetime == null
+  //             ? null
+  //             : inferredDatetime!.substring(0, 8);
+  //         global.summaryOfLocationData[inferredDatetime] = 0;
+  //         coordinateOfFiles.add(Coordinate(data[i][1], data[i][2]));
+  //       }
+  //     }
+  //     print("readLocation done");
+  //   } catch (e) {
+  //     print("error during readLocationData : $e");
+  //   }
+  // }
 }

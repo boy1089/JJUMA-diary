@@ -80,9 +80,9 @@ class _YearPageState extends State<YearPage> {
           global.summaryOfLocationData[date] == 0) {
         distance = 0.01;
       } else {
-        distance = global.summaryOfLocationData[date] > 100
+        distance = global.summaryOfLocationData[date]! > 100
             ? 100
-            : global.summaryOfLocationData[date];
+            : global.summaryOfLocationData[date]!;
         // print("date : $date, distance $distance");
       }
       return [

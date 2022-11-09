@@ -47,9 +47,17 @@ class DataManager {
     await updateDatesFromInfo();
     await updateDateOnInfo(filesNotUpdated);
     await updateExifOnInfo(filesNotUpdated);
-    await updateSummaryOfPhotoFromInfo();
-    await updateSummaryOfLocationDataFromInfo();
     await writeInfo(filesNotUpdated, false);
+
+    await readSummaryOfLocation();
+    await readSummaryOfPhoto();
+    //find the dates which are out of date based on the number of photo.
+    List<String>? datesOutOfDate = await updateSummaryOfPhotoFromInfo();
+    //update the summaryOflocation only on the specific date. 
+    await updateSummaryOfLocationDataFromInfo(datesOutOfDate);
+
+    await writeSummaryOfLocation(datesOutOfDate, false);
+    await writeSummaryOfPhoto(datesOutOfDate,false);
     print("DataManager initialization done");
   }
 
@@ -127,9 +135,9 @@ class DataManager {
       String? inferredDatetime = inferDatetimeFromFilename(filename);
       if (inferredDatetime != null) {
         global.infoFromFiles[filename]?.datetime =
-            DateTime.parse(inferredDatetime!);
+            DateTime.parse(inferredDatetime);
         global.infoFromFiles[filename]?.date =
-            inferredDatetime?.substring(0, 8);
+            inferredDatetime.substring(0, 8);
       }
     }
   }
@@ -158,25 +166,32 @@ class DataManager {
     }
   }
 
-  Future<void> updateSummaryOfPhotoFromInfo() async {
+  Future<List<String>> updateSummaryOfPhotoFromInfo() async {
     List dates = global.dates;
     dates.removeWhere((i) => i == null);
-    final map = Map<String, int>.fromIterable(dates.toSet(),
-        key: (item) => item,
-        value: (item) {
-          print("updateSummaryOfPhoto...");
-          return dates.where((c) => c == item).length;
-        });
-    summaryOfPhotoData = map;
-    global.summaryOfPhotoData = summaryOfPhotoData;
-    print("updateSummaryOfPhoto done, summary : ${summaryOfPhotoData}");
+    Set setOfDates = dates.toSet();
+    Map<String, int> summaryOfPhotoOfCurrentStatus = {};
+    List<String> datesOutOfDate =  [];
+
+    for (int i = 0; i<setOfDates.length; i++){
+      String date = setOfDates.elementAt(i);
+      int numberOfPhoto = dates.where((c)=>(c==date)).length;
+      if(global.summaryOfPhotoData[date] != numberOfPhoto) {
+        datesOutOfDate.add(date);
+        global.summaryOfPhotoData[date] =
+            dates.where((c) => (c == date)).length;
+      }
+    }
+    print("updateSummaryOfPhoto done");
+    return datesOutOfDate;
   }
 
-  Future<void> updateSummaryOfLocationDataFromInfo() async {
+  Future<void> updateSummaryOfLocationDataFromInfo(List<String> datesOufOfDate) async {
     print("updateSummaryOfLocationData..");
-    List listOfDates = global.dates;
+    List listOfDates = datesOufOfDate;
     Set setOfDates = listOfDates.toSet();
     for (int i = 0; i < setOfDates.length; i++) {
+
       print("updateSummaryOfLocationData.. $i / ${setOfDates.length}");
       String date = setOfDates.elementAt(i);
       global.summaryOfLocationData[date] =
@@ -260,31 +275,108 @@ class DataManager {
     }
   }
 
-  DateTime? parseToDatetime(input) {
-    if (input == null) return null;
-    if (input.runtimeType == String) {
-      try {
-        return DateTime.parse(input);
-      } catch (e) {
-        print("error in parseToDatetime, invalid format? $e");
-        return null;
-      }
+  Future<void> writeSummaryOfLocation(List<String> datesOutOfDate, bool overwrite) async {
+    if (overwrite == null) overwrite = false;
+    if (datesOutOfDate == null) datesOutOfDate = global.infoFromFiles.keys.toList();
+
+    final Directory? directory = await getExternalStorageDirectory();
+    final File file = File('${directory?.path}/summaryOfLocation.csv');
+
+    if (!((await file.exists())) || overwrite) {
+      print("overwritting");
+      await file.writeAsString('date,distance\n', mode: FileMode.write);
     }
-    return input;
+
+    var summaryOfLocation = global.summaryOfLocationData;
+    for (int i = 0; i < datesOutOfDate.length; i++) {
+      if (i % 100 == 0) print("writingInfo.. $i/${datesOutOfDate.length}");
+
+      String date = datesOutOfDate.elementAt(i);
+      await file.writeAsString(
+          '${date},'
+          '${summaryOfLocation[date]}\n',
+          mode: FileMode.append);
+    }
   }
 
-  String? parseToString(input) {
-    if (input == "null") return null;
-    if (input == null) return null;
-    return input.toString();
+  Future<void> readSummaryOfLocation() async {
+    final Directory? directory = await getExternalStorageDirectory();
+    final File file = File('${directory?.path}/summaryOfLocation.csv');
+
+    bool isFileExist = await file.exists();
+    if (!isFileExist) return;
+
+    var data = await openFile(file.path);
+    for (int i = 1; i < data.length; i++) {
+      if (data[i].length < 2) return;
+      if (i % 100 == 0) print("readSummaryOfLocation.. $i / ${data.length}, ${data[i]}");
+      global.summaryOfLocationData[data[i][0].toString()] = data[i][1];
+    }
   }
 
-  double? parseToDouble(input) {
-    if (input == "null") return null;
-    if (input == null) return null;
-    if (input.runtimeType == "String") return double.parse(input);
-    if (input.runtimeType == double) return input;
-    if (input.runtimeType == int) return input.toDouble();
-    return double.parse(input);
+  Future<void> writeSummaryOfPhoto(List<String> datesOutOfDate, bool overwrite) async {
+    if (overwrite == null) overwrite = false;
+    if (datesOutOfDate == null) datesOutOfDate = global.infoFromFiles.keys.toList();
+
+    final Directory? directory = await getExternalStorageDirectory();
+    final File file = File('${directory?.path}/summaryOfPhoto.csv');
+
+    if (!((await file.exists())) || overwrite) {
+      print("overwritting");
+      await file.writeAsString('date,numberOfPhoto\n', mode: FileMode.write);
+    }
+
+    var summaryOfPhoto = global.summaryOfPhotoData;
+    for (int i = 0; i < datesOutOfDate.length; i++) {
+      if (i % 100 == 0) print("writingInfo.. $i/${datesOutOfDate.length}");
+      String date = datesOutOfDate.elementAt(i);
+      await file.writeAsString(
+          '${date},'
+              '${summaryOfPhoto[date]}\n',
+          mode: FileMode.append);
+    }
   }
+
+  Future<void> readSummaryOfPhoto() async {
+    final Directory? directory = await getExternalStorageDirectory();
+    final File file = File('${directory?.path}/summaryOfPhoto.csv');
+
+    bool isFileExist = await file.exists();
+    if (!isFileExist) return;
+
+    var data = await openFile(file.path);
+    for (int i = 1; i < data.length; i++) {
+      if (data[i].length < 2) return;
+      if (i % 100 == 0) print("readSummaryOfPhoto.. $i / ${data.length}, ${data[i]}");
+      global.summaryOfPhotoData[data[i][0].toString()] = data[i][1];
+    }
+  }
+}
+
+DateTime? parseToDatetime(input) {
+  if (input == null) return null;
+  if (input.runtimeType == String) {
+    try {
+      return DateTime.parse(input);
+    } catch (e) {
+      print("error in parseToDatetime, invalid format? $e");
+      return null;
+    }
+  }
+  return input;
+}
+
+String? parseToString(input) {
+  if (input == "null") return null;
+  if (input == null) return null;
+  return input.toString();
+}
+
+double? parseToDouble(input) {
+  if (input == "null") return null;
+  if (input == null) return null;
+  if (input.runtimeType == "String") return double.parse(input);
+  if (input.runtimeType == double) return input;
+  if (input.runtimeType == int) return input.toDouble();
+  return double.parse(input);
 }

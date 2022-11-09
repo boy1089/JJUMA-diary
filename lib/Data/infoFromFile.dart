@@ -12,4 +12,5 @@ class InfoFromFile{
     return "datetime: ${datetime}, date: ${date}, coordinate : ${coordinate?.latitude}, distance : $distance";
   }
 
+
 }

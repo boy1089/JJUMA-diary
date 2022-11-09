@@ -28,8 +28,8 @@ class LocationDataManager {
   }
 
   Future<void> init() async {
-    await readLocationData();
-    getCoordinatesFromPhotoFiles();
+    // await readLocationData();
+    // getCoordinatesFromPhotoFiles();
     print("locationDataManager initializaton done");
   }
 
@@ -66,26 +66,29 @@ class LocationDataManager {
   }
 
   List getCoordinatesOfDate(String date) {
-    Set indexOfDate = List.generate(
-        global.datetimes.length,
-        (i) => (global.datetimes.elementAt(i).substring(0, 8).contains(date) &
-                (global.datetimes.elementAt(i).length > 8))
-            ? i
-            : null).toSet();
+    Set indexOfDate = List.generate(global.dates.length,
+        (i) => (global.dates.elementAt(i).contains(date)) ? i : null).toSet();
     indexOfDate.remove(null);
-    List coordinateOfDate = List.generate(indexOfDate.length,
-        (i) => coordinateOfFiles.elementAt(indexOfDate.elementAt(i)));
-    // List coordinateOfDate = List.generate(indexOfDate.length,
-    //         (i)=>coordinateOfFiles.elementAt(indexOfDate.elementAt(i)));
+    List coordinateOfDate = List.generate(indexOfDate.length, (i) {
+      var data =
+          global.infoFromFiles.values.elementAt(indexOfDate.elementAt(i));
+      Coordinate? coordinate = data.coordinate;
+      print(coordinate.toString());
+      return coordinate;
+    });
     return coordinateOfDate;
   }
 
   double getMaxDistanceOfDate(String date) {
     List coordinateOfDate = getCoordinatesOfDate(date);
     coordinateOfDate = coordinateOfDate.whereType<Coordinate>().toList();
+
     List<double> distanceOfDate = List.generate(coordinateOfDate.length, (i) {
+      if (coordinateOfDate[i].latitude == null)
+        return 0;
       return calculateDistanceToRef(coordinateOfDate[i]);
     });
+
     double maxDistance = distanceOfDate.reduce(max);
     return maxDistance;
   }
@@ -95,9 +98,9 @@ class LocationDataManager {
     final File file = File('${directory?.path}/locationData.csv');
     print("writing location data to local..");
 
-    if(!await file.exists())
-    await file.writeAsString('filename,latitude,longitude\n',
-        mode: FileMode.write);
+    if (!await file.exists())
+      await file.writeAsString('filename,latitude,longitude\n',
+          mode: FileMode.write);
 
     for (int i = 0; i < locations.length; i++) {
       if (locations.elementAt(i) == null) {

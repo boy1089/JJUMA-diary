@@ -24,10 +24,10 @@ class PhotoDataManager {
   }
 
   Future<void> init() async {
-    files = await getAllFiles();
+    // files = await getAllFiles();
     print("PhotoDataManager, getALlFiles done");
-    datetimes = getDatetimesFromFilnames(files);
-    setDataAsGlobal();
+    // datetimes = getDatetimesFromFilnames(files);
+    // setDataAsGlobal();
     print("PhotoDataManager, intialization done");
   }
 

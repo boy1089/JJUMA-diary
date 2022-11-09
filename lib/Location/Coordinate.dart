@@ -9,6 +9,10 @@ class Coordinate {
       this.latitude,
       this.longitude,
       );
+
+  String toString(){
+    return "latitude : $latitude, longitude : $longitude}";
+  }
 }
 
 double calculateDistance(Coordinate coordinate1, Coordinate coordinate2){

@@ -16,9 +16,6 @@ class Coordinate {
 }
 
 double calculateDistance(Coordinate coordinate1, Coordinate coordinate2){
-  // print(coordinate1.latitude);
-  // print(coordinate1.longitude);
-
   var earthRadiusKm = 6371;
 
   var dLat = degreesToRadians(coordinate1.latitude! - coordinate2.latitude!);
@@ -30,7 +27,6 @@ double calculateDistance(Coordinate coordinate1, Coordinate coordinate2){
   var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
       Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(lat1) * Math.cos(lat2);
   var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-  print("${coordinate1.latitude}, ${coordinate1.longitude}, ${earthRadiusKm * c}");
   return earthRadiusKm * c;
 }
 

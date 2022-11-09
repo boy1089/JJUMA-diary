@@ -329,7 +329,6 @@ Future getExifInfoOfFile(String file) async {
   String dateInExif = data['Image DateTime'].toString().replaceAll(":", "");
   Coordinate? coordinate = Coordinate(convertTagToValue(data['GPS GPSLatitude']),
       convertTagToValue(data['GPS GPSLongitude']));
-  print(coordinate.latitude);
   if(coordinate.latitude == null)
     coordinate = null;
   return [dateInExif, coordinate];

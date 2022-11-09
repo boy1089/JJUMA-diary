@@ -196,12 +196,18 @@ class MainPageState extends State<MainPage> {
             // await dataManager.resetInfoFromFiles();
             // print(infoFromFiles);
             // await dataManager.updateDateOnInfo();
-            await dataManager.updateExifOnInfo();
+            // await dataManager.updateExifOnInfo();
             // print(infoFromFiles);
-            await dataManager.writeInfo(true);
+            // await dataManager.writeInfo(true);
             // await dataManager.updateDatesFromInfo();
             // await dataManager.updateSummaryOfPhotoFromInfo();
-            // await dataManager.updateSummaryOfLocationDataFromInfo();
+            await dataManager.updateSummaryOfLocationDataFromInfo();
+            // dataManager.files = await dataManager.getAllFiles();
+            // dataManager.matchFilesAndInfo();
+            print(infoFromFiles.length);
+            // dataManager.readInfo();
+            // dataManager.writeInfo(null, true);
+            // await dataManager.readInfo();
           },
         ),
       ),

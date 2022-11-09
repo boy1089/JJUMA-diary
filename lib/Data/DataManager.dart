@@ -23,33 +23,88 @@ List<String> pathsToPhoto = [
 ];
 
 class DataManager {
+
   Map<String, int> summaryOfPhotoData = {};
   Map<String, Coordinate> summaryOfCoordinate = {};
   PhotoDataManager photoDataManager;
   LocationDataManager locationDataManager;
   DataManager(this.photoDataManager, this.locationDataManager) {}
 
+  List<String> files = [];
+
   Future<void> init() async {
     print("DataManager instance is initializing..");
     // var a = await readSummaryOfPhotoData();
-    print("DataManager, updatingSummaryOfPhoto..");
+    List<String>? filesNotUpdated = [];
+
+    //get list of image files from local. --> update new images
+    files = await getAllFiles();
+    //read previously processed Info
     await readInfo();
+    // find the files which are in local but not in Info
+    filesNotUpdated = await matchFilesAndInfo();
+    // update info which are not updated
+    await addFilesToInfo(filesNotUpdated);
     await updateDatesFromInfo();
+    await updateDateOnInfo(filesNotUpdated);
+    await updateExifOnInfo(filesNotUpdated);
     await updateSummaryOfPhotoFromInfo();
     await updateSummaryOfLocationDataFromInfo();
+    await writeInfo(filesNotUpdated, false);
     print("DataManager initialization done");
   }
 
-  Future<void> updateSummaryOfPhoto() async {
-    print("updateSummaryOfLocalPhoto..");
-    List newList = photoDataManager.dates;
-    Set ListOfDates = newList.toSet();
-    final map = Map<String, int>.fromIterable(ListOfDates,
-        key: (item) => item,
-        value: (item) => newList.where((c) => c == item).length);
-    summaryOfPhotoData = map;
-    global.summaryOfPhotoData = summaryOfPhotoData;
-    print("updateSummaryOfPhoto done, summary : ${summaryOfPhotoData}");
+  Future<List<String>> getAllFiles() async {
+    List<String> files = [];
+    List newFiles = [];
+    for (int i = 0; i < pathsToPhoto.length; i++) {
+      String path = pathsToPhoto.elementAt(i);
+
+      newFiles = await Glob("$path/*.jpg").listSync();
+      files.addAll(List.generate(
+          newFiles.length, (index) => newFiles.elementAt(index).path));
+
+      newFiles = await Glob("$path/*.png").listSync();
+      files.addAll(List.generate(
+          newFiles.length, (index) => newFiles.elementAt(index).path));
+    }
+    files = files.where((element) => !element.contains('thumbnail')).toList();
+    return files;
+  }
+
+  // i) check whether this file is contained in Info
+  // ii) check whether this file is saved previously.
+  Future<List<String>?> matchFilesAndInfo() async {
+    List<String>? filesNotUpdated = [];
+    List<String> filenamesFromInfo = global.infoFromFiles.keys.toList();
+
+    for (int i = 0; i < files.length; i++) {
+      String filename = files.elementAt(i);
+      if (i % 100 == 0) print("matchFilesAndInfo : $i / ${files.length}");
+      int indexInInfo =
+          filenamesFromInfo.indexWhere((element) => element == filename);
+      if (indexInInfo == -1) {
+        filesNotUpdated.add(filename);
+        continue;
+      }
+      filenamesFromInfo.remove(filename);
+      DateTime? dateTimeInInfo = global.infoFromFiles[filename]?.datetime;
+      if (dateTimeInInfo == null) {
+        filesNotUpdated.add(filename);
+        continue;
+      }
+    }
+    if (filesNotUpdated == []) return null;
+    return filesNotUpdated;
+  }
+
+  Future<void> addFilesToInfo(List<String>? filenames) async {
+    if (filenames == null) return;
+    for (int i = 0; i < filenames.length; i++) {
+      if (i % 100 == 0) print("addFilesToInfo $i / ${filenames.length}");
+      String filename = filenames.elementAt(i);
+      global.infoFromFiles[filename] = InfoFromFile();
+    }
   }
 
   Future<void> updateDatesFromInfo() async {
@@ -57,16 +112,63 @@ class DataManager {
       var key = global.infoFromFiles.keys.elementAt(i);
       return global.infoFromFiles[key]?.date;
     });
-    dates.removeWhere((i)=>i==null);
+    dates.removeWhere((i) => i == null);
     global.dates = dates;
+  }
+
+  Future<void> updateDateOnInfo(List<String>? filenames) async {
+    if (filenames == null) filenames = global.infoFromFiles.keys.toList();
+
+    for (int i = 0; i < filenames.length; i++) {
+      String filename = filenames.elementAt(i);
+      if(i%100==0)
+      print(
+          "updateDateOnInfo : $i / ${filenames.length},"
+              " ${global.infoFromFiles[filename].toString()}");
+
+      String? inferredDatetime = inferDatetimeFromFilename(filename);
+      if (inferredDatetime != null) {
+        global.infoFromFiles[filename]?.datetime =
+            DateTime.parse(inferredDatetime!);
+        global.infoFromFiles[filename]?.date =
+            inferredDatetime?.substring(0, 8);
+      }
+    }
+  }
+
+
+  Future<void> updateExifOnInfo(List<String>? filenames) async {
+    if (filenames == null) filenames = global.infoFromFiles.keys.toList();
+
+    for (int i = 0; i < filenames.length; i++) {
+      String filename = filenames.elementAt(i);
+      List ExifData = await getExifInfoOfFile(filename);
+      print(
+          "updateExifOninfo : $i / ${filenames.length}");
+      global.infoFromFiles[filename]?.coordinate = ExifData[1];
+      if (ExifData[0] != "null") {
+        global.infoFromFiles[filename]?.datetime = DateTime.parse(ExifData[0]);
+        global.infoFromFiles[filename]?.date = ExifData[0].substring(0, 8);
+      } else {
+        DateTime datetime = DateTime.parse(formatDatetime(FileStat.statSync(filename).changed));
+        global.infoFromFiles[filename]?.datetime = datetime;
+        global.infoFromFiles[filename]?.date = formatDate(datetime);
+      }
+      if (ExifData[1] != null) {
+        global.infoFromFiles[filename]?.distance =
+            calculateDistanceToRef(ExifData[1]);
+      }
+
+    }
   }
 
   Future<void> updateSummaryOfPhotoFromInfo() async {
     List dates = global.dates;
-    dates.removeWhere((i)=>i==null);
+    dates.removeWhere((i) => i == null);
     final map = Map<String, int>.fromIterable(dates.toSet(),
         key: (item) => item,
         value: (item) {
+          print("updateSummaryOfPhoto...");
           return dates.where((c) => c == item).length;
         });
     summaryOfPhotoData = map;
@@ -79,6 +181,7 @@ class DataManager {
     List listOfDates = global.dates;
     Set setOfDates = listOfDates.toSet();
     for (int i = 0; i < setOfDates.length; i++) {
+      print("updateSummaryOfLocationData.. $i / ${setOfDates.length}");
       String date = setOfDates.elementAt(i);
       global.summaryOfLocationData[date] =
           locationDataManager.getMaxDistanceOfDate(date);
@@ -109,42 +212,10 @@ class DataManager {
     return files;
   }
 
-  Future<void> updateDateOnInfo() async {
-    var data = global.infoFromFiles;
-    for (int i = 0; i < data.length; i++) {
-      String key = data.keys.elementAt(i);
-      String? inferredDatetime = inferDatetimeFromFilename(key);
-      if (inferredDatetime != null) {
-        print(inferredDatetime);
-        data[key]?.datetime = DateTime.parse(inferredDatetime!);
-        data[key]?.date = inferredDatetime?.substring(0, 8);
-      }
-      print("updateDateOnInfo : $i / ${data.length}, ${data[key].toString()}");
-    }
-  }
+  Future<void> writeInfo(List<String>? filenames, bool overwrite) async {
+    if (overwrite == null) overwrite = false;
+    if (filenames==null) filenames = global.infoFromFiles.keys.toList();
 
-  Future<void> updateExifOnInfo() async {
-    var data = global.infoFromFiles;
-    for (int i = 0; i < data.length; i++) {
-      // for (int i = 10000; i < 11000; i++) {
-
-        String key = data.keys.elementAt(i);
-      List ExifData = await getExifInfoOfFile(key);
-      data[key]?.coordinate = ExifData[1];
-      if (ExifData[0] != "null") {
-        data[key]?.datetime = DateTime.parse(ExifData[0]);
-        data[key]?.date = ExifData[0].substring(0, 8);
-      }
-      if (ExifData[1] != null){
-        data[key]?.distance = calculateDistanceToRef(ExifData[1]);
-      }
-      print("updateExifOninfo : $i / ${data.length}, ${data[key].toString()}");
-    }
-  }
-
-  Future<void> writeInfo(bool overwrite) async {
-    if(overwrite==null)
-      overwrite = false;
     final Directory? directory = await getExternalStorageDirectory();
     final File file = File('${directory?.path}/InfoOfFiles.csv');
 
@@ -154,30 +225,34 @@ class DataManager {
           'filename,datetime,date,latitude,longitude,distance\n',
           mode: FileMode.write);
     }
-    var data = global.infoFromFiles;
-    for (int i = 0; i < data.length; i++) {
-      String key = data.keys.elementAt(i);
+    var infoFromFiles = global.infoFromFiles;
+    for (int i = 0; i < filenames.length; i++) {
+      String filename = filenames.elementAt(i);
 
       await file.writeAsString(
-          '${key},'
-          '${data[key]!.datetime},'
-          '${data[key]!.date},'
-          '${data[key]!.coordinate?.latitude},'
-          '${data[key]!.coordinate?.longitude},'
-          '${data[key]!.distance}\n',
+          '${filename},'
+          '${infoFromFiles[filename]!.datetime},'
+          '${infoFromFiles[filename]!.date},'
+          '${infoFromFiles[filename]!.coordinate?.latitude},'
+          '${infoFromFiles[filename]!.coordinate?.longitude},'
+          '${infoFromFiles[filename]!.distance}\n',
           mode: FileMode.append);
-      if (i % 100 == 0) print("writingInfo.. $i/${data.length}");
+      if (i % 100 == 0) print("writingInfo.. $i/${filenames.length}");
     }
   }
 
   Future<void> readInfo() async {
     final Directory? directory = await getExternalStorageDirectory();
     final File file = File('${directory?.path}/InfoOfFiles.csv');
+
+    bool isFileExist = await file.exists();
+    if(!isFileExist) return;
+
     var data = await openFile(file.path);
     for (int i = 1; i < data.length; i++) {
       if (data[i].length < 2) return;
+      if (i % 100 == 0) print("readInfo.. $i / ${data.length}, ${data[i]}");
 
-      print("readInfo.. $i / ${data.length}, ${data[i]}");
       InfoFromFile infoFromFile = InfoFromFile();
       infoFromFile.datetime = parseToDatetime(data[i][1]);
       infoFromFile.date = parseToString(data[i][2]);
@@ -186,8 +261,6 @@ class DataManager {
       infoFromFile.distance =
           data[i][5] == "null" ? null : parseToDouble(data[i][5]);
       global.infoFromFiles[data[i][0]] = infoFromFile;
-
-      // if (i % 100 == 0)
     }
   }
 
@@ -213,7 +286,9 @@ class DataManager {
   double? parseToDouble(input) {
     if (input == "null") return null;
     if (input == null) return null;
-    if (input.runtimeType == "String") double.parse(input);
-    return input;
+    if (input.runtimeType == "String") return double.parse(input);
+    if (input.runtimeType== double)  return input;
+    if (input.runtimeType==int) return input.toDouble();
+    return double.parse(input);
   }
 }

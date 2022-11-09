@@ -66,26 +66,33 @@ class LocationDataManager {
   }
 
   List getCoordinatesOfDate(String date) {
+    //find the index which date is contained in infoFromFiles.
     Set indexOfDate = List.generate(global.dates.length,
         (i) => (global.dates.elementAt(i).contains(date)) ? i : null).toSet();
     indexOfDate.remove(null);
-    List coordinateOfDate = List.generate(indexOfDate.length, (i) {
+
+    List coordinatesOfDate = List.generate(indexOfDate.length, (i) {
       var data =
           global.infoFromFiles.values.elementAt(indexOfDate.elementAt(i));
       Coordinate? coordinate = data.coordinate;
       print(coordinate.toString());
       return coordinate;
     });
-    return coordinateOfDate;
+    return coordinatesOfDate;
   }
 
   double getMaxDistanceOfDate(String date) {
     List coordinateOfDate = getCoordinatesOfDate(date);
     coordinateOfDate = coordinateOfDate.whereType<Coordinate>().toList();
+    print("coordinateOfDate : ${coordinateOfDate.length}");
+    if(coordinateOfDate.length==0) return 0;
+    if(coordinateOfDate == null) return 0;
+    if(coordinateOfDate == "null") return 0;
 
     List<double> distanceOfDate = List.generate(coordinateOfDate.length, (i) {
-      if (coordinateOfDate[i].latitude == null)
-        return 0;
+      if (coordinateOfDate[i].latitude == null) return 0;
+      if (coordinateOfDate[i].longitude == null) return 0;
+
       return calculateDistanceToRef(coordinateOfDate[i]);
     });
 

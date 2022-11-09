@@ -190,17 +190,6 @@ class MainPageState extends State<MainPage> {
             ),
           ),
         ),
-
-        // floatingActionButton: FloatingActionButton(
-        //   onPressed: () async {
-        //     // await AddressFinder.getAddressFromExif(localPhotoDataManager.files[0]);
-        //     // var locationDataManager = LocationDataManager();
-        //     // await locationDataManager.init();
-        //     // dataManager.init();
-        //     // dataManager.locationDataManager.getCoordinatesOfDate("20221022");
-        //     print(summaryOfLocationData);
-        //   },
-        // ),
       ),
     );
   }

@@ -85,4 +85,8 @@ class UiStateProvider with ChangeNotifier{
     notifyListeners();
   }
 
+  @override
+  void dispose(){
+    print("provider disposed");
+  }
 }

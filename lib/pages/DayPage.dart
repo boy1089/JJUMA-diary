@@ -48,7 +48,7 @@ class _DayPageState extends State<DayPage> {
 
   FocusNode focusNode = FocusNode();
   final myTextController = TextEditingController();
-  var provider;
+  var uiStateProvider;
 
   @override
   void initState() {
@@ -60,15 +60,15 @@ class _DayPageState extends State<DayPage> {
     noteManager = widget.noteManager;
     print("DayPage, after initState : ${photoDataForPlot}");
     readData = _fetchData();
-    provider = Provider.of<NavigationIndexProvider>(context, listen: false);
-    date = provider.date;
+    uiStateProvider = Provider.of<UiStateProvider>(context, listen: false);
+    date = Provider.of<NavigationIndexProvider>(context, listen: false).date;
   }
 
   Future<List<dynamic>> _fetchData() async {
     date = Provider.of<NavigationIndexProvider>(context, listen: false).date;
     await updateDataForUi();
-    var provider = Provider.of<UiStateProvider>(context, listen: false);
-    provider.setZoomInState(false);
+    // provider = Provider.of<UiStateProvider>(context, listen: false);
+    uiStateProvider.setZoomInState(false);
     print("fetchData done, $photoDataForPlot");
     await Future.delayed(Duration(seconds: 1));
     return photoDataForPlot;
@@ -98,7 +98,7 @@ class _DayPageState extends State<DayPage> {
   @override
   Widget build(BuildContext context) {
     bool isZoomIn =
-        Provider.of<NavigationIndexProvider>(context, listen: true).isZoomIn;
+        Provider.of<UiStateProvider>(context, listen: true).isZoomIn;
     print("building DayPage..");
     return FutureBuilder(
         future: readData,
@@ -155,10 +155,10 @@ class _DayPageState extends State<DayPage> {
                             return;
                           }
                           setState(() {
-                            provider.setZoomInState(true);
+                            uiStateProvider.setZoomInState(true);
                             isZoomInImageVisible = true;
                             _angle = angleZoomIn;
-                            provider.setZoomInRotationAngle(_angle);
+                            uiStateProvider.setZoomInRotationAngle(_angle);
                             FocusManager.instance.primaryFocus?.unfocus();
                           });
                         };
@@ -171,7 +171,7 @@ class _DayPageState extends State<DayPage> {
                           instance.onUpdate = (details) {
                             _angle =
                                 isZoomIn ? _angle + details.delta.dy / 1000 : 0;
-                            provider.setZoomInRotationAngle(_angle);
+                            uiStateProvider.setZoomInRotationAngle(_angle);
                           };
                         },
                       )

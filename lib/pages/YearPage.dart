@@ -29,20 +29,21 @@ class _YearPageState extends State<YearPage> {
   var heatmapChannel = StreamController<Selected?>.broadcast();
 
   _YearPageState() {
+    print("year page create");
     updateData(year);
     heatmapChannel.stream.listen(
       (value) {
         var provider =
             Provider.of<NavigationIndexProvider>(context, listen: false);
-        var uiStateProivder = Provider.of<UiStateProvider>(context, listen: false);
+        var uiStateProvider =
+            Provider.of<UiStateProvider>(context, listen: false);
 
         if (value == null) return;
-        if (!uiStateProivder.isZoomIn) return;
-        print("aaa : ${value}");
+        if (!uiStateProvider.isZoomIn) return;
         print("streaming value : ${value.values.first.first.toString()}");
         DateTime date = DateTime.parse(availableDates
             .elementAt(int.parse(value.values.first.first.toString())));
-        if (!uiStateProivder.isZoomIn) return;
+        if (!uiStateProvider.isZoomIn) return;
         provider.setNavigationIndex(2);
         provider.setDate(date);
       },
@@ -113,10 +114,8 @@ class _YearPageState extends State<YearPage> {
   @override
   Widget build(BuildContext context) {
     print("yearPage built");
-    var provider = Provider.of<UiStateProvider>(context, listen: true);
     var isZoomIn =
         Provider.of<UiStateProvider>(context, listen: false).isZoomIn;
-
     return Scaffold(
       body: Stack(
         alignment: Alignment.center,
@@ -129,32 +128,35 @@ class _YearPageState extends State<YearPage> {
                             AllowMultipleGestureRecognizer>(
                         () => AllowMultipleGestureRecognizer(),
                         (AllowMultipleGestureRecognizer instance) {
-                  instance.onTapDown = (details) {
-                    print(global.indexForZoomInImage);
+                  var provider =
+                      Provider.of<UiStateProvider>(context, listen: true);
+                  instance.onTapUp = (details) {
+                    provider.setZoomInState(true);
                     if (isZoomIn) return;
-
                     Offset tapPosition = calculateTapPositionRefCenter(
                         details, 0, layout_yearPage);
                     double angleZoomIn = calculateTapAngle(tapPosition, 0, 0);
 
                     // if (tapPosition.dy < -200) return;
                     //if editing text, doesn't zoom in.
-                    setState(() {
-                      provider.setZoomInState(true);
+                    // setState(() {
                       _angle = angleZoomIn;
                       provider.setZoomInRotationAngle(_angle);
-                      isZoomIn = true;
-                    });
+                    // });
                   };
                 }),
+
                 AllowMultipleGestureRecognizer2:
                     GestureRecognizerFactoryWithHandlers<
                         AllowMultipleGestureRecognizer2>(
                   () => AllowMultipleGestureRecognizer2(),
                   (AllowMultipleGestureRecognizer2 instance) {
+                    var provider =
+                        Provider.of<UiStateProvider>(context, listen: false);
                     instance.onUpdate = (details) {
-                        _angle = isZoomIn ? _angle + details.delta.dy / 400 : 0;
-                        provider.setZoomInRotationAngle(_angle);
+                      if (!isZoomIn) return;
+                      _angle = isZoomIn ? _angle + details.delta.dy / 400 : 0;
+                      provider.setZoomInRotationAngle(_angle);
                     };
                   },
                 )
@@ -162,8 +164,8 @@ class _YearPageState extends State<YearPage> {
               child: Stack(
                   alignment: isZoomIn ? Alignment.center : Alignment.topCenter,
                   children: [
-                    AnimatedPositioned(
-                      duration: Duration(milliseconds: global.animationTime),
+                    Positioned(
+                      // duration: Duration(milliseconds: global.animationTime),
                       width:
                           layout_yearPage['graphSize']?[isZoomIn]?.toDouble(),
                       height:
@@ -175,31 +177,33 @@ class _YearPageState extends State<YearPage> {
                       // child: Transform.rotate(
                       child: AnimatedRotation(
                         // angle: isZoomIn ? _angle * 2 * pi : 0,
-                        turns: isZoomIn ? provider.zoomInAngle : 0,
+                        turns: isZoomIn
+                            ? Provider.of<UiStateProvider>(context,
+                                    listen: true)
+                                .zoomInAngle
+                            : 0,
                         duration:
                             Duration(milliseconds: global.animationTime - 100),
                         child: Stack(alignment: Alignment.center, children: [
                           PolarMonthIndicators().build(context),
                           Chart(
                             data: dataForPlot,
-                            // selections : Selection(),
                             elements: [
                               PointElement(
                                 size: SizeAttr(
                                   variable: 'value',
-                                  values: !isZoomIn
-                                      ? [1, maxOfSummary / 5]
-                                      : [3.5, maxOfSummary / 10 * 3],
+                                  values:
+                                  // !isZoomIn
+                                       [1, maxOfSummary / 5]
+                                      // : [3.5, maxOfSummary / 10 * 3],
                                 ),
                                 color: ColorAttr(
                                   variable: 'distance',
                                   values: [
-                                    // Colors.white24.withAlpha(200),
-                                    // global.kMainColor_warm.withAlpha(255),
-                                    // global.kMainColor_cool,
-                                    Colors.blue.withAlpha(150),
-                                    Colors.red.withAlpha(150),
-                                    // global.kMainColor_warm.withAlpha(255),
+                                    Colors.black12,
+                                    Colors.green,
+                                    Colors.blue,
+                                    Colors.red,
                                   ],
                                 ),
                                 selectionChannel: heatmapChannel,
@@ -223,15 +227,17 @@ class _YearPageState extends State<YearPage> {
                               ),
                             },
                             selections: {
-                              'tap': PointSelection(
+                              'choose': PointSelection(
+                                on: {GestureType.hover},
+                                toggle: true,
                                 nearest: false,
-                                testRadius: isZoomIn ? 5 : 0,
+                                testRadius: isZoomIn ? 10 : 0,
                               )
                             },
                             coord: PolarCoord()..radiusRange = [0.4, 1],
-                            tooltip: TooltipGuide(
-                              anchor: (_) => Offset.zero,
-                            ),
+                            // tooltip: TooltipGuide(
+                            //   anchor: (_) => Offset.zero,
+                            // ),
                           ),
                         ]),
                       ),
@@ -275,37 +281,10 @@ class _YearPageState extends State<YearPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // print(dummy);
-          // var a = global.summaryOfPhotoData;
-          var a = global.summaryOfLocationData;
-          print(a);
-          Timeline.timeSync("Aa", () async {
-            provider.setZoomInState(true);
-            setState((){});
-            await Future.delayed(Duration(seconds: 1));
-            provider.setZoomInRotationAngle(_angle+0.01);
-            provider.setZoomInRotationAngle(_angle+0.01);
-            provider.setZoomInRotationAngle(_angle+0.01);
-            provider.setZoomInRotationAngle(_angle+0.01);
-            provider.setZoomInRotationAngle(_angle+0.01);
-
-            setState((){});
-            await Future.delayed(Duration(seconds: 1));
-            provider.setZoomInState(false);
-            setState((){});
-          });
-          // for (int i = 0; i < a.length; i++) {
-            // print("${a.keys.elementAt(i)}, ${a.values.elementAt(i).latitude}");
-            // print("${a.keys.elementAt(i)}, ${a.values.elementAt(i)}");
-            // debugDumpRenderTree();
-            // Timeline.timeSync("Aa", () => {
-            //   provider.setZoomInState(true),
-            //     provider.setZoomInState(false)
-            // }
-            // );
-            // print('aaa');
-            // Timeline.finishSync();
-
+          print(heatmapChannel.stream.isBroadcast);
+          print(heatmapChannel.stream.drain());
+           // print(heatmapChannel.onListen);
+          // subscription.resume();
         },
       ),
     );

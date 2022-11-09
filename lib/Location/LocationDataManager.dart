@@ -36,18 +36,28 @@ class LocationDataManager {
   void getCoordinatesFromPhotoFiles() async {
     global.isLocationUpadating = true;
     List<String> files = global.files;
+    List<String> filesForSave = [];
+    List<Coordinate?> coordinateForSave = [];
+
     for (int i = 0; i < files.length; i++) {
       if (global.locationDataAll.containsKey(files[i])) {
         // print("${files[i]} is already in the saved data");
         continue;
       }
+
       Coordinate? coordinate =
           await AddressFinder.getCoordinateFromExif(files[i]);
+
       global.locationDataAll[files[i]] = coordinate;
       coordinateOfFiles.add(coordinate);
+      filesForSave.add(files.elementAt(i));
+      coordinateForSave.add(coordinate);
       if (i % 100 == 0) {
-        await writeLocationData(files, coordinateOfFiles);
+        print("getCoordinatesFromPhotoFiles : $i/ ${files.length}");
+        await writeLocationData(filesForSave, coordinateForSave);
         global.locations = coordinateOfFiles;
+        filesForSave = [];
+        coordinateForSave = [];
       }
     }
     await writeLocationData(files, coordinateOfFiles);
@@ -67,7 +77,6 @@ class LocationDataManager {
         (i) => coordinateOfFiles.elementAt(indexOfDate.elementAt(i)));
     // List coordinateOfDate = List.generate(indexOfDate.length,
     //         (i)=>coordinateOfFiles.elementAt(indexOfDate.elementAt(i)));
-    print(coordinateOfDate);
     return coordinateOfDate;
   }
 
@@ -75,7 +84,6 @@ class LocationDataManager {
     List coordinateOfDate = getCoordinatesOfDate(date);
     coordinateOfDate = coordinateOfDate.whereType<Coordinate>().toList();
     List<double> distanceOfDate = List.generate(coordinateOfDate.length, (i) {
-      print(coordinateOfDate[i].latitude);
       return calculateDistanceToRef(coordinateOfDate[i]);
     });
     double maxDistance = distanceOfDate.reduce(max);
@@ -87,6 +95,7 @@ class LocationDataManager {
     final File file = File('${directory?.path}/locationData.csv');
     print("writing location data to local..");
 
+    if(!await file.exists())
     await file.writeAsString('filename,latitude,longitude\n',
         mode: FileMode.write);
 
@@ -116,7 +125,7 @@ class LocationDataManager {
       var data = await openFile(fileName.path);
       for (int i = 1; i < data.length; i++) {
         if (data[i].length > 1) {
-          print("${data[i][0]},${data[i][1]}, ${data[i][2]}");
+          // print("${data[i][0]},${data[i][1]}, ${data[i][2]}");
           // print(data[i]);
           global.locationDataAll[data[i][0]] =
               Coordinate(data[i][1], data[i][2]);
@@ -126,7 +135,6 @@ class LocationDataManager {
           inferredDatetime = inferredDatetime == null
               ? null
               : inferredDatetime!.substring(0, 8);
-
           global.summaryOfLocationData[inferredDatetime] = 0;
           coordinateOfFiles.add(Coordinate(data[i][1], data[i][2]));
         }

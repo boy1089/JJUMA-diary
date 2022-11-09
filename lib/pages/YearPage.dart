@@ -281,21 +281,23 @@ class _YearPageState extends State<YearPage> {
           ),
         ],
       ),
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: () {
-      //
-      //     // var temp = global.summaryOfLocationData;
-      //     // var temp = global.locationDataAll;
-      //     // var temp = global.;
-      //     var temp = availableDates;
-      //     updateData("2022");
-      //     // for(int i = 0 ; i<temp.length; i++){
-      //       // if(temp.keys.elementAt(i).contains("20220928"))
-      //       //   print("${temp.keys.elementAt(i)}, ${temp.values.elementAt(i).latitude}");
-      //     // }
-      //
-      //   },
-      // ),
+
+        // onPressed: () {
+        //
+        //   // var temp = global.summaryOfLocationData;
+        //   var temp = global.locationDataAll;
+        //   // var temp = global.;
+        //   // var temp = availableDates;
+        //   // updateData("2022");
+        //   temp.removeWhere((key, value) => key==null);
+        //   temp = Map.fromEntries(temp.entries.toList()..sort((e1, e2) => e1.key.compareTo(e2.key)));
+        //   for(int i = 0 ; i<temp.length; i++){
+        //     if(temp.keys.elementAt(i)==null) continue;
+        //     if(temp.keys.elementAt(i).contains("20220102"))
+        //       print("${temp.keys.elementAt(i)}, ${temp.values.elementAt(i).latitude}");
+        //   }
+
+        // },
     );
   }
 }

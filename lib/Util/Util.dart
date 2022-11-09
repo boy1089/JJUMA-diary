@@ -10,7 +10,8 @@ import 'dart:math';
 import 'dart:io';
 import 'package:csv/csv.dart';
 import 'dart:convert';
-
+import 'package:exif/exif.dart';
+import "package:test_location_2nd/Location/Coordinate.dart";
 
 const bool kDebugMode = !kReleaseMode && !kProfileMode;
 
@@ -275,7 +276,6 @@ List<List<dynamic>> subsampleList(List list, int factor) {
 }
 
 class AllowMultipleGestureRecognizer extends TapGestureRecognizer {
-
   @override
   void rejectGesture(int pointer) {
     print("pointer : $pointer");
@@ -310,6 +310,7 @@ Offset calculateTapPositionRefCenter(details, reference, layout) {
 }
 
 
+
 Future<List> openFile(filePath) async {
   File f = File(filePath);
   debugPrint("CSV to List");
@@ -322,3 +323,29 @@ Future<List> openFile(filePath) async {
   return fields;
 }
 
+Future getExifInfoOfFile(String file) async {
+  var bytes = await File(file).readAsBytes();
+  var data = await readExifFromBytes(bytes);
+  String dateInExif = data['Image DateTime'].toString().replaceAll(":", "");
+  Coordinate? coordinate = Coordinate(convertTagToValue(data['GPS GPSLatitude']),
+      convertTagToValue(data['GPS GPSLongitude']));
+  print(coordinate.latitude);
+  if(coordinate.latitude == null)
+    coordinate = null;
+  return [dateInExif, coordinate];
+}
+
+double? convertTagToValue(tag) {
+  if (tag == null) return null;
+
+  List values = tag.printable
+      .replaceAll("[", "")
+      .replaceAll("]", "")
+      .replaceAll(" ", "")
+      .split(',');
+
+  double value = double.parse(values[0]) +
+      double.parse(values[1]) / 60 +
+      double.parse(values[2].split('/')[0]) / 1e6 / 3600;
+  return value;
+}

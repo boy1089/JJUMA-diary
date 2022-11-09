@@ -1,7 +1,7 @@
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import "package:test_location_2nd/Location/Coordinate.dart";
-
+import 'package:test_location_2nd/Data/infoFromFile.dart';
 DateTime selectedDate = DateTime(2022, 1, 1);
 
 int mainPageSelectionIndex = 0;
@@ -10,6 +10,7 @@ Map<String, int> summaryOfPhotoData = {};
 Map<String, int> summaryOfNoteData = {};
 Map summaryOfLocationData = {};
 Map<String, double> summaryOfDistanceData = {};
+
 Map locationDataAll = {};
 bool isLocationUpadating = false;
 bool isInitializationDone = false;
@@ -18,6 +19,8 @@ List<String> files = [];
 List dates = [];
 List datetimes = [];
 List locations = [];
+
+Map<String, InfoFromFile> infoFromFiles = {};
 
 Coordinate referenceCoordinate = Coordinate(37.364, 126.718);
 

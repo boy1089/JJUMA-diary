@@ -1,4 +1,6 @@
 import 'package:intl/intl.dart';
+import 'package:exif/exif.dart';
+import 'dart:io';
 
 List<DateTime> getDaysInBetween(DateTime startDate, DateTime endDate) {
   List<DateTime> days = [];
@@ -35,6 +37,22 @@ String formateDate2(DateTime date) =>"${DateFormat('EEEE').format(date)}/"
 DateTime formatDateString(String date) => DateTime.parse(date);
 
 
+
+Future<DateTime> inferDatetime(filename) async {
+
+  String? datetime = inferDatetimeFromFilename(filename);
+  if(datetime != null)
+    return DateTime.parse(datetime);
+
+  // datetime = await getExifDateOfFile(filename);
+  // print("$filename, $datetime");
+  // if(datetime != "null")
+  //   return DateTime.parse(datetime!);
+
+  return FileStat.statSync(filename).modified;
+}
+
+
 String? inferDatetimeFromFilename(filename) {
   //20221010*201020
   RegExp exp1 = RegExp(r"[0-9]{8}\D[0-9]{6}");
@@ -43,10 +61,6 @@ String? inferDatetimeFromFilename(filename) {
   RegExp(r"[0-9]{4}\D[0-9]{2}\D[0-9]{2}\D[0-9]{2}\D[0-9]{2}\D[0-9]{2}");
   //timestamp
   RegExp exp3 = RegExp(r"[0-9]{13}");
-
-  if (filename.contains("thumbnail")) {
-    return null;
-  }
 
   //order if matching is important. 3->1->2.
   Iterable<RegExpMatch> matches = exp3.allMatches(filename);
@@ -64,7 +78,7 @@ String? inferDatetimeFromFilename(filename) {
     return matches.first
         .group(0)
         .toString()
-        .replaceAll(RegExp(r"[^0-9]"), "_");
+        .replaceAll(RegExp(r"[^0-9]"), " ");
   }
 
   matches = exp2.allMatches(filename);
@@ -74,8 +88,17 @@ String? inferDatetimeFromFilename(filename) {
     return matches.first
         .group(0)
         .toString()
-        .replaceAll(RegExp(r"[^0-9]"), "");
+        .replaceAll(RegExp(r"[^0-9 ]"), "");
   }
   return null;
+}
+
+
+Future<String?> getExifDateOfFile(String file) async {
+  var bytes = await File(file).readAsBytes();
+  var data = await readExifFromBytes(bytes);
+  // print("date of photo : ${data['Image DateTime'].toString().replaceAll(":", "")}");
+  String dateInExif = data['Image DateTime'].toString().replaceAll(":", "");
+  return dateInExif;
 }
 

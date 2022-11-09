@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'dart:io';
 import 'package:glob/glob.dart';
 import 'package:test_location_2nd/Util/global.dart' as global;
+import 'package:test_location_2nd/Data/infoFromFile.dart';
 
 List<String> pathsToPhoto = [
   "/storage/emulated/0/DCIM",
@@ -44,7 +45,7 @@ class PhotoDataManager {
       files.addAll(List.generate(
           newFiles.length, (index) => newFiles.elementAt(index).path));
     }
-    newFiles = newFiles.where((element)=>!element.path.contains('thumbnail')).toList();
+    files = files.where((element)=>!element.contains('thumbnail')).toList();
     return files;
   }
 
@@ -91,13 +92,6 @@ class PhotoDataManager {
     return [dateOfDate, filesOfDate];
   }
 
-  Future<String> getExifDateOfFile(String file) async {
-    var bytes = await File(file).readAsBytes();
-    var data = await readExifFromBytes(bytes);
-    // print("date of photo : ${data['Image DateTime'].toString().replaceAll(":", "")}");
-    String dateInExif = data['Image DateTime'].toString().replaceAll(":", "");
-    return dateInExif;
-  }
 
   void setDataAsGlobal() {
     global.files = this.files;

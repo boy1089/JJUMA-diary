@@ -129,6 +129,7 @@ class MainPageState extends State<MainPage> {
             if (!uiStateProvider.isZoomIn) {
               provider.setNavigationIndex(0);
               // provider.setZoomInState(true);
+              // dataManager.updateSummaryOfLocationData();
               setState(() {});
               return Navigator.canPop(context);
             }
@@ -191,8 +192,14 @@ class MainPageState extends State<MainPage> {
           ),
         ),
         floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            dataManager.locationDataManager.readLocationData();
+          onPressed: () async {
+            // await dataManager.resetInfoFromFiles();
+            // print(infoFromFiles);
+            // await dataManager.updateDateOnInfo();
+            // await dataManager.updateExifOnInfo();
+            // print(infoFromFiles);
+            // await dataManager.writeInfo();
+            await dataManager.readInfo();
           },
         ),
       ),

@@ -201,10 +201,10 @@ class _YearPageState extends State<YearPage> {
                                 color: ColorAttr(
                                   variable: 'distance',
                                   values: [
-                                    Colors.black12,
-                                    Colors.green,
-                                    Colors.blue,
-                                    Colors.red,
+                                    // Colors.black12,
+                                    // Colors.green,
+                                    Colors.blue.withAlpha(200),
+                                    Colors.red.withAlpha(200),
                                   ],
                                 ),
                                 selectionChannel: heatmapChannel,
@@ -224,7 +224,8 @@ class _YearPageState extends State<YearPage> {
                               ),
                               'distance': Variable(
                                 accessor: (List datum) =>
-                                    math.log(datum[3]) + 0.1 as num,
+                                    // math.log(datum[3]) + 0.1 as num,
+                                    datum[3] as num,
                               ),
                             },
                             selections: {

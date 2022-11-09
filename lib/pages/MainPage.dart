@@ -201,13 +201,19 @@ class MainPageState extends State<MainPage> {
             // await dataManager.writeInfo(true);
             // await dataManager.updateDatesFromInfo();
             // await dataManager.updateSummaryOfPhotoFromInfo();
-            await dataManager.updateSummaryOfLocationDataFromInfo();
+            // await dataManager.updateSummaryOfLocationDataFromInfo();
             // dataManager.files = await dataManager.getAllFiles();
             // dataManager.matchFilesAndInfo();
-            print(infoFromFiles.length);
+            // print(infoFromFiles.length);
             // dataManager.readInfo();
             // dataManager.writeInfo(null, true);
             // await dataManager.readInfo();
+
+            for(int i = 0; i<infoFromFiles.length; i ++){
+              String filename = infoFromFiles.keys.elementAt(i);
+              print("$filename, ${infoFromFiles[filename]}");
+            }
+
           },
         ),
       ),

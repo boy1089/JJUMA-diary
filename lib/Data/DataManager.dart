@@ -23,7 +23,6 @@ List<String> pathsToPhoto = [
 ];
 
 class DataManager {
-
   Map<String, int> summaryOfPhotoData = {};
   Map<String, Coordinate> summaryOfCoordinate = {};
   PhotoDataManager photoDataManager;
@@ -121,10 +120,9 @@ class DataManager {
 
     for (int i = 0; i < filenames.length; i++) {
       String filename = filenames.elementAt(i);
-      if(i%100==0)
-      print(
-          "updateDateOnInfo : $i / ${filenames.length},"
-              " ${global.infoFromFiles[filename].toString()}");
+      if (i % 100 == 0)
+        print("updateDateOnInfo : $i / ${filenames.length},"
+            " ${global.infoFromFiles[filename].toString()}");
 
       String? inferredDatetime = inferDatetimeFromFilename(filename);
       if (inferredDatetime != null) {
@@ -136,21 +134,20 @@ class DataManager {
     }
   }
 
-
   Future<void> updateExifOnInfo(List<String>? filenames) async {
     if (filenames == null) filenames = global.infoFromFiles.keys.toList();
 
     for (int i = 0; i < filenames.length; i++) {
       String filename = filenames.elementAt(i);
       List ExifData = await getExifInfoOfFile(filename);
-      print(
-          "updateExifOninfo : $i / ${filenames.length}");
+      print("updateExifOninfo : $i / ${filenames.length}");
       global.infoFromFiles[filename]?.coordinate = ExifData[1];
       if (ExifData[0] != "null") {
         global.infoFromFiles[filename]?.datetime = DateTime.parse(ExifData[0]);
         global.infoFromFiles[filename]?.date = ExifData[0].substring(0, 8);
       } else {
-        DateTime datetime = DateTime.parse(formatDatetime(FileStat.statSync(filename).changed));
+        DateTime datetime =
+            DateTime.parse(formatDatetime(FileStat.statSync(filename).changed));
         global.infoFromFiles[filename]?.datetime = datetime;
         global.infoFromFiles[filename]?.date = formatDate(datetime);
       }
@@ -158,7 +155,6 @@ class DataManager {
         global.infoFromFiles[filename]?.distance =
             calculateDistanceToRef(ExifData[1]);
       }
-
     }
   }
 
@@ -214,7 +210,7 @@ class DataManager {
 
   Future<void> writeInfo(List<String>? filenames, bool overwrite) async {
     if (overwrite == null) overwrite = false;
-    if (filenames==null) filenames = global.infoFromFiles.keys.toList();
+    if (filenames == null) filenames = global.infoFromFiles.keys.toList();
 
     final Directory? directory = await getExternalStorageDirectory();
     final File file = File('${directory?.path}/InfoOfFiles.csv');
@@ -246,7 +242,7 @@ class DataManager {
     final File file = File('${directory?.path}/InfoOfFiles.csv');
 
     bool isFileExist = await file.exists();
-    if(!isFileExist) return;
+    if (!isFileExist) return;
 
     var data = await openFile(file.path);
     for (int i = 1; i < data.length; i++) {
@@ -287,8 +283,8 @@ class DataManager {
     if (input == "null") return null;
     if (input == null) return null;
     if (input.runtimeType == "String") return double.parse(input);
-    if (input.runtimeType== double)  return input;
-    if (input.runtimeType==int) return input.toDouble();
+    if (input.runtimeType == double) return input;
+    if (input.runtimeType == int) return input.toDouble();
     return double.parse(input);
   }
 }

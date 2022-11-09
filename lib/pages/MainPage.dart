@@ -201,7 +201,7 @@ class MainPageState extends State<MainPage> {
             // await dataManager.writeInfo(true);
             // await dataManager.updateDatesFromInfo();
             // await dataManager.updateSummaryOfPhotoFromInfo();
-            // await dataManager.updateSummaryOfLocationDataFromInfo();
+            await dataManager.updateSummaryOfLocationDataFromInfo();
             // dataManager.files = await dataManager.getAllFiles();
             // dataManager.matchFilesAndInfo();
             // print(infoFromFiles.length);
@@ -209,10 +209,10 @@ class MainPageState extends State<MainPage> {
             // dataManager.writeInfo(null, true);
             // await dataManager.readInfo();
 
-            for(int i = 0; i<infoFromFiles.length; i ++){
-              String filename = infoFromFiles.keys.elementAt(i);
-              print("$filename, ${infoFromFiles[filename]}");
-            }
+            // for(int i = 0; i<infoFromFiles.length; i ++){
+            //   String filename = infoFromFiles.keys.elementAt(i);
+            //   print("$filename, ${infoFromFiles[filename]}");
+            // }
 
           },
         ),

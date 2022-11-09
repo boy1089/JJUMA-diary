@@ -81,22 +81,35 @@ class LocationDataManager {
     return coordinatesOfDate;
   }
 
-  double getMaxDistanceOfDate(String date) {
-    List coordinateOfDate = getCoordinatesOfDate(date);
-    coordinateOfDate = coordinateOfDate.whereType<Coordinate>().toList();
-    print("coordinateOfDate : ${coordinateOfDate.length}");
-    if(coordinateOfDate.length==0) return 0;
-    if(coordinateOfDate == null) return 0;
-    if(coordinateOfDate == "null") return 0;
+  List<double?> getDistancesOfDate(String date){
+    //find the index which date is contained in infoFromFiles.
+    Set indexOfDate = List.generate(global.dates.length,
+            (i) => (global.dates.elementAt(i).contains(date)) ? i : null).toSet();
+    indexOfDate.remove(null);
 
-    List<double> distanceOfDate = List.generate(coordinateOfDate.length, (i) {
-      if (coordinateOfDate[i].latitude == null) return 0;
-      if (coordinateOfDate[i].longitude == null) return 0;
-
-      return calculateDistanceToRef(coordinateOfDate[i]);
+    List<double?> coordinatesOfDate = List.generate(indexOfDate.length, (i) {
+      var data =
+      global.infoFromFiles.values.elementAt(indexOfDate.elementAt(i));
+      double? distance = data.distance;
+      print(distance.toString());
+      return distance;
     });
+    return coordinatesOfDate;
+  }
 
-    double maxDistance = distanceOfDate.reduce(max);
+
+  double getMaxDistanceOfDate(String date) {
+    List<double?> distancesOfDate = getDistancesOfDate(date);
+    List<double> distancesOfDate2 = distancesOfDate.whereType<double>().toList();
+    print("distancesOfDate : ${distancesOfDate}");
+    if(distancesOfDate2 == ["null"]) return 0;
+    if(distancesOfDate2 == [null]) return 0;
+    if(distancesOfDate2.length==0) return 0;
+    if(distancesOfDate2 == null) return 0;
+    if(distancesOfDate2 == "null") return 0;
+    // if(distancesOfDate2.length ==1) return distancesOfDate2[0];
+
+    double maxDistance = distancesOfDate2.reduce(max);
     return maxDistance;
   }
 

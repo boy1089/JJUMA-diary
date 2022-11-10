@@ -309,8 +309,6 @@ Offset calculateTapPositionRefCenter(details, reference, layout) {
   return Offset(dx, dy.toDouble());
 }
 
-
-
 Future<List> openFile(filePath) async {
   File f = File(filePath);
   debugPrint("CSV to List");
@@ -326,11 +324,24 @@ Future<List> openFile(filePath) async {
 Future getExifInfoOfFile(String file) async {
   var bytes = await File(file).readAsBytes();
   var data = await readExifFromBytes(bytes);
-  String dateInExif = data['Image DateTime'].toString().replaceAll(":", "");
-  Coordinate? coordinate = Coordinate(convertTagToValue(data['GPS GPSLatitude']),
+  String? dateInExif = null;
+  List<String> keys = data.keys.toList();
+  List<String> keysOfDateTime = keys.where((element){
+    return (element.contains("DateTime"));
+  }).toList();
+  for(int i= 0; i<keysOfDateTime.length; i++){
+    String key = keysOfDateTime.elementAt(i);
+    IfdTag? datetimeInExif = data[key];
+    if (datetimeInExif != null) {
+      dateInExif = data[key].toString().replaceAll(":", "");
+      break;
+    }
+  }
+  print(data);
+  Coordinate? coordinate = Coordinate(
+      convertTagToValue(data['GPS GPSLatitude']),
       convertTagToValue(data['GPS GPSLongitude']));
-  if(coordinate.latitude == null)
-    coordinate = null;
+  if (coordinate.latitude == null) coordinate = null;
   return [dateInExif, coordinate];
 }
 

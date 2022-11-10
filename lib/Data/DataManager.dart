@@ -30,11 +30,12 @@ class DataManager {
   DataManager(this.photoDataManager, this.locationDataManager) {}
 
   List<String> files = [];
-
+  List<String>? filesNotUpdated = [];
+  List<String>? datesOutOfDate = [];
   Future<void> init() async {
     print("DataManager instance is initializing..");
     // var a = await readSummaryOfPhotoData();
-    List<String>? filesNotUpdated = [];
+
 
     //get list of image files from local. --> update new images
     files = await getAllFiles();
@@ -49,18 +50,23 @@ class DataManager {
     await addFilesToInfo(filesNotUpdated);
     await updateDateOnInfo(filesNotUpdated);
     await updateDatesFromInfo();
-    await updateExifOnInfo(filesNotUpdated);
-    await writeInfo(filesNotUpdated, false);
+
 
     //find the dates which are out of date based on the number of photo.
-    List<String>? datesOutOfDate = await updateSummaryOfPhotoFromInfo();
+    datesOutOfDate = await updateSummaryOfPhotoFromInfo();
 
-    //update the summaryOflocation only on the specific date.
-    await updateSummaryOfLocationDataFromInfo(datesOutOfDate);
-
-    await writeSummaryOfLocation(datesOutOfDate, false);
-    await writeSummaryOfPhoto(datesOutOfDate, false);
     print("DataManager initialization done");
+  }
+
+  void executeSlowProcesses() async {
+    Stopwatch stopwatch = new Stopwatch()..start();
+    await updateExifOnInfo(filesNotUpdated);
+    await writeInfo(filesNotUpdated, false);
+    //update the summaryOflocation only on the specific date.
+    await updateSummaryOfLocationDataFromInfo(datesOutOfDate!);
+    await writeSummaryOfLocation(datesOutOfDate!, false);
+    await writeSummaryOfPhoto(datesOutOfDate!, false);
+    print("executeSlowProcesses done,executed in ${stopwatch.elapsed}");
   }
 
   Future<List<String>> getAllFiles() async {
@@ -89,7 +95,7 @@ class DataManager {
 
     for (int i = 0; i < files.length; i++) {
       String filename = files.elementAt(i);
-      // if (i % 100 == 0)
+      if (i % 1000 == 0)
       print("matchFilesAndInfo : $i / ${files.length}");
       int indexInInfo =
           filenamesFromInfo.indexWhere((element) => element == filename);
@@ -128,7 +134,7 @@ class DataManager {
     });
 
     dates.removeWhere((i) => i == null);
-    datetimes.removeWhere((i)=>i == null);
+    datetimes.removeWhere((i) => i == null);
     global.dates = dates;
     global.datetimes = datetimes;
   }
@@ -144,13 +150,13 @@ class DataManager {
             DateTime.parse(inferredDatetime);
         global.infoFromFiles[filename]?.date = inferredDatetime.substring(0, 8);
 
-        // if (i % 100 == 0)
-        //   print("updateDateOnInfo : $i / ${filenames.length},"
-        //       "$filename, ${global.infoFromFiles[filename].toString()}");
+        if (i % 1000 == 0)
+          print("updateDateOnInfo : $i / ${filenames.length},"
+              "$filename, ${global.infoFromFiles[filename].toString()}");
 
       }
-      print("updateDateOnInfo : $i / ${filenames.length},"
-          "$filename, ${global.infoFromFiles[filename].toString()}");
+      // print("updateDateOnInfo : $i / ${filenames.length},"
+      //     "$filename, ${global.infoFromFiles[filename].toString()}");
     }
   }
 

@@ -80,10 +80,12 @@ class _MyAppState extends State<MyApp> {
     locationDataManager = LocationDataManager();
     dataManager = DataManager(photoDataManager, locationDataManager);
     initApp = init();
+
     super.initState();
   }
 
   Future<int> init() async {
+    Stopwatch stopwatch = new Stopwatch()..start();
     isInitializationDone = false;
     await permissionManager.init();
     await noteManager.init();
@@ -91,7 +93,8 @@ class _MyAppState extends State<MyApp> {
     await locationDataManager.init();
     await dataManager.init();
     isInitializationDone = true;
-    print("init done");
+    print("init done,executed in ${stopwatch.elapsed}");
+    dataManager.executeSlowProcesses();
     return 0;
   }
 

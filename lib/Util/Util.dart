@@ -337,7 +337,7 @@ Future getExifInfoOfFile(String file) async {
       break;
     }
   }
-  print(data);
+  // print(data);
   Coordinate? coordinate = Coordinate(
       convertTagToValue(data['GPS GPSLatitude']),
       convertTagToValue(data['GPS GPSLongitude']));

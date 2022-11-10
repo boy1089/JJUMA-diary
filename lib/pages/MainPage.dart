@@ -1,4 +1,5 @@
 import 'package:animations/animations.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:test_location_2nd/Location/AddressFinder.dart';
 import 'package:test_location_2nd/Location/LocationDataManager.dart';
@@ -192,13 +193,18 @@ class MainPageState extends State<MainPage> {
             ),
           ),
         ),
-        // floatingActionButton: FloatingActionButton(
-        //   onPressed: () async {
-        //     dataManager.updateDatesFromInfo();
-        //     localPhotoDataManager.getPhotoOfDate("20221010");
-        //
-        //   },
-        // ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () async {
+            // dataManager.updateSummaryOfLocationDataFromInfo(null);
+            // dataManager.writeSummaryOfLocation(null, true);
+            print(summaryOfLocationData);
+            print(infoFromFiles);
+            summaryOfLocationData = await compute(
+                dataManager.updateSummaryOfLocationDataFromInfo_compute,
+                [dates, summaryOfLocationData, infoFromFiles]);
+            print(summaryOfLocationData);
+          },
+        ),
       ),
     );
   }

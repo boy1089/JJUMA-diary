@@ -77,15 +77,18 @@ class PhotoDataManager {
     Set indexOfDate = List.generate(
             global.dates.length, (i) => global.dates.elementAt(i)==date ? i : null)
         .toSet();
+    print(indexOfDate);
     indexOfDate.remove(null);
+
 
     List filesOfDate = List.generate(indexOfDate.length,
         (i) => global.infoFromFiles.keys.elementAt(indexOfDate.elementAt(i)));
     List dateOfDate = List.generate(indexOfDate.length,
         (i) => formatDatetime(global.datetimes.elementAt(indexOfDate.elementAt(i))));
-    // for (int i = 0; i < indexOfDate.length; i++) {
-    //   print("${dateOfDate[i]}, ${filesOfDate[i]}");
-    // }
+    for (int i = 0; i < indexOfDate.length; i++) {
+      print("${dateOfDate[i]}, ${filesOfDate[i]}");
+    }
+
     return [dateOfDate, filesOfDate];
   }
 

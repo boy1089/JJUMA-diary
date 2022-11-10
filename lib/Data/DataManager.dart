@@ -36,7 +36,6 @@ class DataManager {
     print("DataManager instance is initializing..");
     // var a = await readSummaryOfPhotoData();
 
-
     //get list of image files from local. --> update new images
     files = await getAllFiles();
     //read previously processed Info
@@ -51,7 +50,6 @@ class DataManager {
     await updateDateOnInfo(filesNotUpdated);
     await updateDatesFromInfo();
 
-
     //find the dates which are out of date based on the number of photo.
     datesOutOfDate = await updateSummaryOfPhotoFromInfo();
 
@@ -60,12 +58,28 @@ class DataManager {
 
   void executeSlowProcesses() async {
     Stopwatch stopwatch = new Stopwatch()..start();
-    await updateExifOnInfo(filesNotUpdated);
-    await writeInfo(filesNotUpdated, false);
-    //update the summaryOflocation only on the specific date.
-    await updateSummaryOfLocationDataFromInfo(datesOutOfDate!);
-    await writeSummaryOfLocation(datesOutOfDate!, false);
-    await writeSummaryOfPhoto(datesOutOfDate!, false);
+
+    if (filesNotUpdated == null) return;
+
+    int lengthOfFiles = filesNotUpdated!.length;
+    for (int i = 0; i < lengthOfFiles / 100.floor(); i++) {
+      print("executingSlowProcesses... $i / ${lengthOfFiles / 100.floor()}");
+      List<String> partOfFilesNotupdated = filesNotUpdated!.sublist(i * 100,
+          lengthOfFiles < (i + 1) * 100 ? lengthOfFiles : (i + 1) * 100);
+
+      await updateExifOnInfo(partOfFilesNotupdated);
+      await writeInfo(partOfFilesNotupdated, false);
+      //update the summaryOflocation only on the specific date.
+
+      // await updateSummaryOfLocationDataFromInfo(null);
+      // await updateSummaryOfLocationDataFromInfo(null);
+      global.summaryOfLocationData = await compute(
+          updateSummaryOfLocationDataFromInfo_compute,
+          [global.dates, global.summaryOfLocationData, global.infoFromFiles]);
+      print(global.summaryOfLocationData);
+      await writeSummaryOfLocation(null, false);
+      await writeSummaryOfPhoto(null, false);
+    }
     print("executeSlowProcesses done,executed in ${stopwatch.elapsed}");
   }
 
@@ -95,8 +109,7 @@ class DataManager {
 
     for (int i = 0; i < files.length; i++) {
       String filename = files.elementAt(i);
-      if (i % 1000 == 0)
-      print("matchFilesAndInfo : $i / ${files.length}");
+      if (i % 1000 == 0) print("matchFilesAndInfo : $i / ${files.length}");
       int indexInInfo =
           filenamesFromInfo.indexWhere((element) => element == filename);
       if (indexInInfo == -1) {
@@ -124,7 +137,7 @@ class DataManager {
   }
 
   Future<void> updateDatesFromInfo() async {
-    List dates = List.generate(global.infoFromFiles.length, (i) {
+    List<String?> dates = List.generate(global.infoFromFiles.length, (i) {
       var key = global.infoFromFiles.keys.elementAt(i);
       return global.infoFromFiles[key]?.date;
     });
@@ -153,7 +166,6 @@ class DataManager {
         if (i % 1000 == 0)
           print("updateDateOnInfo : $i / ${filenames.length},"
               "$filename, ${global.infoFromFiles[filename].toString()}");
-
       }
       // print("updateDateOnInfo : $i / ${filenames.length},"
       //     "$filename, ${global.infoFromFiles[filename].toString()}");
@@ -166,8 +178,9 @@ class DataManager {
     for (int i = 0; i < filenames.length; i++) {
       String filename = filenames.elementAt(i);
       List ExifData = await getExifInfoOfFile(filename);
-      print(
-          "updateExifOninfo : $i / ${filenames.length}, $filename, ${ExifData[0]}, ${ExifData[1]}");
+      if (i % 100 == 0)
+        print(
+            "updateExifOninfo : $i / ${filenames.length}, $filename, ${ExifData[0]}, ${ExifData[1]}");
       global.infoFromFiles[filename]?.coordinate = ExifData[1];
 
       if (ExifData[1] != null) {
@@ -215,17 +228,41 @@ class DataManager {
     return datesOutOfDate;
   }
 
-  Future<void> updateSummaryOfLocationDataFromInfo(
-      List<String> datesOufOfDate) async {
+  Future<Map> updateSummaryOfLocationDataFromInfo(
+      List<String>? datesOutOfDate) async {
+    List listOfDates = [];
+    listOfDates =
+        (datesOutOfDate == null) ? global.dates.toList() : datesOutOfDate!;
+
     print("updateSummaryOfLocationData..");
-    List listOfDates = datesOufOfDate;
+
     Set setOfDates = listOfDates.toSet();
     for (int i = 0; i < setOfDates.length; i++) {
-      print("updateSummaryOfLocationData.. $i / ${setOfDates.length}");
+      if (i % 100 == 0)
+        print("updateSummaryOfLocationData.. $i / ${setOfDates.length}");
       String date = setOfDates.elementAt(i);
       global.summaryOfLocationData[date] =
           locationDataManager.getMaxDistanceOfDate(date);
     }
+    return global.summaryOfPhotoData;
+  }
+
+  //input : [global.dates, global.summaryOfPhotoData, global.infoFromFiles]
+  Future<Map<String, double>> updateSummaryOfLocationDataFromInfo_compute(List input) async {
+    List listOfDates = input[0].toList();
+    global.infoFromFiles = input[2];
+    global.dates = input[0];
+    print("updateSummaryOfLocationData..");
+
+    Set setOfDates = listOfDates.toSet();
+    for (int i = 0; i < setOfDates.length; i++) {
+      if (i % 100 == 0)
+        print("updateSummaryOfLocationData.. $i / ${setOfDates.length}");
+      String date = setOfDates.elementAt(i);
+      input[1][date] =
+          locationDataManager.getMaxDistanceOfDate(date);
+    }
+    return input[1];
   }
 
   Future<List<String>> resetInfoFromFiles() async {
@@ -305,11 +342,12 @@ class DataManager {
   }
 
   Future<void> writeSummaryOfLocation(
-      List<String> datesOutOfDate, bool overwrite) async {
+      List<String>? datesOutOfDate, bool overwrite) async {
+    Set setOfDates = global.dates.toSet();
     if (overwrite == null) overwrite = false;
-    if (datesOutOfDate == null)
-      datesOutOfDate = global.infoFromFiles.keys.toList();
-
+    if (datesOutOfDate != null) {
+      setOfDates = datesOutOfDate.toSet();
+    }
     final Directory? directory = await getExternalStorageDirectory();
     final File file = File('${directory?.path}/summaryOfLocation.csv');
 
@@ -319,10 +357,11 @@ class DataManager {
     }
 
     var summaryOfLocation = global.summaryOfLocationData;
-    for (int i = 0; i < datesOutOfDate.length; i++) {
-      if (i % 100 == 0) print("writingInfo.. $i/${datesOutOfDate.length}");
+    for (int i = 0; i < setOfDates.length; i++) {
+      if (i % 100 == 0)
+        print("writingSummaryOfLocation.. $i/${setOfDates.length}");
 
-      String date = datesOutOfDate.elementAt(i);
+      String date = setOfDates.elementAt(i);
       await file.writeAsString(
           '${date},'
           '${summaryOfLocation[date]}\n',
@@ -347,11 +386,12 @@ class DataManager {
   }
 
   Future<void> writeSummaryOfPhoto(
-      List<String> datesOutOfDate, bool overwrite) async {
+      List<String>? datesOutOfDate, bool overwrite) async {
+    Set setOfDates = global.dates.toSet();
     if (overwrite == null) overwrite = false;
-    if (datesOutOfDate == null)
-      datesOutOfDate = global.infoFromFiles.keys.toList();
-
+    if (datesOutOfDate != null) {
+      setOfDates = datesOutOfDate.toSet();
+    }
     final Directory? directory = await getExternalStorageDirectory();
     final File file = File('${directory?.path}/summaryOfPhoto.csv');
 
@@ -361,9 +401,9 @@ class DataManager {
     }
 
     var summaryOfPhoto = global.summaryOfPhotoData;
-    for (int i = 0; i < datesOutOfDate.length; i++) {
-      if (i % 100 == 0) print("writingInfo.. $i/${datesOutOfDate.length}");
-      String date = datesOutOfDate.elementAt(i);
+    for (int i = 0; i < setOfDates.length; i++) {
+      if (i % 100 == 0) print("writingInfo.. $i/${setOfDates.length}");
+      String date = setOfDates.elementAt(i);
       await file.writeAsString(
           '${date},'
           '${summaryOfPhoto[date]}\n',

@@ -33,6 +33,8 @@ class DataManager {
   List<String> files = [];
   List<String>? filesNotUpdated = [];
   List<String>? datesOutOfDate = [];
+
+
   Future<void> init() async {
     print("DataManager instance is initializing..");
     // var a = await readSummaryOfPhotoData();
@@ -64,25 +66,45 @@ class DataManager {
 
     int lengthOfFiles = filesNotUpdated!.length;
     for (int i = 0; i < lengthOfFiles / 100.floor(); i++) {
-      print("executingSlowProcesses... $i / ${lengthOfFiles / 100.floor()}");
+      // for (int i = 0; i < 5; i++) {
+      Stopwatch stopwatch2 = new Stopwatch()..start();
+        print("executingSlowProcesses... $i / ${lengthOfFiles / 100.floor()}");
+
       List<String> partOfFilesNotupdated = filesNotUpdated!.sublist(i * 100,
           lengthOfFiles < (i + 1) * 100 ? lengthOfFiles : (i + 1) * 100);
 
       await updateExifOnInfo(partOfFilesNotupdated);
-      // await writeInfo(partOfFilesNotupdated, false);
-      await writeInfo(null, true);
 
-      //update the summaryOflocation only on the specific date.
-      await updateSummaryOfPhotoFromInfo();
-      // await updateSummaryOfLocationDataFromInfo(null);
-      // await updateSummaryOfLocationDataFromInfo(null);
+      if (i%5==0) {
+        await updateDatesFromInfo();
+        //update the summaryOflocation only on the specific date.
+        await updateSummaryOfPhotoFromInfo();
+        // await updateSummaryOfLocationDataFromInfo(null);
+        // await updateSummaryOfLocationDataFromInfo(null);
 
-      global.summaryOfLocationData = await compute(
-          updateSummaryOfLocationDataFromInfo_compute,
-          [global.dates, global.summaryOfLocationData, global.infoFromFiles]);
-      await writeSummaryOfLocation2(null, true);
-      await writeSummaryOfPhoto2(null, true);
+        global.summaryOfLocationData = await compute(
+            updateSummaryOfLocationDataFromInfo_compute,
+            [global.dates, global.summaryOfLocationData, global.infoFromFiles]);
+
+        await writeInfo(null, true);
+        await writeSummaryOfLocation2(null, true);
+        await writeSummaryOfPhoto2(null, true);
+      }
+
+      print("time elapsed : ${stopwatch2.elapsed}");
     }
+    //update the summaryOflocation only on the specific date.
+    await updateSummaryOfPhotoFromInfo();
+    // await updateSummaryOfLocationDataFromInfo(null);
+    // await updateSummaryOfLocationDataFromInfo(null);
+
+    global.summaryOfLocationData = await compute(
+        updateSummaryOfLocationDataFromInfo_compute,
+        [global.dates, global.summaryOfLocationData, global.infoFromFiles]);
+
+    await writeInfo(null, true);
+    await writeSummaryOfLocation2(null, true);
+    await writeSummaryOfPhoto2(null, true);
 
     print("executeSlowProcesses done,executed in ${stopwatch.elapsed}");
   }
@@ -273,12 +295,6 @@ class DataManager {
       }
       String date = setOfDates.elementAt(i);
       input[1][date] = locationDataManager.getMaxDistanceOfDate(date);
-
-      if(i%100==99){
-        // print("init done,executed in ${stopwatch.elapsed}");
-        // stopwatch.reset();
-      }
-
     }
     return input[1];
   }

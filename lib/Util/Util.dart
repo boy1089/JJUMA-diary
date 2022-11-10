@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 
 import 'package:path_provider/path_provider.dart';
 import 'package:matrix2d/matrix2d.dart';
@@ -322,13 +323,25 @@ Future<List> openFile(filePath) async {
 }
 
 Future getExifInfoOfFile(String file) async {
-  var bytes = await File(file).readAsBytes();
-  var data = await readExifFromBytes(bytes);
+  Stopwatch stopwatch = new Stopwatch()..start();
+  // var bytes = await File(file).readAsBytes();
+  var byte2 = await File(file).open(mode : FileMode.read);
+  // print("byte : ${bytes}");
+  print("step1 ${stopwatch.elapsed}");
+  // var data = await readExifFromBytes(bytes.sublist(0, 2000));
+  var data = await readExifFromBytes(await byte2.read(2000));
+  byte2.close();
+
+  // print("data : $data");
+  print("step2 ${stopwatch.elapsed}");
+
   String? dateInExif = null;
   List<String> keys = data.keys.toList();
   List<String> keysOfDateTime = keys.where((element){
     return (element.contains("DateTime"));
   }).toList();
+  print("step3 ${stopwatch.elapsed}");
+
   for(int i= 0; i<keysOfDateTime.length; i++){
     String key = keysOfDateTime.elementAt(i);
     IfdTag? datetimeInExif = data[key];
@@ -336,6 +349,8 @@ Future getExifInfoOfFile(String file) async {
       dateInExif = data[key].toString().replaceAll(":", "");
       break;
     }
+    // print("step4 ${stopwatch.elapsed}");
+  stopwatch.stop();
   }
   // print(data);
   Coordinate? coordinate = Coordinate(

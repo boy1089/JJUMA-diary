@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:test_location_2nd/Data/infoFromFile.dart';
 import 'package:test_location_2nd/Location/AddressFinder.dart';
 import 'package:glob/glob.dart';
 import 'package:glob/list_local_fs.dart';
@@ -83,32 +84,59 @@ class LocationDataManager {
 
   List<double?> getDistancesOfDate(String date) {
     //find the index which date is contained in infoFromFiles.
-    Set indexOfDate = List.generate(global.dates.length,
-            (i) => (global.dates.elementAt(i).contains(date)) ? i : null).toSet();
-    indexOfDate.remove(null);
-    List<double?> coordinatesOfDate = List.generate(indexOfDate.length, (i) {
-      var data =
-      global.infoFromFiles.values.elementAt(indexOfDate.elementAt(i));
-      double? distance = data.distance;
-      // print(distance.toString());
-      return distance;
+    List dates = global.dates;
+    // List indexOfDate = List.generate(
+    //     global.dates.length, (i) => (dates.elementAt(i) == date) ? i : null);
+    var endIndex = dates.lastIndexOf(date);
+    var startIndex = endIndex - 1000;
+    if(startIndex<0) startIndex = 0;
+
+    List indexOfDate = List.generate(
+        endIndex-startIndex, (i) {
+    if(dates.elementAt(startIndex + i) == date)
+      return startIndex + i;
     });
+
+    indexOfDate.removeWhere((item) => item == null);
+    // List<double?> coordinatesOfDate = List.generate(indexOfDate.length, (i) {
+    //   InfoFromFile data =
+    //   global.infoFromFiles.values.elementAt(indexOfDate.elementAt(i));
+    //   double? distance = data.distance;
+    //   return distance;
+    // });
+    List<double?> coordinatesOfDate = [];
+    List values = global.infoFromFiles.values.toList();
+    indexOfDate.forEach((element) {
+      InfoFromFile data = values.elementAt(element);
+      coordinatesOfDate.add(data.distance);
+    });
+    // for (int i = 0; i < indexOfDate.length; i++) {
+    //   InfoFromFile data = values.elementAt(indexOfDate.elementAt(i));
+    //   coordinatesOfDate.add(data.distance);
+    // }
+
     return coordinatesOfDate;
   }
 
-
   double getMaxDistanceOfDate(String date) {
+    // Stopwatch stopwatch = new Stopwatch()..start();
     List<double?> distancesOfDate = getDistancesOfDate(date);
-    List<double> distancesOfDate2 = distancesOfDate.whereType<double>().toList();
+    // print("step1 ${stopwatch.elapsed}");
+    List<double> distancesOfDate2 =
+        distancesOfDate.whereType<double>().toList();
+    // print("step2 ${stopwatch.elapsed}");
+
     // print("distancesOfDate : ${distancesOfDate}");
     // if(distancesOfDate2 == ["null"]) return 0;
-    if(distancesOfDate2 == [null]) return 0;
-    if(distancesOfDate2.length==0) return 0;
-    if(distancesOfDate2 == null) return 0;
-    if(distancesOfDate2 == "null") return 0;
+    if (distancesOfDate2 == [null]) return 0;
+    if (distancesOfDate2.length == 0) return 0;
+    if (distancesOfDate2 == null) return 0;
+    if (distancesOfDate2 == "null") return 0;
     // if(distancesOfDate2.length ==1) return distancesOfDate2[0];
 
     double maxDistance = distancesOfDate2.reduce(max);
+    // print("step3 ${stopwatch.elapsed}");
+    // stopwatch.stop();
     return maxDistance;
   }
 

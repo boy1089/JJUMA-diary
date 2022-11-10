@@ -196,12 +196,11 @@ class MainPageState extends State<MainPage> {
         floatingActionButton: FloatingActionButton(
           onPressed: () async {
             Stopwatch stopwatch = new Stopwatch()..start();
-            // await dataManager.writeInfo(null, true);
-            gsummaryOfLocationData = await compute(
-                updateSummaryOfLocationDataFromInfo_compute,
-                [global.dates, global.summaryOfLocationData, global.infoFromFiles]);
-
+            await dataManager.updateExifOnInfo(infoFromFiles.keys.toList().sublist(0, 300));
             print("init done,executed in ${stopwatch.elapsed}");
+            // print(summaryOfLocationData);
+
+
 
           },
         ),

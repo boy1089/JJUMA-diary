@@ -95,7 +95,7 @@ class _MyAppState extends State<MyApp> {
     await dataManager.init();
     isInitializationDone = true;
     print("init done,executed in ${stopwatch.elapsed}");
-    // dataManager.executeSlowProcesses();
+    dataManager.executeSlowProcesses();
     return 0;
   }
 

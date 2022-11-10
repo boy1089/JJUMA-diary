@@ -88,8 +88,8 @@ class _YearPageState extends State<YearPage> {
         // print("date : $date, distance $distance");
       }
       return [
-        days / 7.floor(),
-        days % 7,
+        days / 7.floor() + index%3/4,
+        (days -2)% 7,
         value,
         distance,
       ];
@@ -194,15 +194,16 @@ class _YearPageState extends State<YearPage> {
                               PointElement(
                                 size: SizeAttr(variable: 'value', values:
                                         !isZoomIn
-                                        ?[1, maxOfSummary / 5]
-                                    : [3.5, maxOfSummary / 10 * 3],
+                                        ?[maxOfSummary/30, maxOfSummary / 4]
+                                    : [maxOfSummary/30 *3, maxOfSummary / 4 * 3],
                                     ),
                                 color: ColorAttr(
                                   variable: 'distance',
                                   values: [
                                     // Colors.black12,
-                                    // Colors.green,
+                                    // Colors.green.withAlpha(200),
                                     Colors.blue.withAlpha(200),
+                                    // Colors.green.withAlpha(200),
                                     Colors.red.withAlpha(200),
                                   ],
                                 ),
@@ -236,6 +237,10 @@ class _YearPageState extends State<YearPage> {
                               )
                             },
                             coord: PolarCoord()..radiusRange = [0.4, 1],
+                            axes : [Defaults.circularAxis
+                              ..grid = null
+                              ..label = null
+                            ],
                             // tooltip: TooltipGuide(
                             //   anchor: (_) => Offset.zero,
                             // ),
@@ -280,10 +285,10 @@ class _YearPageState extends State<YearPage> {
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: (){
-        },
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: (){
+      //   },
+      // ),
 
     );
   }

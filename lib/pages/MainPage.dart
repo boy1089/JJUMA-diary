@@ -195,14 +195,14 @@ class MainPageState extends State<MainPage> {
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () async {
-            // dataManager.updateSummaryOfLocationDataFromInfo(null);
-            // dataManager.writeSummaryOfLocation(null, true);
-            print(summaryOfLocationData);
-            print(infoFromFiles);
-            summaryOfLocationData = await compute(
-                dataManager.updateSummaryOfLocationDataFromInfo_compute,
-                [dates, summaryOfLocationData, infoFromFiles]);
-            print(summaryOfLocationData);
+            Stopwatch stopwatch = new Stopwatch()..start();
+            // await dataManager.writeInfo(null, true);
+            gsummaryOfLocationData = await compute(
+                updateSummaryOfLocationDataFromInfo_compute,
+                [global.dates, global.summaryOfLocationData, global.infoFromFiles]);
+
+            print("init done,executed in ${stopwatch.elapsed}");
+
           },
         ),
       ),

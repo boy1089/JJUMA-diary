@@ -193,9 +193,9 @@ class _YearPageState extends State<YearPage> {
                             elements: [
                               PointElement(
                                 size: SizeAttr(variable: 'value', values:
-                                        // !isZoomIn
-                                        [1, maxOfSummary / 5]
-                                    // : [3.5, maxOfSummary / 10 * 3],
+                                        !isZoomIn
+                                        ?[1, maxOfSummary / 5]
+                                    : [3.5, maxOfSummary / 10 * 3],
                                     ),
                                 color: ColorAttr(
                                   variable: 'distance',

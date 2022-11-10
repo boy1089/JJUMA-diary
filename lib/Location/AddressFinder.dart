@@ -6,7 +6,7 @@ import 'Coordinate.dart';
 class AddressFinder {
   static Future getAddressFromExif(filename) async{
     Coordinate coordinate = await getCoordinateFromExif(filename);
-    Placemark placemark = await getAddressFromCoordinate(coordinate.latitude, coordinate.longitude);
+    Placemark? placemark = await getAddressFromCoordinate(coordinate.latitude, coordinate.longitude);
     print(placemark);
     return placemark;
   }
@@ -27,10 +27,15 @@ class AddressFinder {
   }
 
 
-  static Future<Placemark> getAddressFromCoordinate(latitude, longitude) async {
+  static Future<Placemark?> getAddressFromCoordinate(latitude, longitude) async {
     //https://www.geeksforgeeks.org/how-to-get-address-from-coordinates-in-flutter/
-    var address = await placemarkFromCoordinates(latitude, longitude);
-    return address[0];
+    try {
+      var address = await placemarkFromCoordinates(latitude, longitude);
+      return address[0];
+    } catch(e) {
+      print("error in getAddressFromCoordinate, $e");
+      return null;
+    }
   }
 
   static double? convertTagToValue(tag) {

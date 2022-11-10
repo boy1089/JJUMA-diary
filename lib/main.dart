@@ -29,9 +29,19 @@ void main() {
             return NavigationIndexProvider();
           },
         ),
-        ChangeNotifierProvider<UiStateProvider>(
+        // ChangeNotifierProvider<UiStateProvider>(
+        //   create: (context) {
+        //     return UiStateProvider();
+        //   },
+        // ),
+        ChangeNotifierProvider<YearPageStateProvider>(
           create: (context) {
-            return UiStateProvider();
+            return YearPageStateProvider();
+          },
+        ),
+        ChangeNotifierProvider<DayPageStateProvider>(
+          create: (context) {
+            return DayPageStateProvider();
           },
         ),
       ],

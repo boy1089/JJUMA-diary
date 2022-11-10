@@ -53,9 +53,10 @@ class _DayPageState extends State<DayPage> {
 
   FocusNode focusNode = FocusNode();
   final myTextController = TextEditingController();
-  var uiStateProvider;
+  var dayPageStateProvider;
   List files = [];
   @override
+
   void initState() {
     super.initState();
     permissionManager = widget.permissionManager;
@@ -65,7 +66,7 @@ class _DayPageState extends State<DayPage> {
     noteManager = widget.noteManager;
     print("DayPage, after initState : ${photoDataForPlot}");
     readData = _fetchData();
-    uiStateProvider = Provider.of<UiStateProvider>(context, listen: false);
+    dayPageStateProvider = Provider.of<DayPageStateProvider>(context, listen: false);
     date = Provider.of<NavigationIndexProvider>(context, listen: false).date;
   }
 
@@ -73,7 +74,7 @@ class _DayPageState extends State<DayPage> {
     date = Provider.of<NavigationIndexProvider>(context, listen: false).date;
     await updateDataForUi();
     // provider = Provider.of<UiStateProvider>(context, listen: false);
-    uiStateProvider.setZoomInState(false);
+    dayPageStateProvider.setZoomInState(false);
     print("fetchData done, $photoDataForPlot");
     await Future.delayed(Duration(seconds: 1));
     return photoDataForPlot;
@@ -103,7 +104,7 @@ class _DayPageState extends State<DayPage> {
   @override
   Widget build(BuildContext context) {
     bool isZoomIn =
-        Provider.of<UiStateProvider>(context, listen: true).isZoomIn;
+        Provider.of<DayPageStateProvider>(context, listen: true).isZoomIn;
     print("building DayPage..");
     return FutureBuilder(
         future: readData,
@@ -160,10 +161,10 @@ class _DayPageState extends State<DayPage> {
                             return;
                           }
                           setState(() {
-                            uiStateProvider.setZoomInState(true);
+                            dayPageStateProvider.setZoomInState(true);
                             isZoomInImageVisible = true;
                             _angle = angleZoomIn;
-                            uiStateProvider.setZoomInRotationAngle(_angle);
+                            dayPageStateProvider.setZoomInRotationAngle(_angle);
                             FocusManager.instance.primaryFocus?.unfocus();
                           });
                         };
@@ -176,7 +177,7 @@ class _DayPageState extends State<DayPage> {
                           instance.onUpdate = (details) {
                             _angle =
                                 isZoomIn ? _angle + details.delta.dy / 1000 : 0;
-                            uiStateProvider.setZoomInRotationAngle(_angle);
+                            dayPageStateProvider.setZoomInRotationAngle(_angle);
                           };
                         },
                       )
@@ -280,6 +281,8 @@ class _DayPageState extends State<DayPage> {
                 borderRadius: BorderRadius.all(Radius.circular(15.0)),
               ),
               onPressed: () {
+                // updateDataForUi();
+
                 if (focusNode.hasFocus) {
                   dismissKeyboard();
                 } else {
@@ -413,7 +416,7 @@ class _DayPageState extends State<DayPage> {
       if (coordinate == null) {
         listOfAddress.add(null);
       }
-      Placemark address = await AddressFinder.getAddressFromCoordinate(
+      Placemark? address = await AddressFinder.getAddressFromCoordinate(
           coordinate?.latitude, coordinate?.longitude);
       listOfAddress.add(address);
     }

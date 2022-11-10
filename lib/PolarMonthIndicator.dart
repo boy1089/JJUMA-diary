@@ -15,7 +15,7 @@ class PolarMonthIndicators {
   @override
   Widget build(BuildContext context) {
     return
-      Provider.of<UiStateProvider>(context, listen: false)
+      Provider.of<YearPageStateProvider>(context, listen: false)
           .isZoomIn
           ?Stack(
           children: List<Widget>.generate(
@@ -50,24 +50,18 @@ class PolarMonthIndicator {
 
   @override
   Widget build(BuildContext context) {
-    // double angle = Provider.of<NavigationIndexProvider>(context, listen: false)
-    //     .zoomInAngle;
+    double angle = Provider.of<YearPageStateProvider>(context, listen: true)
+        .zoomInAngle;
     return Align(
       alignment: Alignment(xLocation, yLocation),
-      child: Text(
-        "${DateFormat('MMM').format(DateTime(2022, index+1))}",
-        style: const TextStyle(fontSize: 60, color: global.kColor_backgroundText),
-      ),
-      // child: AnimatedRotation(
-      //     duration: Duration(milliseconds: 100),
-      //     turns: Provider.of<NavigationIndexProvider>(context, listen: false)
-      //         .isZoomIn
-      //         ? -angle
-      //         : 0,
-      //     child: Text(
-      //       "${DateFormat('MMM').format(DateTime(2022, index+1))}",
-      //       style: TextStyle(fontSize: 60, color: global.kColor_backgroundText),
-      //     )),
+
+      child: Transform.rotate(
+          angle :atan2(yLocation, xLocation),
+          child: Text(
+            "${DateFormat('MMM').format(DateTime(2022, index+1))}",
+            style: TextStyle(fontSize: 60, color: global.kColor_backgroundText),
+          )),
+
     );
   }
 }

@@ -90,17 +90,18 @@ class MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     print("build MainPage");
     var provider = Provider.of<NavigationIndexProvider>(context, listen: false);
-    var uiStateProvider = Provider.of<UiStateProvider>(context, listen: false);
+    var dayPageStateProvider = Provider.of<DayPageStateProvider>(context, listen: false);
+    var yearPageStateProvider = Provider.of<YearPageStateProvider>(context, listen: false);
 
     return WillPopScope(
       onWillPop: () async {
         print("back button pressed : ${provider.navigationIndex}");
         switch (provider.navigationIndex) {
           case 0:
-            if (uiStateProvider.isZoomIn) {
+            if (yearPageStateProvider.isZoomIn) {
               setState(() {
-                uiStateProvider.setZoomInState(false);
-                uiStateProvider.setZoomInRotationAngle(0);
+                yearPageStateProvider.setZoomInState(false);
+                yearPageStateProvider.setZoomInRotationAngle(0);
                 // provider.isZoomIn = false;
               });
             }
@@ -114,10 +115,10 @@ class MainPageState extends State<MainPage> {
             indexForZoomInImage = -1;
             isImageClicked = false;
 
-            if (uiStateProvider.isZoomIn) {
+            if (dayPageStateProvider.isZoomIn) {
               setState(() {
-                uiStateProvider.setZoomInState(false);
-                uiStateProvider.setZoomInRotationAngle(0);
+                dayPageStateProvider.setZoomInState(false);
+                dayPageStateProvider.setZoomInRotationAngle(0);
               });
             }
 
@@ -126,11 +127,11 @@ class MainPageState extends State<MainPage> {
               break;
             }
             //when zoomed out, go to month page
-            if (!uiStateProvider.isZoomIn) {
+            if (!dayPageStateProvider.isZoomIn) {
               provider.setNavigationIndex(0);
               // provider.setZoomInState(true);
               // dataManager.updateSummaryOfLocationData();
-              setState(() {});
+              // setState(() {});
               return Navigator.canPop(context);
             }
 
@@ -191,13 +192,13 @@ class MainPageState extends State<MainPage> {
             ),
           ),
         ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () async {
-            dataManager.updateDatesFromInfo();
-            localPhotoDataManager.getPhotoOfDate("20221010");
-
-          },
-        ),
+        // floatingActionButton: FloatingActionButton(
+        //   onPressed: () async {
+        //     dataManager.updateDatesFromInfo();
+        //     localPhotoDataManager.getPhotoOfDate("20221010");
+        //
+        //   },
+        // ),
       ),
     );
   }

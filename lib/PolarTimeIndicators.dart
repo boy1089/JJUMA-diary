@@ -55,7 +55,7 @@ class PolarTimeIndicators extends StatelessWidget {
       if(coordinate==null) {
         listOfAddress.add(null);
       }
-      Placemark address = await AddressFinder.getAddressFromCoordinate(coordinate?.latitude, coordinate?.longitude);
+      Placemark? address = await AddressFinder.getAddressFromCoordinate(coordinate?.latitude, coordinate?.longitude);
       listOfAddress.add(address);
     }
     return listOfAddress;
@@ -63,7 +63,7 @@ class PolarTimeIndicators extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Provider.of<UiStateProvider>(context, listen: true).isZoomIn
+    return Provider.of<DayPageStateProvider>(context, listen: true).isZoomIn
         ? Stack(
             children: List<Widget>.generate(
                 24,
@@ -110,7 +110,7 @@ class PolarTimeIndicator {
 
   @override
   Widget build(BuildContext context) {
-    var provider = Provider.of<UiStateProvider>(context, listen: true);
+    var provider = Provider.of<DayPageStateProvider>(context, listen: true);
     return Align(
       alignment: Alignment(xLocation, yLocation),
       child: AnimatedRotation(

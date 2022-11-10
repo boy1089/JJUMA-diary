@@ -201,11 +201,11 @@ class MainPageState extends State<MainPage> {
             // await dataManager.writeInfo(true);
             // await dataManager.updateDatesFromInfo();
             // await dataManager.updateSummaryOfPhotoFromInfo();
-            await dataManager.readSummaryOfPhoto();
+            // await dataManager.readSummaryOfPhoto();
             // await dataManager.updateSummaryOfLocationDataFromInfo();
             // summaryOfLocationData = {};
             // dataManager.writeSummaryOfLocation(true);
-            // print(summaryOfLocationData);
+            print(summaryOfLocationData);
             // dataManager.readSummaryOfLocation();
             // print(summaryOfLocationData);
 

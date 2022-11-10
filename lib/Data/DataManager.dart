@@ -49,11 +49,12 @@ class DataManager {
     await updateExifOnInfo(filesNotUpdated);
     await writeInfo(filesNotUpdated, false);
 
-    await readSummaryOfLocation();
     await readSummaryOfPhoto();
+    await readSummaryOfLocation();
     //find the dates which are out of date based on the number of photo.
     List<String>? datesOutOfDate = await updateSummaryOfPhotoFromInfo();
-    //update the summaryOflocation only on the specific date. 
+
+    //update the summaryOflocation only on the specific date.
     await updateSummaryOfLocationDataFromInfo(datesOutOfDate);
 
     await writeSummaryOfLocation(datesOutOfDate, false);
@@ -170,12 +171,14 @@ class DataManager {
     List dates = global.dates;
     dates.removeWhere((i) => i == null);
     Set setOfDates = dates.toSet();
-    Map<String, int> summaryOfPhotoOfCurrentStatus = {};
     List<String> datesOutOfDate =  [];
 
     for (int i = 0; i<setOfDates.length; i++){
       String date = setOfDates.elementAt(i);
       int numberOfPhoto = dates.where((c)=>(c==date)).length;
+      if(global.summaryOfPhotoData[date]==null)
+        datesOutOfDate.add(date);
+
       if(global.summaryOfPhotoData[date] != numberOfPhoto) {
         datesOutOfDate.add(date);
         global.summaryOfPhotoData[date] =

@@ -18,6 +18,7 @@ import 'package:test_location_2nd/Note/NoteManager.dart';
 import 'package:path_provider/path_provider.dart';
 import 'DiaryPage.dart';
 import 'YearPage.dart';
+import 'YearPageView.dart';
 
 class MainPage extends StatefulWidget {
   PermissionManager permissionManager;
@@ -61,7 +62,8 @@ class MainPageState extends State<MainPage> {
     noteManager = widget.noteManager;
 
     // YearPage yearPage = YearPage(dataManager);
-    YearPage yearPage = YearPage();
+    // YearPage yearPage = YearPage();
+    YearPageView yearPageView = YearPageView();
     DayPage hourPage = DayPage(permissionManager, dataManager,
         sensorDataManager, localPhotoDataManager, noteManager);
     DiaryPage diaryPage = DiaryPage(dataManager, noteManager);
@@ -70,7 +72,7 @@ class MainPageState extends State<MainPage> {
 
     _widgetOptions = <Widget>[
       // monthPage,
-      yearPage,
+      yearPageView,
       diaryPage,
       hourPage,
       androidSettingsScreen,

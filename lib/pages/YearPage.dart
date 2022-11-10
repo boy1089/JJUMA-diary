@@ -10,7 +10,8 @@ import 'package:test_location_2nd/PolarMonthIndicator.dart';
 import 'package:intl/intl.dart';
 
 class YearPage extends StatefulWidget {
-  YearPage({Key? key}) : super(key: key);
+  int year;
+  YearPage(this.year, {Key? key}) : super(key: key);
   @override
   State<YearPage> createState() => _YearPageState();
 }
@@ -29,7 +30,9 @@ class _YearPageState extends State<YearPage> {
   @override
   void initState() {
     print("year page create");
-    updateData(Provider.of<YearPageStateProvider>(context, listen: false).year, false);
+
+    updateData(widget.year, false);
+
     heatmapChannel.stream.listen(
       (value) {
         var provider =
@@ -257,29 +260,12 @@ class _YearPageState extends State<YearPage> {
               offstage: isZoomIn ? true : false,
               child:
                   Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                IconButton(
-                  onPressed: () {
-                    year = year - 1;
-                    updateData(year, true);
-                    setState(() {});
-                  },
-                  icon: Icon(
-                    Icons.arrow_left,
-                    color: global.kMainColor_cool,
-                  ),
-                ),
+
                 Text(
                   "$year",
                   style: TextStyle(fontSize: 30),
                 ),
-                IconButton(
-                    onPressed: () {
-                      year = year + 1;
-                      updateData(year, true);
-                      setState(() {});
-                    },
-                    icon: Icon(Icons.arrow_right),
-                    color: global.kMainColor_cool),
+
               ]),
             ),
           ),

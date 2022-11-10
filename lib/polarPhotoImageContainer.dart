@@ -8,7 +8,7 @@ import 'dart:io';
 import 'package:test_location_2nd/Util/global.dart';
 
 class polarPhotoImageContainers {
-  var googlePhotoDataForPlot;
+  var photoDataForPlot;
   double imageLocationFactor = 2.2;
   double imageSize = 100;
   double xLocation = 0;
@@ -19,7 +19,7 @@ class polarPhotoImageContainers {
     @required photoDataForPlot, {
     containerSize: kDefaultPolarPlotSize,
   }) {
-    this.googlePhotoDataForPlot = photoDataForPlot;
+    this.photoDataForPlot = photoDataForPlot;
     this.containerSize = containerSize;
 
     if (indexForZoomInImage == -1) {
@@ -39,17 +39,17 @@ class polarPhotoImageContainers {
             .isZoomIn
         ? Stack(
             children: List<Widget>.generate(
-                googlePhotoDataForPlot.length,
+                photoDataForPlot.length,
                 (int index) => polarPhotoImageContainer(
-                        googlePhotoDataForPlot[stackOrder[index]],
+                        photoDataForPlot[stackOrder[index]],
                         index: stackOrder[index],
                         numberOfImages: stackOrder.length)
                     .build(context)))
         : Stack(
             children: List<Widget>.generate(
-                googlePhotoDataForPlot.length,
+                photoDataForPlot.length,
                 (int index) => polarPhotoImageContainer(
-                        googlePhotoDataForPlot[stackOrder[index]],
+                        photoDataForPlot[stackOrder[index]],
                         applyOffset: false,
                         index: stackOrder[index],
                         numberOfImages: stackOrder.length)

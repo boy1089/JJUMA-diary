@@ -15,6 +15,10 @@ import 'package:intl/intl.dart';
 import 'package:test_location_2nd/PolarTimeIndicators.dart';
 import 'package:test_location_2nd/Util/DateHandler.dart';
 
+import 'package:test_location_2nd/Location/AddressFinder.dart';
+import 'package:test_location_2nd/Location/Coordinate.dart';
+import 'package:geocoding/geocoding.dart';
+
 class DayPage extends StatefulWidget {
   PermissionManager permissionManager;
   DataManager dataManager;
@@ -45,11 +49,12 @@ class _DayPageState extends State<DayPage> {
   dynamic sensorDataForPlot = [[]];
   List<List<dynamic>> photoDataForPlot = [[]];
   List<List<dynamic>> dummy = [[]];
+  Map<int, String?> addresses = {};
 
   FocusNode focusNode = FocusNode();
   final myTextController = TextEditingController();
   var uiStateProvider;
-
+  List files = [];
   @override
   void initState() {
     super.initState();
@@ -200,7 +205,8 @@ class _DayPageState extends State<DayPage> {
                                       milliseconds: global.animationTime - 100),
                                   child: Stack(
                                     children: [
-                                      PolarTimeIndicators().build(context),
+                                      PolarTimeIndicators(photoForPlot, addresses)
+                                          .build(context),
                                       PolarSensorDataPlot((sensorDataForPlot[0]
                                                           .length ==
                                                       0) |
@@ -320,6 +326,8 @@ class _DayPageState extends State<DayPage> {
     photoDataForPlot = List<List>.generate(
         photoForPlot.length, (index) => photoForPlot.elementAt(index));
 
+    addresses = await updateAddress();
+
     await updateSensorData();
 
     try {
@@ -359,6 +367,57 @@ class _DayPageState extends State<DayPage> {
     photoForPlot.add([input.last[0], input.last[1], input.last[2], true]);
     print("selectImagesForPlot done, $photoDataForPlot");
     return photoForPlot;
+  }
+
+  Future<Map<int, String?>> updateAddress() async {
+    Map<int, int> selectedIndex = {};
+    Map<int, String?> addresses = {};
+    List<Placemark?> addressOfFiles = [];
+    files = transpose(photoForPlot)[1];
+    selectedIndex = selectIndexForLocation(files);
+    addressOfFiles = await getAddressOfFiles(selectedIndex.values.toList());
+    addresses = Map<int, String?>.fromIterable(
+        List.generate(selectedIndex.keys.length, (i) => i),
+        key: (item) => selectedIndex.keys.elementAt(item),
+        // value: (item) => "${addressOfFiles
+        //     .elementAt(item)
+        //     ?.locality}, ${addressOfFiles.elementAt(item)?.thoroughfare}" );
+    value: (item) => "${addressOfFiles
+        .elementAt(item)
+        ?.locality}" );
+
+
+    print(addressOfFiles.elementAt(0));
+    return addresses;
+  }
+
+  Map<int, int> selectIndexForLocation(files) {
+    Map<int, int> indexForSelectedFile = {};
+    List<DateTime?> datetimes = List<DateTime?>.generate(files.length,
+        (i) => global.infoFromFiles[files.elementAt(i)]?.datetime);
+    List<int> times =
+        List<int>.generate(datetimes.length, (i) => datetimes[i]!.hour);
+    Set<int> setOfTimes = times.toSet();
+    for (int i = 0; i < setOfTimes.length; i++)
+      indexForSelectedFile[setOfTimes.elementAt(i)] =
+          (times.indexOf(setOfTimes.elementAt(i)));
+    return indexForSelectedFile;
+  }
+
+  Future<List<Placemark?>> getAddressOfFiles(List<int> index) async {
+    List<Placemark?> listOfAddress = [];
+    for (int i = 0; i < index.length; i++) {
+      Coordinate? coordinate =
+          global.infoFromFiles[files[index.elementAt(i)]]!.coordinate;
+      print(coordinate);
+      if (coordinate == null) {
+        listOfAddress.add(null);
+      }
+      Placemark address = await AddressFinder.getAddressFromCoordinate(
+          coordinate?.latitude, coordinate?.longitude);
+      listOfAddress.add(address);
+    }
+    return listOfAddress;
   }
 
   Future<void> updateSensorData() async {

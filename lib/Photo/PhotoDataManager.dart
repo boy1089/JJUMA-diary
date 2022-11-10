@@ -45,7 +45,7 @@ class PhotoDataManager {
       files.addAll(List.generate(
           newFiles.length, (index) => newFiles.elementAt(index).path));
     }
-    files = files.where((element)=>!element.contains('thumbnail')).toList();
+    files = files.where((element) => !element.contains('thumbnail')).toList();
     return files;
   }
 
@@ -68,35 +68,30 @@ class PhotoDataManager {
     return inferredDatetimesOfFiles;
   }
 
-  List filterInvalidFiles(files){
+  List filterInvalidFiles(files) {
     return files;
   }
 
   Future getPhotoOfDate(String date) async {
+    print(global.dates);
     Set indexOfDate = List.generate(
-        datetimes.length,
-        (i) => (datetimes.elementAt(i).substring(0, 8).contains(date) & (datetimes.elementAt(i).length>8))
-            ? i
-            : null).toSet();
+            global.dates.length, (i) => global.dates.elementAt(i)==date ? i : null)
+        .toSet();
     indexOfDate.remove(null);
 
-    List filesOfDate = List.generate(
-        indexOfDate.length, (i) => files.elementAt(indexOfDate.elementAt(i)));
+    List filesOfDate = List.generate(indexOfDate.length,
+        (i) => global.infoFromFiles.keys.elementAt(indexOfDate.elementAt(i)));
     List dateOfDate = List.generate(indexOfDate.length,
-        (i) => datetimes.elementAt(indexOfDate.elementAt(i)));
-
-          for(int i = 0; i<indexOfDate.length; i++){
-        print("${dateOfDate[i]}, ${filesOfDate[i]}");
-    }
-
+        (i) => formatDatetime(global.datetimes.elementAt(indexOfDate.elementAt(i))));
+    // for (int i = 0; i < indexOfDate.length; i++) {
+    //   print("${dateOfDate[i]}, ${filesOfDate[i]}");
+    // }
     return [dateOfDate, filesOfDate];
   }
-
 
   void setDataAsGlobal() {
     global.files = this.files;
     global.dates = this.dates;
     global.datetimes = this.datetimes;
   }
-
 }

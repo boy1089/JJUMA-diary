@@ -193,54 +193,9 @@ class MainPageState extends State<MainPage> {
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () async {
-            // await dataManager.resetInfoFromFiles();
-            // print(infoFromFiles);
-            // await dataManager.updateDateOnInfo();
-            // await dataManager.updateExifOnInfo();
-            // print(infoFromFiles);
-            // await dataManager.writeInfo(true);
-            // await dataManager.updateDatesFromInfo();
-            // await dataManager.updateSummaryOfPhotoFromInfo();
-            // await dataManager.readSummaryOfPhoto();
-            // await dataManager.updateSummaryOfLocationDataFromInfo();
-            // infoFromFiles = {};
-            // files = await dataManager.getAllFiles();
-            // //read previously processed Info
-            // await dataManager.readInfo();
-            // // find the files which are in local but not in Info
-            // List<String>? filesNotUpdated = await dataManager.matchFilesAndInfo();
-            // print(filesNotUpdated);
-            // // update info which are not updated
-            // await dataManager.addFilesToInfo(filesNotUpdated);
-            // await dataManager.updateDatesFromInfo();
-            // await dataManager.updateDateOnInfo(filesNotUpdated);
-            // await dataManager.updateExifOnInfo(filesNotUpdated);
-            // //
-            print(summaryOfPhotoData);
-            await dataManager.updateDatesFromInfo();
-            await dataManager.readSummaryOfPhoto();
-            await dataManager.readSummaryOfLocation();
-            //find the dates which are out of date based on the number of photo.
-            List<String>? datesOutOfDate = await dataManager.updateSummaryOfPhotoFromInfo();
-            print(datesOutOfDate);
-            print(summaryOfPhotoData);
+            dataManager.updateDatesFromInfo();
+            localPhotoDataManager.getPhotoOfDate("20221010");
 
-            //update the summaryOflocation only on the specific date.
-            await dataManager.updateSummaryOfLocationDataFromInfo(datesOutOfDate);
-
-            await dataManager.writeSummaryOfLocation(datesOutOfDate, false);
-            await dataManager.writeSummaryOfPhoto(datesOutOfDate, false);
-            print("done");
-            // print("DataManager initialization done");
-            // int i = 5000;
-            // await dataManager.updateExifOnInfo([infoFromFiles.keys.elementAt(0)]);
-            // await dataManager.updateDateOnInfo([infoFromFiles.keys.elementAt(i)]);
-            // await dataManager.updateExifOnInfo([infoFromFiles.keys.elementAt(i)]);
-            // print(infoFromFiles[infoFromFiles.keys.elementAt(i)]);
-            // for(int i = 0; i<infoFromFiles.length; i ++){
-            //   String filename = infoFromFiles.keys.elementAt(i);
-            //   print("$i, $filename, ${infoFromFiles[filename]}");
-            // }
           },
         ),
       ),

@@ -40,6 +40,9 @@ class DataManager {
     files = await getAllFiles();
     //read previously processed Info
     await readInfo();
+    await readSummaryOfPhoto();
+    await readSummaryOfLocation();
+
     // find the files which are in local but not in Info
     filesNotUpdated = await matchFilesAndInfo();
     // update info which are not updated
@@ -49,8 +52,6 @@ class DataManager {
     await updateExifOnInfo(filesNotUpdated);
     await writeInfo(filesNotUpdated, false);
 
-    await readSummaryOfPhoto();
-    await readSummaryOfLocation();
     //find the dates which are out of date based on the number of photo.
     List<String>? datesOutOfDate = await updateSummaryOfPhotoFromInfo();
 
@@ -89,7 +90,7 @@ class DataManager {
     for (int i = 0; i < files.length; i++) {
       String filename = files.elementAt(i);
       // if (i % 100 == 0)
-        print("matchFilesAndInfo : $i / ${files.length}");
+      print("matchFilesAndInfo : $i / ${files.length}");
       int indexInInfo =
           filenamesFromInfo.indexWhere((element) => element == filename);
       if (indexInInfo == -1) {
@@ -121,8 +122,15 @@ class DataManager {
       var key = global.infoFromFiles.keys.elementAt(i);
       return global.infoFromFiles[key]?.date;
     });
+    List datetimes = List.generate(global.infoFromFiles.length, (i) {
+      var key = global.infoFromFiles.keys.elementAt(i);
+      return global.infoFromFiles[key]?.datetime;
+    });
+
     dates.removeWhere((i) => i == null);
+    datetimes.removeWhere((i)=>i == null);
     global.dates = dates;
+    global.datetimes = datetimes;
   }
 
   Future<void> updateDateOnInfo(List<String>? filenames) async {
@@ -162,8 +170,7 @@ class DataManager {
       }
 
       //if datetime is updated from filename, then does not overwrite with exif
-      if (global.infoFromFiles[filename]?.datetime != null)
-        continue;
+      if (global.infoFromFiles[filename]?.datetime != null) continue;
 
       //update the datetime of EXif if there is datetime is null from filename
       if ((ExifData[0] != null)) {
@@ -172,10 +179,10 @@ class DataManager {
         continue;
       }
       //if there is no info from filename and exif, then use changed datetime.
-        DateTime datetime =
-            DateTime.parse(formatDatetime(FileStat.statSync(filename).changed));
-        global.infoFromFiles[filename]?.datetime = datetime;
-        global.infoFromFiles[filename]?.date = formatDate(datetime);
+      DateTime datetime =
+          DateTime.parse(formatDatetime(FileStat.statSync(filename).changed));
+      global.infoFromFiles[filename]?.datetime = datetime;
+      global.infoFromFiles[filename]?.date = formatDate(datetime);
     }
   }
 
@@ -191,9 +198,8 @@ class DataManager {
       // update the date
       // i) if the number of photo is different from read result and update result,
       // ii) if that date is not contained in the summaryOfPhoto
-      if ((global.summaryOfPhotoData[date] != numberOfPhoto)||
-          (!global.summaryOfPhotoData.keys.contains(date))
-      ) {
+      if ((global.summaryOfPhotoData[date] != numberOfPhoto) ||
+          (!global.summaryOfPhotoData.keys.contains(date))) {
         datesOutOfDate.add(date);
         global.summaryOfPhotoData[date] =
             dates.where((c) => (c == date)).length;

@@ -2,6 +2,7 @@ import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import "package:test_location_2nd/Location/Coordinate.dart";
 import 'package:test_location_2nd/Data/infoFromFile.dart';
+
 DateTime selectedDate = DateTime(2022, 1, 1);
 
 int mainPageSelectionIndex = 0;
@@ -60,6 +61,20 @@ FontWeight kFontWeight_diaryTitle = FontWeight.w700;
 
 double kSize_polarPlotPhotoScatter = 5;
 
+double kMarginForGraph = 10;
+double kBottomNavigationBarHeight = 30;
+double kYPositionRatioOfGraph = 2 / 5;
+double kMagnificationOnGraph = 3.5;
+double kRatioOfScatterInYearPage = 6 / 10;
+
+double kHeightOfArbitraryWidgetOnBottom = 30;
+
+double kSizeOfScatter_ZoomOutMin = 5;
+double kSizeOfScatter_ZoomOutMax = 30;
+
+double kSizeOfScatter_ZoomInMin = kSizeOfScatter_ZoomOutMin * 3.5;
+double kSizeOfScatter_ZoomInMax = kSizeOfScatter_ZoomOutMax * 3.5;
+
 const event_color_goingOut = Colors.red;
 const event_color_backHome = Colors.blue;
 
@@ -71,7 +86,8 @@ List<Color> get colorsHotCold => [
 int indexForZoomInImage = -1;
 bool isImageClicked = false;
 
-int animationTime = 200;
+int animationTime = 500;
+Curve animationCurve = Curves.easeOutQuint;
 double monthPageScrollOffset = 0.0;
 
 int startYear = 2013;
@@ -80,6 +96,7 @@ double kMinimumTimeDifferenceBetweenImages = 1; //unit is hour
 
 double value = 0.8;
 double value2 = 0.6;
+
 List<List<dynamic>> dummyData1 = [
   [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
   [0.0, value, 0.0, 0.0, 0.0, 0.0, 0.0],

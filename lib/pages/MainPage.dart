@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:test_location_2nd/Location/AddressFinder.dart';
 import 'package:test_location_2nd/Location/LocationDataManager.dart';
-import 'package:test_location_2nd/Util/global.dart';
+import 'package:test_location_2nd/Util/global.dart' as global;
 import '../navigation.dart';
 import 'package:test_location_2nd/pages/SettingPage.dart';
 import 'package:test_location_2nd/Permissions/PermissionManager.dart';
@@ -82,8 +82,8 @@ class MainPageState extends State<MainPage> {
   }
 
   Future<int> _fetchData() async {
-    print("initialization : $isInitializationDone");
-    while (!isInitializationDone) {
+    print("initialization : ${global.isInitializationDone}");
+    while (!global.isInitializationDone) {
       print("initialization on going..");
       await Future.delayed(const Duration(seconds: 1));
     }
@@ -95,8 +95,10 @@ class MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     print("build MainPage");
     var provider = Provider.of<NavigationIndexProvider>(context, listen: false);
-    var dayPageStateProvider = Provider.of<DayPageStateProvider>(context, listen: false);
-    var yearPageStateProvider = Provider.of<YearPageStateProvider>(context, listen: false);
+    var dayPageStateProvider =
+        Provider.of<DayPageStateProvider>(context, listen: false);
+    var yearPageStateProvider =
+        Provider.of<YearPageStateProvider>(context, listen: false);
 
     return WillPopScope(
       onWillPop: () async {
@@ -117,8 +119,8 @@ class MainPageState extends State<MainPage> {
           case 2:
             //when zoomed in, make daypage zoom out
             // provider.setZoomInState(false);
-            indexForZoomInImage = -1;
-            isImageClicked = false;
+            global.indexForZoomInImage = -1;
+            global.isImageClicked = false;
 
             if (dayPageStateProvider.isZoomIn) {
               setState(() {
@@ -170,11 +172,11 @@ class MainPageState extends State<MainPage> {
                 );
               }
             }),
-        backgroundColor: kBackGroundColor,
+        backgroundColor: global.kBackGroundColor,
         bottomNavigationBar: Offstage(
           offstage: !provider.isBottomNavigationBarShown,
           child: SizedBox(
-            height: 30,
+            height: global.kBottomNavigationBarHeight,
             // width : 200,
             child: BottomNavigationBar(
               selectedFontSize: 0,
@@ -197,18 +199,6 @@ class MainPageState extends State<MainPage> {
             ),
           ),
         ),
-        // floatingActionButton: FloatingActionButton(
-        //   onPressed: () async {
-        //     // Stopwatch stopwatch = new Stopwatch()..start();
-        //     // await dataManager.updateExifOnInfo(infoFromFiles.keys.toList().sublist(0, 300));
-        //     // print("init done,executed in ${stopwatch.elapsed}");
-        //     // print(summaryOfLocationData);
-        //     summaryOfPhotoData.forEach((i, v)=>print("$i, $v"));
-        //     // dataManager.executeSlowProcesses();
-        //
-        //
-        //   },
-        // ),
       ),
     );
   }

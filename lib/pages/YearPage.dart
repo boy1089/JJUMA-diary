@@ -22,7 +22,6 @@ class _YearPageState extends State<YearPage> {
   int maxOfSummary = 0;
   List<String> availableDates = [];
   dynamic dataForPlot;
-
   var heatmapChannel = StreamController<Selected?>.broadcast();
 
   _YearPageState() {}
@@ -52,14 +51,15 @@ class _YearPageState extends State<YearPage> {
   }
 
   void updateData(year, setYear) {
-    if(setYear)
+    if (setYear)
       Provider.of<YearPageStateProvider>(context, listen: false).setYear(year);
     this.year = year;
     availableDates = global.summaryOfPhotoData.keys.where((element) {
       return element.contains(year.toString());
     }).toList();
 
-    Provider.of<DayPageStateProvider>(context, listen: false).setAvailableDates(availableDates);
+    Provider.of<DayPageStateProvider>(context, listen: false)
+        .setAvailableDates(availableDates);
 
     dataForPlot = List.generate(52, (index) {
       return [
@@ -92,8 +92,8 @@ class _YearPageState extends State<YearPage> {
         // print("date : $date, distance $distance");
       }
       return [
-        days / 7.floor() + index%3/4,
-        (days -2)% 7,
+        days / 7.floor() + index % 3 / 4,
+        (days - 2) % 7,
         value,
         distance,
       ];
@@ -104,18 +104,36 @@ class _YearPageState extends State<YearPage> {
     print("year page, dummy3 : $maxOfSummary");
   }
 
-  double graphSize = 400;
-  double topPadding = 100;
+  late double graphSize = physicalWidth - 2 * global.kMarginForGraph;
 
   late Map layout_yearPage = {
-    'magnification': {true: 7, false: 1},
-    'graphSize': {true: graphSize * 3.5, false: graphSize},
-    'left': {true: -graphSize * 2.4, false: (physicalWidth - graphSize) / 2},
-    'top': {true: null, false: topPadding},
-    'graphCenter': {
-      true: Offset(0, 0),
-      false: Offset(physicalWidth / 2, graphSize / 2 + topPadding)
+    'graphSize': {
+      true: graphSize * global.kMagnificationOnGraph,
+      false: graphSize
     },
+    'left': {
+      true: -graphSize *
+          (global.kMagnificationOnGraph / 2) *
+          (1 + (1 - global.kRatioOfScatterInYearPage)),
+      false: global.kMarginForGraph
+    },
+    'top': {
+      true: null,
+      false: (physicalHeight -
+                  global.kBottomNavigationBarHeight -
+                  global.kHeightOfArbitraryWidgetOnBottom) *
+              (global.kYPositionRatioOfGraph) -
+          graphSize / 2
+    }, //30 : bottom bar, 30: navigation bar, (1/3) positioned one third
+    'graphCenter': {
+      true: null,
+      false: Offset(
+          physicalWidth / 2,
+          (physicalHeight -
+                  global.kBottomNavigationBarHeight -
+                  global.kHeightOfArbitraryWidgetOnBottom) *
+              (global.kYPositionRatioOfGraph))
+    }
   };
 
   @override
@@ -143,7 +161,6 @@ class _YearPageState extends State<YearPage> {
                     Offset tapPosition = calculateTapPositionRefCenter(
                         details, 0, layout_yearPage);
                     double angleZoomIn = calculateTapAngle(tapPosition, 0, 0);
-
                     // if (tapPosition.dy < -200) return;
                     //if editing text, doesn't zoom in.
                     // setState(() {
@@ -170,15 +187,16 @@ class _YearPageState extends State<YearPage> {
               child: Stack(
                   alignment: isZoomIn ? Alignment.center : Alignment.topCenter,
                   children: [
-                    Positioned(
-                      // duration: Duration(milliseconds: global.animationTime),
+                    AnimatedPositioned(
+                      duration: Duration(milliseconds: global.animationTime),
                       width:
                           layout_yearPage['graphSize']?[isZoomIn]?.toDouble(),
                       height:
                           layout_yearPage['graphSize']?[isZoomIn]?.toDouble(),
                       left: layout_yearPage['left']?[isZoomIn]?.toDouble(),
                       top: layout_yearPage['top']?[isZoomIn]?.toDouble(),
-                      // curve: Curves.fastOutSlowIn,
+
+                      curve: global.animationCurve,
 
                       // child: Transform.rotate(
                       child: AnimatedRotation(
@@ -188,26 +206,30 @@ class _YearPageState extends State<YearPage> {
                                     listen: true)
                                 .zoomInAngle
                             : 0,
-                        duration:
-                            Duration(milliseconds: global.animationTime - 100),
+                        duration: Duration(milliseconds: global.animationTime),
+                        curve: global.animationCurve,
                         child: Stack(alignment: Alignment.center, children: [
                           PolarMonthIndicators().build(context),
                           Chart(
                             data: dataForPlot,
                             elements: [
                               PointElement(
-                                size: SizeAttr(variable: 'value', values:
-                                        !isZoomIn
-                                        ?[maxOfSummary/30, maxOfSummary / 4]
-                                    : [maxOfSummary/30 *3, maxOfSummary / 4 * 3],
-                                    ),
+                                size: SizeAttr(
+                                  variable: 'value',
+                                  values: !isZoomIn
+                                      ? [
+                                          global.kSizeOfScatter_ZoomOutMin,
+                                          global.kSizeOfScatter_ZoomOutMax
+                                        ]
+                                      : [
+                                          global.kSizeOfScatter_ZoomInMin,
+                                          global.kSizeOfScatter_ZoomInMax
+                                        ],
+                                ),
                                 color: ColorAttr(
                                   variable: 'distance',
                                   values: [
-                                    // Colors.black12,
-                                    // Colors.green.withAlpha(200),
                                     Colors.blue.withAlpha(200),
-                                    // Colors.green.withAlpha(200),
                                     Colors.red.withAlpha(200),
                                   ],
                                 ),
@@ -218,7 +240,7 @@ class _YearPageState extends State<YearPage> {
                               'week': Variable(
                                 accessor: (List datum) => datum[0] as num,
                                 scale:
-                                    LinearScale(min: 0, max: 52, tickCount: 10),
+                                    LinearScale(min: 0, max: 52, tickCount: 12),
                               ),
                               'day': Variable(
                                 accessor: (List datum) => datum[1] as num,
@@ -240,44 +262,46 @@ class _YearPageState extends State<YearPage> {
                                 testRadius: isZoomIn ? 10 : 0,
                               )
                             },
-                            coord: PolarCoord()..radiusRange = [0.4, 1],
-                            axes : [Defaults.circularAxis
-                              ..grid = null
-                              ..label = null
+                            coord: PolarCoord()
+                              ..radiusRange = [
+                                1 - global.kRatioOfScatterInYearPage,
+                                1
+                              ],
+                            axes: [
+                              Defaults.circularAxis
+                                ..grid = null
+                                ..label = null
                             ],
-                            // tooltip: TooltipGuide(
-                            //   anchor: (_) => Offset.zero,
-                            // ),
                           ),
                         ]),
                       ),
                     ),
                   ])),
-          Positioned(
+          AnimatedPositioned(
+            duration: Duration(milliseconds: global.animationTime),
             width: layout_yearPage['graphSize'][false].toDouble(),
             height: layout_yearPage['graphSize'][false].toDouble(),
             top: layout_yearPage['top'][false].toDouble(),
+            curve: global.animationCurve,
             child: Offstage(
               offstage: isZoomIn ? true : false,
               child:
                   Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-
                 Text(
                   "$year",
                   style: TextStyle(fontSize: 30),
                 ),
-
               ]),
             ),
           ),
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: (){
-          print(availableDates);
+        onPressed: () {
+          print(physicalHeight - graphSize - 40);
+          print(physicalHeight);
         },
       ),
-
     );
   }
 }

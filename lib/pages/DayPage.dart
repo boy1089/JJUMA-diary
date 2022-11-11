@@ -56,7 +56,6 @@ class _DayPageState extends State<DayPage> {
   var dayPageStateProvider;
   List files = [];
   @override
-
   void initState() {
     super.initState();
     permissionManager = widget.permissionManager;
@@ -66,7 +65,8 @@ class _DayPageState extends State<DayPage> {
     noteManager = widget.noteManager;
     print("DayPage, after initState : ${photoDataForPlot}");
     readData = _fetchData();
-    dayPageStateProvider = Provider.of<DayPageStateProvider>(context, listen: false);
+    dayPageStateProvider =
+        Provider.of<DayPageStateProvider>(context, listen: false);
     date = Provider.of<NavigationIndexProvider>(context, listen: false).date;
   }
 
@@ -128,7 +128,7 @@ class _DayPageState extends State<DayPage> {
                                   AllowMultipleGestureRecognizer>(
                               () => AllowMultipleGestureRecognizer(),
                               (AllowMultipleGestureRecognizer instance) {
-                        instance.onTapDown = (details) {
+                        instance.onTapUp = (details) {
                           //action expected
                           //1. if not zoom in
                           //1-1. if image is clicked, then zoom in that location (angle)
@@ -207,7 +207,8 @@ class _DayPageState extends State<DayPage> {
                                       milliseconds: global.animationTime - 100),
                                   child: Stack(
                                     children: [
-                                      PolarTimeIndicators(photoForPlot, addresses)
+                                      PolarTimeIndicators(
+                                              photoForPlot, addresses)
                                           .build(context),
                                       PolarSensorDataPlot((sensorDataForPlot[0]
                                                           .length ==
@@ -386,10 +387,7 @@ class _DayPageState extends State<DayPage> {
         // value: (item) => "${addressOfFiles
         //     .elementAt(item)
         //     ?.locality}, ${addressOfFiles.elementAt(item)?.thoroughfare}" );
-    value: (item) => "${addressOfFiles
-        .elementAt(item)
-        ?.locality}" );
-
+        value: (item) => "${addressOfFiles.elementAt(item)?.locality}");
 
     print(addressOfFiles.elementAt(0));
     return addresses;

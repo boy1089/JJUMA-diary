@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'dart:async';
 import 'package:test_location_2nd/PolarMonthIndicator.dart';
 import 'package:intl/intl.dart';
+import 'package:test_location_2nd/CustomWidget/ZoomableWidgets.dart';
 
 class YearPage extends StatefulWidget {
   int year;
@@ -142,166 +143,124 @@ class _YearPageState extends State<YearPage> {
     var isZoomIn =
         Provider.of<YearPageStateProvider>(context, listen: false).isZoomIn;
     return Scaffold(
-      body: Stack(
-        alignment: Alignment.center,
-        children: [
-          RawGestureDetector(
-              behavior: HitTestBehavior.opaque,
-              gestures: {
-                AllowMultipleGestureRecognizer:
-                    GestureRecognizerFactoryWithHandlers<
-                            AllowMultipleGestureRecognizer>(
-                        () => AllowMultipleGestureRecognizer(),
-                        (AllowMultipleGestureRecognizer instance) {
-                  var provider =
-                      Provider.of<YearPageStateProvider>(context, listen: true);
-                  instance.onTapUp = (details) {
-                    provider.setZoomInState(true);
-                    if (isZoomIn) return;
-                    Offset tapPosition = calculateTapPositionRefCenter(
-                        details, 0, layout_yearPage);
-                    double angleZoomIn = calculateTapAngle(tapPosition, 0, 0);
-                    // if (tapPosition.dy < -200) return;
-                    //if editing text, doesn't zoom in.
-                    // setState(() {
-                    _angle = angleZoomIn;
-                    provider.setZoomInRotationAngle(_angle);
-                    // });
-                  };
-                }),
-                AllowMultipleGestureRecognizer2:
-                    GestureRecognizerFactoryWithHandlers<
-                        AllowMultipleGestureRecognizer2>(
-                  () => AllowMultipleGestureRecognizer2(),
-                  (AllowMultipleGestureRecognizer2 instance) {
-                    var provider = Provider.of<YearPageStateProvider>(context,
-                        listen: false);
-                    instance.onUpdate = (details) {
-                      if (!isZoomIn) return;
-                      _angle = isZoomIn ? _angle + details.delta.dy / 400 : 0;
-                      provider.setZoomInRotationAngle(_angle);
-                    };
-                  },
-                )
+      body: RawGestureDetector(
+          behavior: HitTestBehavior.opaque,
+          gestures: {
+            AllowMultipleGestureRecognizer:
+                GestureRecognizerFactoryWithHandlers<
+                        AllowMultipleGestureRecognizer>(
+                    () => AllowMultipleGestureRecognizer(),
+                    (AllowMultipleGestureRecognizer instance) {
+              var provider =
+                  Provider.of<YearPageStateProvider>(context, listen: true);
+              instance.onTapUp = (details) {
+                provider.setZoomInState(true);
+                if (isZoomIn) return;
+                Offset tapPosition =
+                    calculateTapPositionRefCenter(details, 0, layout_yearPage);
+                double angleZoomIn = calculateTapAngle(tapPosition, 0, 0);
+                // if (tapPosition.dy < -200) return;
+                //if editing text, doesn't zoom in.
+                // setState(() {
+                _angle = angleZoomIn;
+                provider.setZoomInRotationAngle(_angle);
+                // });
+              };
+            }),
+            AllowMultipleGestureRecognizer2:
+                GestureRecognizerFactoryWithHandlers<
+                    AllowMultipleGestureRecognizer2>(
+              () => AllowMultipleGestureRecognizer2(),
+              (AllowMultipleGestureRecognizer2 instance) {
+                var provider =
+                    Provider.of<YearPageStateProvider>(context, listen: false);
+                instance.onUpdate = (details) {
+                  if (!isZoomIn) return;
+                  _angle = isZoomIn ? _angle + details.delta.dy / 400 : 0;
+                  provider.setZoomInRotationAngle(_angle);
+                };
               },
-              child: Stack(
-                  alignment: isZoomIn ? Alignment.center : Alignment.topCenter,
-                  children: [
-                    AnimatedPositioned(
-                      duration: Duration(milliseconds: global.animationTime),
-                      width:
-                          layout_yearPage['graphSize']?[isZoomIn]?.toDouble(),
-                      height:
-                          layout_yearPage['graphSize']?[isZoomIn]?.toDouble(),
-                      left: layout_yearPage['left']?[isZoomIn]?.toDouble(),
-                      top: layout_yearPage['top']?[isZoomIn]?.toDouble(),
-
-                      curve: global.animationCurve,
-
-                      // child: Transform.rotate(
-                      child: AnimatedRotation(
-                        // angle: isZoomIn ? _angle * 2 * pi : 0,
-                        turns: isZoomIn
-                            ? Provider.of<YearPageStateProvider>(context,
-                                    listen: true)
-                                .zoomInAngle
-                            : 0,
-                        duration: Duration(milliseconds: global.animationTime),
-                        curve: global.animationCurve,
-                        child: Stack(alignment: Alignment.center, children: [
-                          PolarMonthIndicators().build(context),
-                          Chart(
-                            data: dataForPlot,
-                            elements: [
-                              PointElement(
-                                size: SizeAttr(
-                                  variable: 'value',
-                                  values: !isZoomIn
-                                      ? [
-                                          global.kSizeOfScatter_ZoomOutMin,
-                                          global.kSizeOfScatter_ZoomOutMax
-                                        ]
-                                      : [
-                                          global.kSizeOfScatter_ZoomInMin,
-                                          global.kSizeOfScatter_ZoomInMax
-                                        ],
-                                ),
-                                color: ColorAttr(
-                                  variable: 'distance',
-                                  values: [
-                                    Colors.blue.withAlpha(200),
-                                    Colors.red.withAlpha(200),
-                                  ],
-                                ),
-                                selectionChannel: heatmapChannel,
-                              ),
-                            ],
-                            variables: {
-                              'week': Variable(
-                                accessor: (List datum) => datum[0] as num,
-                                scale:
-                                    LinearScale(min: 0, max: 52, tickCount: 12),
-                              ),
-                              'day': Variable(
-                                accessor: (List datum) => datum[1] as num,
-                              ),
-                              'value': Variable(
-                                accessor: (List datum) => datum[2] as num,
-                              ),
-                              'distance': Variable(
-                                accessor: (List datum) =>
-                                    // math.log(datum[3]) + 0.1 as num,
-                                    datum[3] as num,
-                              ),
-                            },
-                            selections: {
-                              'choose': PointSelection(
-                                on: {GestureType.hover},
-                                toggle: true,
-                                nearest: false,
-                                testRadius: isZoomIn ? 10 : 0,
-                              )
-                            },
-                            coord: PolarCoord()
-                              ..radiusRange = [
-                                1 - global.kRatioOfScatterInYearPage,
-                                1
+            )
+          },
+          child: Stack(
+              alignment: isZoomIn ? Alignment.center : Alignment.topCenter,
+              children: [
+                ZoomableWidgets(
+                        widgets: [
+                      Chart(
+                        data: dataForPlot,
+                        elements: [
+                          PointElement(
+                            size: SizeAttr(
+                              variable: 'value',
+                              values: !isZoomIn
+                                  ? [
+                                      global.kSizeOfScatter_ZoomOutMin,
+                                      global.kSizeOfScatter_ZoomOutMax
+                                    ]
+                                  : [
+                                      global.kSizeOfScatter_ZoomInMin,
+                                      global.kSizeOfScatter_ZoomInMax
+                                    ],
+                            ),
+                            color: ColorAttr(
+                              variable: 'distance',
+                              values: [
+                                Colors.blue.withAlpha(200),
+                                Colors.red.withAlpha(200),
                               ],
-                            axes: [
-                              Defaults.circularAxis
-                                ..grid = null
-                                ..label = null
-                            ],
+                            ),
+                            selectionChannel: heatmapChannel,
                           ),
-                        ]),
+                        ],
+                        variables: {
+                          'week': Variable(
+                            accessor: (List datum) => datum[0] as num,
+                            scale: LinearScale(min: 0, max: 52, tickCount: 12),
+                          ),
+                          'day': Variable(
+                            accessor: (List datum) => datum[1] as num,
+                          ),
+                          'value': Variable(
+                            accessor: (List datum) => datum[2] as num,
+                          ),
+                          'distance': Variable(
+                            accessor: (List datum) =>
+                                // math.log(datum[3]) + 0.1 as num,
+                                datum[3] as num,
+                          ),
+                        },
+                        selections: {
+                          'choose': PointSelection(
+                            on: {GestureType.hover},
+                            toggle: true,
+                            nearest: false,
+                            testRadius: isZoomIn ? 10 : 0,
+                          )
+                        },
+                        coord: PolarCoord()
+                          ..radiusRange = [
+                            1 - global.kRatioOfScatterInYearPage,
+                            1
+                          ],
+                        axes: [
+                          Defaults.circularAxis
+                            ..grid = null
+                            ..label = null
+                        ],
                       ),
-                    ),
-                  ])),
-          AnimatedPositioned(
-            duration: Duration(milliseconds: global.animationTime),
-            width: layout_yearPage['graphSize'][false].toDouble(),
-            height: layout_yearPage['graphSize'][false].toDouble(),
-            top: layout_yearPage['top'][false].toDouble(),
-            curve: global.animationCurve,
-            child: Offstage(
-              offstage: isZoomIn ? true : false,
-              child:
-                  Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                Text(
-                  "$year",
-                  style: TextStyle(fontSize: 30),
-                ),
-              ]),
-            ),
-          ),
-        ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          print(physicalHeight - graphSize - 40);
-          print(physicalHeight);
-        },
-      ),
+                      Text(
+                        "$year",
+                        style: TextStyle(fontSize: 30),
+                      ),
+                      PolarMonthIndicators().build(context),
+                    ],
+                        isZoomIn: isZoomIn,
+                        layout: layout_yearPage,
+                        provider: Provider.of<YearPageStateProvider>(context,
+                            listen: true))
+                    .build(context)
+              ])),
     );
   }
 }

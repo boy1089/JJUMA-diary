@@ -9,18 +9,15 @@ import 'package:provider/provider.dart';
 import 'dart:io';
 import 'package:test_location_2nd/Util/global.dart' as global;
 import 'package:intl/intl.dart';
+
 class PolarMonthIndicators {
-
-
   @override
   Widget build(BuildContext context) {
-    return
-      Provider.of<YearPageStateProvider>(context, listen: false)
-          .isZoomIn
-          ?Stack(
-          children: List<Widget>.generate(
-              12, (int index) => PolarMonthIndicator(index).build(context)))
-          :Text("");
+    return Provider.of<YearPageStateProvider>(context, listen: false).isZoomIn
+        ? Stack(
+            children: List<Widget>.generate(
+                12, (int index) => PolarMonthIndicator(index).build(context)))
+        : Text("");
   }
 }
 
@@ -50,18 +47,16 @@ class PolarMonthIndicator {
 
   @override
   Widget build(BuildContext context) {
-    double angle = Provider.of<YearPageStateProvider>(context, listen: true)
-        .zoomInAngle;
+    double angle =
+        Provider.of<YearPageStateProvider>(context, listen: true).zoomInAngle;
     return Align(
       alignment: Alignment(xLocation, yLocation),
-
       child: Transform.rotate(
-          angle :atan2(yLocation, xLocation),
+          angle: atan2(yLocation, xLocation),
           child: Text(
-            "${DateFormat('MMM').format(DateTime(2022, index+1))}",
+            "${DateFormat('MMM').format(DateTime(2022, index + 1))}",
             style: TextStyle(fontSize: 60, color: global.kColor_backgroundText),
           )),
-
     );
   }
 }

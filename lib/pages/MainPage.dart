@@ -64,11 +64,9 @@ class MainPageState extends State<MainPage> {
     // YearPage yearPage = YearPage(dataManager);
     // YearPage yearPage = YearPage();
     YearPageView yearPageView = YearPageView();
-    DayPageView dayPageView = DayPageView(permissionManager, dataManager,
+    DayPageView dayPageView = DayPageView(dataManager,
         sensorDataManager, localPhotoDataManager, noteManager);
 
-    DayPage hourPage = DayPage(permissionManager, dataManager,
-        sensorDataManager, localPhotoDataManager, noteManager);
     DiaryPage diaryPage = DiaryPage(dataManager, noteManager);
     AndroidSettingsScreen androidSettingsScreen =
         AndroidSettingsScreen(permissionManager);

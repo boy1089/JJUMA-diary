@@ -17,7 +17,7 @@ class ZoomableWidgets {
     this.isZoomIn = isZoomIn;
     this.provider = provider;
   }
-  late double graphSize = physicalWidth - 2 * global.kMarginForGraph;
+  late double graphSize = physicalWidth - 2 * global.kMarginForYearPage;
   @override
   Widget build(BuildContext context) {
     return AnimatedPositioned(

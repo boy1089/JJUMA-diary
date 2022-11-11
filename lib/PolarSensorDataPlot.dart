@@ -12,15 +12,6 @@ class PolarSensorDataPlot {
   late dynamic data;
   PolarSensorDataPlot(this.data, {Key? key}); // {data = ['a'];}
 
-  void addDummyDataForPlot() {
-    debugPrint(data.toString());
-    debugPrint(data.transpose.toString());
-  }
-
-  void printData() {
-    print(data.toString());
-  }
-
   @override
   Widget build(BuildContext context) {
     print("polarSensorDataPlot, ${data[0]}, ${data[0].length}");

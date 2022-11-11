@@ -51,72 +51,18 @@ class _YearPageState extends State<YearPage> {
     super.initState();
   }
 
-  void updateData(year, setYear) {
-    if (setYear)
-      Provider.of<YearPageStateProvider>(context, listen: false).setYear(year);
-    this.year = year;
-    availableDates = global.summaryOfPhotoData.keys.where((element) {
-      return element.contains(year.toString());
-    }).toList();
-
-    Provider.of<DayPageStateProvider>(context, listen: false)
-        .setAvailableDates(availableDates);
-
-    dataForPlot = List.generate(52, (index) {
-      return [
-        index,
-        1,
-        10,
-        0.01,
-      ];
-    });
-
-    if (availableDates.length == 0) return dataForPlot;
-
-    dataForPlot = List.generate(availableDates.length, (index) {
-      String date = availableDates[index];
-      int days = int.parse(DateFormat("D").format(DateTime.parse(date)));
-      int value = global.summaryOfPhotoData[date]! > 200
-          ? 200
-          : global.summaryOfPhotoData[date]!;
-
-      double distance = 0.01;
-      var temp = global.summaryOfLocationData[date];
-      // print("$date, $temp");
-      if (global.summaryOfLocationData[date] == null ||
-          global.summaryOfLocationData[date] == 0) {
-        distance = 0.01;
-      } else {
-        distance = global.summaryOfLocationData[date]! > 100
-            ? 100
-            : global.summaryOfLocationData[date]!;
-        // print("date : $date, distance $distance");
-      }
-      return [
-        days / 7.floor() + index % 3 / 4,
-        (days - 2) % 7,
-        value,
-        distance,
-      ];
-    });
-    List<int> dummy3 = List<int>.generate(transpose(dataForPlot)[0].length,
-        (index) => int.parse(transpose(dataForPlot)[2][index].toString()));
-    maxOfSummary = dummy3.reduce(math.max);
-    print("year page, dummy3 : $maxOfSummary");
-  }
-
-  late double graphSize = physicalWidth - 2 * global.kMarginForGraph;
+  late double graphSize = physicalWidth - 2 * global.kMarginForYearPage;
 
   late Map layout_yearPage = {
     'graphSize': {
-      true: graphSize * global.kMagnificationOnGraph,
+      true: graphSize * global.kMagnificationOnYearPage,
       false: graphSize
     },
     'left': {
       true: -graphSize *
-          (global.kMagnificationOnGraph / 2) *
+          (global.kMagnificationOnYearPage / 2) *
           (1 + (1 - global.kRatioOfScatterInYearPage)),
-      false: global.kMarginForGraph
+      false: global.kMarginForYearPage
     },
     'top': {
       true: null,
@@ -139,7 +85,6 @@ class _YearPageState extends State<YearPage> {
 
   @override
   Widget build(BuildContext context) {
-    print("yearPage built");
     var isZoomIn =
         Provider.of<YearPageStateProvider>(context, listen: false).isZoomIn;
     return Scaffold(
@@ -159,9 +104,6 @@ class _YearPageState extends State<YearPage> {
                 Offset tapPosition =
                     calculateTapPositionRefCenter(details, 0, layout_yearPage);
                 double angleZoomIn = calculateTapAngle(tapPosition, 0, 0);
-                // if (tapPosition.dy < -200) return;
-                //if editing text, doesn't zoom in.
-                // setState(() {
                 _angle = angleZoomIn;
                 provider.setZoomInRotationAngle(_angle);
                 // });
@@ -262,5 +204,58 @@ class _YearPageState extends State<YearPage> {
                     .build(context)
               ])),
     );
+  }
+
+  void updateData(year, setYear) {
+    if (setYear)
+      Provider.of<YearPageStateProvider>(context, listen: false).setYear(year);
+    this.year = year;
+    availableDates = global.summaryOfPhotoData.keys.where((element) {
+      return element.contains(year.toString());
+    }).toList();
+
+    Provider.of<DayPageStateProvider>(context, listen: false)
+        .setAvailableDates(availableDates);
+
+    dataForPlot = List.generate(52, (index) {
+      return [
+        index,
+        1,
+        10,
+        0.01,
+      ];
+    });
+    if (availableDates.length == 0) return dataForPlot;
+
+    dataForPlot = List.generate(availableDates.length, (index) {
+      String date = availableDates[index];
+      int days = int.parse(DateFormat("D").format(DateTime.parse(date)));
+      int value = global.summaryOfPhotoData[date]! > 200
+          ? 200
+          : global.summaryOfPhotoData[date]!;
+
+      double distance = 0.01;
+      var temp = global.summaryOfLocationData[date];
+      // print("$date, $temp");
+      if (global.summaryOfLocationData[date] == null ||
+          global.summaryOfLocationData[date] == 0) {
+        distance = 0.01;
+      } else {
+        distance = global.summaryOfLocationData[date]! > 100
+            ? 100
+            : global.summaryOfLocationData[date]!;
+        // print("date : $date, distance $distance");
+      }
+      return [
+        days / 7.floor() + index % 3 / 4,
+        (days - 2) % 7,
+        value,
+        distance,
+      ];
+    });
+    List<int> dummy3 = List<int>.generate(transpose(dataForPlot)[0].length,
+        (index) => int.parse(transpose(dataForPlot)[2][index].toString()));
+    maxOfSummary = dummy3.reduce(math.max);
+    print("year page, dummy3 : $maxOfSummary");
   }
 }

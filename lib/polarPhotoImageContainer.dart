@@ -9,18 +9,12 @@ import 'package:test_location_2nd/Util/global.dart';
 
 class polarPhotoImageContainers {
   var photoDataForPlot;
-  double imageLocationFactor = 2.2;
-  double imageSize = 100;
   double xLocation = 0;
   double yLocation = 0;
-  double containerSize = kDefaultPolarPlotSize;
   List stackOrder = [];
   polarPhotoImageContainers(
-    @required photoDataForPlot, {
-    containerSize: kDefaultPolarPlotSize,
-  }) {
+    @required photoDataForPlot) {
     this.photoDataForPlot = photoDataForPlot;
-    this.containerSize = containerSize;
 
     if (indexForZoomInImage == -1) {
       stackOrder = List.generate(photoDataForPlot.length, (int index) => index);
@@ -35,8 +29,7 @@ class polarPhotoImageContainers {
   @override
   Widget build(BuildContext context) {
     // print("imageContainers build");
-    return !Provider.of<DayPageStateProvider>(context, listen: false)
-            .isZoomIn
+    return !Provider.of<DayPageStateProvider>(context, listen: false).isZoomIn
         ? Stack(
             children: List<Widget>.generate(
                 photoDataForPlot.length,
@@ -60,9 +53,7 @@ class polarPhotoImageContainers {
 class polarPhotoImageContainer {
   var photoDataForPlot;
   double imageLocationFactor = 1.4;
-  double imageSize = 90;
-  double defaultImageSize = 100;
-  double zoomInImageSize = 300;
+  double imageSize = kImageSize;
   double xLocation = 0;
   double yLocation = 0;
   double containerSize = kSecondPolarPlotSize;
@@ -96,7 +87,7 @@ class polarPhotoImageContainer {
     }
 
     if (indexForZoomInImage == this.index) {
-      imageSize = 350;
+      imageSize = kZoomInImageSize;
       var radiusSign = (1 - 0.7) * 2;
       var radius = (2) / 1.8; // mag5 1.2
 
@@ -111,8 +102,8 @@ class polarPhotoImageContainer {
 
   @override
   Widget build(BuildContext context) {
-    double angle = Provider.of<DayPageStateProvider>(context, listen: false)
-        .zoomInAngle;
+    double angle =
+        Provider.of<DayPageStateProvider>(context, listen: false).zoomInAngle;
     bool isZoomIn =
         Provider.of<DayPageStateProvider>(context, listen: false).isZoomIn;
     return Align(
@@ -154,17 +145,16 @@ class polarPhotoImageContainer {
                       clipBehavior: Clip.antiAliasWithSaveLayer,
                       child: ExtendedImage.file(
                         File(photoDataForPlot[1]),
-                        loadStateChanged: (ExtendedImageState state){
-                          switch (state.extendedImageLoadState){
+                        loadStateChanged: (ExtendedImageState state) {
+                          switch (state.extendedImageLoadState) {
                             case LoadState.loading:
                               break;
                             case LoadState.completed:
                               return ExtendedRawImage(
-                                image:state.extendedImageInfo?.image,
+                                image: state.extendedImageInfo?.image,
                                 fit: BoxFit.cover,
                                 // imageCacheName: photoDataForPlot[1],
                               );
-
                           }
                         },
                         // imageCacheName: photoDataForPlot[1],

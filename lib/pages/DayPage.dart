@@ -3,7 +3,6 @@ import 'package:test_location_2nd/Photo/PhotoDataManager.dart';
 import 'package:test_location_2nd/Sensor/SensorDataManager.dart';
 import 'package:test_location_2nd/Util/StateProvider.dart';
 import 'package:test_location_2nd/Util/Util.dart';
-import 'package:test_location_2nd/Permissions/PermissionManager.dart';
 import 'package:test_location_2nd/PolarSensorDataPlot.dart';
 import 'package:test_location_2nd/Data/DataManager.dart';
 import 'package:provider/provider.dart';
@@ -18,9 +17,11 @@ import 'package:test_location_2nd/Util/DateHandler.dart';
 import 'package:test_location_2nd/Location/AddressFinder.dart';
 import 'package:test_location_2nd/Location/Coordinate.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:test_location_2nd/CustomWidget/ZoomableWidgets.dart';
+import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
+import 'package:flutter_keyboard_size/flutter_keyboard_size.dart';
 
 class DayPage extends StatefulWidget {
-  PermissionManager permissionManager;
   DataManager dataManager;
   SensorDataManager sensorDataManager;
   PhotoDataManager localPhotoDataManager;
@@ -29,14 +30,13 @@ class DayPage extends StatefulWidget {
   @override
   State<DayPage> createState() => _DayPageState();
 
-  DayPage(this.permissionManager, this.dataManager, this.sensorDataManager,
-      this.localPhotoDataManager, this.noteManager,
+  DayPage(this.dataManager, this.sensorDataManager, this.localPhotoDataManager,
+      this.noteManager,
       {Key? key})
       : super(key: key);
 }
 
 class _DayPageState extends State<DayPage> {
-  late PermissionManager permissionManager;
   late DataManager dataManager;
   late SensorDataManager sensorDataManager;
   late PhotoDataManager localPhotoDataManager;
@@ -48,17 +48,16 @@ class _DayPageState extends State<DayPage> {
   dynamic photoData = [[]];
   dynamic sensorDataForPlot = [[]];
   List<List<dynamic>> photoDataForPlot = [[]];
-  List<List<dynamic>> dummy = [[]];
   Map<int, String?> addresses = {};
 
   FocusNode focusNode = FocusNode();
   final myTextController = TextEditingController();
   var dayPageStateProvider;
   List files = [];
+
   @override
   void initState() {
     super.initState();
-    permissionManager = widget.permissionManager;
     dataManager = widget.dataManager;
     sensorDataManager = widget.sensorDataManager;
     localPhotoDataManager = widget.localPhotoDataManager;
@@ -80,31 +79,79 @@ class _DayPageState extends State<DayPage> {
     return photoDataForPlot;
   }
 
-  bool isZoomIn = false;
   bool isZoomInImageVisible = false;
   double _angle = 0;
 
-  double graphSize = 330;
-  double topPadding = 100;
+  late double graphSize = physicalWidth - global.kMarginForDayPage * 2;
 
   //layout for zoomIn and zoomOut state
   late Map layout_dayPage = {
-    'magnification': {true: 7, false: 1},
-    'graphSize': {true: graphSize * 7, false: graphSize},
-    'left': {true: -graphSize * 5.5, false: (physicalWidth - graphSize) / 2},
-    'top': {true: null, false: topPadding},
+    'graphSize': {
+      true: graphSize * global.kMagnificationOnYearPage,
+      false: graphSize
+    },
+    // 'left': {true: -graphSize * 5.5, false: (physicalWidth - graphSize) / 2},
+    'left': {
+      true: -graphSize *
+          (global.kMagnificationOnYearPage / 2) *
+          (1 + (1 - global.kRatioOfScatterInDayPage)),
+      false: global.kMarginForDayPage
+    },
+    'top': {
+      true: null,
+      false: (physicalHeight -
+                  global.kBottomNavigationBarHeight -
+                  global.kHeightOfArbitraryWidgetOnBottom) *
+              (global.kYPositionRatioOfGraph) -
+          graphSize / 2
+    },
     'graphCenter': {
-      true: Offset(0, 0),
-      false: Offset(physicalWidth / 2, graphSize / 2 + topPadding)
+      true: null,
+      false: Offset(
+          physicalWidth / 2,
+          (physicalHeight -
+                  global.kBottomNavigationBarHeight -
+                  global.kHeightOfArbitraryWidgetOnBottom) *
+              (global.kYPositionRatioOfGraph))
+    },
+
+    'textHeight': {
+      true: physicalHeight -
+          graphSize -
+          (physicalHeight -
+                  global.kBottomNavigationBarHeight -
+                  global.kHeightOfArbitraryWidgetOnBottom) *
+              (global.kYPositionRatioOfGraph) -
+          global.kImageSize,
+      false: physicalHeight -
+          graphSize -
+          ((physicalHeight -
+                      global.kBottomNavigationBarHeight -
+                      global.kHeightOfArbitraryWidgetOnBottom) *
+                  (global.kYPositionRatioOfGraph) -
+              graphSize / 2) -
+          global.kImageSize * 2 / 3
     }
   };
 
   double firstContainerSize = 1000;
 
+  void showKeyboard() {
+    focusNode.requestFocus();
+    setState(() {});
+  }
+
+  void dismissKeyboard() async {
+    focusNode.unfocus();
+    await noteManager.writeNote(date, myTextController.text);
+  }
+
   @override
   Widget build(BuildContext context) {
+    // updateDataForUi();
     bool isZoomIn =
         Provider.of<DayPageStateProvider>(context, listen: true).isZoomIn;
+    var provider = Provider.of<DayPageStateProvider>(context, listen: true);
     print("building DayPage..");
     return FutureBuilder(
         future: readData,
@@ -115,10 +162,10 @@ class _DayPageState extends State<DayPage> {
             body: (!snapshot.hasData)
                 ? Center(
                     child: SizedBox(
-                        width: 140,
-                        height: 140,
+                        width: global.kSizeOfProgressIndicator,
+                        height: global.kSizeOfProgressIndicator,
                         child: CircularProgressIndicator(
-                          strokeWidth: 10,
+                          strokeWidth: global.kStrokeWidthOfProgressIndicator,
                         )))
                 : RawGestureDetector(
                     behavior: HitTestBehavior.deferToChild,
@@ -152,7 +199,10 @@ class _DayPageState extends State<DayPage> {
                           double angleZoomIn =
                               calculateTapAngle(tapPosition, 0, 0);
 
-                          if (tapPosition.dy < -200) return;
+                          if (details.globalPosition.dy >
+                              physicalHeight -
+                                  layout_dayPage['textHeight'][false] -
+                                  60) return;
                           //if editing text, doesn't zoom in.
                           if (focusNode.hasFocus) {
                             print("has focus? ${focusNode.hasFocus}");
@@ -183,59 +233,44 @@ class _DayPageState extends State<DayPage> {
                         },
                       )
                     },
-                    child: SizedBox(
-                      width: firstContainerSize,
-                      height: firstContainerSize,
-                      child: Stack(
-                          alignment:
-                              isZoomIn ? Alignment.center : Alignment.topCenter,
-                          children: [
-                            AnimatedPositioned(
-                              width: layout_dayPage['graphSize']?[isZoomIn]
-                                  ?.toDouble(),
-                              height: layout_dayPage['graphSize']?[isZoomIn]
-                                  ?.toDouble(),
-                              duration:
-                                  Duration(milliseconds: global.animationTime),
-                              left:
-                                  layout_dayPage['left']?[isZoomIn]?.toDouble(),
-                              top: layout_dayPage['top']?[isZoomIn]?.toDouble(),
-                              // curve: Curves.fastOutSlowIn,
-                              child: AnimatedRotation(
-                                  turns: isZoomIn ? _angle : 0,
-                                  duration: Duration(
-                                      milliseconds: global.animationTime - 100),
-                                  child: Stack(
-                                    children: [
-                                      PolarTimeIndicators(
-                                              photoForPlot, addresses)
-                                          .build(context),
-                                      PolarSensorDataPlot((sensorDataForPlot[0]
-                                                          .length ==
-                                                      0) |
-                                                  (sensorDataForPlot.length ==
-                                                      0)
-                                              ? global.dummyData1
-                                              : sensorDataForPlot)
-                                          .build(context),
-                                      PolarPhotoDataPlot(photoDataForPlot)
-                                          .build(context),
-                                      polarPhotoImageContainers(photoForPlot)
-                                          .build(context),
-                                    ],
-                                  )),
-                            ),
-                            Positioned(
+                    child: Stack(
+                        alignment:
+                            isZoomIn ? Alignment.center : Alignment.topCenter,
+                        children: [
+                          ZoomableWidgets(
+                                  widgets: [
+                                PolarTimeIndicators(photoForPlot, addresses)
+                                    .build(context),
+                                PolarSensorDataPlot(
+                                        (sensorDataForPlot[0].length == 0) |
+                                                (sensorDataForPlot.length == 0)
+                                            ? global.dummyData1
+                                            : sensorDataForPlot)
+                                    .build(context),
+                                PolarPhotoDataPlot(photoDataForPlot)
+                                    .build(context),
+                                polarPhotoImageContainers(photoForPlot)
+                                    .build(context),
+                              ],
+                                  layout: layout_dayPage,
+                                  isZoomIn: isZoomIn,
+                                  provider: provider)
+                              .build(context),
+                          KeyboardVisibilityBuilder(
+                              builder: (context, isKeyboardVisible) {
+                            print("isKeyboardVisible : $isKeyboardVisible");
+                            print(MediaQuery.of(context).viewInsets.top - 100);
+                            return Positioned(
                               width: physicalWidth,
-                              height: !focusNode.hasFocus
-                                  ? physicalHeight / 2 - 120
-                                  : physicalHeight / 2 - 50,
-                              bottom: 20,
+                              height: isKeyboardVisible
+                                  ? physicalHeight - 200 - 200
+                                  : layout_dayPage['textHeight'][false],
+                              bottom: global.kMarginOfBottomOnDayPage,
                               child: Container(
                                 margin: EdgeInsets.all(10),
-                                height: !focusNode.hasFocus
-                                    ? physicalHeight / 2 - 200
-                                    : physicalHeight / 2 - 50,
+                                // height: !focusNode.hasFocus
+                                //     ? physicalHeight / 2 - 200
+                                //     : physicalHeight / 2 - 200,
                                 color: focusNode.hasFocus
                                     ? global.kColor_containerFocused
                                     : global.kColor_container,
@@ -260,20 +295,20 @@ class _DayPageState extends State<DayPage> {
                                   textAlign: TextAlign.left,
                                 ),
                               ),
-                            ),
-                            Positioned(
-                                top: 30,
-                                child: Text(
-                                  "${DateFormat('EEEE').format(DateTime.parse(date))}/"
-                                  "${DateFormat('MMM').format(DateTime.parse(date))} "
-                                  "${DateFormat('dd').format(DateTime.parse(date))}/"
-                                  "${DateFormat('yyyy').format(DateTime.parse(date))}",
-                                  style: TextStyle(
-                                      fontSize: 20,
-                                      color: global.kColor_backgroundText),
-                                )),
-                          ]),
-                    ),
+                            );
+                          }),
+                          Positioned(
+                              top: 30,
+                              child: Text(
+                                "${DateFormat('EEEE').format(DateTime.parse(date))}/"
+                                "${DateFormat('MMM').format(DateTime.parse(date))} "
+                                "${DateFormat('dd').format(DateTime.parse(date))}/"
+                                "${DateFormat('yyyy').format(DateTime.parse(date))}",
+                                style: TextStyle(
+                                    fontSize: 20,
+                                    color: global.kColor_backgroundText),
+                              )),
+                        ]),
                   ),
             floatingActionButton: FloatingActionButton(
               mini: true,
@@ -283,29 +318,16 @@ class _DayPageState extends State<DayPage> {
                 borderRadius: BorderRadius.all(Radius.circular(15.0)),
               ),
               onPressed: () {
-                // updateDataForUi();
-
                 if (focusNode.hasFocus) {
                   dismissKeyboard();
                 } else {
                   showKeyboard();
-                }
-                ;
+                };
                 setState(() {});
               },
             ),
           );
         });
-  }
-
-  void showKeyboard() {
-    focusNode.requestFocus();
-    setState(() {});
-  }
-
-  void dismissKeyboard() async {
-    focusNode.unfocus();
-    await noteManager.writeNote(date, myTextController.text);
   }
 
   @override

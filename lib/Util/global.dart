@@ -59,12 +59,14 @@ Color kColor_badge = kMainColor_cool.withAlpha(255);
 FontWeight kFontWeight_diaryContents = FontWeight.w400;
 FontWeight kFontWeight_diaryTitle = FontWeight.w700;
 
+
+//parameters for Year Pages
 double kSize_polarPlotPhotoScatter = 5;
 
-double kMarginForGraph = 10;
+double kMarginForYearPage = 10;
 double kBottomNavigationBarHeight = 30;
 double kYPositionRatioOfGraph = 2 / 5;
-double kMagnificationOnGraph = 3.5;
+double kMagnificationOnYearPage = 3.5;
 double kRatioOfScatterInYearPage = 6 / 10;
 
 double kHeightOfArbitraryWidgetOnBottom = 30;
@@ -74,6 +76,24 @@ double kSizeOfScatter_ZoomOutMax = 30;
 
 double kSizeOfScatter_ZoomInMin = kSizeOfScatter_ZoomOutMin * 3.5;
 double kSizeOfScatter_ZoomInMax = kSizeOfScatter_ZoomOutMax * 3.5;
+
+
+double kMarginForDayPage = 40;
+double kMagnificationOnDayPage = 7;
+double kRatioOfScatterInDayPage = 6 / 10;
+
+double kImageSize = 90;
+double kZoomInImageSize = 350;
+
+double kHeightOfTextInDayPage_ZoomOut = 200;
+double kHeightOfTextInDayPage_ZoomIn = 100;
+
+double kMarginOfBottomOnDayPage = 20;
+
+
+double kSizeOfProgressIndicator = 140;
+double kStrokeWidthOfProgressIndicator = 10;
+
 
 const event_color_goingOut = Colors.red;
 const event_color_backHome = Colors.blue;

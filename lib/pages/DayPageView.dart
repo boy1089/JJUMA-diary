@@ -10,13 +10,12 @@ import 'package:provider/provider.dart';
 import 'package:test_location_2nd/Util/DateHandler.dart';
 
 class DayPageView extends StatelessWidget {
-  PermissionManager permissionManager;
   DataManager dataManager;
   SensorDataManager sensorDataManager;
   PhotoDataManager localPhotoDataManager;
   NoteManager noteManager;
 
-  DayPageView(this.permissionManager, this.dataManager, this.sensorDataManager,
+  DayPageView( this.dataManager, this.sensorDataManager,
       this.localPhotoDataManager, this.noteManager,
       {Key? key})
       : super(key: key);
@@ -38,7 +37,7 @@ class DayPageView extends StatelessWidget {
               navigation.setDate(
                   formatDateString(dayPageStateProvider.availableDates[index]));
               return DayPage(
-                this.permissionManager,
+
                 this.dataManager,
                 this.sensorDataManager,
                 this.localPhotoDataManager,

@@ -59,6 +59,8 @@ dependencies:
   geolocator:
   google_maps_flutter: ^2.1.8
   geocoding: ^2.0.5
+  flutter_keyboard_visibility: ^5.4.0
+  flutter_keyboard_size:
 dev_dependencies:
   flutter_test:
     sdk: flutter

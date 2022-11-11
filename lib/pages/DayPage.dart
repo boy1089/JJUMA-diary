@@ -175,6 +175,7 @@ class _DayPageState extends State<DayPage> {
                         () => AllowMultipleGestureRecognizer2(),
                         (AllowMultipleGestureRecognizer2 instance) {
                           instance.onUpdate = (details) {
+                            if (!isZoomIn) return;
                             _angle =
                                 isZoomIn ? _angle + details.delta.dy / 1000 : 0;
                             dayPageStateProvider.setZoomInRotationAngle(_angle);

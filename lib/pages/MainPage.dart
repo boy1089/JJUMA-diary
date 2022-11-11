@@ -17,8 +17,8 @@ import 'package:test_location_2nd/Photo/PhotoDataManager.dart';
 import 'package:test_location_2nd/Note/NoteManager.dart';
 import 'package:path_provider/path_provider.dart';
 import 'DiaryPage.dart';
-import 'YearPage.dart';
 import 'YearPageView.dart';
+import 'DayPageView.dart';
 
 class MainPage extends StatefulWidget {
   PermissionManager permissionManager;
@@ -64,6 +64,9 @@ class MainPageState extends State<MainPage> {
     // YearPage yearPage = YearPage(dataManager);
     // YearPage yearPage = YearPage();
     YearPageView yearPageView = YearPageView();
+    DayPageView dayPageView = DayPageView(permissionManager, dataManager,
+        sensorDataManager, localPhotoDataManager, noteManager);
+
     DayPage hourPage = DayPage(permissionManager, dataManager,
         sensorDataManager, localPhotoDataManager, noteManager);
     DiaryPage diaryPage = DiaryPage(dataManager, noteManager);
@@ -71,10 +74,9 @@ class MainPageState extends State<MainPage> {
         AndroidSettingsScreen(permissionManager);
 
     _widgetOptions = <Widget>[
-      // monthPage,
       yearPageView,
       diaryPage,
-      hourPage,
+      dayPageView,
       androidSettingsScreen,
     ];
   }
@@ -195,18 +197,18 @@ class MainPageState extends State<MainPage> {
             ),
           ),
         ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () async {
-            // Stopwatch stopwatch = new Stopwatch()..start();
-            // await dataManager.updateExifOnInfo(infoFromFiles.keys.toList().sublist(0, 300));
-            // print("init done,executed in ${stopwatch.elapsed}");
-            // print(summaryOfLocationData);
-            summaryOfPhotoData.forEach((i, v)=>print("$i, $v"));
-            // dataManager.executeSlowProcesses();
-
-
-          },
-        ),
+        // floatingActionButton: FloatingActionButton(
+        //   onPressed: () async {
+        //     // Stopwatch stopwatch = new Stopwatch()..start();
+        //     // await dataManager.updateExifOnInfo(infoFromFiles.keys.toList().sublist(0, 300));
+        //     // print("init done,executed in ${stopwatch.elapsed}");
+        //     // print(summaryOfLocationData);
+        //     summaryOfPhotoData.forEach((i, v)=>print("$i, $v"));
+        //     // dataManager.executeSlowProcesses();
+        //
+        //
+        //   },
+        // ),
       ),
     );
   }

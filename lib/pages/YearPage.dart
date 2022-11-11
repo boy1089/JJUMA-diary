@@ -30,9 +30,7 @@ class _YearPageState extends State<YearPage> {
   @override
   void initState() {
     print("year page create");
-
     updateData(widget.year, false);
-
     heatmapChannel.stream.listen(
       (value) {
         var provider =
@@ -60,6 +58,9 @@ class _YearPageState extends State<YearPage> {
     availableDates = global.summaryOfPhotoData.keys.where((element) {
       return element.contains(year.toString());
     }).toList();
+
+    Provider.of<DayPageStateProvider>(context, listen: false).setAvailableDates(availableDates);
+
     dataForPlot = List.generate(52, (index) {
       return [
         index,
@@ -271,10 +272,11 @@ class _YearPageState extends State<YearPage> {
           ),
         ],
       ),
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: (){
-      //   },
-      // ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: (){
+          print(availableDates);
+        },
+      ),
 
     );
   }

@@ -144,8 +144,8 @@ class DayPageStateProvider with ChangeNotifier {
   double zoomInAngle = 0.0;
   bool isZoomIn = false;
   bool isBottomNavigationBarShown = true;
-
   int lastNavigationIndex = 0;
+  List<String> availableDates = [];
 
   void setBottomNavigationBarShown(bool isBottomNavigationBarShown) {
     this.isBottomNavigationBarShown = isBottomNavigationBarShown;
@@ -175,6 +175,12 @@ class DayPageStateProvider with ChangeNotifier {
   void setZoomInState(isZoomIn) {
     print("provider set isZoomIn to $isZoomIn");
     this.isZoomIn = isZoomIn;
+    notifyListeners();
+  }
+
+  void setAvailableDates(availableDates){
+    print("provider set isZoomIn to $isZoomIn");
+    this.availableDates = availableDates;
     notifyListeners();
   }
 

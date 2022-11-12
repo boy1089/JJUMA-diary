@@ -87,14 +87,13 @@ class _DayPageState extends State<DayPage> {
   //layout for zoomIn and zoomOut state
   late Map layout_dayPage = {
     'graphSize': {
-      true: graphSize * global.kMagnificationOnYearPage,
+      true: graphSize * global.kMagnificationOnDayPage,
       false: graphSize
     },
     // 'left': {true: -graphSize * 5.5, false: (physicalWidth - graphSize) / 2},
     'left': {
-      true: -graphSize *
-          (global.kMagnificationOnYearPage / 2) *
-          (1 + (1 - global.kRatioOfScatterInDayPage)),
+      true:
+          -graphSize * (global.kMagnificationOnDayPage / 2) * (1 + (1 - 0.43)),
       false: global.kMarginForDayPage
     },
     'top': {
@@ -322,7 +321,8 @@ class _DayPageState extends State<DayPage> {
                   dismissKeyboard();
                 } else {
                   showKeyboard();
-                };
+                }
+                ;
                 setState(() {});
               },
             ),

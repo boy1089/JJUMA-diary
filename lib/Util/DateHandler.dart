@@ -58,7 +58,9 @@ String? inferDatetimeFromFilename(filename) {
   RegExp exp1 = RegExp(r"[0-9]{8}\D[0-9]{6}");
   //2022-10-10 20-20-10
   RegExp exp2 =
-  RegExp(r"[0-9]{4}\D[0-9]{2}\D[0-9]{2}\D[0-9]{2}\D[0-9]{2}\D[0-9]{2}");
+  // RegExp(r"[0-9]{4}\D[0-9]{2}\D[0-9]{2}\D[0-9]{2}\D[0-9]{2}\D[0-9]{2}");
+  RegExp(r"[0-9]{4}\D[0-9]{2}\D[0-9]{2}[ ][0-9]{2}\D[0-9]{2}\D[0-9]{2}");
+
   //timestamp
   RegExp exp3 = RegExp(r"[0-9]{13}");
 
@@ -67,7 +69,6 @@ String? inferDatetimeFromFilename(filename) {
   if (matches.length != 0) {
     var date = new DateTime.fromMicrosecondsSinceEpoch(
         int.parse(matches.first.group(0)!) * 1000);
-    // print(formatDatetime(date));
     return formatDatetime(date);
   }
 
@@ -90,6 +91,7 @@ String? inferDatetimeFromFilename(filename) {
         .toString()
         .replaceAll(RegExp(r"[^0-9 ]"), "");
   }
+
   return null;
 }
 

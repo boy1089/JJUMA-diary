@@ -126,7 +126,8 @@ class YearPageStateProvider with ChangeNotifier {
     this.isZoomIn = isZoomIn;
     notifyListeners();
   }
-  void setYear(year){
+
+  void setYear(year) {
     print("provider set year to $year");
     this.year = year;
     notifyListeners();
@@ -178,7 +179,7 @@ class DayPageStateProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void setAvailableDates(availableDates){
+  void setAvailableDates(availableDates) {
     print("provider set isZoomIn to $isZoomIn");
     this.availableDates = availableDates;
     notifyListeners();

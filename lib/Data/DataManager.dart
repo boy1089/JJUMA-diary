@@ -34,7 +34,6 @@ class DataManager {
   List<String>? filesNotUpdated = [];
   List<String>? datesOutOfDate = [];
 
-
   Future<void> init() async {
     print("DataManager instance is initializing..");
     // var a = await readSummaryOfPhotoData();
@@ -68,14 +67,14 @@ class DataManager {
     for (int i = 0; i < lengthOfFiles / 100.floor(); i++) {
       // for (int i = 0; i < 5; i++) {
       Stopwatch stopwatch2 = new Stopwatch()..start();
-        print("executingSlowProcesses... $i / ${lengthOfFiles / 100.floor()}");
+      print("executingSlowProcesses... $i / ${lengthOfFiles / 100.floor()}");
 
       List<String> partOfFilesNotupdated = filesNotUpdated!.sublist(i * 100,
           lengthOfFiles < (i + 1) * 100 ? lengthOfFiles : (i + 1) * 100);
 
       await updateExifOnInfo(partOfFilesNotupdated);
 
-      if (i%5==0) {
+      if (i % 5 == 0) {
         await updateDatesFromInfo();
         //update the summaryOflocation only on the specific date.
         await updateSummaryOfPhotoFromInfo();
@@ -184,6 +183,7 @@ class DataManager {
     for (int i = 0; i < filenames.length; i++) {
       String filename = filenames.elementAt(i);
       String? inferredDatetime = inferDatetimeFromFilename(filename);
+      // print(inferredDatetime);
       if (inferredDatetime != null) {
         global.infoFromFiles[filename]?.datetime =
             DateTime.parse(inferredDatetime);
@@ -218,7 +218,7 @@ class DataManager {
       if (global.infoFromFiles[filename]?.datetime != null) continue;
 
       //update the datetime of EXif if there is datetime is null from filename
-      print("filename : $filename, ExifData : ${ExifData[0]}");
+      // print("filename : $filename, ExifData : ${ExifData[0]}");
       if ((ExifData[0] != null) &
           (ExifData[0] != "") &
           (ExifData[0] != "null")) {
@@ -232,7 +232,43 @@ class DataManager {
           DateTime.parse(formatDatetime(FileStat.statSync(filename).changed));
       global.infoFromFiles[filename]?.datetime = datetime;
       global.infoFromFiles[filename]?.date = formatDate(datetime);
+    }
+  }
 
+  Future<void> updateExifOnInfo_compute(List<String>? filenames) async {
+    if (filenames == null) filenames = global.infoFromFiles.keys.toList();
+
+    for (int i = 0; i < filenames.length; i++) {
+      String filename = filenames.elementAt(i);
+      List ExifData = await getExifInfoOfFile(filename);
+      if (i % 100 == 0)
+        print(
+            "updateExifOninfo : $i / ${filenames.length}, $filename, ${ExifData[0]}, ${ExifData[1]}");
+      global.infoFromFiles[filename]?.coordinate = ExifData[1];
+
+      if (ExifData[1] != null) {
+        global.infoFromFiles[filename]?.distance =
+            calculateDistanceToRef(ExifData[1]);
+      }
+
+      //if datetime is updated from filename, then does not overwrite with exif
+      if (global.infoFromFiles[filename]?.datetime != null) continue;
+
+      //update the datetime of EXif if there is datetime is null from filename
+      // print("filename : $filename, ExifData : ${ExifData[0]}");
+      if ((ExifData[0] != null) &
+      (ExifData[0] != "") &
+      (ExifData[0] != "null")) {
+        global.infoFromFiles[filename]?.datetime = DateTime.parse(ExifData[0]);
+        global.infoFromFiles[filename]?.date = ExifData[0].substring(0, 8);
+        continue;
+      }
+
+      //if there is no info from filename and exif, then use changed datetime.
+      DateTime datetime =
+      DateTime.parse(formatDatetime(FileStat.statSync(filename).changed));
+      global.infoFromFiles[filename]?.datetime = datetime;
+      global.infoFromFiles[filename]?.date = formatDate(datetime);
     }
   }
 

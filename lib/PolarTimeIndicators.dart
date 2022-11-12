@@ -113,10 +113,8 @@ class PolarTimeIndicator {
     var provider = Provider.of<DayPageStateProvider>(context, listen: true);
     return Align(
       alignment: Alignment(xLocation, yLocation),
-      child: AnimatedRotation(
-          duration: const Duration(milliseconds: 100),
-          turns: provider.isZoomIn ? -provider.zoomInAngle : 0,
-          // turns : 0,
+      child: Transform.rotate(
+          angle: atan2(yLocation, xLocation),
           child: SizedBox(
             child: Text(
               address==null? "$index" :"$index\n$address",

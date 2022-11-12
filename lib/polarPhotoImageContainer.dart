@@ -12,8 +12,7 @@ class polarPhotoImageContainers {
   double xLocation = 0;
   double yLocation = 0;
   List stackOrder = [];
-  polarPhotoImageContainers(
-    @required photoDataForPlot) {
+  polarPhotoImageContainers(@required photoDataForPlot) {
     this.photoDataForPlot = photoDataForPlot;
 
     if (indexForZoomInImage == -1) {
@@ -56,6 +55,7 @@ class polarPhotoImageContainer {
   double imageSize = kImageSize;
   double xLocation = 0;
   double yLocation = 0;
+  Offset location = Offset(0, 0);
   double containerSize = kSecondPolarPlotSize;
   int index = -1;
   int numberOfImages = 0;
@@ -69,21 +69,19 @@ class polarPhotoImageContainer {
     this.containerSize = containerSize;
     this.index = index;
     this.numberOfImages = numberOfImages;
+    location = calculateLocation(googlePhotoDataForPlot[0], applyOffset);
+  }
+
+  Offset calculateLocation(input, applyOffset) {
+    double angle = (input) / 24 * 2 * pi - pi / 2;
 
     if (applyOffset) {
-      xLocation = imageLocationFactor *
-          cos((googlePhotoDataForPlot[0]) / 24 * 2 * pi - pi / 2);
-      yLocation = imageLocationFactor *
-          sin((googlePhotoDataForPlot[0]) / 24 * 2 * pi - pi / 2);
+      xLocation = imageLocationFactor * cos(angle);
+      yLocation = imageLocationFactor * sin(angle);
     } else {
       var radius = (index % 5) / 1.8; // mag5 1.2
-
-      xLocation = imageLocationFactor *
-          cos((googlePhotoDataForPlot[0]) / 24 * 2 * pi - pi / 2) *
-          (0.45 + 0.10 * radius);
-      yLocation = imageLocationFactor *
-          sin((googlePhotoDataForPlot[0]) / 24 * 2 * pi - pi / 2) *
-          (0.45 + 0.1 * radius);
+      xLocation = imageLocationFactor * cos(angle) * (0.45 + 0.10 * radius);
+      yLocation = imageLocationFactor * sin(angle) * (0.45 + 0.1 * radius);
     }
 
     if (indexForZoomInImage == this.index) {
@@ -92,12 +90,28 @@ class polarPhotoImageContainer {
       var radius = (2) / 1.8; // mag5 1.2
 
       xLocation = imageLocationFactor *
-          cos((googlePhotoDataForPlot[0]) / 24 * 2 * pi - pi / 2 - pi * 0.04) *
+          cos(angle - pi * 0.04) *
           (0.6 + 0.10 * radiusSign * radius);
       yLocation = imageLocationFactor *
-          sin((googlePhotoDataForPlot[0]) / 24 * 2 * pi - pi / 2 - pi * 0.04) *
+          sin(angle - pi * 0.04) *
           (0.6 + 0.1 * radiusSign * radius);
     }
+    return Offset(xLocation, yLocation);
+  }
+
+  Offset calculateLocationForZoomInImage(input, angleOfPage){
+    double angle = (input) / 24 * 2 * pi - pi / 2 - angleOfPage/(2*pi);
+    imageSize = kZoomInImageSize;
+    var radiusSign = (1 - 0.7) * 2;
+    var radius = (2) / 1.8; // mag5 1.2
+
+    xLocation = imageLocationFactor *
+        cos(angle - pi * 0.04) *
+        (0.6 + 0.10 * radiusSign * radius);
+    yLocation = imageLocationFactor *
+        sin(angle - pi * 0.04) *
+        (0.6 + 0.1 * radiusSign * radius);
+  return Offset(xLocation, yLocation);
   }
 
   @override
@@ -106,8 +120,12 @@ class polarPhotoImageContainer {
         Provider.of<DayPageStateProvider>(context, listen: false).zoomInAngle;
     bool isZoomIn =
         Provider.of<DayPageStateProvider>(context, listen: false).isZoomIn;
+
     return Align(
-      alignment: Alignment(xLocation, yLocation),
+      alignment: !(indexForZoomInImage == this.index)
+          ? Alignment(location.dx, location.dy)
+          : Alignment(calculateLocationForZoomInImage(photoDataForPlot[0], angle).dx,
+          calculateLocationForZoomInImage(photoDataForPlot[0], angle).dy),
       child: SizedBox(
           width: imageSize,
           height: imageSize,

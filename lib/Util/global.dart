@@ -80,7 +80,7 @@ double kSizeOfScatter_ZoomInMax = kSizeOfScatter_ZoomOutMax * 3.5;
 
 double kMarginForDayPage = 40;
 double kMagnificationOnDayPage = 7;
-double kRatioOfScatterInDayPage = 6 / 10;
+double kRatioOfScatterInDayPage = 8 / 10;
 
 double kImageSize = 90;
 double kZoomInImageSize = 350;

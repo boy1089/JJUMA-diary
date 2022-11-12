@@ -46,6 +46,8 @@ class _YearPageState extends State<YearPage> {
         if (!yearPageStateProvider.isZoomIn) return;
         provider.setNavigationIndex(2);
         provider.setDate(date);
+        Provider.of<DayPageStateProvider>(context, listen: false)
+            .setAvailableDates(availableDates);
       },
     );
     super.initState();
@@ -207,15 +209,13 @@ class _YearPageState extends State<YearPage> {
   }
 
   void updateData(year, setYear) {
-    if (setYear)
+    if (setYear) {
       Provider.of<YearPageStateProvider>(context, listen: false).setYear(year);
+    }
     this.year = year;
     availableDates = global.summaryOfPhotoData.keys.where((element) {
       return element.contains(year.toString());
     }).toList();
-
-    Provider.of<DayPageStateProvider>(context, listen: false)
-        .setAvailableDates(availableDates);
 
     dataForPlot = List.generate(52, (index) {
       return [

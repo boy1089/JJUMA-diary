@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:test_location_2nd/Util/DateHandler.dart';
+import 'global.dart';
+import 'package:test_location_2nd/Util/Util.dart';
+import 'dart:math';
+import 'package:intl/intl.dart';
 
 class NavigationIndexProvider with ChangeNotifier {
   int navigationIndex = 0;
@@ -96,6 +100,55 @@ class YearPageStateProvider with ChangeNotifier {
   int lastNavigationIndex = 0;
   int year = DateTime.now().year;
 
+  dynamic data;
+  List<String> availableDates = [];
+  int maxOfSummary = 0;
+
+  void updateData() {
+    availableDates = summaryOfPhotoData.keys.where((element) {
+      return element.contains(year.toString());
+    }).toList();
+
+    data = List.generate(52, (index) {
+      return [
+        index,
+        1,
+        10,
+        0.01,
+      ];
+    });
+    if (availableDates.length == 0) return data;
+
+    data = List.generate(availableDates.length, (index) {
+      String date = availableDates[index];
+      int days = int.parse(DateFormat("D").format(DateTime.parse(date)));
+      int value =
+          summaryOfPhotoData[date]! > 200 ? 200 : summaryOfPhotoData[date]!;
+
+      double distance = 0.01;
+      if (summaryOfLocationData[date] == null ||
+          summaryOfLocationData[date] == 0) {
+        distance = 0.01;
+      } else {
+        distance = summaryOfLocationData[date]! > 100
+            ? 100
+            : summaryOfLocationData[date]!;
+      }
+      return [
+        days / 7.floor() + index % 3 / 4,
+        (days - 2) % 7,
+        value,
+        distance,
+      ];
+    });
+    List<int> dummy3 = List<int>.generate(transpose(data)[0].length,
+        (index) => int.parse(transpose(data)[2][index].toString()));
+    maxOfSummary = dummy3.reduce(max);
+    print("year page, dummy3 : $maxOfSummary");
+
+    notifyListeners();
+  }
+
   void setBottomNavigationBarShown(bool isBottomNavigationBarShown) {
     this.isBottomNavigationBarShown = isBottomNavigationBarShown;
     print("isBottomNavigationBarShown : $isBottomNavigationBarShown");
@@ -130,6 +183,7 @@ class YearPageStateProvider with ChangeNotifier {
   void setYear(year) {
     print("provider set year to $year");
     this.year = year;
+    updateData();
     notifyListeners();
   }
 

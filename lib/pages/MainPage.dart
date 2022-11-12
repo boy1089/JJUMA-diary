@@ -199,7 +199,8 @@ class MainPageState extends State<MainPage> {
         ),
       floatingActionButton: FloatingActionButton(
         onPressed: (){
-          dataManager.updateDateOnInfo(null);
+          // dataManager.updateDateOnInfo(null);
+          print(Provider.of<YearPageStateProvider>(context, listen:false).data);
         },
       ),
 

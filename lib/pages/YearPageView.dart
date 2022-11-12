@@ -15,16 +15,12 @@ class YearPageView extends StatelessWidget {
     return Scaffold(
       body : PageView.builder(
           controller : PageController(initialPage : 0),
-          onPageChanged: (i){
-            print("page : $i");
-            year = DateTime.now().year - i;
-            Provider.of<YearPageStateProvider>(context, listen: false).setYear(year);
-
-          },
           itemCount:20,
           reverse : true,
           itemBuilder: (BuildContext context, int index){
-            return YearPage(DateTime.now().year - index);
+            year = DateTime.now().year - index;
+            Provider.of<YearPageStateProvider>(context, listen: false).setYear(year);
+            return YearPage();
       })
 
     );

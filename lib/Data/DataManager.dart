@@ -1,16 +1,12 @@
 import 'dart:io';
 import 'package:glob/list_local_fs.dart';
-import 'package:csv/csv.dart';
-import 'dart:convert';
 import 'package:flutter/foundation.dart';
-import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:glob/glob.dart';
 import 'package:test_location_2nd/Util/DateHandler.dart';
 import 'package:test_location_2nd/Util/Util.dart';
 import 'package:test_location_2nd/Util/global.dart' as global;
 import 'package:test_location_2nd/Photo/PhotoDataManager.dart';
-import 'package:test_location_2nd/Location/AddressFinder.dart';
 import 'package:test_location_2nd/Location/LocationDataManager.dart';
 import "package:test_location_2nd/Location/Coordinate.dart";
 import 'infoFromFile.dart';
@@ -41,7 +37,7 @@ class DataManager {
     //get list of image files from local. --> update new images
     files = await getAllFiles();
     //read previously processed Info
-    await readInfo();
+    await readInfo([]);
     await readSummaryOfPhoto();
     await readSummaryOfLocation();
 
@@ -66,13 +62,15 @@ class DataManager {
     int lengthOfFiles = filesNotUpdated!.length;
     for (int i = 0; i < lengthOfFiles / 100.floor(); i++) {
       // for (int i = 0; i < 5; i++) {
-      Stopwatch stopwatch2 = new Stopwatch()..start();
       print("executingSlowProcesses... $i / ${lengthOfFiles / 100.floor()}");
 
+      //part of Files
       List<String> partOfFilesNotupdated = filesNotUpdated!.sublist(i * 100,
           lengthOfFiles < (i + 1) * 100 ? lengthOfFiles : (i + 1) * 100);
 
-      await updateExifOnInfo(partOfFilesNotupdated);
+      // await updateExifOnInfo(partOfFilesNotupdated);
+      global.infoFromFiles = await compute(updateExifOnInfo_compute,
+          [partOfFilesNotupdated, global.infoFromFiles]);
 
       if (i % 5 == 0) {
         await updateDatesFromInfo();
@@ -89,8 +87,6 @@ class DataManager {
         await writeSummaryOfLocation2(null, true);
         await writeSummaryOfPhoto2(null, true);
       }
-
-      print("time elapsed : ${stopwatch2.elapsed}");
     }
     //update the summaryOflocation only on the specific date.
     await updateSummaryOfPhotoFromInfo();
@@ -114,11 +110,11 @@ class DataManager {
     for (int i = 0; i < pathsToPhoto.length; i++) {
       String path = pathsToPhoto.elementAt(i);
 
-      newFiles =  Glob("$path/*.jpg").listSync();
+      newFiles = Glob("$path/*.jpg").listSync();
       files.addAll(List.generate(
           newFiles.length, (index) => newFiles.elementAt(index).path));
 
-      newFiles =  Glob("$path/*.png").listSync();
+      newFiles = Glob("$path/*.png").listSync();
       files.addAll(List.generate(
           newFiles.length, (index) => newFiles.elementAt(index).path));
     }
@@ -135,6 +131,7 @@ class DataManager {
     for (int i = 0; i < files.length; i++) {
       String filename = files.elementAt(i);
       if (i % 1000 == 0) print("matchFilesAndInfo : $i / ${files.length}");
+
       int indexInInfo =
           filenamesFromInfo.indexWhere((element) => element == filename);
       if (indexInInfo == -1) {
@@ -142,8 +139,14 @@ class DataManager {
         continue;
       }
       filenamesFromInfo.remove(filename);
+
       DateTime? dateTimeInInfo = global.infoFromFiles[filename]?.datetime;
-      if (dateTimeInInfo == null) {
+      Coordinate? coordinateInInfo = global.infoFromFiles[filename]?.coordinate;
+      if (i % 100 == 0)
+        print(
+            "$i, $dateTimeInInfo, $coordinateInInfo, ${coordinateInInfo?.latitude == null}");
+
+      if (dateTimeInInfo == null || coordinateInInfo?.latitude == null) {
         filesNotUpdated.add(filename);
         continue;
       }
@@ -235,7 +238,10 @@ class DataManager {
     }
   }
 
-  Future<void> updateExifOnInfo_compute(List<String>? filenames) async {
+  //input : [filenames, global.infoFromFiles]
+  Future<Map<String, InfoFromFile>> updateExifOnInfo_compute(List input) async {
+    List<String> filenames = input[0];
+    global.infoFromFiles = input[1];
     if (filenames == null) filenames = global.infoFromFiles.keys.toList();
 
     for (int i = 0; i < filenames.length; i++) {
@@ -270,6 +276,7 @@ class DataManager {
       global.infoFromFiles[filename]?.datetime = datetime;
       global.infoFromFiles[filename]?.date = formatDate(datetime);
     }
+    return global.infoFromFiles;
   }
 
   Future<List<String>> updateSummaryOfPhotoFromInfo() async {
@@ -341,11 +348,11 @@ class DataManager {
     for (int i = 0; i < pathsToPhoto.length; i++) {
       String path = pathsToPhoto.elementAt(i);
 
-      newFiles =  Glob("$path/*.jpg").listSync();
+      newFiles = Glob("$path/*.jpg").listSync();
       files.addAll(List.generate(
           newFiles.length, (index) => newFiles.elementAt(index).path));
 
-      newFiles =  Glob("$path/*.png").listSync();
+      newFiles = Glob("$path/*.png").listSync();
       files.addAll(List.generate(
           newFiles.length, (index) => newFiles.elementAt(index).path));
     }
@@ -393,16 +400,16 @@ class DataManager {
     await file.writeAsString(stringToWrite, mode: FileMode.append);
   }
 
-  Future<void> readInfo() async {
+  Future<Map<String, InfoFromFile>> readInfo(List input) async {
     final Directory? directory = await getExternalStorageDirectory();
     final File file = File('${directory?.path}/InfoOfFiles.csv');
 
     bool isFileExist = await file.exists();
-    if (!isFileExist) return;
+    if (!isFileExist) return {};
 
     var data = await openFile(file.path);
     for (int i = 1; i < data.length; i++) {
-      if (data[i].length < 2) return;
+      if (data[i].length < 2) return {};
       // if (i % 100 == 0)
       print("readInfo.. $i / ${data.length}, ${data[i]}");
 
@@ -424,9 +431,9 @@ class DataManager {
         }
         filename = filename.substring(0, filename.length - 1);
       }
-      print(filename);
       global.infoFromFiles[filename] = infoFromFile;
     }
+    return global.infoFromFiles;
   }
 
   Future<void> writeSummaryOfLocation2(

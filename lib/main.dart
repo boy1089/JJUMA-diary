@@ -82,9 +82,10 @@ class _MyAppState extends State<MyApp> {
     photoDataManager = PhotoDataManager();
     locationDataManager = LocationDataManager();
     dataManager = DataManager(photoDataManager, locationDataManager);
-    initApp = init();
 
+    initApp = init();
     super.initState();
+
   }
 
   Future<int> init() async {

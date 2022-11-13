@@ -195,10 +195,21 @@ class MainPageState extends State<MainPage> {
           ),
         ),
         floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            // dataManager.updateDateOnInfo(null);
-            print(Provider.of<YearPageStateProvider>(context, listen: false)
-                .data);
+          onPressed: () async {
+            // var files = await dataManager.readSummaryOfLocation();
+            // global.summaryOfLocationData.forEach((key, value) {print("$key, $value");});
+            // print(global.summaryOfLocationData.length);
+
+            var a = await dataManager.matchFilesAndInfo();
+
+
+            // await dataManager.updateExifOnInfo(null);
+            // // dataManager.matchFilesAndInfo();
+            // print(dataManager.filesNotUpdated!.length);
+            // dataManager.filesNotUpdated!.forEach((element) {print(element);});
+            // print(global.infoFromFiles);
+            // dataManager.updateDatesFromInfo();
+
           },
         ),
       ),

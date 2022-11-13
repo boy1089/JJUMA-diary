@@ -18,7 +18,6 @@ import 'package:test_location_2nd/StateProvider/DayPageStateProvider.dart';
 import 'package:test_location_2nd/StateProvider/NavigationIndexStateProvider.dart';
 
 import 'package:test_location_2nd/Sensor/SensorDataManager.dart';
-import 'Photo/PhotoDataManager.dart';
 import 'package:test_location_2nd/Note/NoteManager.dart';
 
 void main() {
@@ -32,11 +31,6 @@ void main() {
             return NavigationIndexProvider();
           },
         ),
-        // ChangeNotifierProvider<UiStateProvider>
-        //   create: (context) {
-        //     return UiStateProvider();
-        //   },
-        // ),
         ChangeNotifierProvider<YearPageStateProvider>(
           create: (context) {
             return YearPageStateProvider();
@@ -74,10 +68,10 @@ class _MyAppState extends State<MyApp> {
   Future initApp = Future.delayed(const Duration(seconds: 5));
 
   _MyAppState() {
-    sensorRecorder = SensorRecorder(permissionManager);
-    sensorRecorder.init();
-    audioRecorder = AudioRecorder(permissionManager);
-    audioRecorder.init();
+    // sensorRecorder = SensorRecorder(permissionManager);
+    // sensorRecorder.init();
+    // audioRecorder = AudioRecorder(permissionManager);
+    // audioRecorder.init();
 
     photoDataManager = PhotoDataManager();
     locationDataManager = LocationDataManager();
@@ -98,7 +92,7 @@ class _MyAppState extends State<MyApp> {
     await dataManager.init();
     isInitializationDone = true;
     print("init done,executed in ${stopwatch.elapsed}");
-    dataManager.executeSlowProcesses();
+    // dataManager.executeSlowProcesses();
     return 0;
   }
 

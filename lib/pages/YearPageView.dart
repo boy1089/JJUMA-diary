@@ -12,20 +12,21 @@ class YearPageView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: PageView.builder(
-            controller: PageController(
-              viewportFraction: 1.0,
-                initialPage:
-                    Provider.of<YearPageStateProvider>(context, listen: false)
-                        .index),
-            itemCount: 20,
-            reverse: true,
+        body: Consumer<YearPageStateProvider>(
+        builder: (context, product, child) =>
+            PageView.builder(
+              controller: PageController(
+                viewportFraction: 1.0,
+                  initialPage:
+                      Provider.of<YearPageStateProvider>(context, listen: false)
+                          .index),
+              itemCount: 20,
+              reverse: true,
 
-            itemBuilder: (BuildContext context, int index) {
-              year = DateTime.now().year - index;
-              Provider.of<YearPageStateProvider>(context, listen: false)
-                  .setYear(year);
-              return YearPage();
-            }));
+              itemBuilder: (BuildContext context, int index) {
+                year = DateTime.now().year - index;
+                return YearPage(year);
+              }),
+        ));
   }
 }

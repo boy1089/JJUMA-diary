@@ -168,7 +168,7 @@ class DataManager {
   }
 
   Future<List> updateDatesFromInfo(List input) async {
-    if(input.isNotEmpty){
+    if (input.isNotEmpty) {
       global.infoFromFiles = input[0];
     }
 

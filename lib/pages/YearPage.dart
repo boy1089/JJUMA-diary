@@ -11,15 +11,23 @@ import 'package:test_location_2nd/StateProvider/YearPageStateProvider.dart';
 import 'package:test_location_2nd/StateProvider/DayPageStateProvider.dart';
 import 'package:test_location_2nd/StateProvider/NavigationIndexStateProvider.dart';
 
-
 class YearPage extends StatefulWidget {
-  YearPage({Key? key}) : super(key: key) {}
+  int year = DateTime.now().year;
+  YearPage(this.year, {Key? key}) : super(key: key) {}
 
   @override
   State<YearPage> createState() => _YearPageState();
 }
 
 class _YearPageState extends State<YearPage> {
+  int year = DateTime.now().year;
+  dynamic data;
+  _YearPageState() {
+    // data = Provider.of<YearPageStateProvider>(context, listen: false).data;
+
+  }
+
+
   var heatmapChannel = StreamController<Selected?>.broadcast();
 
   late Map layout_yearPage = {
@@ -69,6 +77,7 @@ class _YearPageState extends State<YearPage> {
 
         DateTime date = DateTime.parse(yearPageStateProvider.availableDates
             .elementAt(int.parse(value.values.first.first.toString())));
+
         if (!yearPageStateProvider.isZoomIn) return;
         provider.setNavigationIndex(2);
         provider.setDate(date);
@@ -77,6 +86,9 @@ class _YearPageState extends State<YearPage> {
       },
     );
     super.initState();
+    Provider.of<YearPageStateProvider>(context, listen: false)
+        .setYear(widget.year);
+    data = Provider.of<YearPageStateProvider>(context, listen: false).data;
   }
 
   @override
@@ -121,7 +133,7 @@ class _YearPageState extends State<YearPage> {
                   ZoomableWidgets(
                           widgets: [
                         Chart(
-                          data: product.data,
+                          data: data,
                           elements: [
                             PointElement(
                               size: SizeAttr(
@@ -184,7 +196,7 @@ class _YearPageState extends State<YearPage> {
                           ],
                         ),
                         Text(
-                          "${product.year}",
+                          "${widget.year}",
                           style: TextStyle(fontSize: 30),
                         ),
                         PolarMonthIndicators().build(context),
@@ -194,6 +206,11 @@ class _YearPageState extends State<YearPage> {
                           provider: product)
                       .build(context)
                 ])),
+      floatingActionButton: FloatingActionButton(
+        onPressed: (){
+          print(data);
+        },
+      ),
       ),
     );
   }

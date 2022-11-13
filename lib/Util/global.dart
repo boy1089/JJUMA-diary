@@ -16,7 +16,7 @@ Map locationDataAll = {};
 bool isLocationUpadating = false;
 bool isInitializationDone = false;
 
-List<String> files = [];
+List files = [];
 List dates = [];
 List datetimes = [];
 List locations = [];

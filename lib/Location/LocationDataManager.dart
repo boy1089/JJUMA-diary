@@ -36,7 +36,7 @@ class LocationDataManager {
 
   void getCoordinatesFromPhotoFiles() async {
     global.isLocationUpadating = true;
-    List<String> files = global.files;
+    List files = global.files;
     List<String> filesForSave = [];
     List<Coordinate?> coordinateForSave = [];
 

@@ -42,5 +42,6 @@ class NavigationIndexProvider with ChangeNotifier {
   void setDate(DateTime date) {
     this.date = formatDate(date);
     print("date : ${this.date}");
+    notifyListeners();
   }
 }

@@ -10,13 +10,9 @@ import 'package:test_location_2nd/Util/DateHandler.dart';
 import 'package:test_location_2nd/StateProvider/DayPageStateProvider.dart';
 import 'package:test_location_2nd/StateProvider/NavigationIndexStateProvider.dart';
 class DayPageView extends StatelessWidget {
-  DataManager dataManager;
-  SensorDataManager sensorDataManager;
-  PhotoDataManager localPhotoDataManager;
   NoteManager noteManager;
 
-  DayPageView( this.dataManager, this.sensorDataManager,
-      this.localPhotoDataManager, this.noteManager,
+  DayPageView(  this.noteManager,
       {Key? key})
       : super(key: key);
 
@@ -37,9 +33,6 @@ class DayPageView extends StatelessWidget {
               navigation.setDate(
                   formatDateString(dayPageStateProvider.availableDates[index]));
               return DayPage(
-                this.dataManager,
-                this.sensorDataManager,
-                this.localPhotoDataManager,
                 this.noteManager,
               );
             }));

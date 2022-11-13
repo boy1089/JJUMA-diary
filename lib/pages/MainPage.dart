@@ -23,7 +23,6 @@ import 'package:test_location_2nd/StateProvider/YearPageStateProvider.dart';
 import 'package:test_location_2nd/StateProvider/DayPageStateProvider.dart';
 import 'package:test_location_2nd/StateProvider/NavigationIndexStateProvider.dart';
 
-
 class MainPage extends StatefulWidget {
   PermissionManager permissionManager;
   DataManager dataManager;
@@ -68,8 +67,7 @@ class MainPageState extends State<MainPage> {
     // YearPage yearPage = YearPage(dataManager);
     // YearPage yearPage = YearPage();
     YearPageView yearPageView = YearPageView();
-    DayPageView dayPageView = DayPageView(dataManager,
-        sensorDataManager, localPhotoDataManager, noteManager);
+    DayPageView dayPageView = DayPageView(noteManager);
 
     DiaryPage diaryPage = DiaryPage(dataManager, noteManager);
     AndroidSettingsScreen androidSettingsScreen =
@@ -201,13 +199,13 @@ class MainPageState extends State<MainPage> {
             ),
           ),
         ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: (){
-          // dataManager.updateDateOnInfo(null);
-          print(Provider.of<YearPageStateProvider>(context, listen:false).data);
-        },
-      ),
-
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            // dataManager.updateDateOnInfo(null);
+            print(Provider.of<YearPageStateProvider>(context, listen: false)
+                .data);
+          },
+        ),
       ),
     );
   }

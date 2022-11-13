@@ -34,6 +34,10 @@ class DayPageStateProvider with ChangeNotifier {
   Map<int, String?> addresses = {};
   String note = "";
 
+  void writeNote(){
+    noteManager.writeNote(date, note);
+  }
+
   Future<void> updateDataForUi() async {
     photoForPlot = [];
     photoDataForPlot = [];

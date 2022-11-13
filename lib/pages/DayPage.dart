@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 import 'package:test_location_2nd/polarPhotoImageContainer.dart';
 import 'package:test_location_2nd/PolarPhotoDataPlot.dart';
 import 'package:test_location_2nd/Util/global.dart' as global;
-import 'package:test_location_2nd/Note/NoteManager.dart';
 import 'package:intl/intl.dart';
 import 'package:test_location_2nd/PolarTimeIndicators.dart';
 import 'package:test_location_2nd/Util/DateHandler.dart';
@@ -18,17 +17,13 @@ import 'package:test_location_2nd/StateProvider/DayPageStateProvider.dart';
 import 'package:test_location_2nd/StateProvider/NavigationIndexStateProvider.dart';
 
 class DayPage extends StatefulWidget {
-  NoteManager noteManager;
-
   @override
   State<DayPage> createState() => _DayPageState();
 
-  DayPage(this.noteManager, {Key? key}) : super(key: key);
+  DayPage({Key? key}) : super(key: key);
 }
 
 class _DayPageState extends State<DayPage> {
-  late NoteManager noteManager;
-
   String date = formatDate(DateTime.now());
   Future readData = Future.delayed(const Duration(seconds: 1));
 
@@ -39,7 +34,6 @@ class _DayPageState extends State<DayPage> {
   @override
   void initState() {
     super.initState();
-    noteManager = widget.noteManager;
     date = Provider.of<NavigationIndexProvider>(context, listen: false).date;
     Provider.of<DayPageStateProvider>(context, listen: false).setDate(date);
     readData = _fetchData();
@@ -113,9 +107,9 @@ class _DayPageState extends State<DayPage> {
     setState(() {});
   }
 
-  void dismissKeyboard() async {
+  void dismissKeyboard(product) async {
     focusNode.unfocus();
-    await noteManager.writeNote(date, myTextController.text);
+    await product.writeNote(date);
   }
 
   @override
@@ -178,7 +172,7 @@ class _DayPageState extends State<DayPage> {
                               //if editing text, doesn't zoom in.
                               if (focusNode.hasFocus) {
                                 print("has focus? ${focusNode.hasFocus}");
-                                dismissKeyboard();
+                                dismissKeyboard(product);
                                 setState(() {});
                                 return;
                               }
@@ -263,7 +257,7 @@ class _DayPageState extends State<DayPage> {
 
                                       onEditingComplete: () {
                                         print("editing completed");
-                                        dismissKeyboard();
+                                        dismissKeyboard(product);
                                       },
 
                                       focusNode: focusNode,
@@ -298,7 +292,7 @@ class _DayPageState extends State<DayPage> {
                   ),
                   onPressed: () {
                     if (focusNode.hasFocus) {
-                      dismissKeyboard();
+                      dismissKeyboard(product);
                     } else {
                       showKeyboard();
                     }
@@ -313,7 +307,6 @@ class _DayPageState extends State<DayPage> {
   @override
   void dispose() {
     print("dispose..");
-    noteManager.writeNote(date, myTextController.text);
     focusNode.dispose();
     super.dispose();
   }

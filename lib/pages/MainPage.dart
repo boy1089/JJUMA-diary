@@ -60,10 +60,9 @@ class MainPageState extends State<MainPage> {
     dataManager = widget.dataManager;
     noteManager = widget.noteManager;
 
-    // YearPage yearPage = YearPage(dataManager);
-    // YearPage yearPage = YearPage();
+
     YearPageView yearPageView = YearPageView();
-    DayPageView dayPageView = DayPageView(noteManager);
+    DayPageView dayPageView = DayPageView();
 
     DiaryPage diaryPage = DiaryPage(dataManager, noteManager);
     AndroidSettingsScreen androidSettingsScreen =

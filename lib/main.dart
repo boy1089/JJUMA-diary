@@ -1,6 +1,5 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:location/location.dart';
 import 'package:provider/provider.dart';
 import 'package:test_location_2nd/Location/LocationDataManager.dart';
 import 'package:test_location_2nd/Photo/PhotoDataManager.dart';
@@ -14,7 +13,10 @@ import 'pages/SettingPage.dart';
 
 import 'package:test_location_2nd/Permissions/PermissionManager.dart';
 import 'package:test_location_2nd/Data/DataManager.dart';
-import 'package:test_location_2nd/Util/StateProvider.dart';
+import 'package:test_location_2nd/StateProvider/YearPageStateProvider.dart';
+import 'package:test_location_2nd/StateProvider/DayPageStateProvider.dart';
+import 'package:test_location_2nd/StateProvider/NavigationIndexStateProvider.dart';
+
 import 'package:test_location_2nd/Sensor/SensorDataManager.dart';
 import 'Photo/PhotoDataManager.dart';
 import 'package:test_location_2nd/Note/NoteManager.dart';
@@ -30,7 +32,7 @@ void main() {
             return NavigationIndexProvider();
           },
         ),
-        // ChangeNotifierProvider<UiStateProvider>(
+        // ChangeNotifierProvider<UiStateProvider>
         //   create: (context) {
         //     return UiStateProvider();
         //   },

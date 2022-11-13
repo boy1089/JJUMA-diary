@@ -1,13 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:test_location_2nd/Util/StateProvider.dart';
+import 'package:test_location_2nd/StateProvider/StateProvider.dart';
 import 'package:test_location_2nd/Util/Util.dart';
 import 'package:test_location_2nd/Util/DateHandler.dart';
 import 'package:test_location_2nd/Util/global.dart' as global;
 import 'package:test_location_2nd/Data/DataManager.dart';
 import 'package:intl/intl.dart';
 import 'package:test_location_2nd/Note/NoteManager.dart';
+import 'package:test_location_2nd/StateProvider/DayPageStateProvider.dart';
+import 'package:test_location_2nd/StateProvider/NavigationIndexStateProvider.dart';
 
 class DiaryPage extends StatefulWidget {
   DataManager dataManager;

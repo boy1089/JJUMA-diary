@@ -1,18 +1,14 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
-// import 'package:googleapis/shared.dart';
 import 'package:graphic/graphic.dart';
 import 'package:test_location_2nd/Util/Util.dart';
-import 'package:transparent_image/transparent_image.dart';
-import 'package:extended_image/extended_image.dart';
-import 'package:test_location_2nd/Util/StateProvider.dart';
 import 'package:provider/provider.dart';
-import 'dart:io';
 import 'package:test_location_2nd/Util/global.dart' as global;
-
 import 'package:test_location_2nd/Location/AddressFinder.dart';
 import 'package:test_location_2nd/Location/Coordinate.dart';
+import 'package:test_location_2nd/StateProvider/DayPageStateProvider.dart';
+
 class PolarTimeIndicators extends StatelessWidget {
   var photoDataForPlot;
   String? date;
@@ -22,40 +18,45 @@ class PolarTimeIndicators extends StatelessWidget {
   List<Placemark?> addressOfFiles = [];
   PolarTimeIndicators(
     this.photoDataForPlot,
-      this.addresses,
-  )  {
-  }
+    this.addresses,
+  ) {}
 
   void init() async {
     files = transpose(photoDataForPlot)[1];
     selectedIndex = selectIndexForLocation(files);
-    List<Placemark?> addressOfFiles = await getAddressOfFiles(selectedIndex.values.toList());
+    List<Placemark?> addressOfFiles =
+        await getAddressOfFiles(selectedIndex.values.toList());
     addresses = Map.fromIterable(
-        List.generate(selectedIndex.keys.length, (i)=>i),
-    key : (item) => selectedIndex.keys.elementAt(item),
-    value : (item)=> addressOfFiles.elementAt(item)?.locality);
+        List.generate(selectedIndex.keys.length, (i) => i),
+        key: (item) => selectedIndex.keys.elementAt(item),
+        value: (item) => addressOfFiles.elementAt(item)?.locality);
     print(addresses);
   }
 
-  Map<int, int> selectIndexForLocation(files){
-      Map<int, int> indexForSelectedFile = {};
-      List<DateTime?> datetimes = List<DateTime?>.generate(files.length, (i)=>global.infoFromFiles[files.elementAt(i)]?.datetime);
-      List<int> times = List<int>.generate(datetimes.length, (i)=>datetimes[i]!.hour);
-      Set<int> setOfTimes = times.toSet();
-      for(int i =0; i<setOfTimes.length; i++)
-        indexForSelectedFile[setOfTimes.elementAt(i)] = (times.indexOf(setOfTimes.elementAt(i)));
+  Map<int, int> selectIndexForLocation(files) {
+    Map<int, int> indexForSelectedFile = {};
+    List<DateTime?> datetimes = List<DateTime?>.generate(files.length,
+        (i) => global.infoFromFiles[files.elementAt(i)]?.datetime);
+    List<int> times =
+        List<int>.generate(datetimes.length, (i) => datetimes[i]!.hour);
+    Set<int> setOfTimes = times.toSet();
+    for (int i = 0; i < setOfTimes.length; i++)
+      indexForSelectedFile[setOfTimes.elementAt(i)] =
+          (times.indexOf(setOfTimes.elementAt(i)));
     return indexForSelectedFile;
   }
 
   Future<List<Placemark?>> getAddressOfFiles(List<int> index) async {
     List<Placemark?> listOfAddress = [];
-    for(int i=0; i<index.length; i++){
-      Coordinate? coordinate = global.infoFromFiles[files[index.elementAt(i)]]!.coordinate;
+    for (int i = 0; i < index.length; i++) {
+      Coordinate? coordinate =
+          global.infoFromFiles[files[index.elementAt(i)]]!.coordinate;
       print(coordinate);
-      if(coordinate==null) {
+      if (coordinate == null) {
         listOfAddress.add(null);
       }
-      Placemark? address = await AddressFinder.getAddressFromCoordinate(coordinate?.latitude, coordinate?.longitude);
+      Placemark? address = await AddressFinder.getAddressFromCoordinate(
+          coordinate?.latitude, coordinate?.longitude);
       listOfAddress.add(address);
     }
     return listOfAddress;
@@ -67,9 +68,9 @@ class PolarTimeIndicators extends StatelessWidget {
         ? Stack(
             children: List<Widget>.generate(
                 24,
-                (int index) =>
-                    PolarTimeIndicator(index, photoDataForPlot, addresses[index]
-                    ).build(context)))
+                (int index) => PolarTimeIndicator(
+                        index, photoDataForPlot, addresses[index])
+                    .build(context)))
         : Text("");
     // return Stack(
     // children: List<Widget>.generate(
@@ -105,7 +106,7 @@ class PolarTimeIndicator {
         (0.45 + 0.1 * 1);
     date = date;
 
-      this.address = address;
+    this.address = address;
   }
 
   @override
@@ -117,9 +118,10 @@ class PolarTimeIndicator {
           angle: atan2(yLocation, xLocation),
           child: SizedBox(
             child: Text(
-              address==null? "$index" :"$index\n$address",
+              address == null ? "$index" : "$index\n$address",
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 60, color: global.kColor_backgroundText),
+              style:
+                  TextStyle(fontSize: 60, color: global.kColor_backgroundText),
             ),
           )),
     );

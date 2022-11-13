@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:test_location_2nd/Photo/PhotoDataManager.dart';
 import 'package:test_location_2nd/Sensor/SensorDataManager.dart';
-import 'package:test_location_2nd/Util/StateProvider.dart';
+import 'package:test_location_2nd/StateProvider/StateProvider.dart';
 import 'package:test_location_2nd/Util/Util.dart';
 import 'package:test_location_2nd/PolarSensorDataPlot.dart';
 import 'package:test_location_2nd/Data/DataManager.dart';
@@ -20,6 +20,10 @@ import 'package:geocoding/geocoding.dart';
 import 'package:test_location_2nd/CustomWidget/ZoomableWidgets.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_keyboard_size/flutter_keyboard_size.dart';
+
+import 'package:test_location_2nd/StateProvider/DayPageStateProvider.dart';
+import 'package:test_location_2nd/StateProvider/NavigationIndexStateProvider.dart';
+
 
 class DayPage extends StatefulWidget {
   DataManager dataManager;
@@ -254,7 +258,6 @@ class _DayPageState extends State<DayPage> {
                                   isZoomIn: isZoomIn,
                                   provider: provider)
                               .build(context),
-
                           KeyboardVisibilityBuilder(
                               builder: (context, isKeyboardVisible) {
                             print("isKeyboardVisible : $isKeyboardVisible");

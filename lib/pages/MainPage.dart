@@ -8,9 +8,8 @@ import '../navigation.dart';
 import 'package:test_location_2nd/pages/SettingPage.dart';
 import 'package:test_location_2nd/Permissions/PermissionManager.dart';
 import 'package:test_location_2nd/Data/DataManager.dart';
-import 'MonthPage.dart';
 import 'package:provider/provider.dart';
-import 'package:test_location_2nd/Util/StateProvider.dart';
+import 'package:test_location_2nd/StateProvider/StateProvider.dart';
 import 'package:test_location_2nd/Sensor/SensorDataManager.dart';
 import 'DayPage.dart';
 import 'package:test_location_2nd/Photo/PhotoDataManager.dart';
@@ -19,6 +18,11 @@ import 'package:path_provider/path_provider.dart';
 import 'DiaryPage.dart';
 import 'YearPageView.dart';
 import 'DayPageView.dart';
+
+import 'package:test_location_2nd/StateProvider/YearPageStateProvider.dart';
+import 'package:test_location_2nd/StateProvider/DayPageStateProvider.dart';
+import 'package:test_location_2nd/StateProvider/NavigationIndexStateProvider.dart';
+
 
 class MainPage extends StatefulWidget {
   PermissionManager permissionManager;

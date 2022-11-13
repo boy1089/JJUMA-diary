@@ -2,11 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:graphic/graphic.dart';
 import 'package:test_location_2nd/Util/Util.dart';
 import 'package:test_location_2nd/Util/global.dart' as global;
-import 'package:test_location_2nd/Util/StateProvider.dart';
+import 'package:test_location_2nd/StateProvider/StateProvider.dart';
 import 'package:provider/provider.dart';
 import 'dart:async';
 import 'package:test_location_2nd/PolarMonthIndicator.dart';
 import 'package:test_location_2nd/CustomWidget/ZoomableWidgets.dart';
+
+import 'package:test_location_2nd/StateProvider/YearPageStateProvider.dart';
+import 'package:test_location_2nd/StateProvider/DayPageStateProvider.dart';
+import 'package:test_location_2nd/StateProvider/NavigationIndexStateProvider.dart';
+
 
 class YearPage extends StatefulWidget {
   YearPage({Key? key}) : super(key: key) {}

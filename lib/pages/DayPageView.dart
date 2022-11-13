@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../Util/StateProvider.dart';
+import '../StateProvider/StateProvider.dart';
 import 'DayPage.dart';
 import 'package:test_location_2nd/Note/NoteManager.dart';
 import 'package:test_location_2nd/Data/DataManager.dart';
@@ -7,7 +7,8 @@ import 'package:test_location_2nd/Photo/PhotoDataManager.dart';
 import 'package:test_location_2nd/Sensor/SensorDataManager.dart';
 import 'package:provider/provider.dart';
 import 'package:test_location_2nd/Util/DateHandler.dart';
-
+import 'package:test_location_2nd/StateProvider/DayPageStateProvider.dart';
+import 'package:test_location_2nd/StateProvider/NavigationIndexStateProvider.dart';
 class DayPageView extends StatelessWidget {
   DataManager dataManager;
   SensorDataManager sensorDataManager;

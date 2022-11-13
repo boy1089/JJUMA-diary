@@ -201,7 +201,7 @@ class MainPageState extends State<MainPage> {
             // print(global.summaryOfLocationData.length);
 
             // var a = await dataManager.matchFilesAndInfo();
-            await dataManager.updateSummaryOfPhotoFromInfo([]);
+            // await dataManager.updateSummaryOfPhotoFromInfo([]);
 
             // await dataManager.updateExifOnInfo(null);
             // // dataManager.matchFilesAndInfo();

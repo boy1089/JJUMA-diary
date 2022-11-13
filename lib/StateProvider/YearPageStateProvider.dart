@@ -13,6 +13,7 @@ class YearPageStateProvider with ChangeNotifier {
   bool isBottomNavigationBarShown = true;
   int lastNavigationIndex = 0;
   int year = DateTime.now().year;
+  int index = 0;
 
   dynamic data;
   List<String> availableDates = [];
@@ -37,7 +38,7 @@ class YearPageStateProvider with ChangeNotifier {
       String date = availableDates[index];
       int days = int.parse(DateFormat("D").format(DateTime.parse(date)));
       int value =
-      summaryOfPhotoData[date]! > 200 ? 200 : summaryOfPhotoData[date]!;
+          summaryOfPhotoData[date]! > 200 ? 200 : summaryOfPhotoData[date]!;
 
       double distance = 0.01;
       if (summaryOfLocationData[date] == null ||
@@ -56,7 +57,7 @@ class YearPageStateProvider with ChangeNotifier {
       ];
     });
     List<int> dummy3 = List<int>.generate(transpose(data)[0].length,
-            (index) => int.parse(transpose(data)[2][index].toString()));
+        (index) => int.parse(transpose(data)[2][index].toString()));
     maxOfSummary = dummy3.reduce(max);
     print("year page, dummy3 : $maxOfSummary");
 
@@ -94,12 +95,18 @@ class YearPageStateProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void setYear(year) {
+  void setYear(int year) {
     print("provider set year to $year");
     this.year = year;
+    setIndex(DateTime.now().year - year);
     updateData();
     notifyListeners();
   }
+
+  void setIndex(int index) {
+    this.index = index;
+  }
+
 
   @override
   void dispose() {

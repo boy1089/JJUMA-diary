@@ -51,7 +51,8 @@ class DataManager {
     global.datetimes = result[1];
 
     //find the dates which are out of date based on the number of photo.
-    await updateSummaryOfPhotoFromInfo([]);
+    global.summaryOfPhotoData = await compute(updateSummaryOfPhotoFromInfo,
+        [global.dates, global.summaryOfPhotoData]);
 
     print("DataManager initialization done");
   }
@@ -147,9 +148,6 @@ class DataManager {
 
       DateTime? dateTimeInInfo = global.infoFromFiles[filename]?.datetime;
       Coordinate? coordinateInInfo = global.infoFromFiles[filename]?.coordinate;
-      if (i % 100 == 0)
-        print(
-            "$i, $dateTimeInInfo, $coordinateInInfo, ${coordinateInInfo?.latitude == null}");
 
       if (dateTimeInInfo == null || coordinateInInfo?.latitude == null) {
         filesNotUpdated.add(filename);

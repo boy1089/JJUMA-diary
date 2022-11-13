@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:graphic/graphic.dart';
 import 'package:test_location_2nd/Util/Util.dart';
-import 'dart:math' as math;
 import 'package:test_location_2nd/Util/global.dart' as global;
 import 'package:test_location_2nd/Util/StateProvider.dart';
 import 'package:provider/provider.dart';
 import 'dart:async';
 import 'package:test_location_2nd/PolarMonthIndicator.dart';
-import 'package:intl/intl.dart';
 import 'package:test_location_2nd/CustomWidget/ZoomableWidgets.dart';
 
 class YearPage extends StatefulWidget {
-  YearPage({Key? key}) : super(key: key);
+  YearPage({Key? key}) : super(key: key) {}
+
   @override
   State<YearPage> createState() => _YearPageState();
 }
@@ -95,7 +94,6 @@ class _YearPageState extends State<YearPage> {
                       details, 0, layout_yearPage);
                   double angleZoomIn = calculateTapAngle(tapPosition, 0, 0);
                   product.setZoomInRotationAngle(angleZoomIn);
-                  // });
                 };
               }),
               AllowMultipleGestureRecognizer2:
@@ -103,8 +101,6 @@ class _YearPageState extends State<YearPage> {
                       AllowMultipleGestureRecognizer2>(
                 () => AllowMultipleGestureRecognizer2(),
                 (AllowMultipleGestureRecognizer2 instance) {
-                  var provider = Provider.of<YearPageStateProvider>(context,
-                      listen: false);
                   instance.onUpdate = (details) {
                     if (!product.isZoomIn) return;
                     product.setZoomInRotationAngle(product.isZoomIn

@@ -132,7 +132,6 @@ class _DayPageState extends State<DayPage> {
           global.kImageSize * 2 / 3
     }
   };
-
   double firstContainerSize = 1000;
 
   void showKeyboard() {
@@ -255,6 +254,7 @@ class _DayPageState extends State<DayPage> {
                                   isZoomIn: isZoomIn,
                                   provider: provider)
                               .build(context),
+
                           KeyboardVisibilityBuilder(
                               builder: (context, isKeyboardVisible) {
                             print("isKeyboardVisible : $isKeyboardVisible");

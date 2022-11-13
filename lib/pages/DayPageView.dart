@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../Util/StateProvider.dart';
 import 'DayPage.dart';
-import 'package:test_location_2nd/Permissions/PermissionManager.dart';
 import 'package:test_location_2nd/Note/NoteManager.dart';
 import 'package:test_location_2nd/Data/DataManager.dart';
 import 'package:test_location_2nd/Photo/PhotoDataManager.dart';
@@ -37,7 +36,6 @@ class DayPageView extends StatelessWidget {
               navigation.setDate(
                   formatDateString(dayPageStateProvider.availableDates[index]));
               return DayPage(
-
                 this.dataManager,
                 this.sensorDataManager,
                 this.localPhotoDataManager,

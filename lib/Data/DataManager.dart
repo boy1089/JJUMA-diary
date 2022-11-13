@@ -257,8 +257,8 @@ class DataManager {
       //update the datetime of EXif if there is datetime is null from filename
       // print("filename : $filename, ExifData : ${ExifData[0]}");
       if ((ExifData[0] != null) &
-      (ExifData[0] != "") &
-      (ExifData[0] != "null")) {
+          (ExifData[0] != "") &
+          (ExifData[0] != "null")) {
         global.infoFromFiles[filename]?.datetime = DateTime.parse(ExifData[0]);
         global.infoFromFiles[filename]?.date = ExifData[0].substring(0, 8);
         continue;
@@ -266,7 +266,7 @@ class DataManager {
 
       //if there is no info from filename and exif, then use changed datetime.
       DateTime datetime =
-      DateTime.parse(formatDatetime(FileStat.statSync(filename).changed));
+          DateTime.parse(formatDatetime(FileStat.statSync(filename).changed));
       global.infoFromFiles[filename]?.datetime = datetime;
       global.infoFromFiles[filename]?.date = formatDate(datetime);
     }

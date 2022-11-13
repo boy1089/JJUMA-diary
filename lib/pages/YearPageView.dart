@@ -8,10 +8,14 @@ class YearPageView extends StatelessWidget {
   YearPageView({Key? key}) : super(key: key){
   }
 
+
   int year = DateTime.now().year;
+
+
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       body : PageView.builder(
           controller : PageController(initialPage : 0),

@@ -200,8 +200,8 @@ class MainPageState extends State<MainPage> {
             // global.summaryOfLocationData.forEach((key, value) {print("$key, $value");});
             // print(global.summaryOfLocationData.length);
 
-            var a = await dataManager.matchFilesAndInfo();
-
+            // var a = await dataManager.matchFilesAndInfo();
+            await dataManager.updateSummaryOfPhotoFromInfo([]);
 
             // await dataManager.updateExifOnInfo(null);
             // // dataManager.matchFilesAndInfo();

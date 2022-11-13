@@ -46,10 +46,12 @@ class DataManager {
     // update info which are not updated
     await addFilesToInfo(filesNotUpdated);
     await updateDateOnInfo(filesNotUpdated);
-    await updateDatesFromInfo();
+    var result = await compute(updateDatesFromInfo, [global.infoFromFiles]);
+    global.dates = result[0];
+    global.datetimes = result[1];
 
     //find the dates which are out of date based on the number of photo.
-    datesOutOfDate = await updateSummaryOfPhotoFromInfo();
+    await updateSummaryOfPhotoFromInfo([]);
 
     print("DataManager initialization done");
   }
@@ -73,12 +75,14 @@ class DataManager {
           [partOfFilesNotupdated, global.infoFromFiles]);
 
       if (i % 5 == 0) {
-        await updateDatesFromInfo();
-        //update the summaryOflocation only on the specific date.
-        await updateSummaryOfPhotoFromInfo();
-        // await updateSummaryOfLocationDataFromInfo(null);
-        // await updateSummaryOfLocationDataFromInfo(null);
+        var result = await compute(updateDatesFromInfo, [global.infoFromFiles]);
+        global.dates = result[0];
+        global.datetimes = result[1];
 
+        //update the summaryOflocation only on the specific date.
+
+        global.summaryOfPhotoData = await compute(updateSummaryOfPhotoFromInfo,
+            [global.dates, global.summaryOfPhotoData]);
         global.summaryOfLocationData = await compute(
             updateSummaryOfLocationDataFromInfo_compute,
             [global.dates, global.summaryOfLocationData, global.infoFromFiles]);
@@ -89,7 +93,8 @@ class DataManager {
       }
     }
     //update the summaryOflocation only on the specific date.
-    await updateSummaryOfPhotoFromInfo();
+    global.summaryOfPhotoData = await compute(updateSummaryOfPhotoFromInfo,
+        [global.dates, global.summaryOfPhotoData]);
     // await updateSummaryOfLocationDataFromInfo(null);
     // await updateSummaryOfLocationDataFromInfo(null);
 
@@ -164,11 +169,19 @@ class DataManager {
     }
   }
 
-  Future<void> updateDatesFromInfo() async {
+  Future<List> updateDatesFromInfo(List input) async {
+    if(input.isNotEmpty){
+      global.infoFromFiles = input[0];
+    }
+
     List<String?> dates = List.generate(global.infoFromFiles.length, (i) {
       var key = global.infoFromFiles.keys.elementAt(i);
       return global.infoFromFiles[key]?.date;
     });
+
+    // List<String?> dates = global.infoFromFiles.forEach((key, value) {value.date;});
+    // var dates = global.infoFromFiles.forEach((key, value) {return value?.date;});
+
     List datetimes = List.generate(global.infoFromFiles.length, (i) {
       var key = global.infoFromFiles.keys.elementAt(i);
       return global.infoFromFiles[key]?.datetime;
@@ -178,6 +191,8 @@ class DataManager {
     datetimes.removeWhere((i) => i == null);
     global.dates = dates;
     global.datetimes = datetimes;
+
+    return [global.dates, global.datetimes];
   }
 
   Future<void> updateDateOnInfo(List<String>? filenames) async {
@@ -279,8 +294,13 @@ class DataManager {
     return global.infoFromFiles;
   }
 
-  Future<List<String>> updateSummaryOfPhotoFromInfo() async {
+  Future<Map<String, int>> updateSummaryOfPhotoFromInfo(List input) async {
     List dates = global.dates;
+    if (input.isNotEmpty) {
+      dates = input[0];
+      global.summaryOfPhotoData = input[1];
+    }
+
     dates.removeWhere((i) => i == null);
     Set setOfDates = dates.toSet();
     List<String> datesOutOfDate = [];
@@ -299,7 +319,7 @@ class DataManager {
       }
     }
     print("updateSummaryOfPhoto done");
-    return datesOutOfDate;
+    return global.summaryOfPhotoData;
   }
 
   Future<Map> updateSummaryOfLocationDataFromInfo(

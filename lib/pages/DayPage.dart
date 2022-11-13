@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:test_location_2nd/Photo/PhotoDataManager.dart';
-import 'package:test_location_2nd/Sensor/SensorDataManager.dart';
-import 'package:test_location_2nd/StateProvider/StateProvider.dart';
 import 'package:test_location_2nd/Util/Util.dart';
 import 'package:test_location_2nd/PolarSensorDataPlot.dart';
-import 'package:test_location_2nd/Data/DataManager.dart';
 import 'package:provider/provider.dart';
 import 'package:test_location_2nd/polarPhotoImageContainer.dart';
 import 'package:test_location_2nd/PolarPhotoDataPlot.dart';
@@ -14,9 +10,6 @@ import 'package:intl/intl.dart';
 import 'package:test_location_2nd/PolarTimeIndicators.dart';
 import 'package:test_location_2nd/Util/DateHandler.dart';
 
-import 'package:test_location_2nd/Location/AddressFinder.dart';
-import 'package:test_location_2nd/Location/Coordinate.dart';
-import 'package:geocoding/geocoding.dart';
 import 'package:test_location_2nd/CustomWidget/ZoomableWidgets.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_keyboard_size/flutter_keyboard_size.dart';
@@ -30,10 +23,7 @@ class DayPage extends StatefulWidget {
   @override
   State<DayPage> createState() => _DayPageState();
 
-  DayPage(
-      this.noteManager,
-      {Key? key})
-      : super(key: key);
+  DayPage(this.noteManager, {Key? key}) : super(key: key);
 }
 
 class _DayPageState extends State<DayPage> {
@@ -58,6 +48,7 @@ class _DayPageState extends State<DayPage> {
   Future<List<dynamic>> _fetchData() async {
     var provider = Provider.of<DayPageStateProvider>(context, listen: false);
     await provider.updateDataForUi();
+    myTextController.text = provider.note;
     print("fetchData done, ${provider.photoDataForPlot}");
     await Future.delayed(Duration(seconds: 1));
     return provider.photoDataForPlot;

@@ -18,7 +18,7 @@ class SensorDataManager {
 
   Future<List<FileSystemEntity>> getFiles() async {
     String? kRoot = await _localPath;
-    final files = await Glob("$kRoot/processedSensorData/*").listSync();
+    final files =  Glob("$kRoot/processedSensorData/*").listSync();
     return files;
   }
 

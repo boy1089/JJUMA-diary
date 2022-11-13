@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:test_location_2nd/Sensor/SensorData.dart';
+import 'package:test_location_2nd/Note/NoteManager.dart';
 import 'package:test_location_2nd/Util/DateHandler.dart';
 import '../Util/global.dart';
 import 'package:test_location_2nd/Util/Util.dart';
-import 'dart:math';
-import 'package:intl/intl.dart';
 import 'package:test_location_2nd/Photo/PhotoDataManager.dart';
 import 'package:test_location_2nd/Sensor/SensorDataManager.dart';
 
@@ -12,53 +10,56 @@ import 'package:test_location_2nd/Util/global.dart' as global;
 
 import 'package:test_location_2nd/Location/AddressFinder.dart';
 import 'package:test_location_2nd/Location/Coordinate.dart';
-import 'package:test_location_2nd/Util/Util.dart';
 import 'package:geocoding/geocoding.dart';
-
 
 class DayPageStateProvider with ChangeNotifier {
   PhotoDataManager photoDataManager = PhotoDataManager();
   SensorDataManager sensorDataManager = SensorDataManager();
+  NoteManager noteManager = NoteManager();
 
-  Map summaryOfGooglePhotoData = {};
   double zoomInAngle = 0.0;
   bool isZoomIn = false;
   bool isBottomNavigationBarShown = true;
   int lastNavigationIndex = 0;
-  List<String> availableDates = [];
   bool isZoomInImageVisible = false;
   String date = formatDate(DateTime.now());
 
+
+  List<String> availableDates = [];
+  Map summaryOfGooglePhotoData = {};
   List photoForPlot = [];
   dynamic photoData = [[]];
   dynamic sensorDataForPlot = [[]];
   List<List<dynamic>> photoDataForPlot = [[]];
   Map<int, String?> addresses = {};
-
+  String note = "";
 
   Future<void> updateDataForUi() async {
     photoForPlot = [];
     photoDataForPlot = [];
     photoData = [[]];
+
     try {
       photoData = await updatePhotoData();
       photoForPlot = selectPhotoForPlot(photoData);
     } catch (e) {
       print("while updating Ui, error is occrued : $e");
     }
+
     // //convert data type..
     photoDataForPlot = List<List>.generate(
         photoForPlot.length, (index) => photoForPlot.elementAt(index));
 
-    // addresses = await updateAddress();
+    addresses = await updateAddress();
 
     await updateSensorData();
 
     try {
-      // myTextController.text = await noteManager.readNote(date);
+       note = await noteManager.readNote(date);
     } catch (e) {
       print("while updating UI, reading note, error is occured : $e");
     }
+
     print("updateUi done");
   }
 
@@ -69,7 +70,6 @@ class DayPageStateProvider with ChangeNotifier {
     photoData = modifyListForPlot(data, executeTranspose: true);
     return photoData;
   }
-
 
   List selectPhotoForPlot(List input) {
     print("DayPage selectImageForPlot : ${input}");
@@ -93,7 +93,6 @@ class DayPageStateProvider with ChangeNotifier {
     print("selectImagesForPlot done, $photoDataForPlot");
     return photoForPlot;
   }
-
 
   Future<void> updateSensorData() async {
     var sensorData = await this.sensorDataManager.openFile(date);
@@ -128,21 +127,15 @@ class DayPageStateProvider with ChangeNotifier {
   Map<int, int> selectIndexForLocation(files) {
     Map<int, int> indexForSelectedFile = {};
     List<DateTime?> datetimes = List<DateTime?>.generate(files.length,
-            (i) => global.infoFromFiles[files.elementAt(i)]?.datetime);
+        (i) => global.infoFromFiles[files.elementAt(i)]?.datetime);
     List<int> times =
-    List<int>.generate(datetimes.length, (i) => datetimes[i]!.hour);
+        List<int>.generate(datetimes.length, (i) => datetimes[i]!.hour);
     Set<int> setOfTimes = times.toSet();
     for (int i = 0; i < setOfTimes.length; i++)
       indexForSelectedFile[setOfTimes.elementAt(i)] =
-      (times.indexOf(setOfTimes.elementAt(i)));
+          (times.indexOf(setOfTimes.elementAt(i)));
     return indexForSelectedFile;
   }
-
-  void setDate(String date) {
-    this.date = date;
-    print("date : ${this.date}");
-  }
-
 
   Future<List<Placemark?>> getAddressOfFiles(List<int> index) async {
     List<Placemark?> listOfAddress = [];
@@ -160,7 +153,12 @@ class DayPageStateProvider with ChangeNotifier {
     return listOfAddress;
   }
 
-  void setIsZoomInImageVisible(bool isZoomInImageVisible){
+  void setDate(String date) {
+    this.date = date;
+    print("date : ${this.date}");
+  }
+
+  void setIsZoomInImageVisible(bool isZoomInImageVisible) {
     this.isZoomInImageVisible = isZoomInImageVisible;
     notifyListeners();
   }

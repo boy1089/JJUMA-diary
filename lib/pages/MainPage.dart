@@ -42,8 +42,6 @@ class MainPage extends StatefulWidget {
 class MainPageState extends State<MainPage> {
   late PermissionManager permissionManager;
   late DataManager dataManager;
-  late SensorDataManager sensorDataManager;
-  late PhotoDataManager localPhotoDataManager;
   late NoteManager noteManager;
 
   int dataIndex = 0;
@@ -60,8 +58,6 @@ class MainPageState extends State<MainPage> {
     super.initState();
     permissionManager = widget.permissionManager;
     dataManager = widget.dataManager;
-    sensorDataManager = widget.sensorDataManager;
-    localPhotoDataManager = widget.localPhotoDataManager;
     noteManager = widget.noteManager;
 
     // YearPage yearPage = YearPage(dataManager);

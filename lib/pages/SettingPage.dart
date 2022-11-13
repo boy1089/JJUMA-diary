@@ -19,7 +19,7 @@ class AndroidSettingsScreen extends StatefulWidget {
     PermissionManager permissionManager, {
     Key? key,
   })  :
-        this.permissionManager = permissionManager,
+        permissionManager = permissionManager,
         super(key: key);
 
   @override

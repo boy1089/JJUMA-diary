@@ -37,11 +37,11 @@ class PhotoDataManager {
     for (int i = 0; i < pathsToPhoto.length; i++) {
       String path = pathsToPhoto.elementAt(i);
 
-      newFiles = await Glob("$path/*.jpg").listSync();
+      newFiles =  Glob("$path/*.jpg").listSync();
       files.addAll(List.generate(
           newFiles.length, (index) => newFiles.elementAt(index).path));
 
-      newFiles = await Glob("$path/*.png").listSync();
+      newFiles =  Glob("$path/*.png").listSync();
       files.addAll(List.generate(
           newFiles.length, (index) => newFiles.elementAt(index).path));
     }

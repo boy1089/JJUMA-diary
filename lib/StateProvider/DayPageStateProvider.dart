@@ -7,7 +7,6 @@ import 'package:intl/intl.dart';
 
 
 class DayPageStateProvider with ChangeNotifier {
-  String date = formatDate(DateTime.now());
   Map summaryOfGooglePhotoData = {};
   double zoomInAngle = 0.0;
   bool isZoomIn = false;
@@ -23,11 +22,6 @@ class DayPageStateProvider with ChangeNotifier {
 
   void setLastNavigationIndex(int index) {
     lastNavigationIndex = index;
-  }
-
-  void setDate(DateTime date) {
-    this.date = formatDate(date);
-    print("date : ${this.date}");
   }
 
   void setSummaryOfGooglePhotoData(data) {

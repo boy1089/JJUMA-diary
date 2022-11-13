@@ -24,7 +24,6 @@ import 'package:flutter_keyboard_size/flutter_keyboard_size.dart';
 import 'package:test_location_2nd/StateProvider/DayPageStateProvider.dart';
 import 'package:test_location_2nd/StateProvider/NavigationIndexStateProvider.dart';
 
-
 class DayPage extends StatefulWidget {
   DataManager dataManager;
   SensorDataManager sensorDataManager;
@@ -150,12 +149,11 @@ class _DayPageState extends State<DayPage> {
 
   @override
   Widget build(BuildContext context) {
-    // updateDataForUi();
-    bool isZoomIn =
-        Provider.of<DayPageStateProvider>(context, listen: true).isZoomIn;
-    var provider = Provider.of<DayPageStateProvider>(context, listen: true);
     print("building DayPage..");
-    return FutureBuilder(
+
+    return Consumer<DayPageStateProvider>(
+        builder: (context, product, child) =>
+        FutureBuilder(
         future: readData,
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           print("snapshot : ${snapshot.data}. ${snapshot.hasData}");
@@ -194,7 +192,7 @@ class _DayPageState extends State<DayPage> {
                             global.indexForZoomInImage = -1;
                           global.isImageClicked = false;
                           setState(() {});
-                          if (isZoomIn) return;
+                          if (product.isZoomIn) return;
                           // setState(() {});
                           Offset tapPosition = calculateTapPositionRefCenter(
                               details, 0, layout_dayPage);
@@ -213,10 +211,9 @@ class _DayPageState extends State<DayPage> {
                             return;
                           }
                           setState(() {
-                            dayPageStateProvider.setZoomInState(true);
+                            product.setZoomInState(true);
                             isZoomInImageVisible = true;
-                            _angle = angleZoomIn;
-                            dayPageStateProvider.setZoomInRotationAngle(_angle);
+                            product.setZoomInRotationAngle(_angle);
                             FocusManager.instance.primaryFocus?.unfocus();
                           });
                         };
@@ -227,17 +224,16 @@ class _DayPageState extends State<DayPage> {
                         () => AllowMultipleGestureRecognizer2(),
                         (AllowMultipleGestureRecognizer2 instance) {
                           instance.onUpdate = (details) {
-                            if (!isZoomIn) return;
-                            _angle =
-                                isZoomIn ? _angle + details.delta.dy / 1000 : 0;
-                            dayPageStateProvider.setZoomInRotationAngle(_angle);
+                            if (!product.isZoomIn) return;
+                            product.setZoomInRotationAngle(
+                                product.isZoomIn ? product.zoomInAngle + details.delta.dy / 1000 : 0);
                           };
                         },
                       )
                     },
                     child: Stack(
                         alignment:
-                            isZoomIn ? Alignment.center : Alignment.topCenter,
+                            product.isZoomIn ? Alignment.center : Alignment.topCenter,
                         children: [
                           ZoomableWidgets(
                                   widgets: [
@@ -255,8 +251,8 @@ class _DayPageState extends State<DayPage> {
                                     .build(context),
                               ],
                                   layout: layout_dayPage,
-                                  isZoomIn: isZoomIn,
-                                  provider: provider)
+                                  isZoomIn: product.isZoomIn,
+                                  provider: product)
                               .build(context),
                           KeyboardVisibilityBuilder(
                               builder: (context, isKeyboardVisible) {
@@ -330,7 +326,7 @@ class _DayPageState extends State<DayPage> {
               },
             ),
           );
-        });
+        }));
   }
 
   @override

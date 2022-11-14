@@ -193,22 +193,22 @@ class MainPageState extends State<MainPage> {
             ),
           ),
         ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            // global.infoFromFiles.forEach((key, value) {
-            //   // print(value);
-            //   if (value.date == null) return;
-            //   if (value.date!.contains("20160925")) {
-            //     print("$key, $value");
-            //     print(DateTime.fromMillisecondsSinceEpoch(
-            //         int.parse(key.split('/').last.substring(0, 13))));
-            //   }
-
-            // });
-            print(global.infoFromFiles.keys.elementAt(3389));
-
-          },
-        ),
+        // floatingActionButton: FloatingActionButton(
+        //   onPressed: () {
+        //     // global.infoFromFiles.forEach((key, value) {
+        //     //   // print(value);
+        //     //   if (value.date == null) return;
+        //     //   if (value.date!.contains("20160925")) {
+        //     //     print("$key, $value");
+        //     //     print(DateTime.fromMillisecondsSinceEpoch(
+        //     //         int.parse(key.split('/').last.substring(0, 13))));
+        //     //   }
+        //
+        //     // });
+        //     print(global.infoFromFiles.keys.elementAt(3389));
+        //
+        //   },
+        // ),
       ),
     );
   }

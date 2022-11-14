@@ -109,8 +109,9 @@ class _DayPageState extends State<DayPage> {
   }
 
   void dismissKeyboard(product) async {
+    product.setNote(myTextController.text);
     focusNode.unfocus();
-    await product.writeNote(date);
+    await product.writeNote();
   }
 
   @override

@@ -30,6 +30,14 @@ class NoteManager {
     String note = await file.readAsString();
     return note;
   }
+  void tryDeleteNote(String date) async {
+    final Directory? directory = await getExternalStorageDirectory();
+    final String folder = '${directory?.path}/noteData';
+    final File file = File('${folder}/${date}_note.csv');
+    bool isFileExists = await file.exists();
+    if (isFileExists)
+      file.delete();
+  }
 
   Future<List> getAllFiles() async {
     final Directory? directory = await getExternalStorageDirectory();

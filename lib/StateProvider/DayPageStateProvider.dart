@@ -33,9 +33,6 @@ class DayPageStateProvider with ChangeNotifier {
   Map<int, String?> addresses = {};
   String note = "";
 
-  void writeNote() {
-    noteManager.writeNote(date, note);
-  }
 
   Future<void> updateDataForUi() async {
     photoForPlot = [];
@@ -152,6 +149,18 @@ class DayPageStateProvider with ChangeNotifier {
     return listOfAddress;
   }
 
+
+  void writeNote() {
+    if(note != "")
+      noteManager.writeNote(date, note);
+    if(note =="")
+      noteManager.tryDeleteNote(date);
+  }
+
+  void deleteNote(){
+    noteManager.tryDeleteNote(date);
+  }
+
   void setDate(String date) {
     this.date = date;
     print("date : ${this.date}");
@@ -191,6 +200,12 @@ class DayPageStateProvider with ChangeNotifier {
   void setAvailableDates(availableDates) {
     print("provider set isZoomIn to $isZoomIn");
     this.availableDates = availableDates;
+    notifyListeners();
+  }
+
+  void setNote(note) {
+    // print("provider set zoomInAngle to $angle");
+    this.note = note;
     notifyListeners();
   }
 

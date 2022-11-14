@@ -68,8 +68,8 @@ class LocationDataManager {
 
   List getCoordinatesOfDate(String date) {
     //find the index which date is contained in infoFromFiles.
-    Set indexOfDate = List.generate(global.dates.length,
-        (i) => (global.dates.elementAt(i).contains(date)) ? i : null).toSet();
+    Set indexOfDate = List.generate(global.setOfDates.length,
+        (i) => (global.setOfDates.elementAt(i).contains(date)) ? i : null).toSet();
     indexOfDate.remove(null);
 
     List coordinatesOfDate = List.generate(indexOfDate.length, (i) {
@@ -84,7 +84,7 @@ class LocationDataManager {
 
   List<double?> getDistancesOfDate(String date) {
     //find the index which date is contained in infoFromFiles.
-    List dates = global.dates;
+    List dates = global.setOfDates;
     // List indexOfDate = List.generate(
     //     global.dates.length, (i) => (dates.elementAt(i) == date) ? i : null);
     var endIndex = dates.lastIndexOf(date);

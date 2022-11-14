@@ -17,6 +17,7 @@ bool isLocationUpadating = false;
 bool isInitializationDone = false;
 
 List files = [];
+List setOfDates = [];
 List dates = [];
 List datetimes = [];
 List locations = [];

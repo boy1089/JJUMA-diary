@@ -41,7 +41,6 @@ class DayPageStateProvider with ChangeNotifier {
     photoForPlot = [];
     photoDataForPlot = [];
     photoData = [[]];
-
     try {
       photoData = await updatePhotoData();
       photoForPlot = selectPhotoForPlot(photoData);
@@ -52,17 +51,13 @@ class DayPageStateProvider with ChangeNotifier {
     // //convert data type..
     photoDataForPlot = List<List>.generate(
         photoForPlot.length, (index) => photoForPlot.elementAt(index));
-    print('cc');
     addresses = await updateAddress();
-    print('bbb');
     await updateSensorData();
-
     try {
       note = await noteManager.readNote(date);
     } catch (e) {
       print("while updating UI, reading note, error is occured : $e");
     }
-
     print("updateUi done");
   }
 
@@ -114,13 +109,9 @@ class DayPageStateProvider with ChangeNotifier {
     List<Placemark?> addressOfFiles = [];
 
     files = transpose(photoForPlot)[1];
-    print('dd');
 
     selectedIndex = selectIndexForLocation(files);
-    print('ee');
     addressOfFiles = await getAddressOfFiles(selectedIndex.values.toList());
-    print('ff');
-    print(selectedIndex);
     addresses = Map<int, String?>.fromIterable(
         List.generate(selectedIndex.keys.length, (i) => i),
         key: (item) => selectedIndex.keys.elementAt(item),
@@ -133,16 +124,12 @@ class DayPageStateProvider with ChangeNotifier {
 
   Map<int, int> selectIndexForLocation(files) {
     Map<int, int> indexForSelectedFile = {};
-    print('gg');
     List<DateTime?> datetimes = List<DateTime?>.generate(files.length,
         (i) => global.infoFromFiles[files.elementAt(i)]?.datetime);
-    print('tt');
-    print(datetimes);
     datetimes = datetimes.whereType<DateTime>().toList();
     List<int> times =
         List<int>.generate(datetimes.length, (i) => datetimes[i]!.hour);
     Set<int> setOfTimes = times.toSet();
-    print('qq');
     for (int i = 0; i < setOfTimes.length; i++)
       indexForSelectedFile[setOfTimes.elementAt(i)] =
           (times.indexOf(setOfTimes.elementAt(i)));

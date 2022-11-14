@@ -59,12 +59,13 @@ class DataManager {
     var result = await compute(updateDatesFromInfo, [global.infoFromFiles]);
     print("time elapsed : ${stopwatch.elapsed}");
 
-    global.dates = result[0];
+    global.setOfDates = result[0];
     global.datetimes = result[1];
+    global.dates = result[2];
 
     //find the dates which are out of date based on the number of photo.
     global.summaryOfPhotoData = await compute(updateSummaryOfPhotoFromInfo,
-        [global.dates, global.summaryOfPhotoData]);
+        [global.setOfDates, global.summaryOfPhotoData]);
     print("time elapsed : ${stopwatch.elapsed}");
 
     print("DataManager initialization done");
@@ -90,16 +91,17 @@ class DataManager {
 
       if (i % 5 == 0) {
         var result = await compute(updateDatesFromInfo, [global.infoFromFiles]);
-        global.dates = result[0];
+        global.setOfDates = result[0];
         global.datetimes = result[1];
+        global.dates = result[2];
 
         //update the summaryOflocation only on the specific date.
 
         global.summaryOfPhotoData = await compute(updateSummaryOfPhotoFromInfo,
-            [global.dates, global.summaryOfPhotoData]);
+            [global.setOfDates, global.summaryOfPhotoData]);
         global.summaryOfLocationData = await compute(
             updateSummaryOfLocationDataFromInfo_compute,
-            [global.dates, global.summaryOfLocationData, global.infoFromFiles]);
+            [global.setOfDates, global.summaryOfLocationData, global.infoFromFiles]);
 
         await writeInfo(null, true);
         await writeSummaryOfLocation2(null, true);
@@ -108,13 +110,13 @@ class DataManager {
     }
     //update the summaryOflocation only on the specific date.
     global.summaryOfPhotoData = await compute(updateSummaryOfPhotoFromInfo,
-        [global.dates, global.summaryOfPhotoData]);
+        [global.setOfDates, global.summaryOfPhotoData]);
     // await updateSummaryOfLocationDataFromInfo(null);
     // await updateSummaryOfLocationDataFromInfo(null);
 
     global.summaryOfLocationData = await compute(
         updateSummaryOfLocationDataFromInfo_compute,
-        [global.dates, global.summaryOfLocationData, global.infoFromFiles]);
+        [global.setOfDates, global.summaryOfLocationData, global.infoFromFiles]);
 
     await writeInfo(null, true);
     await writeSummaryOfLocation2(null, true);
@@ -196,13 +198,13 @@ class DataManager {
       dates.add(value.date);
       datetimes.add(value.datetime);
     }
-
+    global.dates = dates;
     dates.removeWhere((i) => i == null);
     datetimes.removeWhere((i) => i == null);
-    global.dates = dates;
+    global.setOfDates = dates;
     global.datetimes = datetimes;
 
-    return [global.dates, global.datetimes];
+    return [global.setOfDates, global.datetimes, global.dates];
   }
 
   Future<void> updateDateOnInfo(List<String>? filenames) async {
@@ -305,7 +307,7 @@ class DataManager {
   }
 
   Future<Map<String, int>> updateSummaryOfPhotoFromInfo(List input) async {
-    List dates = global.dates;
+    List dates = global.setOfDates;
     if (input.isNotEmpty) {
       dates = input[0];
       global.summaryOfPhotoData = input[1];
@@ -336,7 +338,7 @@ class DataManager {
       List<String>? datesOutOfDate) async {
     List listOfDates = [];
     listOfDates =
-        (datesOutOfDate == null) ? global.dates.toList() : datesOutOfDate!;
+        (datesOutOfDate == null) ? global.setOfDates.toList() : datesOutOfDate!;
 
     print("updateSummaryOfLocationData..");
 
@@ -356,7 +358,7 @@ class DataManager {
       List input) async {
     List listOfDates = input[0].toList();
     global.infoFromFiles = input[2];
-    global.dates = input[0];
+    global.setOfDates = input[0];
     print("updateSummaryOfLocationData..");
 
     Set setOfDates = listOfDates.toSet();
@@ -488,7 +490,7 @@ class DataManager {
 
   Future<void> writeSummaryOfLocation2(
       List<String>? datesOutOfDate, bool overwrite) async {
-    Set setOfDates = global.dates.toSet();
+    Set setOfDates = global.setOfDates.toSet();
     if (overwrite == null) overwrite = false;
     if (datesOutOfDate != null) {
       setOfDates = datesOutOfDate.toSet();
@@ -531,7 +533,7 @@ class DataManager {
 
   Future<void> writeSummaryOfPhoto2(
       List<String>? datesOutOfDate, bool overwrite) async {
-    Set setOfDates = global.dates.toSet();
+    Set setOfDates = global.setOfDates.toSet();
     if (overwrite == null) overwrite = false;
     if (datesOutOfDate != null) {
       setOfDates = datesOutOfDate.toSet();

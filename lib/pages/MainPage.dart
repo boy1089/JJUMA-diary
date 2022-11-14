@@ -60,7 +60,6 @@ class MainPageState extends State<MainPage> {
     dataManager = widget.dataManager;
     noteManager = widget.noteManager;
 
-
     YearPageView yearPageView = YearPageView();
     DayPageView dayPageView = DayPageView();
 
@@ -195,9 +194,18 @@ class MainPageState extends State<MainPage> {
           ),
         ),
         floatingActionButton: FloatingActionButton(
-          onPressed: (){
+          onPressed: () {
+            // global.infoFromFiles.forEach((key, value) {
+            //   // print(value);
+            //   if (value.date == null) return;
+            //   if (value.date!.contains("20160925")) {
+            //     print("$key, $value");
+            //     print(DateTime.fromMillisecondsSinceEpoch(
+            //         int.parse(key.split('/').last.substring(0, 13))));
+            //   }
 
-            print(Provider.of<DayPageStateProvider>(context, listen:false).photoDataForPlot);
+            // });
+            print(global.infoFromFiles.keys.elementAt(3389));
 
           },
         ),

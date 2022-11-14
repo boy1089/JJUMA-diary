@@ -37,11 +37,11 @@ class PhotoDataManager {
     for (int i = 0; i < pathsToPhoto.length; i++) {
       String path = pathsToPhoto.elementAt(i);
 
-      newFiles =  Glob("$path/*.jpg").listSync();
+      newFiles = Glob("$path/*.jpg").listSync();
       files.addAll(List.generate(
           newFiles.length, (index) => newFiles.elementAt(index).path));
 
-      newFiles =  Glob("$path/*.png").listSync();
+      newFiles = Glob("$path/*.png").listSync();
       files.addAll(List.generate(
           newFiles.length, (index) => newFiles.elementAt(index).path));
     }
@@ -73,18 +73,24 @@ class PhotoDataManager {
   }
 
   Future getPhotoOfDate(String date) async {
-    print(global.dates);
-    Set indexOfDate = List.generate(
-            global.dates.length, (i) => global.dates.elementAt(i)==date ? i : null)
-        .toSet();
-    print(indexOfDate);
-    indexOfDate.remove(null);
+    Stopwatch stopwatch = Stopwatch()..start();
 
-
+    List<int?> indexOfDate =
+        List<int?>.generate(global.dates.length, (i) {
+      if (global.dates.elementAt(i) == date) return i;
+      return null;
+    });
+    print("time elapsed : ${stopwatch.elapsed}");
+    indexOfDate = indexOfDate.whereType<int>().toList();
+    print("time elapsed : ${stopwatch.elapsed}");
     List filesOfDate = List.generate(indexOfDate.length,
-        (i) => global.infoFromFiles.keys.elementAt(indexOfDate.elementAt(i)));
-    List dateOfDate = List.generate(indexOfDate.length,
-        (i) => formatDatetime(global.datetimes.elementAt(indexOfDate.elementAt(i))));
+        (i) => global.infoFromFiles.keys.elementAt(indexOfDate.elementAt(i)!));
+    print("time elapsed : ${stopwatch.elapsed}");
+    List dateOfDate = List.generate(
+        indexOfDate.length,
+        (i) => formatDatetime(
+            global.datetimes.elementAt(indexOfDate.elementAt(i)!)));
+    print("time elapsed : ${stopwatch.elapsed}");
     for (int i = 0; i < indexOfDate.length; i++) {
       print("${dateOfDate[i]}, ${filesOfDate[i]}");
     }
@@ -94,7 +100,7 @@ class PhotoDataManager {
 
   void setDataAsGlobal() {
     global.files = this.files;
-    global.dates = this.dates;
+    global.setOfDates = this.dates;
     global.datetimes = this.datetimes;
   }
 }

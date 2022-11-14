@@ -41,6 +41,7 @@ class _DayPageState extends State<DayPage> {
     Provider.of<DayPageStateProvider>(context, listen: false).setDate(date);
     Provider.of<NavigationIndexProvider>(context, listen: false)
         .setDate(formatDateString(date));
+    print("dayPAge");
     readData = _fetchData();
   }
 

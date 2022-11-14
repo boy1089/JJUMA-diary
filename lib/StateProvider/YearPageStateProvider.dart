@@ -61,7 +61,7 @@ class YearPageStateProvider with ChangeNotifier {
     maxOfSummary = dummy3.reduce(max);
     print("year page, dummy3 : $maxOfSummary");
 
-    notifyListeners();
+    // notifyListeners();
   }
 
   void setBottomNavigationBarShown(bool isBottomNavigationBarShown) {
@@ -95,12 +95,14 @@ class YearPageStateProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void setYear(int year) {
+  void setYear(int year, {bool notify : false}) {
     print("provider set year to $year");
     this.year = year;
     setIndex(DateTime.now().year - year);
     updateData();
-    notifyListeners();
+
+    if(notify)
+      notifyListeners();
   }
 
   void setIndex(int index) {

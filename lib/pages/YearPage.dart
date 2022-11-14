@@ -24,7 +24,7 @@ class YearPage extends StatefulWidget {
 
 class _YearPageState extends State<YearPage> {
   int year = DateTime.now().year;
-  dynamic data;
+  List<List<dynamic>> data = [];
   FocusNode focusNode = FocusNode();
   final myTextController = TextEditingController();
   NoteManager noteManager = NoteManager();
@@ -99,19 +99,21 @@ class _YearPageState extends State<YearPage> {
         if (!yearPageStateProvider.isZoomIn) return;
         provider.setNavigationIndex(2);
         provider.setDate(date);
+        print("yearPage");
         Provider.of<DayPageStateProvider>(context, listen: false)
             .setAvailableDates(yearPageStateProvider.availableDates);
       },
     );
     super.initState();
     Provider.of<YearPageStateProvider>(context, listen: false)
-        .setYear(widget.year);
+        .setYear(widget.year, notify : false);
     noteManager.setNotesOfYear(widget.year);
-    data = Provider.of<YearPageStateProvider>(context, listen: false).data;
+    data = []..addAll(Provider.of<YearPageStateProvider>(context, listen: false).data);
   }
 
   @override
   Widget build(BuildContext context) {
+    print(data);
     return Consumer<YearPageStateProvider>(
       builder: (context, product, child) => Scaffold(
         body: RawGestureDetector(
@@ -125,6 +127,11 @@ class _YearPageState extends State<YearPage> {
                 instance.onTapUp = (details) {
                   product.setZoomInState(true);
                   if (product.isZoomIn) return;
+
+                  if (details.globalPosition.dy >
+                      physicalHeight -
+                          layout_yearPage['textHeight'][false]
+                          ) return;
                   Offset tapPosition = calculateTapPositionRefCenter(
                       details, 0, layout_yearPage);
                   double angleZoomIn = calculateTapAngle(tapPosition, 0, 0);
@@ -242,6 +249,7 @@ class _YearPageState extends State<YearPage> {
                                     .elementAt(index);
                                 return MaterialButton(
                                   onPressed: () {
+                                    print("text clicked");
                                     buildContext
                                         .read<NavigationIndexProvider>()
                                         .setDate(formatDateString(date));
@@ -279,11 +287,11 @@ class _YearPageState extends State<YearPage> {
                                 );
                               }))),
                 ])),
-        // floatingActionButton: FloatingActionButton(
-        //   onPressed: (){
-        //     print(data);
-        //   },
-        // ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: (){
+            print(data);
+          },
+        ),
       ),
     );
   }

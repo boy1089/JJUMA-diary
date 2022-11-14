@@ -17,10 +17,11 @@ import 'package:test_location_2nd/StateProvider/DayPageStateProvider.dart';
 import 'package:test_location_2nd/StateProvider/NavigationIndexStateProvider.dart';
 
 class DayPage extends StatefulWidget {
+  String date = formatDate(DateTime.now());
   @override
   State<DayPage> createState() => _DayPageState();
 
-  DayPage({Key? key}) : super(key: key);
+  DayPage(date, {Key? key}) : super(key: key);
 }
 
 class _DayPageState extends State<DayPage> {
@@ -34,7 +35,7 @@ class _DayPageState extends State<DayPage> {
   @override
   void initState() {
     super.initState();
-    date = Provider.of<NavigationIndexProvider>(context, listen: false).date;
+    date = widget.date;
     Provider.of<DayPageStateProvider>(context, listen: false).setDate(date);
     readData = _fetchData();
   }

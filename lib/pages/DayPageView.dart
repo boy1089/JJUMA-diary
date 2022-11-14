@@ -26,7 +26,8 @@ class DayPageView extends StatelessWidget {
             itemBuilder: (BuildContext context, int index) {
               navigation.setDate(
                   formatDateString(dayPageStateProvider.availableDates[index]));
-              return DayPage();
+              String date = dayPageStateProvider.availableDates[index];
+              return DayPage(date);
             }));
   }
 }

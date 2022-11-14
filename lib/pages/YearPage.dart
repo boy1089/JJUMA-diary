@@ -204,11 +204,11 @@ class _YearPageState extends State<YearPage> {
                           provider: product)
                       .build(context)
                 ])),
-      floatingActionButton: FloatingActionButton(
-        onPressed: (){
-          print(data);
-        },
-      ),
+        // floatingActionButton: FloatingActionButton(
+        //   onPressed: (){
+        //     print(data);
+        //   },
+        // ),
       ),
     );
   }

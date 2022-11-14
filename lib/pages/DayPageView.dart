@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'DayPage.dart';
 import 'package:test_location_2nd/Note/NoteManager.dart';
@@ -13,11 +14,16 @@ class DayPageView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var dayPageStateProvider =
-        Provider.of<DayPageStateProvider>(context, listen: false);
+        Provider.of<DayPageStateProvider>(context, listen: true);
     var navigation =
         Provider.of<NavigationIndexProvider>(context, listen: false);
     return Scaffold(
         body: PageView.builder(
+          dragStartBehavior: DragStartBehavior.down,
+            physics:
+              dayPageStateProvider.isZoomIn
+                ?NeverScrollableScrollPhysics():
+              BouncingScrollPhysics(),
             controller: PageController(
                 initialPage: dayPageStateProvider.availableDates
                     .indexOf(navigation.date)),

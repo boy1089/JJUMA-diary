@@ -9,22 +9,19 @@ import 'package:test_location_2nd/Note/NoteManager.dart';
 import 'package:test_location_2nd/StateProvider/NavigationIndexStateProvider.dart';
 
 class DiaryPage extends StatefulWidget {
-  DataManager dataManager;
   NoteManager noteManager;
 
   @override
   State<DiaryPage> createState() => _DiaryPageState();
 
-  DiaryPage(this.dataManager, this.noteManager, {Key? key}) : super(key: key);
+  DiaryPage(this.noteManager, {Key? key}) : super(key: key);
 }
 
 class _DiaryPageState extends State<DiaryPage> {
-  late DataManager dataManager;
   late NoteManager noteManager;
 
   @override
   void initState() {
-    this.dataManager = widget.dataManager;
     this.noteManager = widget.noteManager;
   }
 

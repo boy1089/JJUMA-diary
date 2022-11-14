@@ -20,8 +20,11 @@ import 'package:test_location_2nd/StateProvider/NavigationIndexStateProvider.dar
 import 'package:test_location_2nd/Sensor/SensorDataManager.dart';
 import 'package:test_location_2nd/Note/NoteManager.dart';
 
+import 'package:flutter_native_splash/flutter_native_splash.dart';
+
 void main() {
-  WidgetsFlutterBinding.ensureInitialized();
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
   runApp(
     MultiProvider(
@@ -93,6 +96,7 @@ class _MyAppState extends State<MyApp> {
     isInitializationDone = true;
     print("init done,executed in ${stopwatch.elapsed}");
     // dataManager.executeSlowProcesses();
+    FlutterNativeSplash.remove();
     return 0;
   }
 

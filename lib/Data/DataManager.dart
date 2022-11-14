@@ -42,10 +42,12 @@ class DataManager {
     await readSummaryOfLocation();
 
     // find the files which are in local but not in Info
-    filesNotUpdated = await matchFilesAndInfo();
+    if (global.infoFromFiles.length > 1000)
+      filesNotUpdated = await matchFilesAndInfo();
     // update info which are not updated
     await addFilesToInfo(filesNotUpdated);
     await updateDateOnInfo(filesNotUpdated);
+
     var result = await compute(updateDatesFromInfo, [global.infoFromFiles]);
     global.dates = result[0];
     global.datetimes = result[1];
@@ -159,7 +161,8 @@ class DataManager {
   }
 
   Future<void> addFilesToInfo(List<String>? filenames) async {
-    if (filenames == null) return;
+    if (filenames == null) filenames = files;
+
     for (int i = 0; i < filenames.length; i++) {
       if (i % 100 == 0) print("addFilesToInfo $i / ${filenames.length}");
       String filename = filenames.elementAt(i);

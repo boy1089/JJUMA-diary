@@ -61,10 +61,13 @@ dependencies:
   geocoding: ^2.0.5
   flutter_keyboard_visibility: ^5.4.0
   flutter_keyboard_size:
+  flutter_native_splash:
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
+    #    android_12:
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
   # activated in the `analysis_options.yaml` file located at the root of your
@@ -75,17 +78,26 @@ dev_dependencies:
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
+flutter_native_splash:
+  image: images/playstore.png
+  color: "#ffffff"
+#  android_12:
+#    image: images/test.png
+#    color: "#f56f42"
+#    icon_background_color: "#eeeeee"
+
+
+#    android: true
 # The following section is specific to Flutter packages.
 flutter:
-
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  # assets:
-  #   - images/a_dot_burr.jpeg
+  assets:
+    - images/
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

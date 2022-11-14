@@ -24,9 +24,7 @@ class _YearPageState extends State<YearPage> {
   dynamic data;
   _YearPageState() {
     // data = Provider.of<YearPageStateProvider>(context, listen: false).data;
-
   }
-
 
   var heatmapChannel = StreamController<Selected?>.broadcast();
 

@@ -89,13 +89,16 @@ class _MyAppState extends State<MyApp> {
     Stopwatch stopwatch = new Stopwatch()..start();
     isInitializationDone = false;
     await permissionManager.init();
+    print("init process, time elapsed : ${stopwatch.elapsed}");
     await noteManager.init();
-    await photoDataManager.init();
-    await locationDataManager.init();
+    print("init process, time elapsed : ${stopwatch.elapsed}");
+    // await photoDataManager.init();
+    // await locationDataManager.init();
     await dataManager.init();
+    print("init process, time elapsed : ${stopwatch.elapsed}");
     isInitializationDone = true;
     print("init done,executed in ${stopwatch.elapsed}");
-    // dataManager.executeSlowProcesses();
+    dataManager.executeSlowProcesses();
     FlutterNativeSplash.remove();
     return 0;
   }

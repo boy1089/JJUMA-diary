@@ -151,13 +151,15 @@ class DataManager {
       String filename = files.elementAt(i);
       if (i % 1000 == 0) print("matchFilesAndInfo : $i / ${files.length}");
 
-      int indexInInfo =
-          filenamesFromInfo.indexWhere((element) => element == filename);
-      if (indexInInfo == -1) {
+      bool isContained =
+          filenamesFromInfo.contains(filename);
+      if (!isContained) {
         filesNotUpdated.add(filename);
         continue;
       }
+
       filenamesFromInfo.remove(filename);
+
 
       DateTime? dateTimeInInfo = global.infoFromFiles[filename]?.datetime;
       Coordinate? coordinateInInfo = global.infoFromFiles[filename]?.coordinate;
@@ -172,9 +174,9 @@ class DataManager {
   }
 
   Future<void> addFilesToInfo(List<String>? filenames) async {
-    if (filenames == null) filenames = files;
+    if (filenames.runtimeType==null || filenames!.isEmpty) filenames = files;
 
-    for (int i = 0; i < filenames.length; i++) {
+    for (int i = 0; i < filenames!.length; i++) {
       if (i % 100 == 0) print("addFilesToInfo $i / ${filenames.length}");
       String filename = filenames.elementAt(i);
       global.infoFromFiles[filename] = InfoFromFile();
@@ -204,7 +206,7 @@ class DataManager {
   }
 
   Future<void> updateDateOnInfo(List<String>? filenames) async {
-    if (filenames == null) filenames = global.infoFromFiles.keys.toList();
+    if (filenames == null|| filenames!.isEmpty) filenames = global.infoFromFiles.keys.toList();
 
     for (int i = 0; i < filenames.length; i++) {
       String filename = filenames.elementAt(i);

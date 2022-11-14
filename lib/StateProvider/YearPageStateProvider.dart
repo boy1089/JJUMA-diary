@@ -21,7 +21,7 @@ class YearPageStateProvider with ChangeNotifier {
 
   void updateData() {
     availableDates = summaryOfPhotoData.keys.where((element) {
-      return element.contains(year.toString());
+      return element.substring(0, 4)==year.toString();
     }).toList();
 
     data = List.generate(52, (index) {

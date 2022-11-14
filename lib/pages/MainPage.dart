@@ -195,8 +195,13 @@ class MainPageState extends State<MainPage> {
           ),
         ),
         floatingActionButton: FloatingActionButton(
-          onPressed: () async {
-            dataManager.readInfo(dataManager.files.sublist(0, 10));
+          onPressed: (){
+            global.infoFromFiles.forEach((key, value)
+            {
+              if(value.date!.contains("2011"))
+              print("${key}, $value");
+            });
+
           },
         ),
       ),

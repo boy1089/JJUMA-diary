@@ -149,6 +149,15 @@ class _DayPageState extends State<DayPage> {
                         global.indexForZoomInImage = -1;
                       global.isImageClicked = false;
                       setState(() {});
+
+                      //if editing text, doesn't zoom in.
+                      if (focusNode.hasFocus) {
+                        print("has focus? ${focusNode.hasFocus}");
+                        dismissKeyboard(product);
+                        setState(() {});
+                        return;
+                      }
+
                       if (product.isZoomIn) return;
                       Offset tapPosition = calculateTapPositionRefCenter(
                           details, 0, layout_dayPage);
@@ -159,13 +168,7 @@ class _DayPageState extends State<DayPage> {
                           physicalHeight -
                               layout_dayPage['textHeight'][false] -
                               60) return;
-                      //if editing text, doesn't zoom in.
-                      if (focusNode.hasFocus) {
-                        print("has focus? ${focusNode.hasFocus}");
-                        dismissKeyboard(product);
-                        setState(() {});
-                        return;
-                      }
+
                       product.setZoomInState(true);
                       product.setIsZoomInImageVisible(true);
                       product.setZoomInRotationAngle(angleZoomIn);
@@ -215,15 +218,16 @@ class _DayPageState extends State<DayPage> {
                                   polarPhotoImageContainers(
                                           product.photoForPlot)
                                       .build(context),
+
                                 ],
                                     layout: layout_dayPage,
                                     isZoomIn: product.isZoomIn,
                                     provider: product)
                                 .build(context);
                           }),
-
-                      NoteEditor(layout_dayPage, focusNode, product, myTextController).build(context),
-
+                      NoteEditor(layout_dayPage, focusNode, product,
+                              myTextController)
+                          .build(context),
                       Positioned(
                           top: 30,
                           child: Text(

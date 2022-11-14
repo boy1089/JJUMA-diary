@@ -24,15 +24,17 @@ class NoteEditor {
       print(MediaQuery.of(context).viewInsets.top - 100);
       return Positioned(
         width: physicalWidth,
-        height: isKeyboardVisible
-            ? physicalHeight - 200 - 200
-            : layout['textHeight'][false],
+        // height: isKeyboardVisible
+        //     ? physicalHeight - 200 - 200
+        //     : layout['textHeight'][product.isZoomIn],
         bottom: global.kMarginOfBottomOnDayPage,
-        child: Container(
+        child: AnimatedContainer(
+          duration: Duration(milliseconds: global.animationTime),
+          curve : global.animationCurve,
           margin: EdgeInsets.all(10),
-          // height: !focusNode.hasFocus
-          //     ? physicalHeight / 2 - 200
-          //     : physicalHeight / 2 - 200,
+          height: isKeyboardVisible
+              ? physicalHeight - 200 - 200
+              : layout['textHeight'][product.isZoomIn],
           color: focusNode.hasFocus
               ? global.kColor_containerFocused
               : global.kColor_container,

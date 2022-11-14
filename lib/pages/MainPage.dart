@@ -193,13 +193,13 @@ class MainPageState extends State<MainPage> {
             ),
           ),
         ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            var date =
-                Provider.of<DayPageStateProvider>(context, listen: false).photoData;
-            date.forEach((element) {print(element);});
-          },
-        ),
+        // floatingActionButton: FloatingActionButton(
+        //   onPressed: () {
+        //     var date =
+        //         Provider.of<DayPageStateProvider>(context, listen: false).photoData;
+        //     date.forEach((element) {print(element);});
+        //   },
+        // ),
       ),
     );
   }

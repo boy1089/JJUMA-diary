@@ -62,6 +62,7 @@ class polarPhotoImageContainer {
   int index = -1;
   int numberOfImages = 0;
   double angle = 0;
+  bool isZoomInImage = false;
 
   polarPhotoImageContainer(@required googlePhotoDataForPlot,
       {containerSize: kDefaultPolarPlotSize,
@@ -77,6 +78,7 @@ class polarPhotoImageContainer {
 
   Offset calculateLocation(input, applyOffset) {
     angle = (input) / 24 * 2 * pi - pi / 2;
+    isZoomInImage = (this.index == indexForZoomInImage);
 
     if (applyOffset) {
       xLocation = imageLocationFactor * cos(angle);
@@ -87,7 +89,7 @@ class polarPhotoImageContainer {
       yLocation = imageLocationFactor * sin(angle) * (0.45 + 0.1 * radius);
     }
 
-    if (indexForZoomInImage == this.index) {
+    if (isZoomInImage) {
       imageSize = kZoomInImageSize;
       var radiusSign = (1 - 0.7) * 2;
       var radius = (2) / 1.8; // mag5 1.2
@@ -101,8 +103,6 @@ class polarPhotoImageContainer {
     }
     return Offset(xLocation, yLocation);
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -161,7 +161,7 @@ class polarPhotoImageContainer {
                         // imageCacheName: photoDataForPlot[1],
                         enableLoadState: false,
                         enableMemoryCache: true,
-                        compressionRatio: 0.01,
+                        compressionRatio: isZoomInImage ? 0.3 : 0.01,
                       ),
                     )
                     // child : Container(

@@ -53,6 +53,7 @@ class DayPageStateProvider with ChangeNotifier {
     try {
       note = await noteManager.readNote(date);
     } catch (e) {
+      note = "";
       print("while updating UI, reading note, error is occured : $e");
     }
     print("updateUi done");
@@ -151,10 +152,18 @@ class DayPageStateProvider with ChangeNotifier {
 
 
   void writeNote() {
-    if(note != "")
+    if(note != "") {
       noteManager.writeNote(date, note);
-    if(note =="")
+      noteManager.notes[date] = note;
+    }
+    if(note =="") {
       noteManager.tryDeleteNote(date);
+      try {
+        noteManager.notes.remove(date);
+      } catch(e) {
+        print("error during writeNote : $e");
+      }
+    }
   }
 
   void deleteNote(){

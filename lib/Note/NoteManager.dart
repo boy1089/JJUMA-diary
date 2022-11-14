@@ -9,12 +9,15 @@ import 'package:test_location_2nd/Util/global.dart' as global;
 import 'dart:collection';
 
 class NoteManager {
-  NoteManager() {}
 
   Map notes = {};
   List files = [];
   Map summaryOfNotes = {};
-
+  NoteManager._privateConstructor();
+  static final NoteManager _instance = NoteManager._privateConstructor();
+  factory NoteManager(){
+    return _instance;
+  }
   Future<void> init() async {
     files = await getAllFiles();
     summaryOfNotes = generateSummaryOfNotes(files);

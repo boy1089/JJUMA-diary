@@ -21,7 +21,7 @@ class DayPage extends StatefulWidget {
   @override
   State<DayPage> createState() => _DayPageState();
 
-  DayPage(date, {Key? key}) : super(key: key);
+  DayPage(this.date, {Key? key}) : super(key: key);
 }
 
 class _DayPageState extends State<DayPage> {

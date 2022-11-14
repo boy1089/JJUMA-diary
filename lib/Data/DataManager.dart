@@ -31,30 +31,41 @@ class DataManager {
   List<String>? datesOutOfDate = [];
 
   Future<void> init() async {
+    Stopwatch stopwatch = Stopwatch()..start();
     print("DataManager instance is initializing..");
     // var a = await readSummaryOfPhotoData();
 
     //get list of image files from local. --> update new images
     files = await getAllFiles();
+    print("time elapsed : ${stopwatch.elapsed}");
     //read previously processed Info
     await readInfo([]);
+    print("time elapsed : ${stopwatch.elapsed}");
     await readSummaryOfPhoto();
+    print("time elapsed : ${stopwatch.elapsed}");
     await readSummaryOfLocation();
-
+    print("time elapsed : ${stopwatch.elapsed}");
     // find the files which are in local but not in Info
     if (global.infoFromFiles.length > 1000)
       filesNotUpdated = await matchFilesAndInfo();
+    print("time elapsed : ${stopwatch.elapsed}");
     // update info which are not updated
     await addFilesToInfo(filesNotUpdated);
+    print("time elapsed : ${stopwatch.elapsed}");
+
     await updateDateOnInfo(filesNotUpdated);
+    print("time elapsed : ${stopwatch.elapsed}");
 
     var result = await compute(updateDatesFromInfo, [global.infoFromFiles]);
+    print("time elapsed : ${stopwatch.elapsed}");
+
     global.dates = result[0];
     global.datetimes = result[1];
 
     //find the dates which are out of date based on the number of photo.
     global.summaryOfPhotoData = await compute(updateSummaryOfPhotoFromInfo,
         [global.dates, global.summaryOfPhotoData]);
+    print("time elapsed : ${stopwatch.elapsed}");
 
     print("DataManager initialization done");
   }
@@ -174,19 +185,32 @@ class DataManager {
     if (input.isNotEmpty) {
       global.infoFromFiles = input[0];
     }
+    List<String?> dates = [];
+    List<DateTime?> datetimes = [];
 
-    List<String?> dates = List.generate(global.infoFromFiles.length, (i) {
-      var key = global.infoFromFiles.keys.elementAt(i);
-      return global.infoFromFiles[key]?.date;
-    });
+    List<InfoFromFile> values = global.infoFromFiles.values.toList();
+    for(int i = 0; i< values.length; i++){
+      InfoFromFile value = values.elementAt(i);
+      dates.add(value.date);
+      datetimes.add(value.datetime);
+    }
 
-    // List<String?> dates = global.infoFromFiles.forEach((key, value) {value.date;});
+    //
+    // List<String?> dates = List.generate(global.infoFromFiles.length, (i) {
+    //   var key = global.infoFromFiles.keys.elementAt(i);
+    //   return global.infoFromFiles[key]?.date;
+    // });
+
+
+    // List<String?> dates = global.infoFromFiles.forEach((key, value) =>print("$key"));
+    // List<String?> dates = global.infoFromFiles.values.forEach((element) {return element.datetime;});
     // var dates = global.infoFromFiles.forEach((key, value) {return value?.date;});
 
-    List datetimes = List.generate(global.infoFromFiles.length, (i) {
-      var key = global.infoFromFiles.keys.elementAt(i);
-      return global.infoFromFiles[key]?.datetime;
-    });
+    // List datetimes = List.generate(global.infoFromFiles.length, (i) {
+    //   var key = global.infoFromFiles.keys.elementAt(i);
+    //   return global.infoFromFiles[key]?.datetime;
+    // });
+    //
 
     dates.removeWhere((i) => i == null);
     datetimes.removeWhere((i) => i == null);
@@ -431,7 +455,7 @@ class DataManager {
     var data = await openFile(file.path);
     for (int i = 1; i < data.length; i++) {
       if (data[i].length < 2) return {};
-      // if (i % 100 == 0)
+      if (i % 1000 == 0)
       print("readInfo.. $i / ${data.length}, ${data[i]}");
 
       InfoFromFile infoFromFile = InfoFromFile();

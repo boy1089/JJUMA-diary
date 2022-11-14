@@ -29,6 +29,11 @@ class DayPage extends StatefulWidget {
 class _DayPageState extends State<DayPage> {
   String date = formatDate(DateTime.now());
   Future readData = Future.delayed(const Duration(seconds: 1));
+  List photoForPlot = [];
+  dynamic photoData = [[]];
+  dynamic sensorDataForPlot = [[]];
+  List<List<dynamic>> photoDataForPlot = [[]];
+  Map<int, String?> addresses = {};
 
   FocusNode focusNode = FocusNode();
   final myTextController = TextEditingController();
@@ -43,14 +48,23 @@ class _DayPageState extends State<DayPage> {
         .setDate(formatDateString(date));
     print("dayPAge");
     readData = _fetchData();
+
   }
 
   Future<List<dynamic>> _fetchData() async {
     var provider = Provider.of<DayPageStateProvider>(context, listen: false);
     await provider.updateDataForUi();
     myTextController.text = provider.note;
-    print("fetchData done, ${provider.photoDataForPlot}");
-    return provider.photoDataForPlot;
+    print("fetchData done, ${provider.photoForPlot}");
+
+
+    photoForPlot = []..addAll(provider.photoForPlot);
+    photoData = []..addAll(provider.photoData);
+    sensorDataForPlot = []..addAll(provider.sensorDataForPlot);
+    photoDataForPlot = []..addAll(provider.photoDataForPlot);
+    addresses = {}..addAll(provider.addresses);
+
+    return provider.photoForPlot;
   }
 
   bool isZoomInImageVisible = false;
@@ -201,23 +215,23 @@ class _DayPageState extends State<DayPage> {
                               (BuildContext context, AsyncSnapshot snapshot) {
                             return ZoomableWidgets(
                                     widgets: [
-                                  PolarTimeIndicators(product.photoForPlot,
-                                          product.addresses)
+                                  PolarTimeIndicators(photoForPlot,
+                                          addresses)
                                       .build(context),
-                                  PolarSensorDataPlot((product
-                                                      .sensorDataForPlot[0]
+                                  PolarSensorDataPlot((
+                                                      sensorDataForPlot[0]
                                                       .length ==
                                                   0) |
-                                              (product.sensorDataForPlot
+                                              (sensorDataForPlot
                                                       .length ==
                                                   0)
                                           ? global.dummyData1
-                                          : product.sensorDataForPlot)
+                                          : sensorDataForPlot)
                                       .build(context),
-                                  PolarPhotoDataPlot(product.photoDataForPlot)
+                                  PolarPhotoDataPlot(photoDataForPlot)
                                       .build(context),
                                   polarPhotoImageContainers(
-                                          product.photoForPlot)
+                                          photoForPlot)
                                       .build(context),
 
                                 ],
@@ -249,6 +263,7 @@ class _DayPageState extends State<DayPage> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(15.0)),
                 ),
+
                 onPressed: () {
                   if (focusNode.hasFocus) {
                     dismissKeyboard(product);

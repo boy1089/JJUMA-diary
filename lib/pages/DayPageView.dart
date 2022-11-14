@@ -1,9 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'DayPage.dart';
-import 'package:test_location_2nd/Note/NoteManager.dart';
 import 'package:provider/provider.dart';
-import 'package:test_location_2nd/Util/DateHandler.dart';
 import 'package:test_location_2nd/StateProvider/DayPageStateProvider.dart';
 import 'package:test_location_2nd/StateProvider/NavigationIndexStateProvider.dart';
 

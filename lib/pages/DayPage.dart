@@ -119,22 +119,12 @@ class _DayPageState extends State<DayPage> {
     print("building DayPage..");
 
     return Consumer<DayPageStateProvider>(
-        builder: (context, product, child) => FutureBuilder(
-            future: readData,
-            builder: (BuildContext context, AsyncSnapshot snapshot) {
-              print("snapshot : ${snapshot.data}. ${snapshot.hasData}");
-              return Scaffold(
+        builder: (context, product, child) =>
+              Scaffold(
                 backgroundColor: global.kBackGroundColor,
-                body: (!snapshot.hasData)
-                    ? Center(
-                        child: SizedBox(
-                            width: global.kSizeOfProgressIndicator,
-                            height: global.kSizeOfProgressIndicator,
-                            child: CircularProgressIndicator(
-                              strokeWidth:
-                                  global.kStrokeWidthOfProgressIndicator,
-                            )))
-                    : RawGestureDetector(
+                body:
+
+                    RawGestureDetector(
                         behavior: HitTestBehavior.deferToChild,
                         gestures: {
                           AllowMultipleGestureRecognizer:
@@ -204,7 +194,10 @@ class _DayPageState extends State<DayPage> {
                                 ? Alignment.center
                                 : Alignment.topCenter,
                             children: [
-                              ZoomableWidgets(
+                            FutureBuilder(
+                            future: readData,
+                            builder: (BuildContext context, AsyncSnapshot snapshot) {
+                              return ZoomableWidgets(
                                       widgets: [
                                     PolarTimeIndicators(product.photoForPlot,
                                             product.addresses)
@@ -228,7 +221,7 @@ class _DayPageState extends State<DayPage> {
                                       layout: layout_dayPage,
                                       isZoomIn: product.isZoomIn,
                                       provider: product)
-                                  .build(context),
+                                  .build(context);}),
                               KeyboardVisibilityBuilder(
                                   builder: (context, isKeyboardVisible) {
                                 print("isKeyboardVisible : $isKeyboardVisible");
@@ -302,8 +295,8 @@ class _DayPageState extends State<DayPage> {
                     setState(() {});
                   },
                 ),
-              );
-            }));
+              )
+            );
   }
 
   @override

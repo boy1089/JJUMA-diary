@@ -38,18 +38,22 @@ class DayPageStateProvider with ChangeNotifier {
     photoForPlot = [];
     photoDataForPlot = [];
     photoData = [[]];
+    Stopwatch stopwatch = Stopwatch()..start();
     try {
       photoData = await updatePhotoData();
       photoForPlot = selectPhotoForPlot(photoData);
     } catch (e) {
       print("while updating Ui, error is occrued : $e");
     }
-
+    print("time elapsed : ${stopwatch.elapsed}");
     // //convert data type..
     photoDataForPlot = List<List>.generate(
         photoForPlot.length, (index) => photoForPlot.elementAt(index));
+    print("time elapsed : ${stopwatch.elapsed}");
     addresses = await updateAddress();
+    print("time elapsed : ${stopwatch.elapsed}");
     await updateSensorData();
+    print("time elapsed : ${stopwatch.elapsed}");
     try {
       note = await noteManager.readNote(date);
     } catch (e) {
@@ -57,6 +61,7 @@ class DayPageStateProvider with ChangeNotifier {
       print("while updating UI, reading note, error is occured : $e");
     }
     print("updateUi done");
+    print("time elapsed : ${stopwatch.elapsed}");
   }
 
   Future updatePhotoData() async {

@@ -13,20 +13,22 @@ class YearPageView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         body: Consumer<YearPageStateProvider>(
-        builder: (context, product, child) =>
-            PageView.builder(
-              controller: PageController(
-                viewportFraction: 1.0,
-                  initialPage:
-                      Provider.of<YearPageStateProvider>(context, listen: false)
-                          .index),
-              itemCount: 20,
-              reverse: true,
-
-              itemBuilder: (BuildContext context, int index) {
-                year = DateTime.now().year - index;
-                return YearPage(year);
-              }),
-        ));
+      builder: (context, product, child) => PageView.builder(
+          physics:
+              Provider.of<YearPageStateProvider>(context, listen: true).isZoomIn
+                  ? NeverScrollableScrollPhysics()
+                  : BouncingScrollPhysics(),
+          controller: PageController(
+              viewportFraction: 1.0,
+              initialPage:
+                  Provider.of<YearPageStateProvider>(context, listen: false)
+                      .index),
+          itemCount: 20,
+          reverse: true,
+          itemBuilder: (BuildContext context, int index) {
+            year = DateTime.now().year - index;
+            return YearPage(year);
+          }),
+    ));
   }
 }

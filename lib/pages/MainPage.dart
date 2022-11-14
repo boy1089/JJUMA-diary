@@ -195,7 +195,26 @@ class MainPageState extends State<MainPage> {
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            print(Provider.of<DayPageStateProvider>(context, listen: false).photoDataForPlot.length);
+            var date =
+                Provider.of<DayPageStateProvider>(context, listen: false).date;
+            List<int?> indexOfDate =
+                List<int?>.generate(global.dates.length, (i) {
+              if (global.dates.elementAt(i) == date) {
+                return i;
+              }
+              ;
+              return null;
+            });
+            indexOfDate = indexOfDate.whereType<int>().toList();
+            List filesOfDate = List.generate(indexOfDate.length,
+                    (i) => global.infoFromFiles.keys.elementAt(indexOfDate.elementAt(i)!));
+            // print(filesOfDate);
+
+            var i = 10000;
+            print("${global.infoFromFiles.keys.elementAt(i)}, ${global.dates.elementAt(i)}");
+            print("${global.infoFromFiles.length}, ${global.dates.length}");
+            // print(global.infoFromFiles.keys.elementAt(16473));
+            // print(global.infoFromFiles.values.elementAt(16473));
           },
         ),
       ),

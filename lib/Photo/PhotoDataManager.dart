@@ -80,6 +80,7 @@ class PhotoDataManager {
       if (global.dates.elementAt(i) == date) return i;
       return null;
     });
+
     print("time elapsed : ${stopwatch.elapsed}");
     indexOfDate = indexOfDate.whereType<int>().toList();
     print("time elapsed : ${stopwatch.elapsed}");

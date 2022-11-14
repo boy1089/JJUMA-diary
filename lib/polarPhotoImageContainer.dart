@@ -28,6 +28,7 @@ class polarPhotoImageContainers {
 
   @override
   Widget build(BuildContext context) {
+    print(stackOrder);
     // print("imageContainers build");
     return !Provider.of<DayPageStateProvider>(context, listen: false).isZoomIn
         ? Stack(
@@ -101,24 +102,10 @@ class polarPhotoImageContainer {
     return Offset(xLocation, yLocation);
   }
 
-  Offset calculateLocationForZoomInImage(input, angleOfPage) {
-    double angle = (input) / 24 * 2 * pi - pi / 2 - angleOfPage / (2 * pi);
-    imageSize = kZoomInImageSize;
-    var radiusSign = (1 - 0.7) * 2;
-    var radius = (2) / 1.8; // mag5 1.2
 
-    xLocation = imageLocationFactor *
-        cos(angle - pi * 0.04) *
-        (0.6 + 0.10 * radiusSign * radius);
-    yLocation = imageLocationFactor *
-        sin(angle - pi * 0.04) *
-        (0.6 + 0.1 * radiusSign * radius);
-    return Offset(xLocation, yLocation);
-  }
 
   @override
   Widget build(BuildContext context) {
-
     bool isZoomIn =
         Provider.of<DayPageStateProvider>(context, listen: false).isZoomIn;
 
@@ -130,7 +117,7 @@ class polarPhotoImageContainer {
           // https://stackoverflow.com/questions/53866481/flutter-how-to-create-card-with-background-image
           child: Transform.rotate(
               // duration: Duration(milliseconds: 100),
-              angle: isZoomIn ? angle: 0,
+              angle: isZoomIn ? angle : 0,
               child: Offstage(
                 offstage: isZoomIn ? false : !photoDataForPlot[3],
                 child: RawGestureDetector(

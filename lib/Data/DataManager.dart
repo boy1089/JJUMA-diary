@@ -62,6 +62,7 @@ class DataManager {
     global.setOfDates = result[0];
     global.datetimes = result[1];
     global.dates = result[2];
+    print("date during init, ${global.dates.length}");
 
     //find the dates which are out of date based on the number of photo.
     global.summaryOfPhotoData = await compute(updateSummaryOfPhotoFromInfo,
@@ -198,7 +199,9 @@ class DataManager {
       dates.add(value.date);
       datetimes.add(value.datetime);
     }
-    global.dates = dates;
+
+    global.dates = [...dates];
+    print("date during init, ${dates.length}");
     dates.removeWhere((i) => i == null);
     datetimes.removeWhere((i) => i == null);
     global.setOfDates = dates;

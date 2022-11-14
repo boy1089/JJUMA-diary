@@ -142,8 +142,11 @@ class polarPhotoImageContainer {
                     },
                     child: Card(
                       elevation: 3,
-                      shape: CircleBorder(),
-                      clipBehavior: Clip.antiAliasWithSaveLayer,
+                      // shape: CircleBorder(),
+                      clipBehavior: isZoomInImage
+                          ?Clip.none
+                          :Clip.antiAliasWithSaveLayer,
+
                       child: ExtendedImage.file(
                         File(photoDataForPlot[1]),
                         loadStateChanged: (ExtendedImageState state) {
@@ -153,7 +156,7 @@ class polarPhotoImageContainer {
                             case LoadState.completed:
                               return ExtendedRawImage(
                                 image: state.extendedImageInfo?.image,
-                                fit: BoxFit.cover,
+                                // fit: BoxFit.,
                                 // imageCacheName: photoDataForPlot[1],
                               );
                           }

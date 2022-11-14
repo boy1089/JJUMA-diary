@@ -11,6 +11,8 @@ import 'dart:collection';
 class NoteManager {
 
   Map notes = {};
+  Map notesOfYear = {};
+
   List files = [];
   Map summaryOfNotes = {};
   NoteManager._privateConstructor();
@@ -18,6 +20,13 @@ class NoteManager {
   factory NoteManager(){
     return _instance;
   }
+
+  void setNotesOfYear(int year) {
+    if(notes!={})
+      notesOfYear = Map.from(notes)..removeWhere((k, v)=> !k.contains(year.toString()));
+      print("note: $notes");
+  }
+
   Future<void> init() async {
     files = await getAllFiles();
     summaryOfNotes = generateSummaryOfNotes(files);

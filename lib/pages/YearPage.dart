@@ -10,6 +10,9 @@ import 'package:test_location_2nd/CustomWidget/ZoomableWidgets.dart';
 import 'package:test_location_2nd/StateProvider/YearPageStateProvider.dart';
 import 'package:test_location_2nd/StateProvider/DayPageStateProvider.dart';
 import 'package:test_location_2nd/StateProvider/NavigationIndexStateProvider.dart';
+import 'package:test_location_2nd/CustomWidget/NoteEditor.dart';
+import 'package:test_location_2nd/Note/NoteManager.dart';
+import 'package:test_location_2nd/Util/DateHandler.dart';
 
 class YearPage extends StatefulWidget {
   int year = DateTime.now().year;
@@ -22,9 +25,9 @@ class YearPage extends StatefulWidget {
 class _YearPageState extends State<YearPage> {
   int year = DateTime.now().year;
   dynamic data;
-  _YearPageState() {
-    // data = Provider.of<YearPageStateProvider>(context, listen: false).data;
-  }
+  FocusNode focusNode = FocusNode();
+  final myTextController = TextEditingController();
+  NoteManager noteManager = NoteManager();
 
   var heatmapChannel = StreamController<Selected?>.broadcast();
 
@@ -55,6 +58,23 @@ class _YearPageState extends State<YearPage> {
                   global.kBottomNavigationBarHeight -
                   global.kHeightOfArbitraryWidgetOnBottom) *
               (global.kYPositionRatioOfGraph))
+    },
+    'textHeight': {
+      true: physicalHeight -
+          graphSize -
+          (physicalHeight -
+                  global.kBottomNavigationBarHeight -
+                  global.kHeightOfArbitraryWidgetOnBottom) *
+              (global.kYPositionRatioOfGraph) -
+          global.kImageSize,
+      false: physicalHeight -
+          graphSize -
+          ((physicalHeight -
+                      global.kBottomNavigationBarHeight -
+                      global.kHeightOfArbitraryWidgetOnBottom) *
+                  (global.kYPositionRatioOfGraph) -
+              graphSize / 2) -
+          global.kImageSize * 2 / 3
     }
   };
   late double graphSize = physicalWidth - 2 * global.kMarginForYearPage;
@@ -86,6 +106,7 @@ class _YearPageState extends State<YearPage> {
     super.initState();
     Provider.of<YearPageStateProvider>(context, listen: false)
         .setYear(widget.year);
+    noteManager.setNotesOfYear(widget.year);
     data = Provider.of<YearPageStateProvider>(context, listen: false).data;
   }
 
@@ -202,7 +223,61 @@ class _YearPageState extends State<YearPage> {
                           isZoomIn: product.isZoomIn,
                           layout: layout_yearPage,
                           provider: product)
-                      .build(context)
+                      .build(context),
+                  Positioned(
+                      width: physicalWidth,
+                      bottom: global.kMarginOfBottomOnDayPage,
+                      child: AnimatedContainer(
+                          duration:
+                              Duration(milliseconds: global.animationTime),
+                          curve: global.animationCurve,
+                          // margin: EdgeInsets.all(10),
+                          height: layout_yearPage['textHeight']
+                              [product.isZoomIn],
+                          child: ListView.builder(
+                              itemCount: noteManager.notesOfYear.length,
+                              itemBuilder:
+                                  (BuildContext buildContext, int index) {
+                                String date = noteManager.notesOfYear.keys
+                                    .elementAt(index);
+                                return MaterialButton(
+                                  onPressed: () {
+                                    buildContext
+                                        .read<NavigationIndexProvider>()
+                                        .setDate(formatDateString(date));
+                                    buildContext
+                                        .read<NavigationIndexProvider>()
+                                        .setNavigationIndex(2);
+                                  },
+                                  // padding: EdgeInsets.all(5),
+                                  child: Container(
+                                    margin: EdgeInsets.all(5),
+                                    width: physicalWidth,
+                                    color: global
+                                        .kColor_container, //Colors.black12.withAlpha(10),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          "${formateDate2(formatDateString(date))}",
+                                          style: TextStyle(
+                                              fontWeight:
+                                                  global.kFontWeight_diaryTitle,
+                                              color: global.kColor_diaryText),
+                                        ),
+                                        Text(
+                                          "${noteManager.notesOfYear[date]}",
+                                          style: TextStyle(
+                                              fontWeight: global
+                                                  .kFontWeight_diaryContents,
+                                              color: global.kColor_diaryText),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              }))),
                 ])),
         // floatingActionButton: FloatingActionButton(
         //   onPressed: (){

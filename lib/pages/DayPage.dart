@@ -101,7 +101,7 @@ class _DayPageState extends State<DayPage> {
                       global.kHeightOfArbitraryWidgetOnBottom) *
                   (global.kYPositionRatioOfGraph) -
               graphSize / 2) -
-          global.kImageSize * 2 / 3
+          global.kImageSize
     }
   };
   double firstContainerSize = 1000;

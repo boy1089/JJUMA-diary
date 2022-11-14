@@ -196,11 +196,8 @@ class MainPageState extends State<MainPage> {
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: (){
-            global.infoFromFiles.forEach((key, value)
-            {
-              if(value.date!.contains("2011"))
-              print("${key}, $value");
-            });
+
+            print(Provider.of<DayPageStateProvider>(context, listen:false).photoDataForPlot);
 
           },
         ),

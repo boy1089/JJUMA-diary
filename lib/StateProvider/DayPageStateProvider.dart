@@ -24,7 +24,6 @@ class DayPageStateProvider with ChangeNotifier {
   bool isZoomInImageVisible = false;
   String date = formatDate(DateTime.now());
 
-
   List<String> availableDates = [];
   Map summaryOfGooglePhotoData = {};
   List photoForPlot = [];
@@ -34,7 +33,7 @@ class DayPageStateProvider with ChangeNotifier {
   Map<int, String?> addresses = {};
   String note = "";
 
-  void writeNote(){
+  void writeNote() {
     noteManager.writeNote(date, note);
   }
 
@@ -53,13 +52,13 @@ class DayPageStateProvider with ChangeNotifier {
     // //convert data type..
     photoDataForPlot = List<List>.generate(
         photoForPlot.length, (index) => photoForPlot.elementAt(index));
-
+    print('cc');
     addresses = await updateAddress();
-
+    print('bbb');
     await updateSensorData();
 
     try {
-       note = await noteManager.readNote(date);
+      note = await noteManager.readNote(date);
     } catch (e) {
       print("while updating UI, reading note, error is occured : $e");
     }
@@ -81,7 +80,7 @@ class DayPageStateProvider with ChangeNotifier {
     if (input[0].length == 0) return photoForPlot;
 
     photoForPlot.add([input.first[0], input.first[1], input.first[2], true]);
-
+    print(photoForPlot);
     int j = 0;
     for (int i = 1; i < input.length - 2; i++) {
       if ((input[i][0] - photoForPlot[j][0]).abs() >
@@ -94,7 +93,7 @@ class DayPageStateProvider with ChangeNotifier {
     }
 
     photoForPlot.add([input.last[0], input.last[1], input.last[2], true]);
-    print("selectImagesForPlot done, $photoDataForPlot");
+    print("selectImagesForPlot done, $photoForPlot");
     return photoForPlot;
   }
 
@@ -113,9 +112,15 @@ class DayPageStateProvider with ChangeNotifier {
     Map<int, int> selectedIndex = {};
     Map<int, String?> addresses = {};
     List<Placemark?> addressOfFiles = [];
+
     files = transpose(photoForPlot)[1];
+    print('dd');
+
     selectedIndex = selectIndexForLocation(files);
+    print('ee');
     addressOfFiles = await getAddressOfFiles(selectedIndex.values.toList());
+    print('ff');
+    print(selectedIndex);
     addresses = Map<int, String?>.fromIterable(
         List.generate(selectedIndex.keys.length, (i) => i),
         key: (item) => selectedIndex.keys.elementAt(item),
@@ -123,18 +128,21 @@ class DayPageStateProvider with ChangeNotifier {
         //     .elementAt(item)
         //     ?.locality}, ${addressOfFiles.elementAt(item)?.thoroughfare}" );
         value: (item) => "${addressOfFiles.elementAt(item)?.locality}");
-
-    print(addressOfFiles.elementAt(0));
     return addresses;
   }
 
   Map<int, int> selectIndexForLocation(files) {
     Map<int, int> indexForSelectedFile = {};
+    print('gg');
     List<DateTime?> datetimes = List<DateTime?>.generate(files.length,
         (i) => global.infoFromFiles[files.elementAt(i)]?.datetime);
+    print('tt');
+    print(datetimes);
+    datetimes = datetimes.whereType<DateTime>().toList();
     List<int> times =
         List<int>.generate(datetimes.length, (i) => datetimes[i]!.hour);
     Set<int> setOfTimes = times.toSet();
+    print('qq');
     for (int i = 0; i < setOfTimes.length; i++)
       indexForSelectedFile[setOfTimes.elementAt(i)] =
           (times.indexOf(setOfTimes.elementAt(i)));
@@ -143,6 +151,7 @@ class DayPageStateProvider with ChangeNotifier {
 
   Future<List<Placemark?>> getAddressOfFiles(List<int> index) async {
     List<Placemark?> listOfAddress = [];
+    print('pp');
     for (int i = 0; i < index.length; i++) {
       Coordinate? coordinate =
           global.infoFromFiles[files[index.elementAt(i)]]!.coordinate;

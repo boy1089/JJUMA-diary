@@ -193,21 +193,11 @@ class MainPageState extends State<MainPage> {
             ),
           ),
         ),
-        // floatingActionButton: FloatingActionButton(
-        //   onPressed: () {
-        //     global.infoFromFiles.forEach((key, value) {
-        //       // print(value);
-        //       if (value.date == null) return;
-        //       if (value.date!.contains("20220319")) {
-        //         print("$key, $value");
-        //         // print(DateTime.fromMillisecondsSinceEpoch(
-        //         //     int.parse(key.split('/').last.substring(0, 13))));
-        //       }
-        //
-        //     });
-        //
-        //   },
-        // ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            print(Provider.of<DayPageStateProvider>(context, listen: false).photoDataForPlot.length);
+          },
+        ),
       ),
     );
   }

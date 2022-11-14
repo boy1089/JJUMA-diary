@@ -113,7 +113,9 @@ double monthPageScrollOffset = 0.0;
 
 int startYear = 2013;
 
-double kMinimumTimeDifferenceBetweenImages = 1; //unit is hour
+double kMinimumTimeDifferenceBetweenImages_ZoomOut = 2; //unit is hour
+double kMinimumTimeDifferenceBetweenImages_ZoomIn = 1; //unit is hour
+
 
 double value = 0.8;
 double value2 = 0.6;

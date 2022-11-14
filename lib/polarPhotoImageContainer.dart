@@ -60,6 +60,7 @@ class polarPhotoImageContainer {
   double containerSize = kSecondPolarPlotSize;
   int index = -1;
   int numberOfImages = 0;
+  double angle = 0;
 
   polarPhotoImageContainer(@required googlePhotoDataForPlot,
       {containerSize: kDefaultPolarPlotSize,
@@ -74,7 +75,7 @@ class polarPhotoImageContainer {
   }
 
   Offset calculateLocation(input, applyOffset) {
-    double angle = (input) / 24 * 2 * pi - pi / 2;
+    angle = (input) / 24 * 2 * pi - pi / 2;
 
     if (applyOffset) {
       xLocation = imageLocationFactor * cos(angle);
@@ -100,8 +101,8 @@ class polarPhotoImageContainer {
     return Offset(xLocation, yLocation);
   }
 
-  Offset calculateLocationForZoomInImage(input, angleOfPage){
-    double angle = (input) / 24 * 2 * pi - pi / 2 - angleOfPage/(2*pi);
+  Offset calculateLocationForZoomInImage(input, angleOfPage) {
+    double angle = (input) / 24 * 2 * pi - pi / 2 - angleOfPage / (2 * pi);
     imageSize = kZoomInImageSize;
     var radiusSign = (1 - 0.7) * 2;
     var radius = (2) / 1.8; // mag5 1.2
@@ -112,28 +113,24 @@ class polarPhotoImageContainer {
     yLocation = imageLocationFactor *
         sin(angle - pi * 0.04) *
         (0.6 + 0.1 * radiusSign * radius);
-  return Offset(xLocation, yLocation);
+    return Offset(xLocation, yLocation);
   }
 
   @override
   Widget build(BuildContext context) {
-    double angle =
-        Provider.of<DayPageStateProvider>(context, listen: false).zoomInAngle;
+
     bool isZoomIn =
         Provider.of<DayPageStateProvider>(context, listen: false).isZoomIn;
 
     return Align(
-      alignment: !(indexForZoomInImage == this.index)
-          ? Alignment(location.dx, location.dy)
-          : Alignment(calculateLocationForZoomInImage(photoDataForPlot[0], angle).dx,
-          calculateLocationForZoomInImage(photoDataForPlot[0], angle).dy),
+      alignment: Alignment(location.dx, location.dy),
       child: SizedBox(
           width: imageSize,
           height: imageSize,
           // https://stackoverflow.com/questions/53866481/flutter-how-to-create-card-with-background-image
-          child: AnimatedRotation(
-              duration: Duration(milliseconds: 100),
-              turns: isZoomIn ? -angle : 0,
+          child: Transform.rotate(
+              // duration: Duration(milliseconds: 100),
+              angle: isZoomIn ? angle: 0,
               child: Offstage(
                 offstage: isZoomIn ? false : !photoDataForPlot[3],
                 child: RawGestureDetector(
@@ -144,8 +141,6 @@ class polarPhotoImageContainer {
                               () => AllowMultipleGestureRecognizer(),
                               (AllowMultipleGestureRecognizer instance) {
                         instance.onTapUp = (details) {
-                          print(
-                              "image container ${this.index} / ${numberOfImages} clicked");
                           if (this.index == indexForZoomInImage) {
                             indexForZoomInImage = this.index + 1;
                             if (this.index == numberOfImages - 1) {
@@ -181,7 +176,32 @@ class polarPhotoImageContainer {
                         enableMemoryCache: true,
                         compressionRatio: 0.01,
                       ),
-                    )),
+                    )
+                    // child : Container(
+                    //
+                    //     child: ExtendedImage.file(
+                    //       File(photoDataForPlot[1]),
+                    //       loadStateChanged: (ExtendedImageState state) {
+                    //         switch (state.extendedImageLoadState) {
+                    //           case LoadState.loading:
+                    //             break;
+                    //           case LoadState.completed:
+                    //             return ExtendedRawImage(
+                    //               image: state.extendedImageInfo?.image,
+                    //               // fit: BoxFit.cover,
+                    //               // imageCacheName: photoDataForPlot[1],
+                    //             );
+                    //         }
+                    //       },
+                    //       // imageCacheName: photoDataForPlot[1],
+                    //       enableLoadState: false,
+                    //       enableMemoryCache: true,
+                    //       compressionRatio: 0.01,
+                    //     ),
+                    //
+                    // )
+
+                    ),
               ))),
     );
   }

@@ -37,6 +37,7 @@ class _DayPageState extends State<DayPage> {
     super.initState();
     date = widget.date;
     Provider.of<DayPageStateProvider>(context, listen: false).setDate(date);
+    Provider.of<NavigationIndexProvider>(context, listen: false).setDate(formatDateString(date));
     readData = _fetchData();
   }
 
@@ -45,7 +46,6 @@ class _DayPageState extends State<DayPage> {
     await provider.updateDataForUi();
     myTextController.text = provider.note;
     print("fetchData done, ${provider.photoDataForPlot}");
-    await Future.delayed(Duration(seconds: 1));
     return provider.photoDataForPlot;
   }
 

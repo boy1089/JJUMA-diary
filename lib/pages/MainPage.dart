@@ -196,8 +196,7 @@ class MainPageState extends State<MainPage> {
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () async {
-
-
+            dataManager.readInfo(dataManager.files.sublist(0, 10));
           },
         ),
       ),

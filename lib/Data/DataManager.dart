@@ -189,28 +189,11 @@ class DataManager {
     List<DateTime?> datetimes = [];
 
     List<InfoFromFile> values = global.infoFromFiles.values.toList();
-    for(int i = 0; i< values.length; i++){
+    for (int i = 0; i < values.length; i++) {
       InfoFromFile value = values.elementAt(i);
       dates.add(value.date);
       datetimes.add(value.datetime);
     }
-
-    //
-    // List<String?> dates = List.generate(global.infoFromFiles.length, (i) {
-    //   var key = global.infoFromFiles.keys.elementAt(i);
-    //   return global.infoFromFiles[key]?.date;
-    // });
-
-
-    // List<String?> dates = global.infoFromFiles.forEach((key, value) =>print("$key"));
-    // List<String?> dates = global.infoFromFiles.values.forEach((element) {return element.datetime;});
-    // var dates = global.infoFromFiles.forEach((key, value) {return value?.date;});
-
-    // List datetimes = List.generate(global.infoFromFiles.length, (i) {
-    //   var key = global.infoFromFiles.keys.elementAt(i);
-    //   return global.infoFromFiles[key]?.datetime;
-    // });
-    //
 
     dates.removeWhere((i) => i == null);
     datetimes.removeWhere((i) => i == null);
@@ -446,6 +429,7 @@ class DataManager {
   }
 
   Future<Map<String, InfoFromFile>> readInfo(List input) async {
+
     final Directory? directory = await getExternalStorageDirectory();
     final File file = File('${directory?.path}/InfoOfFiles.csv');
 
@@ -453,31 +437,50 @@ class DataManager {
     if (!isFileExist) return {};
 
     var data = await openFile(file.path);
+    // Stopwatch stopwatch2 = Stopwatch()..start();
     for (int i = 1; i < data.length; i++) {
+    // for (int i = 1; i < 100; i++) {
       if (data[i].length < 2) return {};
-      if (i % 1000 == 0)
-      print("readInfo.. $i / ${data.length}, ${data[i]}");
-
+      // if (i % 1000 == 0)
+      // print("readInfo.. $i / ${data.length}, ${data[i]}");
+      // Stopwatch stopwatch = Stopwatch()..start();
       InfoFromFile infoFromFile = InfoFromFile();
-      int lengthOfData = data[i].length;
-      infoFromFile.datetime = parseToDatetime(data[i][lengthOfData - 5]);
-      infoFromFile.date = parseToString(data[i][lengthOfData - 4]);
+      var data_temp = data[i];
+
+      int lengthOfData = data_temp.length;
+      // print("$i, time elapsed : ${stopwatch.elapsed}");
+      infoFromFile.datetime = parseToDatetime(data_temp[lengthOfData - 5]);
+      // print("$i, time elapsed : ${stopwatch.elapsed}");
+
+      infoFromFile.date = parseToString(data_temp[lengthOfData - 4]);
+
+      // print("$i, time elapsed : ${stopwatch.elapsed}");
       infoFromFile.coordinate = Coordinate(
-          parseToDouble(data[i][lengthOfData - 3]),
-          parseToDouble(data[i][lengthOfData - 2]));
-      infoFromFile.distance = data[i][lengthOfData - 1] == "null"
+          parseToDouble(data_temp[lengthOfData - 3]),
+          parseToDouble(data_temp[lengthOfData - 2]));
+      // print("$i, time elapsed : ${stopwatch.elapsed}");
+
+      infoFromFile.distance = data_temp[lengthOfData - 1] == "null"
           ? null
-          : parseToDouble(data[i][lengthOfData - 1]);
-      String filename = data[i][0];
+          : parseToDouble(data_temp[lengthOfData - 1]);
+      // print("$i, time elapsed : ${stopwatch.elapsed}");
+
+      String filename = data_temp[0];
+      // print("$i, time elapsed : ${stopwatch.elapsed}");
+
       if (lengthOfData > 5) {
         filename = "";
         for (int j = 0; j < lengthOfData - 5; j++) {
-          filename += data[i][j] + ',';
+          filename += data_temp[j] + ',';
         }
         filename = filename.substring(0, filename.length - 1);
       }
+      // print("$i, time elapsed : ${stopwatch.elapsed}");
+
       global.infoFromFiles[filename] = infoFromFile;
+      // print("$i, time elapsed : ${stopwatch.elapsed}");
     }
+    // print(" time elapsed : ${stopwatch2.elapsed}");
     return global.infoFromFiles;
   }
 

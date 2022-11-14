@@ -60,8 +60,9 @@ class DataManager {
     print("time elapsed : ${stopwatch.elapsed}");
 
     global.setOfDates = result[0];
-    global.datetimes = result[1];
+    global.setOfDatetimes = result[1];
     global.dates = result[2];
+    global.datetimes = result[3];
     print("date during init, ${global.dates.length}");
 
     //find the dates which are out of date based on the number of photo.
@@ -93,9 +94,9 @@ class DataManager {
       if (i % 5 == 0) {
         var result = await compute(updateDatesFromInfo, [global.infoFromFiles]);
         global.setOfDates = result[0];
-        global.datetimes = result[1];
+        global.setOfDatetimes = result[1];
         global.dates = result[2];
-
+        global.datetimes = result[3];
         //update the summaryOflocation only on the specific date.
 
         global.summaryOfPhotoData = await compute(updateSummaryOfPhotoFromInfo,
@@ -201,13 +202,14 @@ class DataManager {
     }
 
     global.dates = [...dates];
+    global.datetimes = [...datetimes];
     print("date during init, ${dates.length}");
     dates.removeWhere((i) => i == null);
     datetimes.removeWhere((i) => i == null);
     global.setOfDates = dates;
-    global.datetimes = datetimes;
+    global.setOfDatetimes = datetimes;
 
-    return [global.setOfDates, global.datetimes, global.dates];
+    return [global.setOfDates, global.setOfDatetimes, global.dates, global.datetimes];
   }
 
   Future<void> updateDateOnInfo(List<String>? filenames) async {

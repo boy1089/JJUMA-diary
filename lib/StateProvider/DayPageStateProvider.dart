@@ -72,27 +72,6 @@ class DayPageStateProvider with ChangeNotifier {
     return photoData;
   }
 
-  List subsamplePhotoForPlot(List input) {
-    print("DayPage selectImageForPlot : ${input}");
-    if (input[0] == null) return photoForPlot;
-    if (input[0].length == 0) return photoForPlot;
-    photoForPlot.add([input.first[0], input.first[1], input.first[2]]);
-    int j = 0;
-    for (int i = 1; i < input.length - 2; i++) {
-      if ((input[i][0] - photoForPlot[j][0]).abs() >
-          global.kMinimumTimeDifferenceBetweenImages_ZoomIn) {
-        photoForPlot.add([input[i][0], input[i][1], input[i][2]]);
-        j = i;
-      } else {
-        photoForPlot.add([input[i][0], input[i][1], input[i][2]]);
-      }
-    }
-
-    photoForPlot.add([input.last[0], input.last[1], input.last[2]]);
-    print("selectImagesForPlot done, $photoForPlot");
-    return photoForPlot;
-  }
-
   List selectPhotoForPlot(List input, bool sampleImages) {
     print("DayPage selectImageForPlot : ${input}");
     if (input[0] == null) return photoForPlot;
@@ -106,7 +85,7 @@ class DayPageStateProvider with ChangeNotifier {
     double timeDiffForZoomOut = global.kMinimumTimeDifferenceBetweenImages_ZoomOut;
     if(sampleImages)
       // timeDiffForZoomIn = global.kMinimumTimeDifferenceBetweenImages_ZoomIn;
-      timeDiffForZoomIn = 0.25;
+      timeDiffForZoomIn = 0.015;
 
 
     for (int i = 1; i < input.length - 2; i++) {

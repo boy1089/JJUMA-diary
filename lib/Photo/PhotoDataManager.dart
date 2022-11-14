@@ -6,6 +6,7 @@ import 'dart:io';
 import 'package:glob/glob.dart';
 import 'package:test_location_2nd/Util/global.dart' as global;
 import 'package:test_location_2nd/Data/infoFromFile.dart';
+import 'package:test_location_2nd/Util/Util.dart';
 
 List<String> pathsToPhoto = [
   "/storage/emulated/0/DCIM",
@@ -92,16 +93,22 @@ class PhotoDataManager {
         (i) => formatDatetime(
             global.datetimes.elementAt(indexOfDate.elementAt(i)!)));
     print("time elapsed : ${stopwatch.elapsed}");
-    for (int i = 0; i < indexOfDate.length; i++) {
-      print("${dateOfDate[i]}, ${filesOfDate[i]}");
-    }
+    // for (int i = 0; i < indexOfDate.length; i++) {
+    //   print("${dateOfDate[i]}, ${filesOfDate[i]}");
+    // }
 
-    return [dateOfDate, filesOfDate];
+    List list = transpose([dateOfDate, filesOfDate]);
+    list.sort((a, b) =>int.parse(a[0].substring(9, 13)).compareTo(int.parse(b[0].substring(9, 13))));
+    // list.sort((a, b) =>int.parse(a[0].substring(9, 13)).compareTo(int.parse(b[0].substring(9, 13))));
+
+    print("getPhotoOfDate, $list");
+
+    return transpose(list);
   }
 
   void setDataAsGlobal() {
     global.files = this.files;
     global.setOfDates = this.dates;
-    global.datetimes = this.datetimes;
+    global.setOfDatetimes = this.datetimes;
   }
 }

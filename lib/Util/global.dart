@@ -20,6 +20,7 @@ List files = [];
 List setOfDates = [];
 List dates = [];
 List datetimes = [];
+List setOfDatetimes = [];
 List locations = [];
 
 Map<String, InfoFromFile> infoFromFiles = {};

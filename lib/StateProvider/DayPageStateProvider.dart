@@ -138,7 +138,6 @@ class DayPageStateProvider with ChangeNotifier {
 
   Future<List<Placemark?>> getAddressOfFiles(List<int> index) async {
     List<Placemark?> listOfAddress = [];
-    print('pp');
     for (int i = 0; i < index.length; i++) {
       Coordinate? coordinate =
           global.infoFromFiles[files[index.elementAt(i)]]!.coordinate;

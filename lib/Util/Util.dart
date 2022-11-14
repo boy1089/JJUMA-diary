@@ -184,7 +184,7 @@ List filterList(List input) {
 }
 
 List convertStringTimeToInt(List fields) {
-  fields = fields.sublist(1);
+  // fields = fields.sublist(0);
   List listTime = slice(fields, [0, fields.shape[0]], [0, 1]).flatten;
   print("listTime : $listTime");
   listTime = List<List<double>>.generate(listTime.length,

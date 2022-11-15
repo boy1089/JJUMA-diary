@@ -7,15 +7,17 @@ class ZoomableWidgets {
   List<Widget> widgets = [];
   Map layout = {};
   var provider;
+  var gestures;
   ZoomableWidgets(
       {required List<Widget> widgets,
         required Map layout,
         required bool isZoomIn,
-        required provider}) {
+        required provider, required gestures}) {
     this.widgets = widgets;
     this.layout = layout;
     this.isZoomIn = isZoomIn;
     this.provider = provider;
+    this.gestures = gestures;
   }
   late double graphSize = physicalWidth - 2 * global.kMarginForYearPage;
   @override
@@ -27,12 +29,16 @@ class ZoomableWidgets {
       left: layout['left']?[isZoomIn]?.toDouble(),
       top: layout['top']?[isZoomIn]?.toDouble(),
       curve: global.animationCurve,
-      child: AnimatedRotation(
+    child : RawGestureDetector(
+    behavior: HitTestBehavior.deferToChild,
+    gestures: gestures,
+    child:
+      AnimatedRotation(
         turns: isZoomIn ? provider.zoomInAngle : 0,
         duration: Duration(milliseconds: global.animationTime),
         curve: global.animationCurve,
         child: Stack(alignment: Alignment.center, children: widgets),
       ),
-    );
+    ));
   }
 }

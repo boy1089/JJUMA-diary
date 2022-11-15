@@ -18,7 +18,7 @@ import 'package:test_location_2nd/StateProvider/DayPageStateProvider.dart';
 import 'package:test_location_2nd/StateProvider/NavigationIndexStateProvider.dart';
 
 import 'package:test_location_2nd/CustomWidget/NoteEditor.dart';
-
+import 'dart:math';
 import 'dart:ui';
 
 class DayPage extends StatefulWidget {
@@ -148,13 +148,14 @@ class _DayPageState extends State<DayPage> {
                       ? Alignment.center
                       : Alignment.bottomCenter,
                   children: [
-                    ZoomableWidgets(
-                        layout: layout_dayPage,
-                        isZoomIn: product.isZoomIn,
-                        provider: product,
-                        widgets: [
-                          RawGestureDetector(
-                              behavior: HitTestBehavior.deferToChild,
+                    FutureBuilder(
+                        future: readData,
+                        builder:
+                            (BuildContext context, AsyncSnapshot snapshot) {
+                          return ZoomableWidgets(
+                              layout: layout_dayPage,
+                              isZoomIn: product.isZoomIn,
+                              provider: product,
                               gestures: {
                                 AllowMultipleGestureRecognizer:
                                     GestureRecognizerFactoryWithHandlers<
@@ -163,13 +164,25 @@ class _DayPageState extends State<DayPage> {
                                         (AllowMultipleGestureRecognizer
                                             instance) {
                                   instance.onTapUp = (details) {
+//action expected
+//1. if not zoom in
+//1-1. if image is clicked, then zoom in that location (angle)
+//1-2. if note is clicked. focus on the editable text
+//1-3 if image is clicked, when note is focused, dismiss the focus
+
+//2. if zoom in
+//2-1 if image is clicked enlarge the image
+//2-2 if image is not clicked, dismiss the enlarged image
+//2-3 if text is clicked, focus on the editable text
+//2-4 if text is not clicked when note is focused, dismiss the focus
+
                                     if (!global.isImageClicked)
                                       global.indexForZoomInImage = -1;
                                     global.isImageClicked = false;
                                     setState(() {});
 
                                     if (product.isZoomIn) return;
-                                    //if editing text, doesn't zoom in.
+//if editing text, doesn't zoom in.
                                     if (focusNode.hasFocus) {
                                       print("has focus? ${focusNode.hasFocus}");
                                       dismissKeyboard(product);
@@ -183,7 +196,7 @@ class _DayPageState extends State<DayPage> {
                                     double angleZoomIn =
                                         calculateTapAngle(tapPosition, 0, 0);
                                     product.setZoomInRotationAngle(angleZoomIn);
-                                    //
+
                                     if (details.globalPosition.dy >
                                         physicalHeight -
                                             layout_dayPage['textHeight']
@@ -203,10 +216,7 @@ class _DayPageState extends State<DayPage> {
                                   () => AllowMultipleGestureRecognizer2(),
                                   (AllowMultipleGestureRecognizer2 instance) {
                                     instance.onUpdate = (details) {
-                                      //doesn't drag if it's not zoomed in
                                       if (!product.isZoomIn) return;
-                                      print(
-                                          "dragging... ${details.localPosition} , ${details.delta.dy}");
                                       product.setZoomInRotationAngle(
                                           product.isZoomIn
                                               ? product.zoomInAngle +
@@ -216,29 +226,21 @@ class _DayPageState extends State<DayPage> {
                                   },
                                 )
                               },
-                              child: FutureBuilder(
-                                  future: readData,
-                                  builder: (BuildContext context,
-                                      AsyncSnapshot snapshot) {
-                                    return Stack(children: [
-                                      PolarTimeIndicators(
-                                              photoForPlot, addresses)
-                                          .build(context),
-                                      PolarSensorDataPlot((sensorDataForPlot[0]
-                                                          .length ==
-                                                      0) |
-                                                  (sensorDataForPlot.length ==
-                                                      0)
-                                              ? global.dummyData1
-                                              : sensorDataForPlot)
-                                          .build(context),
-                                      PolarPhotoDataPlot(photoDataForPlot)
-                                          .build(context),
-                                      polarPhotoImageContainers(photoForPlot)
-                                          .build(context),
-                                    ]);
-                                  }))
-                        ]).build(context),
+                              widgets: [
+                                PolarTimeIndicators(photoForPlot, addresses)
+                                    .build(context),
+                                PolarSensorDataPlot(
+                                        (sensorDataForPlot[0].length == 0) |
+                                                (sensorDataForPlot.length == 0)
+                                            ? global.dummyData1
+                                            : sensorDataForPlot)
+                                    .build(context),
+                                PolarPhotoDataPlot(photoDataForPlot)
+                                    .build(context),
+                                polarPhotoImageContainers(photoForPlot)
+                                    .build(context),
+                              ]).build(context);
+                        }),
                     NoteEditor(layout_dayPage, focusNode, product,
                             myTextController)
                         .build(context),

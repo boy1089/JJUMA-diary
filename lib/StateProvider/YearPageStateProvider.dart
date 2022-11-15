@@ -21,7 +21,7 @@ class YearPageStateProvider with ChangeNotifier {
 
   void updateData() {
     availableDates = summaryOfPhotoData.keys.where((element) {
-      return element.substring(0, 4)==year.toString();
+      return element.substring(0, 4) == year.toString();
     }).toList();
     // availableDates.sort((a, b)=>int.parse(a).compareTo(int.parse(b)));
     availableDates.sort();
@@ -49,11 +49,15 @@ class YearPageStateProvider with ChangeNotifier {
       } else {
         distance = summaryOfLocationData[date]! > 100
             ? 100
-            : summaryOfLocationData[date]!;
+            : floorDistance(summaryOfLocationData[date]!);
       }
       return [
-        days / 7.floor() + index % 3 / 4,
-        (days - 2) % 7,
+        // days / 7.floor() + index % 3 / 4,
+        // (days - 2) % 7,
+
+        (days / 7).floor(),
+        days % 7,
+
         value,
         distance,
       ];
@@ -64,6 +68,18 @@ class YearPageStateProvider with ChangeNotifier {
     print("year page, dummy3 : $maxOfSummary");
 
     // notifyListeners();
+  }
+
+  double floorDistance(double distance){
+    if (distance>50)
+      return 50.0;
+    if(distance > 20)
+      return 20.0;
+    if(distance> 5)
+      return 5;
+    if(distance>1)
+      return 1;
+    return 0;
   }
 
   void setBottomNavigationBarShown(bool isBottomNavigationBarShown) {
@@ -97,20 +113,18 @@ class YearPageStateProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void setYear(int year, {bool notify : false}) {
+  void setYear(int year, {bool notify: false}) {
     print("provider set year to $year");
     this.year = year;
     setIndex(DateTime.now().year - year);
     updateData();
 
-    if(notify)
-      notifyListeners();
+    if (notify) notifyListeners();
   }
 
   void setIndex(int index) {
     this.index = index;
   }
-
 
   @override
   void dispose() {

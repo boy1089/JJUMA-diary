@@ -41,7 +41,10 @@ class _YearPageState extends State<YearPage> {
     },
     'left': {
       true: -graphSize / 2 * global.kMagnificationOnYearPage -
-          graphSize /2 * global.kMagnificationOnYearPage * (1-global.kRatioOfScatterInYearPage),
+          graphSize /
+              2 *
+              global.kMagnificationOnYearPage *
+              (1 - global.kRatioOfScatterInYearPage),
       false: global.kMarginForYearPage
     },
     'top': {
@@ -63,7 +66,9 @@ class _YearPageState extends State<YearPage> {
     },
     'textHeight': {
       true: (availableHeight -
-          (availableHeight* global.kYPositionRatioOfGraph+ graphSize / 2) )/2,
+              (availableHeight * global.kYPositionRatioOfGraph +
+                  graphSize / 2)) /
+          2,
       false: availableHeight -
           (availableHeight * global.kYPositionRatioOfGraph + graphSize / 2)
     }
@@ -90,7 +95,6 @@ class _YearPageState extends State<YearPage> {
         if (!yearPageStateProvider.isZoomIn) return;
         provider.setNavigationIndex(2);
         provider.setDate(date);
-        print("yearPage");
         Provider.of<DayPageStateProvider>(context, listen: false)
             .setAvailableDates(yearPageStateProvider.availableDates);
       },
@@ -120,7 +124,6 @@ class _YearPageState extends State<YearPage> {
                             () => AllowMultipleGestureRecognizer(),
                             (AllowMultipleGestureRecognizer instance) {
                       instance.onTapUp = (details) {
-
                         if (product.isZoomIn) return;
                         product.setZoomInState(true);
                         Offset tapPosition = calculateTapPositionRefCenter(
@@ -150,6 +153,7 @@ class _YearPageState extends State<YearPage> {
                       style: TextStyle(fontSize: 30),
                     ),
                     PolarMonthIndicators().build(context),
+
                     Chart(
                       data: data,
                       elements: [
@@ -168,8 +172,12 @@ class _YearPageState extends State<YearPage> {
                           ),
                           color: ColorAttr(
                             variable: 'distance',
+                            stops: [ 0, 1, 5, 20, 50],
                             values: [
                               Colors.blue.withAlpha(200),
+                              Colors.green.withAlpha(200),
+                              Colors.amber.withAlpha(200),
+                              Colors.orange.withAlpha(200),
                               Colors.red.withAlpha(200),
                             ],
                           ),
@@ -212,6 +220,7 @@ class _YearPageState extends State<YearPage> {
                           ..label = null
                       ],
                     ),
+
                   ],
                       isZoomIn: product.isZoomIn,
                       layout: layout_yearPage,
@@ -270,15 +279,13 @@ class _YearPageState extends State<YearPage> {
                             );
                           }))),
             ]),
-        // floatingActionButton: FloatingActionButton(
-        //   onPressed: () {
-        //     var viewInsets = EdgeInsets.fromWindowPadding(
-        //         WidgetsBinding.instance.window.viewInsets,
-        //         WidgetsBinding.instance.window.devicePixelRatio);
-        //     double kKeyboardHeight = double.parse(viewInsets.bottom.toString());
-        //     print("keyboard : $kKeyboardHeight");
-        //   },
-        // ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            data[1][3] = 10;
+            data[10][3] = 5;
+
+          },
+        ),
       ),
     );
   }

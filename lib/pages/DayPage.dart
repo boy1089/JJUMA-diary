@@ -83,8 +83,7 @@ class _DayPageState extends State<DayPage> {
     },
     'left': {
       true: -graphSize / 2 * global.kMagnificationOnDayPage -
-          graphSize /2 * global.kMagnificationOnDayPage * (1-0.4),
-
+          graphSize / 2 * global.kMagnificationOnDayPage * (1 - 0.4),
       false: global.kMarginForDayPage
     },
     'top': {
@@ -242,6 +241,11 @@ class _DayPageState extends State<DayPage> {
             borderRadius: BorderRadius.all(Radius.circular(15.0)),
           ),
           onPressed: () {
+            // global.infoFromFiles.forEach((key, value) {
+            //   if(key.contains('20220120'))
+            //     print("${key}, ${value}");
+            // });
+
             if (focusNode.hasFocus) {
               dismissKeyboard(product);
             } else {

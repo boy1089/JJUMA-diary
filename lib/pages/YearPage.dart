@@ -6,7 +6,6 @@ import 'package:provider/provider.dart';
 import 'dart:async';
 import 'package:test_location_2nd/PolarMonthIndicator.dart';
 import 'package:test_location_2nd/CustomWidget/ZoomableWidgets.dart';
-
 import 'package:test_location_2nd/StateProvider/YearPageStateProvider.dart';
 import 'package:test_location_2nd/StateProvider/DayPageStateProvider.dart';
 import 'package:test_location_2nd/StateProvider/NavigationIndexStateProvider.dart';
@@ -169,12 +168,21 @@ class _YearPageState extends State<YearPage> {
                                     global.kSizeOfScatter_ZoomInMax
                                   ],
                           ),
+                          label: LabelAttr(
+                              encoder: (tuple) =>
+                                  Label("${
+                                      // tuple['week'].toString()}, ${tuple['day'].toString()
+                                      // formatDate(DateTime(year).add(Duration(days:tuple['week']*7 + tuple['day'] )))
+                                      tuple['distance']
+                                      // tuple['week']*7 + tuple['day']
+                                  //
+                                  }")),
                           color: ColorAttr(
                             // variable: 'distance',
                             // stops: [  0.1, 0.2, 0.3, 0.7, 1],
                             encoder: (tuple) => global
                                 .kColorForYearPage[tuple['distance'].toInt()]
-                                .withAlpha( ( 100+tuple['value']).toInt()),
+                                .withAlpha((50 + tuple['value']).toInt()),
                             // values: [
                             //   Colors.blue.withAlpha(200),
                             //   Colors.green.withAlpha(200),

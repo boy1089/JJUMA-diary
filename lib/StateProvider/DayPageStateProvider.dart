@@ -113,7 +113,7 @@ class DayPageStateProvider with ChangeNotifier {
         global.kMinimumTimeDifferenceBetweenImages_ZoomOut;
     if (sampleImages)
       // timeDiffForZoomIn = global.kMinimumTimeDifferenceBetweenImages_ZoomIn;
-      timeDiffForZoomIn = 0.015;
+      timeDiffForZoomIn = 0.005;
 
     for (int i = 1; i < input.length - 2; i++) {
       double timeDifferenceBetweenImagesForZoomOut =

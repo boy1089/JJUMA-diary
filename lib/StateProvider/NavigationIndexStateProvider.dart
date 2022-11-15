@@ -27,6 +27,9 @@ class NavigationIndexProvider with ChangeNotifier {
     setLastNavigationIndex(navigationIndex);
     navigationIndex = index;
     print("index : $navigationIndex");
+
+    notifyListeners();
+
     if (index == 0) {
       setBottomNavigationBarShown(true);
     }
@@ -36,7 +39,6 @@ class NavigationIndexProvider with ChangeNotifier {
     if (index == 2) {
       setBottomNavigationBarShown(false);
     }
-    notifyListeners();
   }
 
   void setDate(DateTime date, {bool notify : false}) {

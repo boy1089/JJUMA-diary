@@ -130,12 +130,8 @@ class MainPageState extends State<MainPage> {
             //when zoomed out, go to month page
             if (!dayPageStateProvider.isZoomIn) {
               provider.setNavigationIndex(0);
-              // provider.setZoomInState(true);
-              // dataManager.updateSummaryOfLocationData();
-              // setState(() {});
               return Navigator.canPop(context);
             }
-
             break;
         }
         return Navigator.canPop(context);

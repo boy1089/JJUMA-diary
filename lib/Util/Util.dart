@@ -287,7 +287,7 @@ class AllowMultipleGestureRecognizer extends TapGestureRecognizer {
 class AllowMultipleGestureRecognizer2 extends PanGestureRecognizer {
   @override
   void rejectGesture(int pointer) {
-    print("pointer : $pointer");
+    print("pointer is dragging : $pointer");
     acceptGesture(pointer);
   }
 }

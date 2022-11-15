@@ -39,7 +39,6 @@ class NoteEditor {
           WidgetsBinding.instance.window.viewInsets,
           WidgetsBinding.instance.window.devicePixelRatio);
       double keyboardSize = viewInsets.bottom;
-      print("keyboard info : $isKeyboardVisible, $keyboardSize}");
       return Positioned(
         width: physicalWidth,
         bottom: global.kMarginOfBottomOnDayPage,

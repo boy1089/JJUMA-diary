@@ -82,7 +82,6 @@ class _MyAppState extends State<MyApp> {
 
     initApp = init();
     super.initState();
-
   }
 
   Future<int> init() async {

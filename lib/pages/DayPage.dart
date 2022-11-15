@@ -197,12 +197,6 @@ class _DayPageState extends State<DayPage> {
                                         calculateTapAngle(tapPosition, 0, 0);
                                     product.setZoomInRotationAngle(angleZoomIn);
 
-                                    if (details.globalPosition.dy >
-                                        physicalHeight -
-                                            layout_dayPage['textHeight']
-                                                [false] -
-                                            60) return;
-
                                     product.setZoomInState(true);
                                     product.setIsZoomInImageVisible(true);
                                     product.setZoomInRotationAngle(angleZoomIn);
@@ -264,9 +258,18 @@ class _DayPageState extends State<DayPage> {
                   borderRadius: BorderRadius.all(Radius.circular(15.0)),
                 ),
                 onPressed: () {
-                  double kKeyboardHeight =
-                      double.parse(viewInsets.bottom.toString());
-                  print("keyboard : $kKeyboardHeight");
+                  //
+                  // double kKeyboardHeight =
+                  //     double.parse(viewInsets.bottom.toString());
+                  // print("keyboard : $kKeyboardHeight");
+
+                  if (focusNode.hasFocus) {
+                    dismissKeyboard(product);
+                  } else {
+                    showKeyboard();
+                  }
+                  ;
+                  setState(() {});
                 },
               ),
               resizeToAvoidBottomInset: false,

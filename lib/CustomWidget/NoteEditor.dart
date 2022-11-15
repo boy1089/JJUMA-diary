@@ -12,7 +12,7 @@ class NoteEditor {
   double noteEditorHeight_hasFocus = 200;
   double keyboardHeight = 200;
   var viewInsets;
-
+  double keyboardSize = 330;
   NoteEditor(this.layout, this.focusNode, this.product, this.textController) {
     viewInsets = EdgeInsets.fromWindowPadding(
         WidgetsBinding.instance.window.viewInsets,
@@ -38,18 +38,17 @@ class NoteEditor {
       var viewInsets = EdgeInsets.fromWindowPadding(
           WidgetsBinding.instance.window.viewInsets,
           WidgetsBinding.instance.window.devicePixelRatio);
-      double keyboardSize = viewInsets.bottom;
+      // double keyboardSize = viewInsets.bottom;
       return Positioned(
         width: physicalWidth,
         bottom: global.kMarginOfBottomOnDayPage,
         // height : layout['graphSize'][false],
         child:
            AnimatedContainer(
-             onEnd: (){
-               keyboardSize = viewInsets.bottom;
-
-               print("keyboardSie in the end : $keyboardSize");
-             },
+             // onEnd: (){
+             //   keyboardSize = viewInsets.bottom;
+             //   print("keyboardSie in the end : $keyboardSize");
+             // },
             duration: Duration(milliseconds: global.animationTime),
             curve: global.animationCurve,
             margin: EdgeInsets.all(10),

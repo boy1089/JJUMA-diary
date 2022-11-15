@@ -50,15 +50,15 @@ class _YearPageState extends State<YearPage> {
               (global.kYPositionRatioOfGraph) -
           graphSize / 2
     }, //30 : bottom bar, 30: navigation bar, (1/3) positioned one third
-    // 'graphCenter': {
-    //   true: null,
-    //   false: Offset(
-    //       physicalWidth / 2,
-    //       (physicalHeight -
-    //               global.kBottomNavigationBarHeight -
-    //               global.kHeightOfArbitraryWidgetOnBottom) *
-    //           (global.kYPositionRatioOfGraph))
-    // },
+    'graphCenter': {
+      true: null,
+      false: Offset(
+          physicalWidth / 2,
+          (physicalHeight -
+                  global.kBottomNavigationBarHeight -
+                  global.kHeightOfArbitraryWidgetOnBottom) *
+              (global.kYPositionRatioOfGraph))
+    },
     'textHeight': {
       true: physicalHeight -
           graphSize -
@@ -129,16 +129,14 @@ class _YearPageState extends State<YearPage> {
                             () => AllowMultipleGestureRecognizer(),
                             (AllowMultipleGestureRecognizer instance) {
                       instance.onTapUp = (details) {
-                        product.setZoomInState(true);
-                        if (product.isZoomIn) return;
 
-                        if (details.globalPosition.dy >
-                            physicalHeight -
-                                layout_yearPage['textHeight'][false]) return;
+                        if (product.isZoomIn) return;
+                        product.setZoomInState(true);
                         Offset tapPosition = calculateTapPositionRefCenter(
                             details, 0, layout_yearPage);
                         double angleZoomIn =
                             calculateTapAngle(tapPosition, 0, 0);
+                        print("angle : $angleZoomIn");
                         product.setZoomInRotationAngle(angleZoomIn);
                       };
                     }),
@@ -149,19 +147,18 @@ class _YearPageState extends State<YearPage> {
                       (AllowMultipleGestureRecognizer2 instance) {
                         instance.onUpdate = (details) {
                           if (!product.isZoomIn) return;
-                          product.setZoomInRotationAngle(product.isZoomIn
-                              ? product.zoomInAngle + details.delta.dy / 400
-                              : 0);
+                          product.setZoomInRotationAngle(
+                              product.zoomInAngle + details.delta.dy / 400);
                         };
                       },
                     )
                   },
                       widgets: [
-                        Text(
-                          "${widget.year}",
-                          style: TextStyle(fontSize: 30),
-                        ),
-                        PolarMonthIndicators().build(context),
+                    Text(
+                      "${widget.year}",
+                      style: TextStyle(fontSize: 30),
+                    ),
+                    PolarMonthIndicators().build(context),
                     Chart(
                       data: data,
                       elements: [
@@ -282,15 +279,15 @@ class _YearPageState extends State<YearPage> {
                             );
                           }))),
             ]),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            var viewInsets = EdgeInsets.fromWindowPadding(
-                WidgetsBinding.instance.window.viewInsets,
-                WidgetsBinding.instance.window.devicePixelRatio);
-            double kKeyboardHeight = double.parse(viewInsets.bottom.toString());
-            print("keyboard : $kKeyboardHeight");
-          },
-        ),
+        // floatingActionButton: FloatingActionButton(
+        //   onPressed: () {
+        //     var viewInsets = EdgeInsets.fromWindowPadding(
+        //         WidgetsBinding.instance.window.viewInsets,
+        //         WidgetsBinding.instance.window.devicePixelRatio);
+        //     double kKeyboardHeight = double.parse(viewInsets.bottom.toString());
+        //     print("keyboard : $kKeyboardHeight");
+        //   },
+        // ),
       ),
     );
   }

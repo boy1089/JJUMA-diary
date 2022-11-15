@@ -153,7 +153,6 @@ class _YearPageState extends State<YearPage> {
                       style: TextStyle(fontSize: 30),
                     ),
                     PolarMonthIndicators().build(context),
-
                     Chart(
                       data: data,
                       elements: [
@@ -171,15 +170,18 @@ class _YearPageState extends State<YearPage> {
                                   ],
                           ),
                           color: ColorAttr(
-                            variable: 'distance',
-                            stops: [ 0, 1, 5, 20, 50],
-                            values: [
-                              Colors.blue.withAlpha(200),
-                              Colors.green.withAlpha(200),
-                              Colors.amber.withAlpha(200),
-                              Colors.orange.withAlpha(200),
-                              Colors.red.withAlpha(200),
-                            ],
+                            // variable: 'distance',
+                            // stops: [  0.1, 0.2, 0.3, 0.7, 1],
+                            encoder: (tuple) => global
+                                .kColorForYearPage[tuple['distance'].toInt()]
+                                .withAlpha( ( 100+tuple['value']).toInt()),
+                            // values: [
+                            //   Colors.blue.withAlpha(200),
+                            //   Colors.green.withAlpha(200),
+                            //   Colors.amber.withAlpha(200),
+                            //   Colors.purple.withAlpha(200),
+                            //   Colors.red.withAlpha(200),
+                            // ],
                           ),
                           selectionChannel: heatmapChannel,
                         ),
@@ -220,7 +222,6 @@ class _YearPageState extends State<YearPage> {
                           ..label = null
                       ],
                     ),
-
                   ],
                       isZoomIn: product.isZoomIn,
                       layout: layout_yearPage,
@@ -281,9 +282,7 @@ class _YearPageState extends State<YearPage> {
             ]),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            data[1][3] = 10;
-            data[10][3] = 5;
-
+            print(data);
           },
         ),
       ),

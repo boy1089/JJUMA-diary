@@ -103,6 +103,15 @@ double kStrokeWidthOfProgressIndicator = 10;
 const event_color_goingOut = Colors.red;
 const event_color_backHome = Colors.blue;
 
+int kDefaultAlphaOfYearPage = 200;
+List<Color> kColorForYearPage = [
+  Colors.red,
+  Colors.orange,
+  Colors.yellow,
+  Colors.green,
+  Colors.blue,
+];
+
 List<Color> get colorsHotCold => [
       Colors.deepOrangeAccent,
       Colors.blue,

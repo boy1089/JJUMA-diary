@@ -47,9 +47,8 @@ class YearPageStateProvider with ChangeNotifier {
           summaryOfLocationData[date] == 0) {
         distance = 0.01;
       } else {
-        distance = summaryOfLocationData[date]! > 100
-            ? 100
-            : floorDistance(summaryOfLocationData[date]!);
+        distance =
+             floorDistance(summaryOfLocationData[date]!);
       }
       return [
         // days / 7.floor() + index % 3 / 4,
@@ -72,14 +71,14 @@ class YearPageStateProvider with ChangeNotifier {
 
   double floorDistance(double distance){
     if (distance>50)
-      return 50.0;
+      return 0;
     if(distance > 20)
-      return 20.0;
-    if(distance> 5)
-      return 5;
-    if(distance>1)
       return 1;
-    return 0;
+    if(distance> 5)
+      return 2;
+    if(distance>1)
+      return 3;
+    return 4;
   }
 
   void setBottomNavigationBarShown(bool isBottomNavigationBarShown) {

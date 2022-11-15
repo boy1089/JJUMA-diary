@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:test_location_2nd/Note/NoteManager.dart';
 import 'package:test_location_2nd/Util/DateHandler.dart';
@@ -34,6 +35,30 @@ class DayPageStateProvider with ChangeNotifier {
   Map<int, String?> addresses = {};
   String note = "";
 
+  //input : [global.dates, global.datetimes, global.infoFromFiles, global.kMinimumTimeDifferenceBetweenImages_ZoomOut, date];
+  Future<List> updateDateForUi_compute() async {
+    // print("date222 : $date");
+    // global.dates = input[0];
+    // global.datetimes = input[1];
+    // global.infoFromFiles = input[2];
+    // global.kMinimumTimeDifferenceBetweenImages_ZoomOut = input[3];
+    // date = input[4];
+    List input = [
+      global.dates,
+      global.datetimes,
+      global.infoFromFiles,
+      global.kMinimumTimeDifferenceBetweenImages_ZoomOut,
+      date
+    ];
+    // var result = await compute(compute2, input);
+    // print("result : $result");
+    // await updateDataForUi();
+
+    //result = [photoForPlot, photoDataForPlot, photoData, addresses, sensorDataForPlot, note];
+    return [0];
+    // return [photoForPlot, photoDataForPlot, photoData, addresses, sensorDataForPlot, note];
+  }
+
   Future<void> updateDataForUi() async {
     photoForPlot = [];
     photoDataForPlot = [];
@@ -45,15 +70,15 @@ class DayPageStateProvider with ChangeNotifier {
     } catch (e) {
       print("while updating Ui, error is occrued : $e");
     }
-    print("time elapsed : ${stopwatch.elapsed}");
+    print("time elapsed a : ${stopwatch.elapsed}");
     // //convert data type..
     photoDataForPlot = List<List>.generate(
         photoForPlot.length, (index) => photoForPlot.elementAt(index));
-    print("time elapsed : ${stopwatch.elapsed}");
+    print("time elapsed b: ${stopwatch.elapsed}");
     addresses = await updateAddress();
-    print("time elapsed : ${stopwatch.elapsed}");
+    print("time elapsed c: ${stopwatch.elapsed}");
     await updateSensorData();
-    print("time elapsed : ${stopwatch.elapsed}");
+    print("time elapsed d: ${stopwatch.elapsed}");
     try {
       note = await noteManager.readNote(date);
     } catch (e) {
@@ -61,7 +86,7 @@ class DayPageStateProvider with ChangeNotifier {
       print("while updating UI, reading note, error is occured : $e");
     }
     print("updateUi done");
-    print("time elapsed : ${stopwatch.elapsed}");
+    print("time elapsed e: ${stopwatch.elapsed}");
   }
 
   Future updatePhotoData() async {
@@ -82,11 +107,11 @@ class DayPageStateProvider with ChangeNotifier {
     int k = 0;
 
     double timeDiffForZoomIn = 0.000;
-    double timeDiffForZoomOut = global.kMinimumTimeDifferenceBetweenImages_ZoomOut;
-    if(sampleImages)
+    double timeDiffForZoomOut =
+        global.kMinimumTimeDifferenceBetweenImages_ZoomOut;
+    if (sampleImages)
       // timeDiffForZoomIn = global.kMinimumTimeDifferenceBetweenImages_ZoomIn;
       timeDiffForZoomIn = 0.015;
-
 
     for (int i = 1; i < input.length - 2; i++) {
       double timeDifferenceBetweenImagesForZoomOut =
@@ -94,20 +119,18 @@ class DayPageStateProvider with ChangeNotifier {
       double timeDifferenceBetweenImagesForZoomIn =
           (input[i][0] - photoForPlot[j][0]).abs();
 
-
-      if (timeDifferenceBetweenImagesForZoomIn >
-          timeDiffForZoomIn) {
-        print("$i/ ${input.length}, $j, $k, $timeDifferenceBetweenImagesForZoomIn");
-            bool isGoodForZoomOut = timeDifferenceBetweenImagesForZoomOut >
-                timeDiffForZoomOut;
-        photoForPlot.add(
-            [input[i][0], input[i][1], input[i][2], isGoodForZoomOut]);
-        j +=1;
+      if (timeDifferenceBetweenImagesForZoomIn > timeDiffForZoomIn) {
+        print(
+            "$i/ ${input.length}, $j, $k, $timeDifferenceBetweenImagesForZoomIn");
+        bool isGoodForZoomOut =
+            timeDifferenceBetweenImagesForZoomOut > timeDiffForZoomOut;
+        photoForPlot
+            .add([input[i][0], input[i][1], input[i][2], isGoodForZoomOut]);
+        j += 1;
 
         if (isGoodForZoomOut) {
           k = j;
         }
-
       }
     }
 
@@ -146,13 +169,15 @@ class DayPageStateProvider with ChangeNotifier {
 
     selectedIndex = selectIndexForLocation(files);
     addressOfFiles = await getAddressOfFiles(selectedIndex.values.toList());
-    addresses = Map<int, String?>.fromIterable(
-        List.generate(selectedIndex.keys.length, (i) => i),
-        key: (item) => selectedIndex.keys.elementAt(item),
-        // value: (item) => "${addressOfFiles
-        //     .elementAt(item)
-        //     ?.locality}, ${addressOfFiles.elementAt(item)?.thoroughfare}" );
-        value: (item) => "${addressOfFiles.elementAt(item)?.locality}");
+    addresses = {
+      for (var item in List.generate(selectedIndex.keys.length, (i) => i))
+        selectedIndex.keys.elementAt(item):
+            "${addressOfFiles.elementAt(item)?.locality}"
+    };
+
+    // value: (item) => "${addressOfFiles
+    //     .elementAt(item)
+    //     ?.locality}, ${addressOfFiles.elementAt(item)?.thoroughfare}" );
     return addresses;
   }
 
@@ -175,7 +200,6 @@ class DayPageStateProvider with ChangeNotifier {
     for (int i = 0; i < index.length; i++) {
       Coordinate? coordinate =
           global.infoFromFiles[files[index.elementAt(i)]]!.coordinate;
-      print(coordinate);
       if (coordinate == null) {
         listOfAddress.add(null);
       }

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:test_location_2nd/Util/global.dart' as global;
 import 'package:test_location_2nd/Util/Util.dart';
@@ -7,7 +9,20 @@ class NoteEditor {
   Map layout = {};
   FocusNode focusNode = FocusNode();
   var product;
-  NoteEditor(this.layout, this.focusNode, this.product, this.textController);
+  double noteEditorHeight_hasFocus = 200;
+  double keyboardHeight = 200;
+  var viewInsets;
+
+  NoteEditor(this.layout, this.focusNode, this.product, this.textController) {
+    viewInsets = EdgeInsets.fromWindowPadding(
+        WidgetsBinding.instance.window.viewInsets,
+        WidgetsBinding.instance.window.devicePixelRatio);
+    // keyboardHeight = double.parse(viewInsets.bottom.toString());
+    noteEditorHeight_hasFocus = physicalHeight -
+        global.kBottomNavigationBarHeight -
+        global.kHeightOfArbitraryWidgetOnBottom;
+    // -keyboardHeight;
+  }
 
   var textController = TextEditingController();
 
@@ -20,44 +35,56 @@ class NoteEditor {
   @override
   Widget build(BuildContext context) {
     return KeyboardVisibilityBuilder(builder: (context, isKeyboardVisible) {
-      print("isKeyboardVisible : $isKeyboardVisible");
-      print(MediaQuery.of(context).viewInsets.top - 100);
+      var viewInsets = EdgeInsets.fromWindowPadding(
+          WidgetsBinding.instance.window.viewInsets,
+          WidgetsBinding.instance.window.devicePixelRatio);
+      double keyboardSize = viewInsets.bottom;
+      print("keyboard info : $isKeyboardVisible, $keyboardSize}");
       return Positioned(
         width: physicalWidth,
-        // height: isKeyboardVisible
-        //     ? physicalHeight - 200 - 200
-        //     : layout['textHeight'][product.isZoomIn],
         bottom: global.kMarginOfBottomOnDayPage,
-        child: AnimatedContainer(
-          duration: Duration(milliseconds: global.animationTime),
-          curve : global.animationCurve,
-          margin: EdgeInsets.all(10),
-          height: isKeyboardVisible
-              ? physicalHeight - 200 - 200
-              : layout['textHeight'][product.isZoomIn],
-          color: focusNode.hasFocus
-              ? global.kColor_containerFocused
-              : global.kColor_container,
-          child: EditableText(
-            // readOnly: isZoomIn ? true : false,
-            maxLines: 15,
-            controller: textController,
-            onSelectionChanged: (a, b) {
-              if (!focusNode.hasFocus) ;
-            },
+        // height : layout['graphSize'][false],
+        child:
+           AnimatedContainer(
+             onEnd: (){
+               keyboardSize = viewInsets.bottom;
 
-            onEditingComplete: () {
-              print("editing completed");
-              dismissKeyboard(product);
-            },
+               print("keyboardSie in the end : $keyboardSize");
+             },
+            duration: Duration(milliseconds: global.animationTime),
+            curve: global.animationCurve,
+            margin: EdgeInsets.all(10),
+            // height : noteEditorHeight_hasFocus - global.kKeyboardSize,
+            height: isKeyboardVisible
+                ? noteEditorHeight_hasFocus - keyboardSize
+                : layout['textHeight'][product.isZoomIn],
 
-            focusNode: focusNode,
-            style: TextStyle(color: global.kColor_diaryText),
-            cursorColor: Colors.black12,
-            backgroundCursorColor: Colors.black12,
-            textAlign: TextAlign.left,
-          ),
-        ),
+            color: focusNode.hasFocus
+                ? global.kColor_containerFocused
+                : global.kColor_container,
+            child: EditableText(
+              // readOnly: isZoomIn ? true : false,
+              maxLines: 15,
+              controller: textController,
+
+              onChanged: (a) {
+                print(
+                    "keyboard size now : ${global.kKeyboardSize}, ${keyboardSize}");
+              },
+
+              onEditingComplete: () {
+                print("editing completed");
+                dismissKeyboard(product);
+              },
+
+              focusNode: focusNode,
+              style: TextStyle(color: global.kColor_diaryText),
+              cursorColor: Colors.black12,
+              backgroundCursorColor: Colors.black12,
+              textAlign: TextAlign.left,
+            ),
+          )
+
       );
     });
   }

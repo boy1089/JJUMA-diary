@@ -82,17 +82,19 @@ class PhotoDataManager {
       return null;
     });
 
-    print("time elapsed : ${stopwatch.elapsed}");
+    print("time elapsed1 : ${stopwatch.elapsed}");
     indexOfDate = indexOfDate.whereType<int>().toList();
-    print("time elapsed : ${stopwatch.elapsed}");
+    print("time elapsed2 : ${stopwatch.elapsed}");
+    List files = global.infoFromFiles.keys.toList();
     List filesOfDate = List.generate(indexOfDate.length,
-        (i) => global.infoFromFiles.keys.elementAt(indexOfDate.elementAt(i)!));
-    print("time elapsed : ${stopwatch.elapsed}");
+        (i) => files.elementAt(indexOfDate.elementAt(i)!));
+
+    print("time elapsed3 : ${stopwatch.elapsed}");
     List dateOfDate = List.generate(
         indexOfDate.length,
         (i) => formatDatetime(
             global.datetimes.elementAt(indexOfDate.elementAt(i)!)));
-    print("time elapsed : ${stopwatch.elapsed}");
+    print("time elapsed4 : ${stopwatch.elapsed}");
     // for (int i = 0; i < indexOfDate.length; i++) {
     //   print("${dateOfDate[i]}, ${filesOfDate[i]}");
     // }

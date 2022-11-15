@@ -64,6 +64,7 @@ FontWeight kFontWeight_diaryTitle = FontWeight.w700;
 
 //parameters for Year Pages
 double kSize_polarPlotPhotoScatter = 5;
+double kKeyboardSize = 200;
 
 double kMarginForYearPage = 10;
 double kBottomNavigationBarHeight = 30;

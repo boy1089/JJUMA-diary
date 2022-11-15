@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:test_location_2nd/Util/Util.dart';
 import 'package:test_location_2nd/PolarSensorDataPlot.dart';
@@ -18,6 +19,8 @@ import 'package:test_location_2nd/StateProvider/NavigationIndexStateProvider.dar
 
 import 'package:test_location_2nd/CustomWidget/NoteEditor.dart';
 
+import 'dart:ui';
+
 class DayPage extends StatefulWidget {
   String date = formatDate(DateTime.now());
   @override
@@ -34,6 +37,7 @@ class _DayPageState extends State<DayPage> {
   dynamic sensorDataForPlot = [[]];
   List<List<dynamic>> photoDataForPlot = [[]];
   Map<int, String?> addresses = {};
+  String note = "";
 
   FocusNode focusNode = FocusNode();
   final myTextController = TextEditingController();
@@ -48,15 +52,14 @@ class _DayPageState extends State<DayPage> {
         .setDate(formatDateString(date));
     print("dayPAge");
     readData = _fetchData();
-
   }
 
   Future<List<dynamic>> _fetchData() async {
     var provider = Provider.of<DayPageStateProvider>(context, listen: false);
     await provider.updateDataForUi();
-    myTextController.text = provider.note;
-    print("fetchData done, ${provider.photoForPlot}");
 
+    myTextController.text = note;
+    print("fetchData done, ${provider.photoForPlot}");
 
     photoForPlot = []..addAll(provider.photoForPlot);
     photoData = []..addAll(provider.photoData);
@@ -70,7 +73,9 @@ class _DayPageState extends State<DayPage> {
   bool isZoomInImageVisible = false;
 
   late double graphSize = physicalWidth - global.kMarginForDayPage * 2;
-
+  late double availableHeight = physicalHeight -
+      global.kHeightOfArbitraryWidgetOnBottom -
+      global.kBottomNavigationBarHeight;
   //layout for zoomIn and zoomOut state
   late Map layout_dayPage = {
     'graphSize': {
@@ -108,18 +113,15 @@ class _DayPageState extends State<DayPage> {
                   global.kBottomNavigationBarHeight -
                   global.kHeightOfArbitraryWidgetOnBottom) *
               (global.kYPositionRatioOfGraph) -
-          global.kImageSize,
-      false: physicalHeight -
-          graphSize -
-          ((physicalHeight -
-                      global.kBottomNavigationBarHeight -
-                      global.kHeightOfArbitraryWidgetOnBottom) *
-                  (global.kYPositionRatioOfGraph) -
-              graphSize / 2) -
-          global.kImageSize
+          global.kImageSize +
+          100,
+      false: availableHeight -
+          (availableHeight * global.kYPositionRatioOfGraph + graphSize / 2)
     }
   };
   double firstContainerSize = 1000;
+  final viewInsets = EdgeInsets.fromWindowPadding(WidgetsBinding.instance.window.viewInsets,WidgetsBinding.instance.window.devicePixelRatio);
+  late double kKeyboardHeight = viewInsets.bottom;
 
   void showKeyboard() {
     focusNode.requestFocus();
@@ -135,6 +137,7 @@ class _DayPageState extends State<DayPage> {
   @override
   Widget build(BuildContext context) {
     print("building DayPage..");
+
 
     return Consumer<DayPageStateProvider>(
         builder: (context, product, child) => Scaffold(
@@ -165,6 +168,7 @@ class _DayPageState extends State<DayPage> {
                       global.isImageClicked = false;
                       setState(() {});
 
+                      if (product.isZoomIn) return;
                       //if editing text, doesn't zoom in.
                       if (focusNode.hasFocus) {
                         print("has focus? ${focusNode.hasFocus}");
@@ -173,7 +177,6 @@ class _DayPageState extends State<DayPage> {
                         return;
                       }
 
-                      if (product.isZoomIn) return;
                       Offset tapPosition = calculateTapPositionRefCenter(
                           details, 0, layout_dayPage);
                       double angleZoomIn = calculateTapAngle(tapPosition, 0, 0);
@@ -207,7 +210,7 @@ class _DayPageState extends State<DayPage> {
                 child: Stack(
                     alignment: product.isZoomIn
                         ? Alignment.center
-                        : Alignment.topCenter,
+                        : Alignment.bottomCenter,
                     children: [
                       FutureBuilder(
                           future: readData,
@@ -215,25 +218,19 @@ class _DayPageState extends State<DayPage> {
                               (BuildContext context, AsyncSnapshot snapshot) {
                             return ZoomableWidgets(
                                     widgets: [
-                                  PolarTimeIndicators(photoForPlot,
-                                          addresses)
+                                  PolarTimeIndicators(photoForPlot, addresses)
                                       .build(context),
-                                  PolarSensorDataPlot((
-                                                      sensorDataForPlot[0]
-                                                      .length ==
-                                                  0) |
-                                              (sensorDataForPlot
-                                                      .length ==
-                                                  0)
-                                          ? global.dummyData1
-                                          : sensorDataForPlot)
+                                  PolarSensorDataPlot(
+                                          (sensorDataForPlot[0].length == 0) |
+                                                  (sensorDataForPlot.length ==
+                                                      0)
+                                              ? global.dummyData1
+                                              : sensorDataForPlot)
                                       .build(context),
                                   PolarPhotoDataPlot(photoDataForPlot)
                                       .build(context),
-                                  polarPhotoImageContainers(
-                                          photoForPlot)
+                                  polarPhotoImageContainers(photoForPlot)
                                       .build(context),
-
                                 ],
                                     layout: layout_dayPage,
                                     isZoomIn: product.isZoomIn,
@@ -263,19 +260,17 @@ class _DayPageState extends State<DayPage> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(15.0)),
                 ),
-
                 onPressed: () {
-                  if (focusNode.hasFocus) {
-                    dismissKeyboard(product);
-                  } else {
-                    showKeyboard();
-                  }
-                  ;
-                  setState(() {});
+                  double kKeyboardHeight = double.parse(viewInsets.bottom.toString()
+                  );
+                  print("keyboard : $kKeyboardHeight");
                 },
               ),
-            ));
+          resizeToAvoidBottomInset: false,
+
+        ));
   }
+
 
   @override
   void dispose() {
@@ -283,4 +278,5 @@ class _DayPageState extends State<DayPage> {
     focusNode.dispose();
     super.dispose();
   }
+
 }

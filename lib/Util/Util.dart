@@ -279,7 +279,7 @@ List<List<dynamic>> subsampleList(List list, int factor) {
 class AllowMultipleGestureRecognizer extends TapGestureRecognizer {
   @override
   void rejectGesture(int pointer) {
-    print("pointer : $pointer");
+    print("reject pointer : $pointer");
     acceptGesture(pointer);
   }
 }

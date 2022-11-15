@@ -10,9 +10,10 @@ import 'package:test_location_2nd/CustomWidget/ZoomableWidgets.dart';
 import 'package:test_location_2nd/StateProvider/YearPageStateProvider.dart';
 import 'package:test_location_2nd/StateProvider/DayPageStateProvider.dart';
 import 'package:test_location_2nd/StateProvider/NavigationIndexStateProvider.dart';
-import 'package:test_location_2nd/CustomWidget/NoteEditor.dart';
 import 'package:test_location_2nd/Note/NoteManager.dart';
 import 'package:test_location_2nd/Util/DateHandler.dart';
+
+import 'dart:ui';
 
 class YearPage extends StatefulWidget {
   int year = DateTime.now().year;
@@ -37,9 +38,8 @@ class _YearPageState extends State<YearPage> {
       false: graphSize
     },
     'left': {
-      true: -graphSize *
-          (global.kMagnificationOnYearPage / 2) *
-          (1 + (1 - global.kRatioOfScatterInYearPage)),
+      true: -graphSize / 2 * global.kMagnificationOnYearPage -
+          graphSize / 2 * global.kRatioOfScatterInYearPage,
       false: global.kMarginForYearPage
     },
     'top': {
@@ -50,15 +50,15 @@ class _YearPageState extends State<YearPage> {
               (global.kYPositionRatioOfGraph) -
           graphSize / 2
     }, //30 : bottom bar, 30: navigation bar, (1/3) positioned one third
-    'graphCenter': {
-      true: null,
-      false: Offset(
-          physicalWidth / 2,
-          (physicalHeight -
-                  global.kBottomNavigationBarHeight -
-                  global.kHeightOfArbitraryWidgetOnBottom) *
-              (global.kYPositionRatioOfGraph))
-    },
+    // 'graphCenter': {
+    //   true: null,
+    //   false: Offset(
+    //       physicalWidth / 2,
+    //       (physicalHeight -
+    //               global.kBottomNavigationBarHeight -
+    //               global.kHeightOfArbitraryWidgetOnBottom) *
+    //           (global.kYPositionRatioOfGraph))
+    // },
     'textHeight': {
       true: physicalHeight -
           graphSize -
@@ -66,15 +66,15 @@ class _YearPageState extends State<YearPage> {
                   global.kBottomNavigationBarHeight -
                   global.kHeightOfArbitraryWidgetOnBottom) *
               (global.kYPositionRatioOfGraph) -
-          global.kImageSize,
+          global.kImageSize +
+          100,
       false: physicalHeight -
           graphSize -
           ((physicalHeight -
                       global.kBottomNavigationBarHeight -
                       global.kHeightOfArbitraryWidgetOnBottom) *
-                  (global.kYPositionRatioOfGraph) -
-              graphSize / 2) -
-          global.kImageSize * 2 / 3
+                  (1 - global.kYPositionRatioOfGraph) -
+              graphSize / 2)
     }
   };
   late double graphSize = physicalWidth - 2 * global.kMarginForYearPage;
@@ -106,9 +106,10 @@ class _YearPageState extends State<YearPage> {
     );
     super.initState();
     Provider.of<YearPageStateProvider>(context, listen: false)
-        .setYear(widget.year, notify : false);
+        .setYear(widget.year, notify: false);
     noteManager.setNotesOfYear(widget.year);
-    data = []..addAll(Provider.of<YearPageStateProvider>(context, listen: false).data);
+    data = []
+      ..addAll(Provider.of<YearPageStateProvider>(context, listen: false).data);
   }
 
   @override
@@ -129,9 +130,8 @@ class _YearPageState extends State<YearPage> {
                   if (product.isZoomIn) return;
 
                   if (details.globalPosition.dy >
-                      physicalHeight -
-                          layout_yearPage['textHeight'][false]
-                          ) return;
+                      physicalHeight - layout_yearPage['textHeight'][false])
+                    return;
                   Offset tapPosition = calculateTapPositionRefCenter(
                       details, 0, layout_yearPage);
                   double angleZoomIn = calculateTapAngle(tapPosition, 0, 0);
@@ -233,6 +233,7 @@ class _YearPageState extends State<YearPage> {
                       .build(context),
                   Positioned(
                       width: physicalWidth,
+                      height: 10,
                       bottom: global.kMarginOfBottomOnDayPage,
                       child: AnimatedContainer(
                           duration:
@@ -288,8 +289,11 @@ class _YearPageState extends State<YearPage> {
                               }))),
                 ])),
         floatingActionButton: FloatingActionButton(
-          onPressed: (){
-            print(data);
+          onPressed: () {
+            var viewInsets = EdgeInsets.fromWindowPadding(WidgetsBinding.instance.window.viewInsets,WidgetsBinding.instance.window.devicePixelRatio);
+            double kKeyboardHeight = double.parse(viewInsets.bottom.toString()
+            );
+            print("keyboard : $kKeyboardHeight");
           },
         ),
       ),

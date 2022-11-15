@@ -122,6 +122,7 @@ class _MyAppState extends State<MyApp> {
               '/settings': (context) =>
                   AndroidSettingsScreen(permissionManager),
             },
+            useInheritedMediaQuery: true,
           );
         });
   }

@@ -6,7 +6,7 @@ import 'dart:math';
 import 'package:intl/intl.dart';
 
 class NavigationIndexProvider with ChangeNotifier {
-  int navigationIndex = 1;
+  int navigationIndex = 0;
   String date = formatDate(DateTime.now());
   double zoomInAngle = 0.0;
   bool isZoomIn = false;

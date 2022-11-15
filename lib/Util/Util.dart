@@ -96,6 +96,7 @@ var physicalScreenSize = window.physicalSize / window.devicePixelRatio;
 var physicalWidth = physicalScreenSize.width;
 var physicalHeight = physicalScreenSize.height;
 
+
 const kSensorPlotRadius = 1.0;
 const kPhotoPlotRadius = 2.0;
 const kDataReaderSubsampleFactor = 50;

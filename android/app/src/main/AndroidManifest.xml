@@ -14,7 +14,8 @@
         android:label="test_location_2nd"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
-        android:requestLegacyExternalStorage="true">
+        android:requestLegacyExternalStorage="true"
+       >
 
         <activity
             android:name=".MainActivity"

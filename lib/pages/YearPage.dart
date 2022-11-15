@@ -31,7 +31,9 @@ class _YearPageState extends State<YearPage> {
   NoteManager noteManager = NoteManager();
 
   var heatmapChannel = StreamController<Selected?>.broadcast();
-
+  late double availableHeight = physicalHeight -
+      global.kHeightOfArbitraryWidgetOnBottom -
+      global.kBottomNavigationBarHeight;
   late Map layout_yearPage = {
     'graphSize': {
       true: graphSize * global.kMagnificationOnYearPage,
@@ -39,7 +41,7 @@ class _YearPageState extends State<YearPage> {
     },
     'left': {
       true: -graphSize / 2 * global.kMagnificationOnYearPage -
-          graphSize / 2 * global.kRatioOfScatterInYearPage,
+          graphSize /2 * global.kMagnificationOnYearPage * (1-global.kRatioOfScatterInYearPage),
       false: global.kMarginForYearPage
     },
     'top': {
@@ -60,21 +62,10 @@ class _YearPageState extends State<YearPage> {
               (global.kYPositionRatioOfGraph))
     },
     'textHeight': {
-      true: physicalHeight -
-          graphSize -
-          (physicalHeight -
-                  global.kBottomNavigationBarHeight -
-                  global.kHeightOfArbitraryWidgetOnBottom) *
-              (global.kYPositionRatioOfGraph) -
-          global.kImageSize +
-          100,
-      false: physicalHeight -
-          graphSize -
-          ((physicalHeight -
-                      global.kBottomNavigationBarHeight -
-                      global.kHeightOfArbitraryWidgetOnBottom) *
-                  (1 - global.kYPositionRatioOfGraph) -
-              graphSize / 2)
+      true: (availableHeight -
+          (availableHeight* global.kYPositionRatioOfGraph+ graphSize / 2) )/2,
+      false: availableHeight -
+          (availableHeight * global.kYPositionRatioOfGraph + graphSize / 2)
     }
   };
   late double graphSize = physicalWidth - 2 * global.kMarginForYearPage;
@@ -228,7 +219,7 @@ class _YearPageState extends State<YearPage> {
                   .build(context),
               Positioned(
                   width: physicalWidth,
-                  height: 10,
+                  // height: 10,
                   bottom: global.kMarginOfBottomOnDayPage,
                   child: AnimatedContainer(
                       duration: Duration(milliseconds: global.animationTime),

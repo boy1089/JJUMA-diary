@@ -2,6 +2,7 @@ import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import "package:test_location_2nd/Location/Coordinate.dart";
 import 'package:test_location_2nd/Data/infoFromFile.dart';
+import 'package:test_location_2nd/Util/Util.dart';
 
 DateTime selectedDate = DateTime(2022, 1, 1);
 
@@ -61,42 +62,43 @@ Color kColor_badge = kMainColor_cool.withAlpha(255);
 FontWeight kFontWeight_diaryContents = FontWeight.w400;
 FontWeight kFontWeight_diaryTitle = FontWeight.w700;
 
-
 //parameters for Year Pages
 double kSize_polarPlotPhotoScatter = 5;
-double kKeyboardSize = 200;
 
-double kMarginForYearPage = 10;
+double kMarginForYearPage = physicalWidth / 40;
 double kBottomNavigationBarHeight = 30;
 double kYPositionRatioOfGraph = 2 / 5;
-double kMagnificationOnYearPage = 3.5;
-double kRatioOfScatterInYearPage = 6 / 10;
+// double kMagnificationOnYearPage = 3.5;
+
+double kMagnificationOnYearPage = 20 / 8 * 40 / 38;
+// note that this is calculated value based on RatioOfScatter
+
+double kRatioOfScatterInYearPage = 8 / 10; // this is selected for aesthetic.
 
 double kHeightOfArbitraryWidgetOnBottom = 30;
 
 double kSizeOfScatter_ZoomOutMin = 5;
 double kSizeOfScatter_ZoomOutMax = 30;
 
-double kSizeOfScatter_ZoomInMin = kSizeOfScatter_ZoomOutMin * 3.5;
-double kSizeOfScatter_ZoomInMax = kSizeOfScatter_ZoomOutMax * 3.5;
+double kSizeOfScatter_ZoomInMin =
+    kSizeOfScatter_ZoomOutMin * kMagnificationOnYearPage;
+double kSizeOfScatter_ZoomInMax =
+    kSizeOfScatter_ZoomOutMax * kMagnificationOnYearPage;
 
 
-double kMarginForDayPage = 40;
-double kMagnificationOnDayPage = 7;
-double kRatioOfScatterInDayPage = 8 / 10;
+double kMarginForDayPage = physicalWidth / 10;
+// double kMagnificationOnDayPage = 7;
+double kMagnificationOnDayPage = 7.5;
+double kRatioOfScatterInDayPage = 0.9;
 
-double kImageSize = 90;
-double kZoomInImageSize = 350;
-
-double kHeightOfTextInDayPage_ZoomOut = 200;
-double kHeightOfTextInDayPage_ZoomIn = 100;
+//5 images when it's zoomed in
+double kImageSize = physicalWidth / 5;
+double kZoomInImageSize = physicalWidth - kMarginForDayPage;
 
 double kMarginOfBottomOnDayPage = 20;
 
-
 double kSizeOfProgressIndicator = 140;
 double kStrokeWidthOfProgressIndicator = 10;
-
 
 const event_color_goingOut = Colors.red;
 const event_color_backHome = Colors.blue;
@@ -117,7 +119,6 @@ int startYear = 2013;
 
 double kMinimumTimeDifferenceBetweenImages_ZoomOut = 2; //unit is hour
 double kMinimumTimeDifferenceBetweenImages_ZoomIn = 1; //unit is hour
-
 
 double value = 0.8;
 double value2 = 0.6;

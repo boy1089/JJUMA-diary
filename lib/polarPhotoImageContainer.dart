@@ -53,7 +53,7 @@ class polarPhotoImageContainers {
 
 class polarPhotoImageContainer {
   var photoDataForPlot;
-  double imageLocationFactor = 1.4;
+  double imageLocationFactor = 1.4;  // 1.4 * graphsize outward
   double imageSize = kImageSize;
   double xLocation = 0;
   double yLocation = 0;
@@ -80,13 +80,16 @@ class polarPhotoImageContainer {
     angle = (input) / 24 * 2 * pi - pi / 2;
     isZoomInImage = (this.index == indexForZoomInImage);
 
+    //not zoom in
     if (applyOffset) {
       xLocation = imageLocationFactor * cos(angle);
       yLocation = imageLocationFactor * sin(angle);
-    } else {
+    }
+    //zoom in
+    else {
       var radius = (index % 5) / 1.8; // mag5 1.2
-      xLocation = imageLocationFactor * cos(angle) * (0.45 + 0.10 * radius);
-      yLocation = imageLocationFactor * sin(angle) * (0.45 + 0.1 * radius);
+      xLocation = imageLocationFactor * cos(angle) * (0.47 + 0.09 * radius);
+      yLocation = imageLocationFactor * sin(angle) * (0.47 + 0.09 * radius);
     }
 
     if (isZoomInImage) {
@@ -144,8 +147,8 @@ class polarPhotoImageContainer {
                       elevation: 3,
                       // shape: CircleBorder(),
                       clipBehavior: isZoomInImage
-                          ?Clip.none
-                          :Clip.antiAliasWithSaveLayer,
+                          ? Clip.none
+                          : Clip.antiAliasWithSaveLayer,
 
                       child: ExtendedImage.file(
                         File(photoDataForPlot[1]),

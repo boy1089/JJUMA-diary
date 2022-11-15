@@ -35,6 +35,8 @@ class DayPageStateProvider with ChangeNotifier {
   Map<int, String?> addresses = {};
   String note = "";
 
+  double keyboardSize = 300;
+
   //input : [global.dates, global.datetimes, global.infoFromFiles, global.kMinimumTimeDifferenceBetweenImages_ZoomOut, date];
   Future<List> updateDateForUi_compute() async {
     // print("date222 : $date");
@@ -229,6 +231,16 @@ class DayPageStateProvider with ChangeNotifier {
     noteManager.tryDeleteNote(date);
   }
 
+  void setKeyboardSize(){
+
+    final viewInsets = EdgeInsets.fromWindowPadding(
+        WidgetsBinding.instance.window.viewInsets,
+        WidgetsBinding.instance.window.devicePixelRatio);
+
+    this.keyboardSize = viewInsets.bottom;
+    print("daypage set keyboard size :$keyboardSize");
+    notifyListeners();
+  }
   void setDate(String date) {
     this.date = date;
     print("date : ${this.date}");

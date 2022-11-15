@@ -35,52 +35,63 @@ class NoteEditor {
   @override
   Widget build(BuildContext context) {
     return KeyboardVisibilityBuilder(builder: (context, isKeyboardVisible) {
-      var viewInsets = EdgeInsets.fromWindowPadding(
-          WidgetsBinding.instance.window.viewInsets,
-          WidgetsBinding.instance.window.devicePixelRatio);
-      // double keyboardSize = viewInsets.bottom;
       return Positioned(
         width: physicalWidth,
         bottom: global.kMarginOfBottomOnDayPage,
         // height : layout['graphSize'][false],
         child:
            AnimatedContainer(
-             // onEnd: (){
-             //   keyboardSize = viewInsets.bottom;
-             //   print("keyboardSie in the end : $keyboardSize");
-             // },
             duration: Duration(milliseconds: global.animationTime),
             curve: global.animationCurve,
             margin: EdgeInsets.all(10),
             // height : noteEditorHeight_hasFocus - global.kKeyboardSize,
             height: isKeyboardVisible
-                ? noteEditorHeight_hasFocus - keyboardSize
+                ? noteEditorHeight_hasFocus - product.keyboardSize
                 : layout['textHeight'][product.isZoomIn],
+
+            onEnd: (){
+              if(isKeyboardVisible)
+              product.setKeyboardSize();
+            },
 
             color: focusNode.hasFocus
                 ? global.kColor_containerFocused
                 : global.kColor_container,
-            child: EditableText(
-              // readOnly: isZoomIn ? true : false,
-              maxLines: 15,
-              controller: textController,
+            // child: EditableText(
+            //   // readOnly: isZoomIn ? true : false,
+            //   maxLines: 15,
+            //   controller: textController,
+            //   onChanged: (a) {
+            //     print(
+            //         "keyboard size now : ${global.kKeyboardSize}, ${keyboardSize}");
+            //   },
+            //   onEditingComplete: () {
+            //     print("editing completed");
+            //     dismissKeyboard(product);
+            //   },
+            //   focusNode: focusNode,
+            //   style: TextStyle(color: global.kColor_diaryText),
+            //   cursorColor: Colors.black12,
+            //   backgroundCursorColor: Colors.black12,
+            //   textAlign: TextAlign.left,
+            // ),
+            //
+             child : TextField(
+               maxLines : 15,
+               controller: textController,
 
-              onChanged: (a) {
-                print(
-                    "keyboard size now : ${global.kKeyboardSize}, ${keyboardSize}");
-              },
+                 onEditingComplete: () {
+                   print("editing completed");
+                   dismissKeyboard(product);
+                 },
+                 focusNode: focusNode,
+                 style: TextStyle(color: global.kColor_diaryText),
+                 cursorColor: Colors.black12,
+                 // backgroundCursorColor: Colors.black12,
+                 textAlign: TextAlign.left,
 
-              onEditingComplete: () {
-                print("editing completed");
-                dismissKeyboard(product);
-              },
+             )
 
-              focusNode: focusNode,
-              style: TextStyle(color: global.kColor_diaryText),
-              cursorColor: Colors.black12,
-              backgroundCursorColor: Colors.black12,
-              textAlign: TextAlign.left,
-            ),
           )
 
       );

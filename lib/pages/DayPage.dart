@@ -71,7 +71,6 @@ class _DayPageState extends State<DayPage> {
   }
 
   bool isZoomInImageVisible = false;
-
   late double graphSize = physicalWidth - global.kMarginForDayPage * 2;
   late double availableHeight = physicalHeight -
       global.kHeightOfArbitraryWidgetOnBottom -
@@ -82,10 +81,10 @@ class _DayPageState extends State<DayPage> {
       true: graphSize * global.kMagnificationOnDayPage,
       false: graphSize
     },
-    // 'left': {true: -graphSize * 5.5, false: (physicalWidth - graphSize) / 2},
     'left': {
-      true:
-          -graphSize * (global.kMagnificationOnDayPage / 2) * (1 + (1 - 0.43)),
+      true: -graphSize / 2 * global.kMagnificationOnDayPage -
+          graphSize /2 * global.kMagnificationOnDayPage * (1-0.4),
+
       false: global.kMarginForDayPage
     },
     'top': {
@@ -105,21 +104,16 @@ class _DayPageState extends State<DayPage> {
                   global.kHeightOfArbitraryWidgetOnBottom) *
               (global.kYPositionRatioOfGraph))
     },
-
     'textHeight': {
-      true: physicalHeight -
-          graphSize -
-          (physicalHeight -
-                  global.kBottomNavigationBarHeight -
-                  global.kHeightOfArbitraryWidgetOnBottom) *
-              (global.kYPositionRatioOfGraph) -
-          global.kImageSize +
-          100,
+      true: (availableHeight -
+              (availableHeight * global.kYPositionRatioOfGraph +
+                  graphSize / 2)) /
+          2,
       false: availableHeight -
           (availableHeight * global.kYPositionRatioOfGraph + graphSize / 2)
     }
   };
-  double firstContainerSize = 1000;
+
   final viewInsets = EdgeInsets.fromWindowPadding(
       WidgetsBinding.instance.window.viewInsets,
       WidgetsBinding.instance.window.devicePixelRatio);
@@ -138,142 +132,128 @@ class _DayPageState extends State<DayPage> {
 
   @override
   Widget build(BuildContext context) {
-    // print("building DayPage..");
+    print("building DayPage..");
 
-    return Consumer<DayPageStateProvider>(
-        builder: (context, product, child) => Scaffold(
-              backgroundColor: global.kBackGroundColor,
-              body: Stack(
-                  alignment: product.isZoomIn
-                      ? Alignment.center
-                      : Alignment.bottomCenter,
-                  children: [
-                    FutureBuilder(
-                        future: readData,
-                        builder:
-                            (BuildContext context, AsyncSnapshot snapshot) {
-                          return ZoomableWidgets(
-                              layout: layout_dayPage,
-                              isZoomIn: product.isZoomIn,
-                              provider: product,
-                              gestures: {
-                                AllowMultipleGestureRecognizer:
-                                    GestureRecognizerFactoryWithHandlers<
-                                            AllowMultipleGestureRecognizer>(
-                                        () => AllowMultipleGestureRecognizer(),
-                                        (AllowMultipleGestureRecognizer
-                                            instance) {
-                                  instance.onTapUp = (details) {
-//action expected
-//1. if not zoom in
-//1-1. if image is clicked, then zoom in that location (angle)
-//1-2. if note is clicked. focus on the editable text
-//1-3 if image is clicked, when note is focused, dismiss the focus
+    return Consumer<DayPageStateProvider>(builder: (context, product, child) {
+      final viewInsets = EdgeInsets.fromWindowPadding(
+          WidgetsBinding.instance.window.viewInsets,
+          WidgetsBinding.instance.window.devicePixelRatio);
+      // product.setKeyboardSize(viewInsets.bottom);
+      return Scaffold(
+        backgroundColor: global.kBackGroundColor,
+        body: Stack(
+            alignment:
+                product.isZoomIn ? Alignment.center : Alignment.bottomCenter,
+            children: [
+              FutureBuilder(
+                  future: readData,
+                  builder: (BuildContext context, AsyncSnapshot snapshot) {
+                    return ZoomableWidgets(
+                        layout: layout_dayPage,
+                        isZoomIn: product.isZoomIn,
+                        provider: product,
+                        gestures: {
+                          AllowMultipleGestureRecognizer:
+                              GestureRecognizerFactoryWithHandlers<
+                                      AllowMultipleGestureRecognizer>(
+                                  () => AllowMultipleGestureRecognizer(),
+                                  (AllowMultipleGestureRecognizer instance) {
+                            instance.onTapUp = (details) {
+                              if (!global.isImageClicked)
+                                global.indexForZoomInImage = -1;
+                              global.isImageClicked = false;
+                              setState(() {});
 
-//2. if zoom in
-//2-1 if image is clicked enlarge the image
-//2-2 if image is not clicked, dismiss the enlarged image
-//2-3 if text is clicked, focus on the editable text
-//2-4 if text is not clicked when note is focused, dismiss the focus
+                              if (product.isZoomIn) return;
+                              if (focusNode.hasFocus) {
+                                print("has focus? ${focusNode.hasFocus}");
+                                dismissKeyboard(product);
+                                setState(() {});
+                                return;
+                              }
 
-                                    if (!global.isImageClicked)
-                                      global.indexForZoomInImage = -1;
-                                    global.isImageClicked = false;
-                                    setState(() {});
+                              Offset tapPosition =
+                                  calculateTapPositionRefCenter(
+                                      details, 0, layout_dayPage);
+                              double angleZoomIn =
+                                  calculateTapAngle(tapPosition, 0, 0);
+                              product.setZoomInRotationAngle(angleZoomIn);
 
-                                    if (product.isZoomIn) return;
-//if editing text, doesn't zoom in.
-                                    if (focusNode.hasFocus) {
-                                      print("has focus? ${focusNode.hasFocus}");
-                                      dismissKeyboard(product);
-                                      setState(() {});
-                                      return;
-                                    }
-
-                                    Offset tapPosition =
-                                        calculateTapPositionRefCenter(
-                                            details, 0, layout_dayPage);
-                                    double angleZoomIn =
-                                        calculateTapAngle(tapPosition, 0, 0);
-                                    product.setZoomInRotationAngle(angleZoomIn);
-
-                                    product.setZoomInState(true);
-                                    product.setIsZoomInImageVisible(true);
-                                    product.setZoomInRotationAngle(angleZoomIn);
-                                    FocusManager.instance.primaryFocus
-                                        ?.unfocus();
-                                  };
-                                }),
-                                AllowMultipleGestureRecognizer2:
-                                    GestureRecognizerFactoryWithHandlers<
-                                        AllowMultipleGestureRecognizer2>(
-                                  () => AllowMultipleGestureRecognizer2(),
-                                  (AllowMultipleGestureRecognizer2 instance) {
-                                    instance.onUpdate = (details) {
-                                      if (!product.isZoomIn) return;
-                                      product.setZoomInRotationAngle(
-                                          product.isZoomIn
-                                              ? product.zoomInAngle +
-                                                  details.delta.dy / 1000
-                                              : 0);
-                                    };
-                                  },
-                                )
-                              },
-                              widgets: [
-                                PolarTimeIndicators(photoForPlot, addresses)
-                                    .build(context),
-                                PolarSensorDataPlot(
-                                        (sensorDataForPlot[0].length == 0) |
-                                                (sensorDataForPlot.length == 0)
-                                            ? global.dummyData1
-                                            : sensorDataForPlot)
-                                    .build(context),
-                                PolarPhotoDataPlot(photoDataForPlot)
-                                    .build(context),
-                                polarPhotoImageContainers(photoForPlot)
-                                    .build(context),
-                              ]).build(context);
-                        }),
-                    NoteEditor(layout_dayPage, focusNode, product,
-                            myTextController)
-                        .build(context),
-                    Positioned(
-                        top: 30,
-                        child: Text(
-                          "${DateFormat('EEEE').format(DateTime.parse(date))}/"
-                          "${DateFormat('MMM').format(DateTime.parse(date))} "
-                          "${DateFormat('dd').format(DateTime.parse(date))}/"
-                          "${DateFormat('yyyy').format(DateTime.parse(date))}",
-                          style: TextStyle(
-                              fontSize: 20,
-                              color: global.kColor_backgroundText),
-                        )),
-                  ]),
-              floatingActionButton: FloatingActionButton(
-                mini: true,
-                backgroundColor: global.kMainColor_warm,
-                child: focusNode.hasFocus ? Text("save") : Icon(Icons.add),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(15.0)),
-                ),
-                onPressed: () {
-                  //
-                  // double kKeyboardHeight =
-                  //     double.parse(viewInsets.bottom.toString());
-                  // print("keyboard : $kKeyboardHeight");
-
-                  if (focusNode.hasFocus) {
-                    dismissKeyboard(product);
-                  } else {
-                    showKeyboard();
-                  }
-                  ;
-                  setState(() {});
-                },
-              ),
-              resizeToAvoidBottomInset: false,
-            ));
+                              product.setZoomInState(true);
+                              product.setIsZoomInImageVisible(true);
+                              product.setZoomInRotationAngle(angleZoomIn);
+                              FocusManager.instance.primaryFocus?.unfocus();
+                            };
+                          }),
+                          AllowMultipleGestureRecognizer2:
+                              GestureRecognizerFactoryWithHandlers<
+                                  AllowMultipleGestureRecognizer2>(
+                            () => AllowMultipleGestureRecognizer2(),
+                            (AllowMultipleGestureRecognizer2 instance) {
+                              instance.onUpdate = (details) {
+                                if (!product.isZoomIn) return;
+                                product.setZoomInRotationAngle(product.isZoomIn
+                                    ? product.zoomInAngle +
+                                        details.delta.dy / 1000
+                                    : 0);
+                              };
+                            },
+                          )
+                        },
+                        widgets: [
+                          PolarTimeIndicators(photoForPlot, addresses)
+                              .build(context),
+                          // PolarSensorDataPlot(
+                          //         (sensorDataForPlot[0].length == 0) |
+                          //                 (sensorDataForPlot.length == 0)
+                          //             ? global.dummyData1
+                          //             : sensorDataForPlot)
+                          //     .build(context),
+                          PolarPhotoDataPlot(photoDataForPlot).build(context),
+                          polarPhotoImageContainers(photoForPlot)
+                              .build(context),
+                        ]).build(context);
+                  }),
+              NoteEditor(layout_dayPage, focusNode, product, myTextController)
+                  .build(context),
+              Positioned(
+                  top: 30,
+                  child: Text(
+                    "${DateFormat('EEEE').format(DateTime.parse(date))}/"
+                    "${DateFormat('MMM').format(DateTime.parse(date))} "
+                    "${DateFormat('dd').format(DateTime.parse(date))}/"
+                    "${DateFormat('yyyy').format(DateTime.parse(date))}",
+                    style: TextStyle(
+                        fontSize: 20, color: global.kColor_backgroundText),
+                  )),
+              // Positioned(
+              //   top : 30,
+              //   left : EdgeInsets.fromWindowPadding(
+              //       WidgetsBinding.instance.window.viewInsets,
+              //       WidgetsBinding.instance.window.devicePixelRatio).bottom,
+              //   child : Text("aaaa")
+              // )
+            ]),
+        floatingActionButton: FloatingActionButton(
+          mini: true,
+          backgroundColor: global.kMainColor_warm,
+          child: focusNode.hasFocus ? Text("save") : Icon(Icons.add),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(15.0)),
+          ),
+          onPressed: () {
+            if (focusNode.hasFocus) {
+              dismissKeyboard(product);
+            } else {
+              showKeyboard();
+            }
+            ;
+            setState(() {});
+          },
+        ),
+        resizeToAvoidBottomInset: false,
+      );
+    });
   }
 
   @override

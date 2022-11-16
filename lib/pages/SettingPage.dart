@@ -6,8 +6,9 @@ import '../navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:settings_ui/settings_ui.dart';
 import 'package:test_location_2nd/Util/global.dart' as global;
+import 'package:test_location_2nd/Util/Util.dart';
 
-enum buttons { googleAccount, Location, Audio, Phone}
+enum buttons { googleAccount, Location, Audio, Phone }
 
 class AndroidSettingsScreen extends StatefulWidget {
   // final GoogleAccountManager = googleAccountManager;
@@ -18,8 +19,7 @@ class AndroidSettingsScreen extends StatefulWidget {
   AndroidSettingsScreen(
     PermissionManager permissionManager, {
     Key? key,
-  })  :
-        permissionManager = permissionManager,
+  })  : permissionManager = permissionManager,
         super(key: key);
 
   @override
@@ -48,55 +48,90 @@ class _AndroidSettingsScreenState extends State<AndroidSettingsScreen> {
         platform: DevicePlatform.android,
         sections: [
           SettingsSection(
-            title : Text("Common"),
-            tiles : [SettingsTile(
-              leading : Icon(Icons.language_outlined, color: Colors.black26, size: 30),
-              title : Text("Language"),
-            )]
-          ),
-
-          SettingsSection(
-            title : Text('Permissions'),
+            title: Text("Common"),
             tiles: [
-
+              SettingsTile(title: Text("Language"), onPressed: (context) {}),
               SettingsTile(
-                onPressed: (context) async {
-                  await _onPressed(context, buttons.Location);
-                  setState(() {});
+                title: Text("About"),
+                onPressed: (context) {
+                  showDialog(
+                      context: (context),
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                            content: Container(
+                              height: physicalHeight / 5,
+                              child: Row(
+                                children: [
+                                  Column(
+                                      // mainAxisAlignment: MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text("version"),
+                                        Text("madeby"),
+                                        Text("email")
+                                      ]),
+                                  Column(
+                                      // mainAxisAlignment: MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(" : 1.0"),
+                                        Text(" : Team ?"),
+                                        Text(" : boytoboy0108@gmail.com")
+                                      ]),
+                                ],
+                              ),
+                            ),
+                            actions: [
+                              TextButton(
+                                  child: const Text("close"),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  })
+                            ]);
+                      });
                 },
-                title: Text('Location'),
-                description: permissionManager.isLocationPermissionGranted
-                    ? Text('Current location is under recording..')
-                    : Text(
-                        'Allow location permission to record current location'),
-                leading: Icon(Icons.location_on, color: Colors.blue),
               ),
-              SettingsTile(
-                onPressed: (context) async {
-                  await _onPressed(context, buttons.Audio);
-                  setState(() {});
-                },
-                title: Text('Audio'),
-                description: permissionManager.isAudioPermissionGranted
-                    ? Text('Microphone is recording..')
-                    : Text(
-                        'Allow audio permission to record voice with photos'),
-                leading: Icon(Icons.audio_file, color: Colors.orange),
-              ),
-              SettingsTile(
-                onPressed: (context) async {
-                  await _onPressed(context, buttons.Phone);
-                  setState(() {});
-                },
-                title: Text('Phone'),
-                description: permissionManager.isPhonePermissionGranted
-                    ? Text('Call history is under fetching..')
-                    : Text(
-                    'Allow phone permission to get call history'),
-                leading: Icon(Icons.phone_outlined, color: Colors.green),
-              ),
+              SettingsTile(title: Text("Reset"), onPressed: (context) {})
             ],
           ),
+          //
+          // SettingsSection(
+          //   title: Text("Parameters"),
+          //   tiles: [
+          //     SettingsTile(
+          //         title: Text("Reset Reference Coordinate"),
+          //         onPressed: (context) {
+          //           showDialog(
+          //               context: (context),
+          //               builder: (BuildContext context) {
+          //                 return AlertDialog(
+          //                     content: Text(
+          //                         "Current coordinate will be set as reference coordiante, and contents will be updated with it."),
+          //                     actions: [
+          //                       TextButton(
+          //                           child: const Text("ok"),
+          //                           onPressed: () {
+          //                             Navigator.of(context).pop();
+          //                           }),
+          //                       TextButton(
+          //                           child: const Text("close"),
+          //                           onPressed: () {
+          //                             Navigator.of(context).pop();
+          //                           })
+          //                     ]);
+          //               });
+          //         }),
+          //
+          //     SettingsTile(
+          //         title: Row(children: [Text("Minimum number of images for graph")]),
+          //         onPressed: (context) {}),
+          //     SettingsTile(
+          //         title: Text("Minimum time bewteen images"),
+          //         onPressed: (context) {})
+          //   ],
+          // )
         ],
       ),
     );
@@ -104,15 +139,12 @@ class _AndroidSettingsScreenState extends State<AndroidSettingsScreen> {
 
   Future _onPressed(BuildContext context, button) async {
     switch (button) {
-
-
       case buttons.Location:
         {
           if (!permissionManager.isLocationPermissionGranted)
             await permissionManager.getLocationPermission();
 
-          if (permissionManager.isLocationPermissionGranted)
-            openAppSettings();
+          if (permissionManager.isLocationPermissionGranted) openAppSettings();
         }
         break;
 
@@ -120,8 +152,7 @@ class _AndroidSettingsScreenState extends State<AndroidSettingsScreen> {
         {
           if (!permissionManager.isAudioPermissionGranted)
             await permissionManager.getAudioPermission();
-          if (permissionManager.isAudioPermissionGranted)
-            openAppSettings();
+          if (permissionManager.isAudioPermissionGranted) openAppSettings();
         }
         break;
 
@@ -129,14 +160,10 @@ class _AndroidSettingsScreenState extends State<AndroidSettingsScreen> {
         {
           if (!permissionManager.isPhonePermissionGranted)
             await permissionManager.getPhonePermission();
-          if (permissionManager.isPhonePermissionGranted)
-            openAppSettings();
+          if (permissionManager.isPhonePermissionGranted) openAppSettings();
         }
         break;
-
     }
-
-
   }
 
   void toNotificationsScreen(BuildContext context) {

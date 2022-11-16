@@ -178,18 +178,11 @@ class _YearPageState extends State<YearPage> {
                           //         //
                           //         }")),
                           color: ColorAttr(
-                            // variable: 'distance',
-                            // stops: [  0.1, 0.2, 0.3, 0.7, 1],
+
                             encoder: (tuple) => global
                                 .kColorForYearPage[tuple['distance'].toInt()]
                                 .withAlpha((50 + tuple['value']).toInt()),
-                            // values: [
-                            //   Colors.blue.withAlpha(200),
-                            //   Colors.green.withAlpha(200),
-                            //   Colors.amber.withAlpha(200),
-                            //   Colors.purple.withAlpha(200),
-                            //   Colors.red.withAlpha(200),
-                            // ],
+
                           ),
                           selectionChannel: heatmapChannel,
                         ),
@@ -213,7 +206,7 @@ class _YearPageState extends State<YearPage> {
                       },
                       selections: {
                         'choose': PointSelection(
-                          on: {GestureType.hover},
+                          on: {GestureType.tap},
                           toggle: true,
                           nearest: false,
                           testRadius: product.isZoomIn ? 10 : 0,
@@ -290,12 +283,12 @@ class _YearPageState extends State<YearPage> {
                             );
                           }))),
             ]),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            print(data);
-            print('bb');
-          },
-        ),
+        // floatingActionButton: FloatingActionButton(
+        //   onPressed: () {
+        //     print(data);
+        //     print('bb');
+        //   },
+        // ),
       ),
     );
   }

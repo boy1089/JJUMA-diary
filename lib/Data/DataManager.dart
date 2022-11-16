@@ -46,9 +46,10 @@ class DataManager {
     await readSummaryOfLocation();
     print("time elapsed : ${stopwatch.elapsed}");
     // find the files which are in local but not in Info
-    if (global.infoFromFiles.length > 1000)
-      filesNotUpdated = await matchFilesAndInfo();
-    filesNotUpdated = await matchFilesAndInfo2();
+    // if (global.infoFromFiles.length > 1000)
+      // filesNotUpdated = await matchFilesAndInfo();
+    // filesNotUpdated = await matchFilesAndInfo2();
+      filesNotUpdated = files;
 
     print("time elapsed : ${stopwatch.elapsed}");
     // update info which are not updated
@@ -190,7 +191,7 @@ class DataManager {
   Future<List<String>?> matchFilesAndInfo2() async {
     List<String>? filesNotUpdated = [];
     List<String> filenamesFromInfo = global.infoFromFiles.keys.toList();
-
+    Map info = {...global.infoFromFiles};
     for (int i = 0; i < files.length; i++) {
       String filename = files.elementAt(i);
       if (i % 1000 == 0) print("matchFilesAndInfo : $i / ${files.length}");
@@ -203,7 +204,7 @@ class DataManager {
 
       filenamesFromInfo.remove(filename);
 
-      bool? isUpdated = global.infoFromFiles[filename]?.isUpdated;
+      bool? isUpdated = info[filename]?.isUpdated;
 
       if (!isUpdated!) {
         filesNotUpdated.add(filename);
@@ -220,7 +221,10 @@ class DataManager {
     for (int i = 0; i < filenames!.length; i++) {
       if (i % 100 == 0) print("addFilesToInfo $i / ${filenames.length}");
       String filename = filenames.elementAt(i);
-      global.infoFromFiles[filename] = InfoFromFile(isUpdated: false);
+      if(global.infoFromFiles[filename]==null) {
+        print("info not found during addFilestoInfo");
+        global.infoFromFiles[filename] = InfoFromFile(isUpdated: false);
+      }
     }
   }
 
@@ -458,7 +462,7 @@ class DataManager {
     if (!((await file.exists())) || overwrite) {
       print("overwritting");
       await file.writeAsString(
-          'filename,datetime,date,latitude,longitude,distance\n',
+          'filename,datetime,date,latitude,longitude,distance,isUpdated\n',
           mode: FileMode.write);
     }
     var infoFromFiles = global.infoFromFiles;
@@ -500,8 +504,8 @@ class DataManager {
       // Stopwatch stopwatch = Stopwatch()..start();
       InfoFromFile infoFromFile = InfoFromFile();
       var data_temp = data[i];
-
       int lengthOfData = data_temp.length;
+
       // print("$i, time elapsed : ${stopwatch.elapsed}");
       infoFromFile.datetime = parseToDatetime(data_temp[lengthOfData - 6]);
       // print("$i, time elapsed : ${stopwatch.elapsed}");
@@ -518,13 +522,15 @@ class DataManager {
           ? null
           : parseToDouble(data_temp[lengthOfData - 2]);
       // print("$i, time elapsed : ${stopwatch.elapsed}");
-      infoFromFile.isUpdated = data_temp[lengthOfData -1];
+      // print(data_temp['lengthOfData']);
+      infoFromFile.isUpdated =data_temp[lengthOfData -1].toLowerCase()=='true';
+
       String filename = data_temp[0];
       // print("$i, time elapsed : ${stopwatch.elapsed}");
 
-      if (lengthOfData > 5) {
+      if (lengthOfData > 6) {
         filename = "";
-        for (int j = 0; j < lengthOfData - 5; j++) {
+        for (int j = 0; j < lengthOfData - 6; j++) {
           filename += data_temp[j] + ',';
         }
         filename = filename.substring(0, filename.length - 1);

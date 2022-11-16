@@ -290,11 +290,16 @@ class _YearPageState extends State<YearPage> {
                             );
                           }))),
             ]),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            print(noteManager.notesOfYear);
-          },
-        ),
+        // floatingActionButton: FloatingActionButton(
+          // onPressed: () {
+          //
+          //   // global.infoFromFiles.forEach((key, value) {
+          //   //   if(value.date!.contains("2022"))
+          //   //     print("$key, $value");
+          //   // });
+          //
+          // },
+        // ),
       ),
     );
   }

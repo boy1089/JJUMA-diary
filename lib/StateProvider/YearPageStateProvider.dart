@@ -46,13 +46,8 @@ class YearPageStateProvider with ChangeNotifier {
           summaryOfPhotoData[date]! > 200 ? 200 : summaryOfPhotoData[date]!;
 
       double distance = 0.01;
-      if (summaryOfLocationData[date] == null ||
-          summaryOfLocationData[date] == 0) {
-        distance = 0.01;
-      } else {
         distance =
              floorDistance(summaryOfLocationData[date]!);
-      }
       return [
         // days / 7.floor() + index % 3 / 4,
         // (days - 2) % 7,
@@ -72,14 +67,17 @@ class YearPageStateProvider with ChangeNotifier {
     // notifyListeners();
   }
 
-  double floorDistance(double distance){
-    if (distance>50)
+  double floorDistance(double? distance){
+    if (distance==null)
+      return 4;
+
+    if (distance!>50)
       return 0;
-    if(distance > 20)
+    if(distance! > 20)
       return 1;
-    if(distance> 5)
+    if(distance!> 5)
       return 2;
-    if(distance>1)
+    if(distance!>1)
       return 3;
     return 4;
   }

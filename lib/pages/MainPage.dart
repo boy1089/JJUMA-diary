@@ -189,13 +189,13 @@ class MainPageState extends State<MainPage> {
             ),
           ),
         ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () async {
-            // /print(dataManager.readInfo([]));
-            await dataManager.readInfo([]);
-            await dataManager.writeInfo(null, true);
-          },
-        ),
+        // floatingActionButton: FloatingActionButton(
+        //   onPressed: () async {
+        //     // /print(dataManager.readInfo([]));
+        //     await dataManager.readInfo([]);
+        //     await dataManager.writeInfo(null, true);
+        //   },
+        // ),
       ),
     );
   }

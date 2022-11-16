@@ -6,10 +6,19 @@ class InfoFromFile{
   DateTime? datetime;
   String? date;
   Coordinate? coordinate;
-  double? distance;
+  double? distance = 0;
+  bool? isUpdated = false;
+
+  InfoFromFile(
+      {this.file,
+      this.datetime,
+      this.date,
+      this.coordinate,
+      this.distance,
+      this.isUpdated});
 
   String toString(){
-    return "datetime: ${datetime}, date: ${date}, coordinate : ${coordinate?.latitude}, distance : $distance";
+    return "datetime: ${datetime}, date: ${date}, coordinate : ${coordinate?.latitude}, distance : $distance, isUpdated : $isUpdated";
   }
 
 

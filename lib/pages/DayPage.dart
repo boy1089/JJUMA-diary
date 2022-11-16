@@ -106,10 +106,9 @@ class _DayPageState extends State<DayPage> {
     'textHeight': {
       true: (availableHeight -
               (availableHeight * global.kYPositionRatioOfGraph +
-                  graphSize / 2)) /
-          2,
+                  graphSize / 2)) / 2 - 20,
       false: availableHeight -
-          (availableHeight * global.kYPositionRatioOfGraph + graphSize / 2)
+          (availableHeight * global.kYPositionRatioOfGraph + graphSize / 2) - 20
     }
   };
 

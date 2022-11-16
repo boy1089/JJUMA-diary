@@ -48,6 +48,8 @@ class DataManager {
     // find the files which are in local but not in Info
     if (global.infoFromFiles.length > 1000)
       filesNotUpdated = await matchFilesAndInfo();
+    filesNotUpdated = await matchFilesAndInfo2();
+
     print("time elapsed : ${stopwatch.elapsed}");
     // update info which are not updated
     await addFilesToInfo(filesNotUpdated);
@@ -101,14 +103,21 @@ class DataManager {
 
         global.summaryOfPhotoData = await compute(updateSummaryOfPhotoFromInfo,
             [global.setOfDates, global.summaryOfPhotoData]);
-        global.summaryOfLocationData = await compute(
-            updateSummaryOfLocationDataFromInfo_compute,
-            [global.setOfDates, global.summaryOfLocationData, global.infoFromFiles]);
 
         await writeInfo(null, true);
-        await writeSummaryOfLocation2(null, true);
         await writeSummaryOfPhoto2(null, true);
       }
+      if (i%10==0){
+        global.summaryOfLocationData = await compute(
+            updateSummaryOfLocationDataFromInfo_compute, [
+          global.setOfDates,
+          global.summaryOfLocationData,
+          global.infoFromFiles
+        ]);
+        await writeSummaryOfLocation2(null, true);
+      }
+
+
     }
     //update the summaryOflocation only on the specific date.
     global.summaryOfPhotoData = await compute(updateSummaryOfPhotoFromInfo,
@@ -117,8 +126,11 @@ class DataManager {
     // await updateSummaryOfLocationDataFromInfo(null);
 
     global.summaryOfLocationData = await compute(
-        updateSummaryOfLocationDataFromInfo_compute,
-        [global.setOfDates, global.summaryOfLocationData, global.infoFromFiles]);
+        updateSummaryOfLocationDataFromInfo_compute, [
+      global.setOfDates,
+      global.summaryOfLocationData,
+      global.infoFromFiles
+    ]);
 
     await writeInfo(null, true);
     await writeSummaryOfLocation2(null, true);
@@ -155,15 +167,13 @@ class DataManager {
       String filename = files.elementAt(i);
       if (i % 1000 == 0) print("matchFilesAndInfo : $i / ${files.length}");
 
-      bool isContained =
-          filenamesFromInfo.contains(filename);
+      bool isContained = filenamesFromInfo.contains(filename);
       if (!isContained) {
         filesNotUpdated.add(filename);
         continue;
       }
 
       filenamesFromInfo.remove(filename);
-
 
       DateTime? dateTimeInInfo = global.infoFromFiles[filename]?.datetime;
       Coordinate? coordinateInInfo = global.infoFromFiles[filename]?.coordinate;
@@ -177,13 +187,40 @@ class DataManager {
     return filesNotUpdated;
   }
 
+  Future<List<String>?> matchFilesAndInfo2() async {
+    List<String>? filesNotUpdated = [];
+    List<String> filenamesFromInfo = global.infoFromFiles.keys.toList();
+
+    for (int i = 0; i < files.length; i++) {
+      String filename = files.elementAt(i);
+      if (i % 1000 == 0) print("matchFilesAndInfo : $i / ${files.length}");
+
+      bool isContained = filenamesFromInfo.contains(filename);
+      if (!isContained) {
+        filesNotUpdated.add(filename);
+        continue;
+      }
+
+      filenamesFromInfo.remove(filename);
+
+      bool? isUpdated = global.infoFromFiles[filename]?.isUpdated;
+
+      if (!isUpdated!) {
+        filesNotUpdated.add(filename);
+        continue;
+      }
+    }
+    if (filesNotUpdated == []) return null;
+    return filesNotUpdated;
+  }
+
   Future<void> addFilesToInfo(List<String>? filenames) async {
-    if (filenames.runtimeType==null || filenames!.isEmpty) filenames = files;
+    if (filenames.runtimeType == null || filenames!.isEmpty) filenames = files;
 
     for (int i = 0; i < filenames!.length; i++) {
       if (i % 100 == 0) print("addFilesToInfo $i / ${filenames.length}");
       String filename = filenames.elementAt(i);
-      global.infoFromFiles[filename] = InfoFromFile();
+      global.infoFromFiles[filename] = InfoFromFile(isUpdated: false);
     }
   }
 
@@ -209,11 +246,17 @@ class DataManager {
     global.setOfDates = dates;
     global.setOfDatetimes = datetimes;
 
-    return [global.setOfDates, global.setOfDatetimes, global.dates, global.datetimes];
+    return [
+      global.setOfDates,
+      global.setOfDatetimes,
+      global.dates,
+      global.datetimes
+    ];
   }
 
   Future<void> updateDateOnInfo(List<String>? filenames) async {
-    if (filenames == null|| filenames!.isEmpty) filenames = global.infoFromFiles.keys.toList();
+    if (filenames == null || filenames!.isEmpty)
+      filenames = global.infoFromFiles.keys.toList();
 
     for (int i = 0; i < filenames.length; i++) {
       String filename = filenames.elementAt(i);
@@ -307,6 +350,8 @@ class DataManager {
           DateTime.parse(formatDatetime(FileStat.statSync(filename).changed));
       global.infoFromFiles[filename]?.datetime = datetime;
       global.infoFromFiles[filename]?.date = formatDate(datetime);
+
+      global.infoFromFiles[filename]?.isUpdated = true;
     }
     return global.infoFromFiles;
   }
@@ -425,7 +470,8 @@ class DataManager {
           '${infoFromFiles[filename]!.date},'
           '${infoFromFiles[filename]!.coordinate?.latitude},'
           '${infoFromFiles[filename]!.coordinate?.longitude},'
-          '${infoFromFiles[filename]!.distance}\n';
+          '${infoFromFiles[filename]!.distance},'
+          '${infoFromFiles[filename]!.isUpdated}\n';
 
       if (i % 100 == 0) {
         await file.writeAsString(stringToWrite, mode: FileMode.append);
@@ -438,7 +484,6 @@ class DataManager {
   }
 
   Future<Map<String, InfoFromFile>> readInfo(List input) async {
-
     final Directory? directory = await getExternalStorageDirectory();
     final File file = File('${directory?.path}/InfoOfFiles.csv');
 
@@ -448,7 +493,7 @@ class DataManager {
     var data = await openFile(file.path);
     // Stopwatch stopwatch2 = Stopwatch()..start();
     for (int i = 1; i < data.length; i++) {
-    // for (int i = 1; i < 100; i++) {
+      // for (int i = 1; i < 100; i++) {
       if (data[i].length < 2) return {};
       // if (i % 1000 == 0)
       // print("readInfo.. $i / ${data.length}, ${data[i]}");
@@ -458,22 +503,22 @@ class DataManager {
 
       int lengthOfData = data_temp.length;
       // print("$i, time elapsed : ${stopwatch.elapsed}");
-      infoFromFile.datetime = parseToDatetime(data_temp[lengthOfData - 5]);
+      infoFromFile.datetime = parseToDatetime(data_temp[lengthOfData - 6]);
       // print("$i, time elapsed : ${stopwatch.elapsed}");
 
-      infoFromFile.date = parseToString(data_temp[lengthOfData - 4]);
+      infoFromFile.date = parseToString(data_temp[lengthOfData - 5]);
 
       // print("$i, time elapsed : ${stopwatch.elapsed}");
       infoFromFile.coordinate = Coordinate(
-          parseToDouble(data_temp[lengthOfData - 3]),
-          parseToDouble(data_temp[lengthOfData - 2]));
+          parseToDouble(data_temp[lengthOfData - 4]),
+          parseToDouble(data_temp[lengthOfData - 3]));
       // print("$i, time elapsed : ${stopwatch.elapsed}");
 
-      infoFromFile.distance = data_temp[lengthOfData - 1] == "null"
+      infoFromFile.distance = data_temp[lengthOfData - 2] == "null"
           ? null
-          : parseToDouble(data_temp[lengthOfData - 1]);
+          : parseToDouble(data_temp[lengthOfData - 2]);
       // print("$i, time elapsed : ${stopwatch.elapsed}");
-
+      infoFromFile.isUpdated = data_temp[lengthOfData -1];
       String filename = data_temp[0];
       // print("$i, time elapsed : ${stopwatch.elapsed}");
 

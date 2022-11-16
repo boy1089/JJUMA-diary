@@ -251,13 +251,15 @@ class _YearPageState extends State<YearPage> {
                                 noteManager.notesOfYear.keys.elementAt(index);
                             return MaterialButton(
                               onPressed: () {
-                                print("text clicked");
-                                buildContext
-                                    .read<NavigationIndexProvider>()
-                                    .setDate(formatDateString(date));
-                                buildContext
-                                    .read<NavigationIndexProvider>()
-                                    .setNavigationIndex(2);
+                                var provider =
+                                Provider.of<NavigationIndexProvider>(context, listen: false);
+                                var yearPageStateProvider =
+                                Provider.of<YearPageStateProvider>(context, listen: false);
+
+                                provider.setNavigationIndex(2);
+                                provider.setDate(formatDateString(date));
+                                Provider.of<DayPageStateProvider>(context, listen: false)
+                                    .setAvailableDates(yearPageStateProvider.availableDates);
                               },
                               // padding: EdgeInsets.all(5),
                               child: Container(
@@ -288,11 +290,11 @@ class _YearPageState extends State<YearPage> {
                             );
                           }))),
             ]),
-        // floatingActionButton: FloatingActionButton(
-        //   onPressed: () {
-        //     print(data);
-        //   },
-        // ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            print(noteManager.notesOfYear);
+          },
+        ),
       ),
     );
   }

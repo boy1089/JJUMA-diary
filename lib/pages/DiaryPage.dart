@@ -7,6 +7,8 @@ import 'package:test_location_2nd/Util/global.dart' as global;
 import 'package:test_location_2nd/Data/DataManager.dart';
 import 'package:test_location_2nd/Note/NoteManager.dart';
 import 'package:test_location_2nd/StateProvider/NavigationIndexStateProvider.dart';
+import 'package:test_location_2nd/StateProvider/YearPageStateProvider.dart';
+import 'package:test_location_2nd/StateProvider/DayPageStateProvider.dart';
 
 class DiaryPage extends StatefulWidget {
   NoteManager noteManager;
@@ -36,12 +38,18 @@ class _DiaryPageState extends State<DiaryPage> {
               String date = noteManager.notes.keys.elementAt(index);
               return MaterialButton(
                 onPressed: () {
-                  buildContext
-                      .read<NavigationIndexProvider>()
-                      .setDate(formatDateString(date));
-                  buildContext
-                      .read<NavigationIndexProvider>()
-                      .setNavigationIndex(2);
+
+                  var provider =
+                  Provider.of<NavigationIndexProvider>(context, listen: false);
+                  var yearPageStateProvider =
+                  Provider.of<YearPageStateProvider>(context, listen: false);
+
+                  provider.setNavigationIndex(2);
+                  provider.setDate(formatDateString(date));
+                  yearPageStateProvider.setAvailableDates(int.parse(date.substring(0, 4)));
+                  Provider.of<DayPageStateProvider>(context, listen: false)
+                      .setAvailableDates(yearPageStateProvider.availableDates);
+
                 },
                 // padding: EdgeInsets.all(5),
                 child: Container(

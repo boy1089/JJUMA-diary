@@ -19,12 +19,15 @@ class YearPageStateProvider with ChangeNotifier {
   List<String> availableDates = [];
   int maxOfSummary = 0;
 
-  void updateData() {
+  void setAvailableDates(int year ){
     availableDates = summaryOfPhotoData.keys.where((element) {
       return element.substring(0, 4) == year.toString();
     }).toList();
-    // availableDates.sort((a, b)=>int.parse(a).compareTo(int.parse(b)));
     availableDates.sort();
+  }
+
+  void updateData() {
+    setAvailableDates(year);
 
     data = List.generate(52, (index) {
       return [

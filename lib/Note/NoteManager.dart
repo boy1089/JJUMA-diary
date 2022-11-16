@@ -9,7 +9,6 @@ import 'package:test_location_2nd/Util/global.dart' as global;
 import 'dart:collection';
 
 class NoteManager {
-
   Map notes = {};
   Map notesOfYear = {};
 
@@ -17,14 +16,15 @@ class NoteManager {
   Map summaryOfNotes = {};
   NoteManager._privateConstructor();
   static final NoteManager _instance = NoteManager._privateConstructor();
-  factory NoteManager(){
+  factory NoteManager() {
     return _instance;
   }
 
   void setNotesOfYear(int year) {
-    if(notes!={})
-      notesOfYear = Map.from(notes)..removeWhere((k, v)=> !k.contains(year.toString()));
-      print("note: $notes");
+    if (notes != {})
+      notesOfYear = Map.from(notes)
+        ..removeWhere((k, v) => !k.contains(year.toString()));
+    print("note: $notes");
   }
 
   Future<void> init() async {
@@ -42,13 +42,13 @@ class NoteManager {
     String note = await file.readAsString();
     return note;
   }
+
   void tryDeleteNote(String date) async {
     final Directory? directory = await getExternalStorageDirectory();
     final String folder = '${directory?.path}/noteData';
     final File file = File('${folder}/${date}_note.csv');
     bool isFileExists = await file.exists();
-    if (isFileExists)
-      file.delete();
+    if (isFileExists) file.delete();
   }
 
   Future<List> getAllFiles() async {

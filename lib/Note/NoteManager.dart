@@ -24,7 +24,7 @@ class NoteManager {
     if (notes != {})
       notesOfYear = Map.from(notes)
         ..removeWhere((k, v) => !k.contains(year.toString()));
-    print("note: $notes");
+    // print("note: $notes");
   }
 
   Future<void> init() async {

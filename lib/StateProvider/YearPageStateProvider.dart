@@ -39,19 +39,22 @@ class YearPageStateProvider with ChangeNotifier {
     });
     if (availableDates.length == 0) return data;
 
+    int weekdayOfJan01 = DateTime(year).weekday;
+    int offsetToMakeWeekendOutward = -2;
+
+    //generate data for graph plot
     data = List.generate(availableDates.length, (index) {
+
       String date = availableDates[index];
-      int days = int.parse(DateFormat("D").format(DateTime.parse(date)));
+
+      int days = int.parse(DateFormat("D").format(DateTime.parse(date))) + weekdayOfJan01 + offsetToMakeWeekendOutward;
+
       int value =
           summaryOfPhotoData[date]! > 200 ? 200 : summaryOfPhotoData[date]!;
-
       double distance = 0.01;
         distance =
              floorDistance(summaryOfLocationData[date]!);
       return [
-        // days / 7.floor() + index % 3 / 4,
-        // (days - 2) % 7,
-
         (days / 7).floor(),
         days % 7,
 
@@ -59,6 +62,8 @@ class YearPageStateProvider with ChangeNotifier {
         distance,
       ];
     });
+
+
     List<int> dummy3 = List<int>.generate(transpose(data)[0].length,
         (index) => int.parse(transpose(data)[2][index].toString()));
     maxOfSummary = dummy3.reduce(max);

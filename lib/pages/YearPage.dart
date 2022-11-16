@@ -33,6 +33,7 @@ class _YearPageState extends State<YearPage> {
   late double availableHeight = physicalHeight -
       global.kHeightOfArbitraryWidgetOnBottom -
       global.kBottomNavigationBarHeight;
+
   late Map layout_yearPage = {
     'graphSize': {
       true: graphSize * global.kMagnificationOnYearPage,
@@ -156,6 +157,7 @@ class _YearPageState extends State<YearPage> {
                       data: data,
                       elements: [
                         PointElement(
+                          position: Varset('week') * (Varset('day')),
                           size: SizeAttr(
                             variable: 'value',
                             values: !product.isZoomIn
@@ -178,18 +180,16 @@ class _YearPageState extends State<YearPage> {
                           //         //
                           //         }")),
                           color: ColorAttr(
-
                             encoder: (tuple) => global
                                 .kColorForYearPage[tuple['distance'].toInt()]
                                 .withAlpha((50 + tuple['value']).toInt()),
-
                           ),
                           selectionChannel: heatmapChannel,
                         ),
                       ],
                       variables: {
                         'week': Variable(
-                          accessor: (List datum) => datum[0] as num,
+                          accessor: (List datum) => datum[0]+0.5 as num,  // 0.5 is added to match the tap area and dot
                           scale: LinearScale(min: 0, max: 52, tickCount: 12),
                         ),
                         'day': Variable(
@@ -245,14 +245,19 @@ class _YearPageState extends State<YearPage> {
                             return MaterialButton(
                               onPressed: () {
                                 var provider =
-                                Provider.of<NavigationIndexProvider>(context, listen: false);
+                                    Provider.of<NavigationIndexProvider>(
+                                        context,
+                                        listen: false);
                                 var yearPageStateProvider =
-                                Provider.of<YearPageStateProvider>(context, listen: false);
+                                    Provider.of<YearPageStateProvider>(context,
+                                        listen: false);
 
                                 provider.setNavigationIndex(2);
                                 provider.setDate(formatDateString(date));
-                                Provider.of<DayPageStateProvider>(context, listen: false)
-                                    .setAvailableDates(yearPageStateProvider.availableDates);
+                                Provider.of<DayPageStateProvider>(context,
+                                        listen: false)
+                                    .setAvailableDates(
+                                        yearPageStateProvider.availableDates);
                               },
                               // padding: EdgeInsets.all(5),
                               child: Container(

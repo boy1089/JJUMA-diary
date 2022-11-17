@@ -12,6 +12,7 @@ Map<String, int> summaryOfPhotoData = {};
 Map<String, int> summaryOfNoteData = {};
 Map<String, double> summaryOfLocationData = {};
 Map<String, double> summaryOfDistanceData = {};
+Map mapForJson = {};
 
 Map locationDataAll = {};
 bool isLocationUpadating = false;

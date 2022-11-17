@@ -23,6 +23,10 @@ import 'package:test_location_2nd/StateProvider/YearPageStateProvider.dart';
 import 'package:test_location_2nd/StateProvider/DayPageStateProvider.dart';
 import 'package:test_location_2nd/StateProvider/NavigationIndexStateProvider.dart';
 
+
+import 'package:ml_dataframe/ml_dataframe.dart';
+import 'dart:convert';
+import 'dart:io';
 class MainPage extends StatefulWidget {
   PermissionManager permissionManager;
   DataManager dataManager;
@@ -189,13 +193,57 @@ class MainPageState extends State<MainPage> {
             ),
           ),
         ),
-        // floatingActionButton: FloatingActionButton(
-        //   onPressed: () async {
-        //     // /print(dataManager.readInfo([]));
-        //     await dataManager.readInfo([]);
-        //     await dataManager.writeInfo(null, true);
-        //   },
-        // ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () async {
+            Stopwatch stopwatch = Stopwatch()..start();
+            // var data = await dataManager.readInfo_test([]);
+            // print(await dataManager.readInfo([]));
+            // print(data);
+            // await dataManager.writeInfo(null, true);
+            // DataFrame test = DataFrame(data as List<List<dynamic>>);
+            // print(test.shape);
+            // print(test['date']);
+            // await dataManager.init();
+            //
+            // for(int i = 0; i<global.infoFromFiles.length; i++){
+            //   var filename = global.infoFromFiles.keys.elementAt(i);
+            //   var infoFromFile = global.infoFromFiles.values.elementAt(i);
+            //   global.mapForJson[filename] = {'datetime' : infoFromFile.datetime.toString(),
+            //   'date' : infoFromFile.date,
+            //   'distance' : infoFromFile.distance,
+            //   'latitude' : infoFromFile.coordinate?.latitude,
+            //   'longitude' : infoFromFile.coordinate?.longitude};
+            //   print("$i");
+            // }
+            // print("time elapsed : ${stopwatch.elapsed}");
+            // await dataManager.writeInfo(null, false);
+            // await dataManager.readInfo([]);
+
+
+            // await dataManager.writeInfoAsJson(global.mapForJson, true);
+            var data = await dataManager.readInfoFromJson();
+            print(data);
+            // test write encode and write speed of json
+            // String json = jsonEncode(global.summaryOfLocationData);
+            // final Directory? directory = await getExternalStorageDirectory();
+            // final File file = File('${directory?.path}/testJson.csv');
+            // await file.writeAsString(json, mode: FileMode.write);
+            // print(json);
+
+            // String jsonString = await file.readAsString();
+            // print(jsonString);
+            // var aaa = jsonDecode(jsonString);
+            // print(aaa);
+            // await dataManager.writeSummaryOfLocation2(null, true);
+            // await dataManager.readSummaryOfLocation();
+            print("time elapsed : ${stopwatch.elapsed}");
+
+
+
+
+
+          },
+        ),
       ),
     );
   }
@@ -220,3 +268,8 @@ class MainPageState extends State<MainPage> {
     }
   }
 }
+
+//
+// Class testData {
+//   String
+// }

@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:glob/list_local_fs.dart';
 import 'package:flutter/foundation.dart';
@@ -37,30 +38,30 @@ class DataManager {
 
     //get list of image files from local. --> update new images
     files = await getAllFiles();
-    print("time elapsed : ${stopwatch.elapsed}");
+    print("getAllFiles done, time elapsed : ${stopwatch.elapsed}");
     //read previously processed Info
     await readInfo([]);
-    print("time elapsed : ${stopwatch.elapsed}");
+    print("readInfo done, time elapsed : ${stopwatch.elapsed}");
     await readSummaryOfPhoto();
-    print("time elapsed : ${stopwatch.elapsed}");
+    print("readSummaryOfPhoto done, time elapsed : ${stopwatch.elapsed}");
     await readSummaryOfLocation();
-    print("time elapsed : ${stopwatch.elapsed}");
+    print("readSummaryOfLocation done, time elapsed : ${stopwatch.elapsed}");
     // find the files which are in local but not in Info
     // if (global.infoFromFiles.length > 1000)
-      // filesNotUpdated = await matchFilesAndInfo();
+    // filesNotUpdated = await matchFilesAndInfo();
     // filesNotUpdated = await matchFilesAndInfo2();
-      filesNotUpdated = files;
+    filesNotUpdated = files;
 
     print("time elapsed : ${stopwatch.elapsed}");
     // update info which are not updated
     await addFilesToInfo(filesNotUpdated);
-    print("time elapsed : ${stopwatch.elapsed}");
+    print("addFilesToinfo done, time elapsed : ${stopwatch.elapsed}");
 
     await updateDateOnInfo(filesNotUpdated);
-    print("time elapsed : ${stopwatch.elapsed}");
+    print("updateDateOnInfo done, time elapsed : ${stopwatch.elapsed}");
 
     var result = await compute(updateDatesFromInfo, [global.infoFromFiles]);
-    print("time elapsed : ${stopwatch.elapsed}");
+    print("updateDatesFromInfo done, time elapsed : ${stopwatch.elapsed}");
 
     global.setOfDates = result[0];
     global.setOfDatetimes = result[1];
@@ -71,7 +72,7 @@ class DataManager {
     //find the dates which are out of date based on the number of photo.
     global.summaryOfPhotoData = await compute(updateSummaryOfPhotoFromInfo,
         [global.setOfDates, global.summaryOfPhotoData]);
-    print("time elapsed : ${stopwatch.elapsed}");
+    print("updateSummaryOfPhoto done, time elapsed : ${stopwatch.elapsed}");
 
     print("DataManager initialization done");
   }
@@ -108,7 +109,7 @@ class DataManager {
         await writeInfo(null, true);
         await writeSummaryOfPhoto2(null, true);
       }
-      if (i%10==0){
+      if (i % 10 == 0) {
         global.summaryOfLocationData = await compute(
             updateSummaryOfLocationDataFromInfo_compute, [
           global.setOfDates,
@@ -117,8 +118,6 @@ class DataManager {
         ]);
         await writeSummaryOfLocation2(null, true);
       }
-
-
     }
     //update the summaryOflocation only on the specific date.
     global.summaryOfPhotoData = await compute(updateSummaryOfPhotoFromInfo,
@@ -219,9 +218,9 @@ class DataManager {
     if (filenames.runtimeType == null || filenames!.isEmpty) filenames = files;
 
     for (int i = 0; i < filenames!.length; i++) {
-      if (i % 100 == 0) print("addFilesToInfo $i / ${filenames.length}");
+      // if (i % 100 == 0) print("addFilesToInfo $i / ${filenames.length}");
       String filename = filenames.elementAt(i);
-      if(global.infoFromFiles[filename]==null) {
+      if (global.infoFromFiles[filename] == null) {
         print("info not found during addFilestoInfo");
         global.infoFromFiles[filename] = InfoFromFile(isUpdated: false);
       }
@@ -271,9 +270,9 @@ class DataManager {
             DateTime.parse(inferredDatetime);
         global.infoFromFiles[filename]?.date = inferredDatetime.substring(0, 8);
 
-        if (i % 1000 == 0)
-          print("updateDateOnInfo : $i / ${filenames.length},"
-              "$filename, ${global.infoFromFiles[filename].toString()}");
+        // if (i % 1000 == 0)
+        //   print("updateDateOnInfo : $i / ${filenames.length},"
+        //       "$filename, ${global.infoFromFiles[filename].toString()}");
       }
       // print("updateDateOnInfo : $i / ${filenames.length},"
       //     "$filename, ${global.infoFromFiles[filename].toString()}");
@@ -452,6 +451,15 @@ class DataManager {
     return files;
   }
 
+  Future<void> writeInfoAsJson(Map input, bool overwrite) async {
+    if (overwrite == null) overwrite = false;
+
+    final Directory? directory = await getExternalStorageDirectory();
+    final File file = File('${directory?.path}/InfoOfFiles.json');
+
+    await file.writeAsString(jsonEncode(input));
+  }
+
   Future<void> writeInfo(List<String>? filenames, bool overwrite) async {
     if (overwrite == null) overwrite = false;
     if (filenames == null) filenames = global.infoFromFiles.keys.toList();
@@ -487,6 +495,18 @@ class DataManager {
     await file.writeAsString(stringToWrite, mode: FileMode.append);
   }
 
+
+  Future<Map> readInfoFromJson() async {
+    final Directory? directory = await getExternalStorageDirectory();
+    final File file = File('${directory?.path}/InfoOfFiles.json');
+
+    bool isFileExist = await file.exists();
+    if (!isFileExist) return {};
+
+    var data = await file.readAsString();
+    return jsonDecode(data);
+
+  }
   Future<Map<String, InfoFromFile>> readInfo(List input) async {
     final Directory? directory = await getExternalStorageDirectory();
     final File file = File('${directory?.path}/InfoOfFiles.csv');
@@ -523,7 +543,8 @@ class DataManager {
           : parseToDouble(data_temp[lengthOfData - 2]);
       // print("$i, time elapsed : ${stopwatch.elapsed}");
       // print(data_temp['lengthOfData']);
-      infoFromFile.isUpdated =data_temp[lengthOfData -1].toLowerCase()=='true';
+      infoFromFile.isUpdated =
+          data_temp[lengthOfData - 1].toLowerCase() == 'true';
 
       String filename = data_temp[0];
       // print("$i, time elapsed : ${stopwatch.elapsed}");
@@ -581,8 +602,8 @@ class DataManager {
     var data = await openFile(file.path);
     for (int i = 1; i < data.length; i++) {
       if (data[i].length < 2) return;
-      if (i % 100 == 0)
-        print("readSummaryOfLocation.. $i / ${data.length}, ${data[i]}");
+      // if (i % 100 == 0)
+      //   print("readSummaryOfLocation.. $i / ${data.length}, ${data[i]}");
       global.summaryOfLocationData[data[i][0].toString()] = data[i][1];
     }
   }
@@ -622,8 +643,8 @@ class DataManager {
     var data = await openFile(file.path);
     for (int i = 1; i < data.length; i++) {
       if (data[i].length < 2) return;
-      if (i % 100 == 0)
-        print("readSummaryOfPhoto.. $i / ${data.length}, ${data[i]}");
+      // if (i % 100 == 0)
+      //   print("readSummaryOfPhoto.. $i / ${data.length}, ${data[i]}");
       global.summaryOfPhotoData[data[i][0].toString()] = data[i][1];
     }
   }

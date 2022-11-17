@@ -61,7 +61,7 @@ class DataManager {
     await updateDateOnInfo(filesNotUpdated);
     print("updateDateOnInfo done, time elapsed : ${stopwatch.elapsed}");
 
-    var result = await compute(updateDatesFromInfo, [global.infoFromFiles]);
+    var result = await compute(updateDatesFromInfo, [global.infoFromFiles, filesNotUpdated]);
     print("updateDatesFromInfo done, time elapsed : ${stopwatch.elapsed}");
 
     global.setOfDates = result[0];
@@ -81,7 +81,7 @@ class DataManager {
   void executeSlowProcesses() async {
     Stopwatch stopwatch = new Stopwatch()..start();
 
-    if (filesNotUpdated == null) return;
+    if (filesNotUpdated == []) return;
 
     int lengthOfFiles = filesNotUpdated!.length;
     for (int i = 0; i < lengthOfFiles / 100.floor(); i++) {
@@ -97,7 +97,7 @@ class DataManager {
           [partOfFilesNotupdated, global.infoFromFiles]);
 
       if (i % 5 == 0) {
-        var result = await compute(updateDatesFromInfo, [global.infoFromFiles]);
+        var result = await compute(updateDatesFromInfo, [global.infoFromFiles, filesNotUpdated]);
         global.setOfDates = result[0];
         global.setOfDatetimes = result[1];
         global.dates = result[2];
@@ -255,21 +255,29 @@ class DataManager {
   }
 
   Future<List> updateDatesFromInfo(List input) async {
+    Stopwatch stopwatch = Stopwatch()..start();
     if (input.isNotEmpty) {
       global.infoFromFiles = input[0];
+      filesNotUpdated = input[1];
     }
+
+    print("updateDatesFromInfo aa: ${stopwatch.elapsed}");
     List<String?> dates = [];
     List<DateTime?> datetimes = [];
 
     List<InfoFromFile> values = global.infoFromFiles.values.toList();
 
-    Stopwatch stopwatch = Stopwatch()..start();
-    for (int i = 0; i < values.length; i++) {
-      InfoFromFile value = values.elementAt(i);
-      dates.add(value.date);
-      datetimes.add(value.datetime);
-    }
+    print("updateDatesFromInfo0 : ${stopwatch.elapsed}");
 
+    for (int i = 0; i < values.length; i++) {
+      // InfoFromFile value = values.elementAt(i);
+      // dates.add(value.date);
+      // datetimes.add(value.datetime);
+      // InfoFromFile value = values.elementAt(i);
+      dates.add(values.elementAt(i).date);
+      datetimes.add(values.elementAt(i).datetime);
+    }
+    print("updateDatesFromInfo 1: ${stopwatch.elapsed}");
 
     global.dates = [...dates];
     global.datetimes = [...datetimes];
@@ -278,7 +286,7 @@ class DataManager {
     datetimes.removeWhere((i) => i == null);
     global.setOfDates = dates;
     global.setOfDatetimes = datetimes;
-
+    print("updateDatesFromInfo 2: ${stopwatch.elapsed}");
     return [
       global.setOfDates,
       global.setOfDatetimes,

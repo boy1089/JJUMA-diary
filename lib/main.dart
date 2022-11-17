@@ -71,10 +71,10 @@ class _MyAppState extends State<MyApp> {
   Future initApp = Future.delayed(const Duration(seconds: 5));
 
   _MyAppState() {
-    // sensorRecorder = SensorRecorder(permissionManager);
-    // sensorRecorder.init();
-    // audioRecorder = AudioRecorder(permissionManager);
-    // audioRecorder.init();
+    sensorRecorder = SensorRecorder(permissionManager);
+    sensorRecorder.init();
+    audioRecorder = AudioRecorder(permissionManager);
+    audioRecorder.init();
 
     photoDataManager = PhotoDataManager();
     locationDataManager = LocationDataManager();
@@ -96,7 +96,7 @@ class _MyAppState extends State<MyApp> {
     print("init process, time elapsed : ${stopwatch.elapsed}");
     isInitializationDone = true;
     print("init done,executed in ${stopwatch.elapsed}");
-    // dataManager.executeSlowProcesses();
+    dataManager.executeSlowProcesses();
     FlutterNativeSplash.remove();
     return 0;
   }

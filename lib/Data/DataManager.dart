@@ -87,7 +87,7 @@ class DataManager {
     int lengthOfFiles = filesNotUpdated!.length;
 
     for (int i = 0; i < lengthOfFiles / 100.floor(); i++) {
-    // for (int i = 0; i < 4; i++) {
+      // for (int i = 0; i < 4; i++) {
       print("executingSlowProcesses... $i / ${lengthOfFiles / 100.floor()}");
 
       //part of Files
@@ -122,8 +122,8 @@ class DataManager {
         //   global.infoFromFiles
         // ]);
         global.summaryOfLocationData = await compute(
-          updateSummaryOfLocationDataFromInfo2_compute, [global.infoFromFiles]
-        );
+            updateSummaryOfLocationDataFromInfo2_compute,
+            [global.infoFromFiles]);
 
         await writeSummaryOfLocation2(null, true);
       }
@@ -205,7 +205,6 @@ class DataManager {
     Map info = {...global.infoFromFiles};
     int j = 0;
     for (int i = 0; i < files.length; i++) {
-
       String filename = files.elementAt(i);
       int sublistIndex = j + 100 < filenamesFromInfo.length
           ? j + 100
@@ -225,7 +224,6 @@ class DataManager {
         filesNotUpdated.add(filename);
         continue;
       }
-
     }
     if (filesNotUpdated == []) return null;
     return filesNotUpdated;
@@ -243,7 +241,7 @@ class DataManager {
       // if (i % 100 == 0) print("addFilesToInfo $i / ${filenames.length}");
       String filename = filenames.elementAt(i);
       if (global.infoFromFiles[filename] == null) {
-        print("info not found during addFilestoInfo");
+        // print("info not found during addFilestoInfo");
         global.infoFromFiles[filename] = InfoFromFile(isUpdated: false);
       }
     }
@@ -388,7 +386,6 @@ class DataManager {
           DateTime.parse(formatDatetime(FileStat.statSync(filename).changed));
       global.infoFromFiles[filename]?.datetime = datetime;
       global.infoFromFiles[filename]?.date = formatDate(datetime);
-
     }
     return global.infoFromFiles;
   }
@@ -399,7 +396,6 @@ class DataManager {
       dates = input[0];
       global.summaryOfPhotoData = input[1];
     }
-    Stopwatch stopwatch = Stopwatch()..start();
     // dates.removeWhere((i) => i == null);
     Map<String, int> counts = {};
 
@@ -419,8 +415,8 @@ class DataManager {
     return counts;
   }
 
-
-  Future<Map<String, double>> updateSummaryOfLocationDataFromInfo2_compute(List input) async {
+  Future<Map<String, double>> updateSummaryOfLocationDataFromInfo2_compute(
+      List input) async {
     global.infoFromFiles = input[0];
     var infoFromFiles = [...global.infoFromFiles.values];
     Stopwatch stopwatch = Stopwatch()..start();
@@ -434,23 +430,24 @@ class DataManager {
       if (date == null) continue;
 
       bool isContained = distances.containsKey(date);
-      bool isNull = infoFromFile.distance == null? true:false;
+      bool isNull = infoFromFile.distance == null ? true : false;
 
-      if(isNull){
+      if (isNull) {
         continue;
       }
 
       if (isContained) {
-        distances[date] = (distances[date]!>infoFromFile.distance! ? distances[date] : infoFromFile.distance)!;
+        distances[date] = (distances[date]! > infoFromFile.distance!
+            ? distances[date]
+            : infoFromFile.distance)!;
         continue;
       }
       distances[date] = infoFromFile.distance!;
     }
     return distances;
-
   }
 
-  Map<String, double?> updateSummaryOfLocationDataFromInfo2(){
+  Map<String, double?> updateSummaryOfLocationDataFromInfo2() {
     var infoFromFiles = [...global.infoFromFiles.values];
     Map<String, double?> distances = {};
 
@@ -460,20 +457,21 @@ class DataManager {
       if (date == null) continue;
 
       bool isContained = distances.containsKey(date);
-      bool isNull = infoFromFile.distance == null? true:false;
+      bool isNull = infoFromFile.distance == null ? true : false;
 
-      if(isNull){
+      if (isNull) {
         continue;
       }
 
       if (isContained) {
-        distances[date] = distances[date]!>infoFromFile.distance! ? distances[date] : infoFromFile.distance;
+        distances[date] = distances[date]! > infoFromFile.distance!
+            ? distances[date]
+            : infoFromFile.distance;
         continue;
       }
       distances[date] = infoFromFile.distance;
     }
     return distances;
-
   }
 
   Future<Map> updateSummaryOfLocationDataFromInfo(

@@ -198,82 +198,14 @@ class MainPageState extends State<MainPage> {
           onPressed: () async {
             Stopwatch stopwatch = Stopwatch()..start();
             print("started");
-            // var data = await dataManager.readInfo_test([]);
-            // print(await dataManager.readInfo([]));
-            // print(data);
-            // await dataManager.writeInfo(null, true);
-            // DataFrame test = DataFrame(data as List<List<dynamic>>);
-            // print(test.shape);
-            // print(test['date']);
-            // await dataManager.init();
-            //
-            // for(int i = 0; i<global.infoFromFiles.length; i++){
-            //   var filename = global.infoFromFiles.keys.elementAt(i);
-            //   var infoFromFile = global.infoFromFiles.values.elementAt(i);
-            //   global.mapForJson[filename] = {'datetime' : infoFromFile.datetime.toString(),
-            //   'date' : infoFromFile.date,
-            //   'distance' : infoFromFile.distance,
-            //   'latitude' : infoFromFile.coordinate?.latitude,
-            //   'longitude' : infoFromFile.coordinate?.longitude};
-            //   print("$i");
-            // }
-            // print("time elapsed : ${stopwatch.elapsed}");
-            // await dataManager.writeInfo(null, true);
-            // await dataManager.readInfo([]);
 
+            global.infoFromFiles.forEach((key, value) {
+              if(value.date == "20160828"){
+                print("$key, $value");
+              }
+            });
 
-            // await dataManager.writeInfoAsJson(global.mapForJson, true);
-            // var data = await dataManager.readInfoFromJson();
-            // print(data);
-            // await dataManager.writeInfoAsJson(null, true);
-            // await dataManager.readInfoFromJson();
-            // print(global.infoFromFiles);
-
-            // test write encode and write speed of json
-            // String json = jsonEncode(global.summaryOfLocationData);
-            // final Directory? directory = await getExternalStorageDirectory();
-            // final File file = File('${directory?.path}/testJson.csv');
-            // await file.writeAsString(json, mode: FileMode.write);
-            // print(json);
-
-            // String jsonString = await file.readAsString();
-            // print(jsonString);
-            // var aaa = jsonDecode(jsonString);
-            // print(aaa);
-            // await dataManager.writeSummaryOfLocation2(null, true);
-            // await dataManager.readSummaryOfLocation();
-            // await dataManager.init();
-            // print(global.summaryOfLocationData);
-            // var a =await dataManager.updateSummaryOfPhotoFromInfo([]);
-            // print(a);
-            // print('bb');
-            // await dataManager.updateDatesFromInfo([]);
-            // var result = await compute(dataManager.updateDatesFromInfo, [global.infoFromFiles]);
-            // print(dataManager.files);
-            // var a= [...dataManager.files];
-            //
-            // a.removeWhere((item) {
-            //   print(item);
-            //   return a.sublist(0, 10).contains(item);
-            // });
-            // dataManager.executeSlowProcesses();
-
-
-            // print('a');
-            // var a = await dataManager.matchFilesAndInfo2();
-            // dataManager.executeSlowProcesses();
-            // print(global.infoFromFiles.values.elementAt(20000).isUpdated);
-            // var a = dataManager.updateSummaryOfLocationDataFromInfo2();
-            await dataManager.readSummaryOfLocation();
-            // global.summaryOfLocationData.forEach((key, value) {print(value);});
-            // global.summaryOfPhotoData.forEach((key, value) { print(value);});
-            // await dataManager.readSummaryOfLocation();
-            // print(dataManager.filesNotUpdated);
-            // print('bbb');
-            // print(global.infoFromFiles.keys);
-            // print(global.infoFromFiles.keys.contains(dataManager.files[0]));
             print("time elapsed : ${stopwatch.elapsed}");
-
 
           },
         ),

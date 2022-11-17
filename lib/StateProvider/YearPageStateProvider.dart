@@ -48,16 +48,16 @@ class YearPageStateProvider with ChangeNotifier {
       String date = availableDates[index];
 
       int days = int.parse(DateFormat("D").format(DateTime.parse(date))) + weekdayOfJan01 + offsetToMakeWeekendOutward;
-
+      print("updateData, $date");
       int value =
           summaryOfPhotoData[date]! > 200 ? 200 : summaryOfPhotoData[date]!;
-      double distance = 0.01;
+      double distance = 4;
+      if(summaryOfLocationData.containsKey(date))
         distance =
-             floorDistance(summaryOfLocationData[date]!);
+               floorDistance(summaryOfLocationData[date]!);
       return [
         (days / 7).floor(),
         days % 7,
-
         value,
         distance,
       ];

@@ -196,6 +196,7 @@ class MainPageState extends State<MainPage> {
         floatingActionButton: FloatingActionButton(
           onPressed: () async {
             Stopwatch stopwatch = Stopwatch()..start();
+            print("started");
             // var data = await dataManager.readInfo_test([]);
             // print(await dataManager.readInfo([]));
             // print(data);
@@ -203,7 +204,7 @@ class MainPageState extends State<MainPage> {
             // DataFrame test = DataFrame(data as List<List<dynamic>>);
             // print(test.shape);
             // print(test['date']);
-            await dataManager.init();
+            // await dataManager.init();
             //
             // for(int i = 0; i<global.infoFromFiles.length; i++){
             //   var filename = global.infoFromFiles.keys.elementAt(i);
@@ -240,7 +241,22 @@ class MainPageState extends State<MainPage> {
             // print(aaa);
             // await dataManager.writeSummaryOfLocation2(null, true);
             // await dataManager.readSummaryOfLocation();
+            await dataManager.init();
+            // print(dataManager.files);
+            // var a= [...dataManager.files];
+            //
+            // a.removeWhere((item) {
+            //   print(item);
+            //   return a.sublist(0, 10).contains(item);
+            // });
+            //
+            // print('a');
+            // await dataManager.matchFilesAndInfo2();
+            print('bbb');
+            // print(global.infoFromFiles.keys);
+            // print(global.infoFromFiles.keys.contains(dataManager.files[0]));
             print("time elapsed : ${stopwatch.elapsed}");
+
 
 
 

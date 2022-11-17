@@ -40,8 +40,8 @@ class DataManager {
     files = await getAllFiles();
     print("getAllFiles done, time elapsed : ${stopwatch.elapsed}");
     //read previously processed Info
-    await readInfo([]);
-    // await readInfoFromJson();
+    // await readInfo([]);
+    await readInfoFromJson();
     print("readInfo done, time elapsed : ${stopwatch.elapsed}");
     await readSummaryOfPhoto();
     print("readSummaryOfPhoto done, time elapsed : ${stopwatch.elapsed}");
@@ -50,8 +50,8 @@ class DataManager {
     // find the files which are in local but not in Info
     // if (global.infoFromFiles.length > 1000)
     // filesNotUpdated = await matchFilesAndInfo();
-    // filesNotUpdated = await matchFilesAndInfo2();
-    filesNotUpdated = files;
+    filesNotUpdated = await matchFilesAndInfo2();
+    // filesNotUpdated = files;
 
     print("time elapsed : ${stopwatch.elapsed}");
     // update info which are not updated
@@ -157,6 +157,7 @@ class DataManager {
           newFiles.length, (index) => newFiles.elementAt(index).path));
     }
     files = files.where((element) => !element.contains('thumbnail')).toList();
+    files.sort((a, b) => a.compareTo(b));
     return files;
   }
 
@@ -193,28 +194,51 @@ class DataManager {
   Future<List<String>?> matchFilesAndInfo2() async {
     List<String>? filesNotUpdated = [];
     List<String> filenamesFromInfo = global.infoFromFiles.keys.toList();
+    filenamesFromInfo.sort((a, b) => a.compareTo(b));
     Map info = {...global.infoFromFiles};
+    int j = 0;
     for (int i = 0; i < files.length; i++) {
-      String filename = files.elementAt(i);
-      if (i % 1000 == 0) print("matchFilesAndInfo : $i / ${files.length}");
+      // for (int i = 0; i < 1000; i++) {
 
-      bool isContained = filenamesFromInfo.contains(filename);
-      if (!isContained) {
+        String filename = files.elementAt(i);
+      // if (i % 1000 == 0) {
+      //   print("matchFilesAndInfo : $i / ${files.length}");
+      // }
+      // Stopwatch stopwatch = Stopwatch()..start();
+
+      // files are searched in limited area
+      int sublistIndex = j+100< files.length ? j+100: files.length;
+      bool index = filenamesFromInfo.sublist(j, sublistIndex).contains(filename);
+      // print("match file1, ${stopwatch.elapsed}");
+
+      if (!index ) {
+        print("added");
         filesNotUpdated.add(filename);
         continue;
       }
+      j+=1;
+      // print("match file2, ${stopwatch.elapsed}");
 
-      filenamesFromInfo.remove(filename);
+      // filenamesFromInfo.removeAt(index);
+      // print("match file3, ${stopwatch.elapsed}");
 
       bool? isUpdated = info[filename]?.isUpdated;
+      // print("match file4, ${stopwatch.elapsed}");
 
       if (!isUpdated!) {
         filesNotUpdated.add(filename);
         continue;
       }
+      // print("match file5, ${stopwatch.elapsed}");
+
     }
     if (filesNotUpdated == []) return null;
     return filesNotUpdated;
+  }
+
+  Future<List<String>?> matchFilesAndInfo3() async {
+    List<String>? filesNotUpdated = [];
+    List<String> filenamesFromInfo = global.infoFromFiles.keys.toList();
   }
 
   Future<void> addFilesToInfo(List<String>? filenames) async {
@@ -468,10 +492,9 @@ class DataManager {
       String filename = filenames.elementAt(i);
       Map mapOfInfo = infoFromFiles[filename]!.toMap();
       test[filename] = mapOfInfo;
-  }
+    }
     file.writeAsString(jsonEncode(test));
   }
-
 
   Future<void> writeInfo(List<String>? filenames, bool overwrite) async {
     if (overwrite == null) overwrite = false;
@@ -508,7 +531,6 @@ class DataManager {
     await file.writeAsString(stringToWrite, mode: FileMode.append);
   }
 
-
   Future<Map<String, InfoFromFile>> readInfoFromJson() async {
     final Directory? directory = await getExternalStorageDirectory();
     final File file = File('${directory?.path}/InfoOfFiles.json');
@@ -516,20 +538,17 @@ class DataManager {
     bool isFileExist = await file.exists();
     if (!isFileExist) return {};
     var data = await file.readAsString();
-    Map mapFromJson= jsonDecode(data);
+    Map mapFromJson = jsonDecode(data);
 
     Map<String, InfoFromFile> test = {};
     List filenames = mapFromJson.keys.toList();
     for (int i = 0; i < mapFromJson.length; i++) {
       String filename = filenames.elementAt(i);
-      test[filename] = InfoFromFile(
-          map : mapFromJson[filename]
-      );
+      test[filename] = InfoFromFile(map: mapFromJson[filename]);
     }
     global.infoFromFiles = test;
     return test;
   }
-
 
   Future<Map<String, InfoFromFile>> readInfo(List input) async {
     final Directory? directory = await getExternalStorageDirectory();

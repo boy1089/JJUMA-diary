@@ -263,8 +263,11 @@ class MainPageState extends State<MainPage> {
             // var a = await dataManager.matchFilesAndInfo2();
             // dataManager.executeSlowProcesses();
             // print(global.infoFromFiles.values.elementAt(20000).isUpdated);
-            var a = dataManager.updateSummaryOfLocationDataFromInfo2();
-            print(a);
+            // var a = dataManager.updateSummaryOfLocationDataFromInfo2();
+            await dataManager.readSummaryOfLocation();
+            // global.summaryOfLocationData.forEach((key, value) {print(value);});
+            // global.summaryOfPhotoData.forEach((key, value) { print(value);});
+            // await dataManager.readSummaryOfLocation();
             // print(dataManager.filesNotUpdated);
             // print('bbb');
             // print(global.infoFromFiles.keys);

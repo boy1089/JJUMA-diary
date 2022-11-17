@@ -214,7 +214,6 @@ class DataManager {
           filenamesFromInfo.sublist(j, sublistIndex).contains(filename);
 
       if (!isContained) {
-        print("added");
         filesNotUpdated.add(filename);
         continue;
       }
@@ -710,6 +709,10 @@ class DataManager {
       if (data[i].length < 2) return;
       // if (i % 100 == 0)
       //   print("readSummaryOfLocation.. $i / ${data.length}, ${data[i]}");
+      if ([null, "null"].contains(data[i][1])) {
+        global.summaryOfLocationData[data[i][0].toString()] = 0.0;
+        continue;
+      }
       global.summaryOfLocationData[data[i][0].toString()] = data[i][1];
     }
   }

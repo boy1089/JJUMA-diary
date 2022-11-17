@@ -204,8 +204,10 @@ class MainPageState extends State<MainPage> {
                 print("$key, $value");
               }
             });
-
-            print("time elapsed : ${stopwatch.elapsed}");
+            print(dayPageStateProvider.photoForPlot.length);
+            // print(dayPageStateProvider.photoData);
+            // print("${DateTime.fromMillisecondsSinceEpoch(1472344130169)}");
+            // print("time elapsed : ${stopwatch.elapsed}");
 
           },
         ),

@@ -58,7 +58,7 @@ class _DayPageState extends State<DayPage> {
     var provider = Provider.of<DayPageStateProvider>(context, listen: false);
     await provider.updateDataForUi();
 
-    myTextController.text = note;
+    myTextController.text = provider.note;
     print("fetchData done, ${provider.photoForPlot}");
 
     photoForPlot = []..addAll(provider.photoForPlot);

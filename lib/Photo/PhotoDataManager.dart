@@ -77,8 +77,7 @@ class PhotoDataManager {
   Future getPhotoOfDate(String date) async {
     Stopwatch stopwatch = Stopwatch()..start();
 
-    List<int?> indexOfDate =
-        List<int?>.generate(global.dates.length, (i) {
+    List<int?> indexOfDate = List<int?>.generate(global.dates.length, (i) {
       if (global.dates.elementAt(i) == date) return i;
       return null;
     });
@@ -87,8 +86,8 @@ class PhotoDataManager {
     indexOfDate = indexOfDate.whereType<int>().toList();
     print("time elapsed2 : ${stopwatch.elapsed}");
     List files = global.infoFromFiles.keys.toList();
-    List filesOfDate = List.generate(indexOfDate.length,
-        (i) => files.elementAt(indexOfDate.elementAt(i)!));
+    List filesOfDate = List.generate(
+        indexOfDate.length, (i) => files.elementAt(indexOfDate.elementAt(i)!));
 
     print("time elapsed3 : ${stopwatch.elapsed}");
     List dateOfDate = List.generate(
@@ -101,7 +100,8 @@ class PhotoDataManager {
     // }
 
     List list = transpose([dateOfDate, filesOfDate]);
-    list.sort((a, b) =>int.parse(a[0].substring(9, 13)).compareTo(int.parse(b[0].substring(9, 13))));
+    list.sort((a, b) => int.parse(a[0].substring(9, 13))
+        .compareTo(int.parse(b[0].substring(9, 13))));
     // list.sort((a, b) =>int.parse(a[0].substring(9, 13)).compareTo(int.parse(b[0].substring(9, 13))));
 
     print("getPhotoOfDate, $list");

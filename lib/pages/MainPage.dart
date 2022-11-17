@@ -12,12 +12,10 @@ import 'package:test_location_2nd/pages/SettingPage.dart';
 import 'package:test_location_2nd/Permissions/PermissionManager.dart';
 import 'package:test_location_2nd/Data/DataManager.dart';
 import 'package:provider/provider.dart';
-import 'package:test_location_2nd/StateProvider/StateProvider.dart';
 import 'package:test_location_2nd/Sensor/SensorDataManager.dart';
 import 'DayPage.dart';
 import 'package:test_location_2nd/Photo/PhotoDataManager.dart';
 import 'package:test_location_2nd/Note/NoteManager.dart';
-import 'package:path_provider/path_provider.dart';
 import 'DiaryPage.dart';
 import 'YearPageView.dart';
 import 'DayPageView.dart';
@@ -25,6 +23,7 @@ import 'DayPageView.dart';
 import 'package:test_location_2nd/StateProvider/YearPageStateProvider.dart';
 import 'package:test_location_2nd/StateProvider/DayPageStateProvider.dart';
 import 'package:test_location_2nd/StateProvider/NavigationIndexStateProvider.dart';
+import 'package:test_location_2nd/Data/Directories.dart';
 
 class MainPage extends StatefulWidget {
   PermissionManager permissionManager;
@@ -195,14 +194,7 @@ class MainPageState extends State<MainPage> {
         floatingActionButton: FloatingActionButton(
           onPressed: () async {
             Stopwatch stopwatch = Stopwatch()..start();
-            // print("started");
-
-
-            // dataManager.getAllFiles2();
-            // print(dayPageStateProvider.photoData);
-            // print("${DateTime.fromMillisecondsSinceEpoch(1472344130169)}");
-            // print("time elapsed : ${stopwatch.elapsed}");
-
+            print(Directories.selectedDirectories);
           },
         ),
       ),

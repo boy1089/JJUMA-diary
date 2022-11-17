@@ -62,6 +62,7 @@ dependencies:
   flutter_keyboard_visibility: ^5.4.0
   flutter_keyboard_size:
   flutter_native_splash:
+  external_path:
 
 dev_dependencies:
   flutter_test:

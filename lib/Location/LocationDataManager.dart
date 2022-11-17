@@ -12,13 +12,8 @@ import 'dart:io';
 import 'package:csv/csv.dart';
 import 'dart:convert';
 import 'package:test_location_2nd/Util/Util.dart';
+import 'package:test_location_2nd/Data/Directories.dart';
 
-List<String> pathsToPhoto = [
-  "/storage/emulated/0/DCIM",
-  "/storage/emulated/0/DCIM/Camera",
-  "/storage/emulated/0/Pictures",
-  "/storage/emulated/0/Pictures/*",
-];
 
 class LocationDataManager {
   List<String> files = [];

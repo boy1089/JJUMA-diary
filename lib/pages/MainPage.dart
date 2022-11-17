@@ -1,6 +1,8 @@
 import 'package:animations/animations.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:location/location.dart';
 import 'package:test_location_2nd/Location/AddressFinder.dart';
 import 'package:test_location_2nd/Location/LocationDataManager.dart';
@@ -24,10 +26,6 @@ import 'package:test_location_2nd/StateProvider/YearPageStateProvider.dart';
 import 'package:test_location_2nd/StateProvider/DayPageStateProvider.dart';
 import 'package:test_location_2nd/StateProvider/NavigationIndexStateProvider.dart';
 
-
-import 'package:ml_dataframe/ml_dataframe.dart';
-import 'dart:convert';
-import 'dart:io';
 class MainPage extends StatefulWidget {
   PermissionManager permissionManager;
   DataManager dataManager;
@@ -197,14 +195,10 @@ class MainPageState extends State<MainPage> {
         floatingActionButton: FloatingActionButton(
           onPressed: () async {
             Stopwatch stopwatch = Stopwatch()..start();
-            print("started");
+            // print("started");
 
-            global.infoFromFiles.forEach((key, value) {
-              if(value.date == "20160828"){
-                print("$key, $value");
-              }
-            });
-            print(dayPageStateProvider.photoForPlot.length);
+
+            // dataManager.getAllFiles2();
             // print(dayPageStateProvider.photoData);
             // print("${DateTime.fromMillisecondsSinceEpoch(1472344130169)}");
             // print("time elapsed : ${stopwatch.elapsed}");

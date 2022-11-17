@@ -11,14 +11,15 @@ import 'package:test_location_2nd/Photo/PhotoDataManager.dart';
 import 'package:test_location_2nd/Location/LocationDataManager.dart';
 import "package:test_location_2nd/Location/Coordinate.dart";
 import 'infoFromFile.dart';
-
-List<String> pathsToPhoto = [
-  "/storage/emulated/0/DCIM",
-  "/storage/emulated/0/DCIM/Camera",
-  "/storage/emulated/0/Pictures",
-  "/storage/emulated/0/Pictures/*",
-  "/storage/emulated/0/Pictures/*/*",
-];
+import 'package:test_location_2nd/Data/Directories.dart';
+//
+// List<String> Directories.selectedDirectories = [
+//   "/storage/emulated/0/DCIM",
+//   "/storage/emulated/0/DCIM/Camera",
+//   "/storage/emulated/0/Pictures",
+//   "/storage/emulated/0/Pictures/*",
+//   "/storage/emulated/0/Pictures/*/*",
+// ];
 
 class DataManager {
   Map<String, int> summaryOfPhotoData = {};
@@ -152,8 +153,8 @@ class DataManager {
   Future<List<String>> getAllFiles() async {
     List<String> files = [];
     List newFiles = [];
-    for (int i = 0; i < pathsToPhoto.length; i++) {
-      String path = pathsToPhoto.elementAt(i);
+    for (int i = 0; i < Directories.selectedDirectories.length; i++) {
+      String path = Directories.selectedDirectories.elementAt(i);
 
       newFiles = Glob("$path/*.jpg").listSync();
       files.addAll(List.generate(
@@ -167,7 +168,24 @@ class DataManager {
     files.sort((a, b) => a.compareTo(b));
     return files;
   }
+  Future<List<String>> getAllFiles2() async {
+    List<String> files = [];
+    List newFiles = [];
+    for (int i = 0; i < Directories.selectedDirectories.length; i++) {
+      String path = Directories.selectedDirectories.elementAt(i);
 
+      newFiles = Glob("$path/*.jpg").listSync();
+      files.addAll(List.generate(
+          newFiles.length, (index) => newFiles.elementAt(index).path));
+
+      newFiles = Glob("$path/*.png").listSync();
+      files.addAll(List.generate(
+          newFiles.length, (index) => newFiles.elementAt(index).path));
+    }
+    files = files.where((element) => !element.contains('thumbnail')).toList();
+    files.sort((a, b) => a.compareTo(b));
+    return files;
+  }
   // i) check whether this file is contained in Info
   // ii) check whether this file is saved previously.
   Future<List<String>?> matchFilesAndInfo() async {
@@ -517,8 +535,8 @@ class DataManager {
   Future<List<String>> resetInfoFromFiles() async {
     List<String> files = [];
     List newFiles = [];
-    for (int i = 0; i < pathsToPhoto.length; i++) {
-      String path = pathsToPhoto.elementAt(i);
+    for (int i = 0; i < Directories.selectedDirectories.length; i++) {
+      String path = Directories.selectedDirectories.elementAt(i);
 
       newFiles = Glob("$path/*.jpg").listSync();
       files.addAll(List.generate(

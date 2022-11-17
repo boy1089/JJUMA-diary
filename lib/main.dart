@@ -22,6 +22,8 @@ import 'package:test_location_2nd/Note/NoteManager.dart';
 
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 
+import 'package:test_location_2nd/Data/Directories.dart';
+
 void main() {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
@@ -61,6 +63,7 @@ class _MyAppState extends State<MyApp> {
   final permissionManager = PermissionManager();
   final sensorDataManager = SensorDataManager();
   final noteManager = NoteManager();
+
   late final photoDataManager;
   late final locationDataManager;
   //sensorLogger will be initialized after initializing PermissionManager
@@ -87,6 +90,7 @@ class _MyAppState extends State<MyApp> {
   Future<int> init() async {
     Stopwatch stopwatch = new Stopwatch()..start();
     isInitializationDone = false;
+    Directories.init(Directories.directories);
     await permissionManager.init();
     print("init process, time elapsed : ${stopwatch.elapsed}");
     await noteManager.init();

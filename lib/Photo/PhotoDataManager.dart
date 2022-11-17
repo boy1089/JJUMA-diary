@@ -7,13 +7,14 @@ import 'package:glob/glob.dart';
 import 'package:test_location_2nd/Util/global.dart' as global;
 import 'package:test_location_2nd/Data/infoFromFile.dart';
 import 'package:test_location_2nd/Util/Util.dart';
-
-List<String> pathsToPhoto = [
-  "/storage/emulated/0/DCIM",
-  "/storage/emulated/0/DCIM/Camera",
-  "/storage/emulated/0/Pictures",
-  "/storage/emulated/0/Pictures/*",
-];
+import 'package:test_location_2nd/Data/Directories.dart';
+//
+// List<String> Directories.selectedDirectories = [
+//   "/storage/emulated/0/DCIM",
+//   "/storage/emulated/0/DCIM/Camera",
+//   "/storage/emulated/0getApplicationDocumentsDirectory()s",
+//   "/storage/emulated/0getApplicationDocumentsDirectory()s/*",
+// ];
 
 class PhotoDataManager {
   List datetimes = [];
@@ -35,8 +36,8 @@ class PhotoDataManager {
   Future<List<String>> getAllFiles() async {
     List<String> files = [];
     List newFiles = [];
-    for (int i = 0; i < pathsToPhoto.length; i++) {
-      String path = pathsToPhoto.elementAt(i);
+    for (int i = 0; i < Directories.selectedDirectories.length; i++) {
+      String path = Directories.selectedDirectories.elementAt(i);
 
       newFiles = Glob("$path/*.jpg").listSync();
       files.addAll(List.generate(

@@ -35,7 +35,7 @@ class NoteManager {
   }
 
   Future<String> readNote(String date) async {
-    final Directory? directory = await getExternalStorageDirectory();
+    final Directory? directory = await getApplicationDocumentsDirectory();
     final String folder = '${directory?.path}/noteData';
     final File file = File('${folder}/${date}_note.csv');
     debugPrint("reading note from local");
@@ -44,7 +44,7 @@ class NoteManager {
   }
 
   void tryDeleteNote(String date) async {
-    final Directory? directory = await getExternalStorageDirectory();
+    final Directory? directory = await getApplicationDocumentsDirectory();
     final String folder = '${directory?.path}/noteData';
     final File file = File('${folder}/${date}_note.csv');
     bool isFileExists = await file.exists();
@@ -52,7 +52,7 @@ class NoteManager {
   }
 
   Future<List> getAllFiles() async {
-    final Directory? directory = await getExternalStorageDirectory();
+    final Directory? directory = await getApplicationDocumentsDirectory();
     final String folder = '${directory?.path}/noteData';
     final files = Glob(folder + "/*.csv").listSync();
     return files;
@@ -82,7 +82,7 @@ class NoteManager {
   }
 
   Future<void> writeNote(String date, note) async {
-    final Directory? directory = await getExternalStorageDirectory();
+    final Directory? directory = await getApplicationDocumentsDirectory();
     final String folder = '${directory?.path}/noteData';
     bool isFolderExists = await Directory(folder).exists();
 

@@ -542,7 +542,7 @@ class DataManager {
     if (overwrite == null) overwrite = false;
     if (filenames == null) filenames = global.infoFromFiles.keys.toList();
 
-    final Directory? directory = await getExternalStorageDirectory();
+    final Directory? directory = await getApplicationDocumentsDirectory();
     final File file = File('${directory?.path}/InfoOfFiles.json');
 
     var infoFromFiles = global.infoFromFiles;
@@ -560,7 +560,7 @@ class DataManager {
     if (overwrite == null) overwrite = false;
     if (filenames == null) filenames = global.infoFromFiles.keys.toList();
 
-    final Directory? directory = await getExternalStorageDirectory();
+    final Directory? directory = await getApplicationDocumentsDirectory();
     final File file = File('${directory?.path}/InfoOfFiles.csv');
 
     if (!((await file.exists())) || overwrite) {
@@ -592,7 +592,7 @@ class DataManager {
   }
 
   Future<Map<String, InfoFromFile>> readInfoFromJson() async {
-    final Directory? directory = await getExternalStorageDirectory();
+    final Directory? directory = await getApplicationDocumentsDirectory();
     final File file = File('${directory?.path}/InfoOfFiles.json');
 
     bool isFileExist = await file.exists();
@@ -611,7 +611,7 @@ class DataManager {
   }
 
   Future<Map<String, InfoFromFile>> readInfo(List input) async {
-    final Directory? directory = await getExternalStorageDirectory();
+    final Directory? directory = await getApplicationDocumentsDirectory();
     final File file = File('${directory?.path}/InfoOfFiles.csv');
 
     bool isFileExist = await file.exists();
@@ -675,7 +675,7 @@ class DataManager {
     if (datesOutOfDate != null) {
       setOfDates = datesOutOfDate.toSet();
     }
-    final Directory? directory = await getExternalStorageDirectory();
+    final Directory? directory = await getApplicationDocumentsDirectory();
     final File file = File('${directory?.path}/summaryOfLocation.csv');
 
     if (!((await file.exists())) || overwrite) {
@@ -696,7 +696,7 @@ class DataManager {
   }
 
   Future<void> readSummaryOfLocation() async {
-    final Directory? directory = await getExternalStorageDirectory();
+    final Directory? directory = await getApplicationDocumentsDirectory();
     final File file = File('${directory?.path}/summaryOfLocation.csv');
 
     bool isFileExist = await file.exists();
@@ -722,7 +722,7 @@ class DataManager {
     if (datesOutOfDate != null) {
       setOfDates = datesOutOfDate.toSet();
     }
-    final Directory? directory = await getExternalStorageDirectory();
+    final Directory? directory = await getApplicationDocumentsDirectory();
     final File file = File('${directory?.path}/summaryOfPhoto.csv');
 
     if (!((await file.exists())) || overwrite) {
@@ -741,7 +741,7 @@ class DataManager {
   }
 
   Future<void> readSummaryOfPhoto() async {
-    final Directory? directory = await getExternalStorageDirectory();
+    final Directory? directory = await getApplicationDocumentsDirectory();
     final File file = File('${directory?.path}/summaryOfPhoto.csv');
 
     bool isFileExist = await file.exists();

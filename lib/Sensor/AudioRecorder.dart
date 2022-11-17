@@ -44,7 +44,7 @@ class AudioRecorder {
   }
 
   Future createDirectory() async {
-    final Directory? directory = await getExternalStorageDirectory();
+    final Directory? directory = await getApplicationDocumentsDirectory();
     final String folder = '${directory?.path}/audioData';
     bool isFolderExists = await Directory(folder).exists();
 
@@ -54,7 +54,7 @@ class AudioRecorder {
   }
 
   void writeAndStartRecord() async {
-    final Directory? directory = await getExternalStorageDirectory();
+    final Directory? directory = await getApplicationDocumentsDirectory();
     final String folder = '${directory?.path}/audioData';
 
     bool isRecording = await _audioRecorder.isRecording();

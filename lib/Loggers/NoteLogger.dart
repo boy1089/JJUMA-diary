@@ -36,7 +36,7 @@ class NoteLogger {
   }
 
   void writeCache2(NoteData noteData) async {
-    final Directory? directory = await getExternalStorageDirectory();
+    final Directory? directory = await getApplicationDocumentsDirectory();
     final String folder = '${directory?.path}/noteData';
     bool isFolderExists = await Directory(folder).exists();
 

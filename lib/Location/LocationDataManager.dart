@@ -131,7 +131,7 @@ class LocationDataManager {
   }
 
   Future<void> writeLocationData(List filenames, List locations) async {
-    final Directory? directory = await getExternalStorageDirectory();
+    final Directory? directory = await getApplicationDocumentsDirectory();
     final File file = File('${directory?.path}/locationData.csv');
     print("writing location data to local..");
 
@@ -157,7 +157,7 @@ class LocationDataManager {
   }
   //
   // Future<void> readLocationData() async {
-  //   final Directory? directory = await getExternalStorageDirectory();
+  //   final Directory? directory = await getApplicationDocumentsDirectory();
   //   try {
   //     final fileName =
   //         Glob('${directory?.path}/locationData.csv').listSync().elementAt(0);

@@ -30,7 +30,8 @@ class GooglePhotoDataManager {
   }
 
   void writePhotoResponse(date, photoResponse) async {
-    final Directory? directory = await getExternalStorageDirectory();
+    final Directory? directory = await getApplicationDocumentsDirectory();
+    // getApplicationDocumentsDirectory()
 
     final String folder = '${directory?.path}/googlePhotoData';
     bool isFolderExists = await Directory(folder).exists();

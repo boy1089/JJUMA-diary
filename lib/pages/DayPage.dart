@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:test_location_2nd/Util/Util.dart';
-import 'package:test_location_2nd/PolarSensorDataPlot.dart';
 import 'package:provider/provider.dart';
 import 'package:test_location_2nd/polarPhotoImageContainer.dart';
 import 'package:test_location_2nd/PolarPhotoDataPlot.dart';
@@ -11,7 +10,6 @@ import 'package:test_location_2nd/PolarTimeIndicators.dart';
 import 'package:test_location_2nd/Util/DateHandler.dart';
 
 import 'package:test_location_2nd/CustomWidget/ZoomableWidgets.dart';
-import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_keyboard_size/flutter_keyboard_size.dart';
 
 import 'package:test_location_2nd/StateProvider/DayPageStateProvider.dart';

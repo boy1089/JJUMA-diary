@@ -76,7 +76,7 @@ class SensorRecorder {
   }
 
   void writeCache2() async {
-    final Directory? directory = await getExternalStorageDirectory();
+    final Directory? directory = await getApplicationDocumentsDirectory();
     final String folder = '${directory?.path}/sensorData';
     bool isFolderExists = await Directory(folder).exists();
 

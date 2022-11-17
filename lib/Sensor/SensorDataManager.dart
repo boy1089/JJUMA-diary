@@ -39,7 +39,7 @@ class SensorDataManager {
   }
 
   Future<List> openFile(String date) async {
-    final Directory? directory = await getExternalStorageDirectory();
+    final Directory? directory = await getApplicationDocumentsDirectory();
     File f = File("${directory?.path}/sensorData/${date}_sensor.csv");
 
     if (!await f.exists()) {
@@ -56,7 +56,7 @@ class SensorDataManager {
   }
 
   void writeSensorData(date, sensorData) async {
-    final Directory? directory = await getExternalStorageDirectory();
+    final Directory? directory = await getApplicationDocumentsDirectory();
 
     final String folder = '${directory?.path}/processedSensorData';
     bool isFolderExists = await Directory(folder).exists();

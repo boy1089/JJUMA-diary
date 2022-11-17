@@ -241,9 +241,10 @@ class MainPageState extends State<MainPage> {
             // print(aaa);
             // await dataManager.writeSummaryOfLocation2(null, true);
             // await dataManager.readSummaryOfLocation();
-            // await dataManager.init();
-            var a =await dataManager.updateSummaryOfPhotoFromInfo([]);
+            await dataManager.init();
+            // var a =await dataManager.updateSummaryOfPhotoFromInfo([]);
             print(a);
+            print('bb');
             // await dataManager.updateDatesFromInfo([]);
             // var result = await compute(dataManager.updateDatesFromInfo, [global.infoFromFiles]);
             // print(dataManager.files);

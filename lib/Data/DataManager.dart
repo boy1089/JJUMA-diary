@@ -390,20 +390,21 @@ class DataManager {
   }
 
   Future<Map<String, int>> updateSummaryOfPhotoFromInfo(List input) async {
-    List dates = global.setOfDates;
+    List dates = global.dates;
     if (input.isNotEmpty) {
       dates = input[0];
       global.summaryOfPhotoData = input[1];
     }
     Stopwatch stopwatch = Stopwatch()..start();
-    dates.removeWhere((i) => i == null);
-    List setOfDates = global.setOfDates;
-    List<String> datesOutOfDate = [];
+    // dates.removeWhere((i) => i == null);
     Map<String, int> counts = {};
 
     // dates.map((e) => counts.containsKey(e) ? counts[e]++ : counts[e] = 1);
     for ( int i = 0; i< dates.length; i++){
-      String date = dates[i];
+      String? date = dates[i];
+      // print(date);
+      if(date == null)
+        continue;
       bool isContained = counts.containsKey(date);
       if(isContained) {
         counts[date] = counts[date]! + 1;

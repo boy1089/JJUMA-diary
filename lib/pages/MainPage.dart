@@ -203,7 +203,7 @@ class MainPageState extends State<MainPage> {
             // DataFrame test = DataFrame(data as List<List<dynamic>>);
             // print(test.shape);
             // print(test['date']);
-            // await dataManager.init();
+            await dataManager.init();
             //
             // for(int i = 0; i<global.infoFromFiles.length; i++){
             //   var filename = global.infoFromFiles.keys.elementAt(i);
@@ -216,13 +216,17 @@ class MainPageState extends State<MainPage> {
             //   print("$i");
             // }
             // print("time elapsed : ${stopwatch.elapsed}");
-            // await dataManager.writeInfo(null, false);
+            // await dataManager.writeInfo(null, true);
             // await dataManager.readInfo([]);
 
 
             // await dataManager.writeInfoAsJson(global.mapForJson, true);
-            var data = await dataManager.readInfoFromJson();
-            print(data);
+            // var data = await dataManager.readInfoFromJson();
+            // print(data);
+            // await dataManager.writeInfoAsJson(null, true);
+            // await dataManager.readInfoFromJson();
+            // print(global.infoFromFiles);
+
             // test write encode and write speed of json
             // String json = jsonEncode(global.summaryOfLocationData);
             // final Directory? directory = await getExternalStorageDirectory();

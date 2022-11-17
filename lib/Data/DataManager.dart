@@ -41,6 +41,7 @@ class DataManager {
     print("getAllFiles done, time elapsed : ${stopwatch.elapsed}");
     //read previously processed Info
     await readInfo([]);
+    // await readInfoFromJson();
     print("readInfo done, time elapsed : ${stopwatch.elapsed}");
     await readSummaryOfPhoto();
     print("readSummaryOfPhoto done, time elapsed : ${stopwatch.elapsed}");
@@ -106,7 +107,8 @@ class DataManager {
         global.summaryOfPhotoData = await compute(updateSummaryOfPhotoFromInfo,
             [global.setOfDates, global.summaryOfPhotoData]);
 
-        await writeInfo(null, true);
+        // await writeInfo(null, true);
+        await writeInfoAsJson(null, true);
         await writeSummaryOfPhoto2(null, true);
       }
       if (i % 10 == 0) {
@@ -132,7 +134,8 @@ class DataManager {
       global.infoFromFiles
     ]);
 
-    await writeInfo(null, true);
+    // await writeInfo(null, true);
+    await writeInfoAsJson(null, true);
     await writeSummaryOfLocation2(null, true);
     await writeSummaryOfPhoto2(null, true);
 
@@ -451,14 +454,24 @@ class DataManager {
     return files;
   }
 
-  Future<void> writeInfoAsJson(Map input, bool overwrite) async {
+  Future<void> writeInfoAsJson(List<String>? filenames, bool overwrite) async {
     if (overwrite == null) overwrite = false;
+    if (filenames == null) filenames = global.infoFromFiles.keys.toList();
 
     final Directory? directory = await getExternalStorageDirectory();
     final File file = File('${directory?.path}/InfoOfFiles.json');
 
-    await file.writeAsString(jsonEncode(input));
+    var infoFromFiles = global.infoFromFiles;
+    // await file.writeAsString(jsonEncode(input));
+    var test = {};
+    for (int i = 0; i < filenames.length; i++) {
+      String filename = filenames.elementAt(i);
+      Map mapOfInfo = infoFromFiles[filename]!.toMap();
+      test[filename] = mapOfInfo;
   }
+    file.writeAsString(jsonEncode(test));
+  }
+
 
   Future<void> writeInfo(List<String>? filenames, bool overwrite) async {
     if (overwrite == null) overwrite = false;
@@ -496,17 +509,28 @@ class DataManager {
   }
 
 
-  Future<Map> readInfoFromJson() async {
+  Future<Map<String, InfoFromFile>> readInfoFromJson() async {
     final Directory? directory = await getExternalStorageDirectory();
     final File file = File('${directory?.path}/InfoOfFiles.json');
 
     bool isFileExist = await file.exists();
     if (!isFileExist) return {};
-
     var data = await file.readAsString();
-    return jsonDecode(data);
+    Map mapFromJson= jsonDecode(data);
 
+    Map<String, InfoFromFile> test = {};
+    List filenames = mapFromJson.keys.toList();
+    for (int i = 0; i < mapFromJson.length; i++) {
+      String filename = filenames.elementAt(i);
+      test[filename] = InfoFromFile(
+          map : mapFromJson[filename]
+      );
+    }
+    global.infoFromFiles = test;
+    return test;
   }
+
+
   Future<Map<String, InfoFromFile>> readInfo(List input) async {
     final Directory? directory = await getExternalStorageDirectory();
     final File file = File('${directory?.path}/InfoOfFiles.csv');

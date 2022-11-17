@@ -1,6 +1,7 @@
 import 'package:animations/animations.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:location/location.dart';
 import 'package:test_location_2nd/Location/AddressFinder.dart';
 import 'package:test_location_2nd/Location/LocationDataManager.dart';
 import 'package:test_location_2nd/Util/global.dart' as global;
@@ -261,18 +262,14 @@ class MainPageState extends State<MainPage> {
             // print('a');
             // var a = await dataManager.matchFilesAndInfo2();
             // dataManager.executeSlowProcesses();
-            print(global.infoFromFiles.values.elementAt(0).isUpdated);
-
-
+            // print(global.infoFromFiles.values.elementAt(20000).isUpdated);
+            var a = dataManager.updateSummaryOfLocationDataFromInfo2();
+            print(a);
             // print(dataManager.filesNotUpdated);
             // print('bbb');
             // print(global.infoFromFiles.keys);
             // print(global.infoFromFiles.keys.contains(dataManager.files[0]));
             print("time elapsed : ${stopwatch.elapsed}");
-
-
-
-
 
 
           },

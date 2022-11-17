@@ -115,12 +115,16 @@ class DataManager {
         await writeSummaryOfPhoto2(null, true);
       }
       if (i % 10 == 0) {
+        // global.summaryOfLocationData = await compute(
+        //     updateSummaryOfLocationDataFromInfo_compute, [
+        //   global.setOfDates,
+        //   global.summaryOfLocationData,
+        //   global.infoFromFiles
+        // ]);
         global.summaryOfLocationData = await compute(
-            updateSummaryOfLocationDataFromInfo_compute, [
-          global.setOfDates,
-          global.summaryOfLocationData,
-          global.infoFromFiles
-        ]);
+          updateSummaryOfLocationDataFromInfo2_compute, [global.infoFromFiles]
+        );
+
         await writeSummaryOfLocation2(null, true);
       }
     }
@@ -403,7 +407,6 @@ class DataManager {
     // dates.map((e) => counts.containsKey(e) ? counts[e]++ : counts[e] = 1);
     for (int i = 0; i < dates.length; i++) {
       String? date = dates[i];
-      // print(date);
       if (date == null) continue;
       bool isContained = counts.containsKey(date);
       if (isContained) {
@@ -412,26 +415,67 @@ class DataManager {
       }
       counts[date] = 1;
     }
-    // for (int i = 0; i < setOfDates.length; i++) {
-    //   String date = setOfDates.elementAt(i);
-    //   int numberOfPhoto = dates.where((c) => (c == date)).length;
-    //   print("step1 : ${stopwatch.elapsed}");
-    //
-    //   // update the date
-    //   // i) if the number of photo is different from read result and update result,
-    //   // ii) if that date is not contained in the summaryOfPhoto
-    //   if ((global.summaryOfPhotoData[date] != numberOfPhoto) ||
-    //       (!global.summaryOfPhotoData.keys.contains(date))) {
-    //     datesOutOfDate.add(date);
-    //     global.summaryOfPhotoData[date] =
-    //         dates.where((c) => (c == date)).length;
-    //   }
+
     global.summaryOfPhotoData = counts;
-    print("step2 : ${stopwatch.elapsed}");
     return counts;
   }
-  // print("updateSummaryOfPhoto done");
-  // return global.summaryOfPhotoData;
+
+
+  Future<Map<String, double>> updateSummaryOfLocationDataFromInfo2_compute(List input) async {
+    global.infoFromFiles = input[0];
+    var infoFromFiles = [...global.infoFromFiles.values];
+    Stopwatch stopwatch = Stopwatch()..start();
+    // dates.removeWhere((i) => i == null);
+    Map<String, double> distances = {};
+
+    // dates.map((e) => counts.containsKey(e) ? counts[e]++ : counts[e] = 1);
+    for (int i = 0; i < infoFromFiles.length; i++) {
+      InfoFromFile infoFromFile = infoFromFiles.elementAt(i);
+      String? date = infoFromFile.date;
+      if (date == null) continue;
+
+      bool isContained = distances.containsKey(date);
+      bool isNull = infoFromFile.distance == null? true:false;
+
+      if(isNull){
+        continue;
+      }
+
+      if (isContained) {
+        distances[date] = (distances[date]!>infoFromFile.distance! ? distances[date] : infoFromFile.distance)!;
+        continue;
+      }
+      distances[date] = infoFromFile.distance!;
+    }
+    return distances;
+
+  }
+
+  Map<String, double?> updateSummaryOfLocationDataFromInfo2(){
+    var infoFromFiles = [...global.infoFromFiles.values];
+    Map<String, double?> distances = {};
+
+    for (int i = 0; i < infoFromFiles.length; i++) {
+      InfoFromFile infoFromFile = infoFromFiles.elementAt(i);
+      String? date = infoFromFile.date;
+      if (date == null) continue;
+
+      bool isContained = distances.containsKey(date);
+      bool isNull = infoFromFile.distance == null? true:false;
+
+      if(isNull){
+        continue;
+      }
+
+      if (isContained) {
+        distances[date] = distances[date]!>infoFromFile.distance! ? distances[date] : infoFromFile.distance;
+        continue;
+      }
+      distances[date] = infoFromFile.distance;
+    }
+    return distances;
+
+  }
 
   Future<Map> updateSummaryOfLocationDataFromInfo(
       List<String>? datesOutOfDate) async {

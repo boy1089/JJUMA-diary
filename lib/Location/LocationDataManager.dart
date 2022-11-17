@@ -83,6 +83,8 @@ class LocationDataManager {
   }
 
   List<double?> getDistancesOfDate(String date) {
+    Stopwatch stopwatch = Stopwatch()..start();
+
     //find the index which date is contained in infoFromFiles.
     List dates = global.setOfDates;
     // List indexOfDate = List.generate(
@@ -90,7 +92,6 @@ class LocationDataManager {
     var endIndex = dates.lastIndexOf(date);
     var startIndex = endIndex - 1000;
     if(startIndex<0) startIndex = 0;
-
     List indexOfDate = List.generate(
         endIndex-startIndex, (i) {
     if(dates.elementAt(startIndex + i) == date)
@@ -98,24 +99,13 @@ class LocationDataManager {
     });
 
     indexOfDate.removeWhere((item) => item == null);
-    // List<double?> coordinatesOfDate = List.generate(indexOfDate.length, (i) {
-    //   InfoFromFile data =
-    //   global.infoFromFiles.values.elementAt(indexOfDate.elementAt(i));
-    //   double? distance = data.distance;
-    //   return distance;
-    // });
-    List<double?> coordinatesOfDate = [];
+    List<double?> distancesOfDate = [];
     List values = global.infoFromFiles.values.toList();
     indexOfDate.forEach((element) {
       InfoFromFile data = values.elementAt(element);
-      coordinatesOfDate.add(data.distance);
+      distancesOfDate.add(data.distance);
     });
-    // for (int i = 0; i < indexOfDate.length; i++) {
-    //   InfoFromFile data = values.elementAt(indexOfDate.elementAt(i));
-    //   coordinatesOfDate.add(data.distance);
-    // }
-
-    return coordinatesOfDate;
+    return distancesOfDate;
   }
 
   double getMaxDistanceOfDate(String date) {

@@ -255,9 +255,16 @@ class MainPageState extends State<MainPage> {
             //   print(item);
             //   return a.sublist(0, 10).contains(item);
             // });
-            //
+            // dataManager.executeSlowProcesses();
+
+
             // print('a');
-            // await dataManager.matchFilesAndInfo2();
+            // var a = await dataManager.matchFilesAndInfo2();
+            // dataManager.executeSlowProcesses();
+            print(global.infoFromFiles.values.elementAt(0).isUpdated);
+
+
+            // print(dataManager.filesNotUpdated);
             // print('bbb');
             // print(global.infoFromFiles.keys);
             // print(global.infoFromFiles.keys.contains(dataManager.files[0]));

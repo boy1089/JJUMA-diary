@@ -61,7 +61,8 @@ class DataManager {
     await updateDateOnInfo(filesNotUpdated);
     print("updateDateOnInfo done, time elapsed : ${stopwatch.elapsed}");
 
-    var result = await compute(updateDatesFromInfo, [global.infoFromFiles, filesNotUpdated]);
+    var result = await compute(
+        updateDatesFromInfo, [global.infoFromFiles, filesNotUpdated]);
     print("updateDatesFromInfo done, time elapsed : ${stopwatch.elapsed}");
 
     global.setOfDates = result[0];
@@ -84,8 +85,9 @@ class DataManager {
     if (filesNotUpdated == []) return;
 
     int lengthOfFiles = filesNotUpdated!.length;
+
     for (int i = 0; i < lengthOfFiles / 100.floor(); i++) {
-      // for (int i = 0; i < 5; i++) {
+    // for (int i = 0; i < 4; i++) {
       print("executingSlowProcesses... $i / ${lengthOfFiles / 100.floor()}");
 
       //part of Files
@@ -97,7 +99,8 @@ class DataManager {
           [partOfFilesNotupdated, global.infoFromFiles]);
 
       if (i % 5 == 0) {
-        var result = await compute(updateDatesFromInfo, [global.infoFromFiles, filesNotUpdated]);
+        var result = await compute(
+            updateDatesFromInfo, [global.infoFromFiles, filesNotUpdated]);
         global.setOfDates = result[0];
         global.setOfDatetimes = result[1];
         global.dates = result[2];
@@ -198,38 +201,27 @@ class DataManager {
     Map info = {...global.infoFromFiles};
     int j = 0;
     for (int i = 0; i < files.length; i++) {
-      // for (int i = 0; i < 1000; i++) {
 
-        String filename = files.elementAt(i);
-      // if (i % 1000 == 0) {
-      //   print("matchFilesAndInfo : $i / ${files.length}");
-      // }
-      // Stopwatch stopwatch = Stopwatch()..start();
+      String filename = files.elementAt(i);
+      int sublistIndex = j + 100 < filenamesFromInfo.length
+          ? j + 100
+          : filenamesFromInfo.length;
+      bool isContained =
+          filenamesFromInfo.sublist(j, sublistIndex).contains(filename);
 
-      // files are searched in limited area
-      int sublistIndex = j+100< files.length ? j+100: files.length;
-      bool index = filenamesFromInfo.sublist(j, sublistIndex).contains(filename);
-      // print("match file1, ${stopwatch.elapsed}");
-
-      if (!index ) {
+      if (!isContained) {
         print("added");
         filesNotUpdated.add(filename);
         continue;
       }
-      j+=1;
-      // print("match file2, ${stopwatch.elapsed}");
-
-      // filenamesFromInfo.removeAt(index);
-      // print("match file3, ${stopwatch.elapsed}");
+      j += 1;
 
       bool? isUpdated = info[filename]?.isUpdated;
-      // print("match file4, ${stopwatch.elapsed}");
 
       if (!isUpdated!) {
         filesNotUpdated.add(filename);
         continue;
       }
-      // print("match file5, ${stopwatch.elapsed}");
 
     }
     if (filesNotUpdated == []) return null;
@@ -363,6 +355,7 @@ class DataManager {
     for (int i = 0; i < filenames.length; i++) {
       String filename = filenames.elementAt(i);
       List ExifData = await getExifInfoOfFile(filename);
+
       if (i % 100 == 0)
         print(
             "updateExifOninfo : $i / ${filenames.length}, $filename, ${ExifData[0]}, ${ExifData[1]}");
@@ -373,6 +366,7 @@ class DataManager {
             calculateDistanceToRef(ExifData[1]);
       }
 
+      global.infoFromFiles[filename]?.isUpdated = true;
       //if datetime is updated from filename, then does not overwrite with exif
       if (global.infoFromFiles[filename]?.datetime != null) continue;
 
@@ -392,7 +386,6 @@ class DataManager {
       global.infoFromFiles[filename]?.datetime = datetime;
       global.infoFromFiles[filename]?.date = formatDate(datetime);
 
-      global.infoFromFiles[filename]?.isUpdated = true;
     }
     return global.infoFromFiles;
   }
@@ -408,13 +401,12 @@ class DataManager {
     Map<String, int> counts = {};
 
     // dates.map((e) => counts.containsKey(e) ? counts[e]++ : counts[e] = 1);
-    for ( int i = 0; i< dates.length; i++){
+    for (int i = 0; i < dates.length; i++) {
       String? date = dates[i];
       // print(date);
-      if(date == null)
-        continue;
+      if (date == null) continue;
       bool isContained = counts.containsKey(date);
-      if(isContained) {
+      if (isContained) {
         counts[date] = counts[date]! + 1;
         continue;
       }
@@ -437,12 +429,9 @@ class DataManager {
     global.summaryOfPhotoData = counts;
     print("step2 : ${stopwatch.elapsed}");
     return counts;
-
   }
-    // print("updateSummaryOfPhoto done");
-    // return global.summaryOfPhotoData;
-
-
+  // print("updateSummaryOfPhoto done");
+  // return global.summaryOfPhotoData;
 
   Future<Map> updateSummaryOfLocationDataFromInfo(
       List<String>? datesOutOfDate) async {

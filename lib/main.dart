@@ -96,8 +96,8 @@ class _MyAppState extends State<MyApp> {
     print("init process, time elapsed : ${stopwatch.elapsed}");
     isInitializationDone = true;
     print("init done,executed in ${stopwatch.elapsed}");
-    dataManager.executeSlowProcesses();
     FlutterNativeSplash.remove();
+    dataManager.executeSlowProcesses();
     return 0;
   }
 

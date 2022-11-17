@@ -241,7 +241,11 @@ class MainPageState extends State<MainPage> {
             // print(aaa);
             // await dataManager.writeSummaryOfLocation2(null, true);
             // await dataManager.readSummaryOfLocation();
-            await dataManager.init();
+            // await dataManager.init();
+            var a =await dataManager.updateSummaryOfPhotoFromInfo([]);
+            print(a);
+            // await dataManager.updateDatesFromInfo([]);
+            // var result = await compute(dataManager.updateDatesFromInfo, [global.infoFromFiles]);
             // print(dataManager.files);
             // var a= [...dataManager.files];
             //
@@ -252,7 +256,7 @@ class MainPageState extends State<MainPage> {
             //
             // print('a');
             // await dataManager.matchFilesAndInfo2();
-            print('bbb');
+            // print('bbb');
             // print(global.infoFromFiles.keys);
             // print(global.infoFromFiles.keys.contains(dataManager.files[0]));
             print("time elapsed : ${stopwatch.elapsed}");

@@ -262,15 +262,18 @@ class DataManager {
     List<DateTime?> datetimes = [];
 
     List<InfoFromFile> values = global.infoFromFiles.values.toList();
+
+    Stopwatch stopwatch = Stopwatch()..start();
     for (int i = 0; i < values.length; i++) {
       InfoFromFile value = values.elementAt(i);
       dates.add(value.date);
       datetimes.add(value.datetime);
     }
 
+
     global.dates = [...dates];
     global.datetimes = [...datetimes];
-    print("date during init, ${dates.length}");
+    // print("date during init, ${dates.length}");
     dates.removeWhere((i) => i == null);
     datetimes.removeWhere((i) => i == null);
     global.setOfDates = dates;
@@ -392,27 +395,45 @@ class DataManager {
       dates = input[0];
       global.summaryOfPhotoData = input[1];
     }
-
+    Stopwatch stopwatch = Stopwatch()..start();
     dates.removeWhere((i) => i == null);
-    Set setOfDates = dates.toSet();
+    List setOfDates = global.setOfDates;
     List<String> datesOutOfDate = [];
-    for (int i = 0; i < setOfDates.length; i++) {
-      String date = setOfDates.elementAt(i);
-      int numberOfPhoto = dates.where((c) => (c == date)).length;
+    Map<String, int> counts = {};
 
-      // update the date
-      // i) if the number of photo is different from read result and update result,
-      // ii) if that date is not contained in the summaryOfPhoto
-      if ((global.summaryOfPhotoData[date] != numberOfPhoto) ||
-          (!global.summaryOfPhotoData.keys.contains(date))) {
-        datesOutOfDate.add(date);
-        global.summaryOfPhotoData[date] =
-            dates.where((c) => (c == date)).length;
+    // dates.map((e) => counts.containsKey(e) ? counts[e]++ : counts[e] = 1);
+    for ( int i = 0; i< dates.length; i++){
+      String date = dates[i];
+      bool isContained = counts.containsKey(date);
+      if(isContained) {
+        counts[date] = counts[date]! + 1;
+        continue;
       }
+      counts[date] = 1;
     }
-    print("updateSummaryOfPhoto done");
-    return global.summaryOfPhotoData;
+    // for (int i = 0; i < setOfDates.length; i++) {
+    //   String date = setOfDates.elementAt(i);
+    //   int numberOfPhoto = dates.where((c) => (c == date)).length;
+    //   print("step1 : ${stopwatch.elapsed}");
+    //
+    //   // update the date
+    //   // i) if the number of photo is different from read result and update result,
+    //   // ii) if that date is not contained in the summaryOfPhoto
+    //   if ((global.summaryOfPhotoData[date] != numberOfPhoto) ||
+    //       (!global.summaryOfPhotoData.keys.contains(date))) {
+    //     datesOutOfDate.add(date);
+    //     global.summaryOfPhotoData[date] =
+    //         dates.where((c) => (c == date)).length;
+    //   }
+    global.summaryOfPhotoData = counts;
+    print("step2 : ${stopwatch.elapsed}");
+    return counts;
+
   }
+    // print("updateSummaryOfPhoto done");
+    // return global.summaryOfPhotoData;
+
+
 
   Future<Map> updateSummaryOfLocationDataFromInfo(
       List<String>? datesOutOfDate) async {

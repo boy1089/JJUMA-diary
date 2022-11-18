@@ -167,12 +167,13 @@ class MainPageState extends State<MainPage> {
               }
             }),
         backgroundColor: global.kBackGroundColor,
-        bottomNavigationBar: Offstage(
-          offstage: !provider.isBottomNavigationBarShown,
-          child: SizedBox(
+        bottomNavigationBar:
+           SizedBox(
             height: global.kBottomNavigationBarHeight,
             // width : 200,
-            child: BottomNavigationBar(
+            child:Offstage(
+              offstage: !provider.isBottomNavigationBarShown,
+              child : BottomNavigationBar(
               selectedFontSize: 0,
               type: BottomNavigationBarType.fixed,
               items: const <BottomNavigationBarItem>[
@@ -227,8 +228,3 @@ class MainPageState extends State<MainPage> {
     }
   }
 }
-
-//
-// Class testData {
-//   String
-// }

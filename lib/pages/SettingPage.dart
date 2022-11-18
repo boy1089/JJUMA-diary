@@ -1,4 +1,3 @@
-
 import 'package:permission_handler/permission_handler.dart';
 import 'package:test_location_2nd/Permissions/PermissionManager.dart';
 
@@ -102,7 +101,8 @@ class _AndroidSettingsScreenState extends State<AndroidSettingsScreen> {
                       });
                 },
               ),
-              SettingsTile(title: Text("Reset"), onPressed: (context) {})
+              SettingsTile(
+                  title: Text("Term of Service"), onPressed: (context) {}),
             ],
           ),
           //
@@ -110,12 +110,34 @@ class _AndroidSettingsScreenState extends State<AndroidSettingsScreen> {
             title: Text("Photo"),
             tiles: [
               SettingsTile(
+                  title: Text("Reset Data"),
+                  onPressed: (context) {
+                    showDialog(
+                        context: (context),
+                        builder: (BuildContext context) {
+                          return AlertDialog(content: Text("Existing analysis data will be reset.\nPlease restart the service afterward."),
+                          actions : [
+                              TextButton(
+                              child : const Text("cancel"),
+                          onPressed: (){
+                                Navigator.of(context).pop();
+                          },),
+                            TextButton(
+                            child : const Text("ok"),
+                            onPressed: (){
+                              Navigator.of(context).pop();
+                            },
+                          )]);
+                        });
+                  }),
+              SettingsTile(
                   title: Text("Directories"),
                   description: Column(
                       children: List<Widget>.generate(
                           Directories.directories.length, (i) {
-                            String key = Settings.directories.keys.elementAt(i);
+                    String key = Settings.directories.keys.elementAt(i);
                     return CheckboxListTile(
+                      controlAffinity: ListTileControlAffinity.leading,
                       title: Text(key),
                       onChanged: (flag) {
                         directories[key] = flag;
@@ -127,37 +149,32 @@ class _AndroidSettingsScreenState extends State<AndroidSettingsScreen> {
                     );
                   }))),
               SettingsTile(
-                title : Text("Analysis settings"),
-                description:Column(
-                  children : [
+                  title: Text("Analysis settings"),
+                  description: Column(children: [
                     ListTile(
-                      title : Text("Reference Coordiante"),
+                      title: Text("Reference Coordiante"),
                       subtitle: Text("${Settings.referenceCoordinate}"),
                       trailing: ElevatedButton(
-                        child : Text("Get"),
+                        child: Text("Get"),
                         onPressed: () async {
                           var position = await Settings.determinePosition();
-                          Settings.writeItem(items.referenceCoordinate,
-                          Coordinate(position.latitude.abs(), position.longitude.abs()));
-                          setState(() {
-                          });
-                          },
+                          Settings.writeItem(
+                              items.referenceCoordinate,
+                              Coordinate(position.latitude.abs(),
+                                  position.longitude.abs()));
+                          setState(() {});
+                        },
                       ),
                     ),
                     ListTile(
-                        title : Text("Minimum number of images in a day"),
+                      title: Text("Minimum number of images in a day"),
                       // trailing :
-
                     ),
-
                     ListTile(
-                        title : Text("Minimum time difference [min]"),
+                      title: Text("Minimum time difference [min]"),
                       // trailing : Text('aa'),
                     ),
-                  ]
-                )
-              ),
-
+                  ])),
             ],
           )
         ],

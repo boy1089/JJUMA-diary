@@ -96,12 +96,14 @@ class Settings {
     Map mapFromJson = jsonDecode(json);
     mapFromJson.forEach((key, value) {
       print("read settings.. $key, $value");
-      writeItem(items.values.byName(key), value);
       if (key == 'referenceCoordinate') {
         Coordinate referenceCoordinate =
             Coordinate(value['latitude'], value['longitude']);
         writeItem(items.values.byName(key), referenceCoordinate);
+        return;
       }
+
+      writeItem(items.values.byName(key), value);
     });
     print(Settings.directories);
   }

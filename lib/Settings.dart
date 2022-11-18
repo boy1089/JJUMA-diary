@@ -21,6 +21,11 @@ class Settings {
   static int minimumNumberOfPhoto = 0;
   static double minimumTime = 0.005;
 
+  static void init() async {
+    await readFile();
+    apply();
+  }
+
   static dynamic readItem(item) {
     switch (item) {
       case items.language:
@@ -60,31 +65,45 @@ class Settings {
     final Directory? directory = await getApplicationDocumentsDirectory();
     final String filename = '${directory?.path}/settings.json';
     File file = File(filename);
-
     Map settings = Map.fromIterable(items.values,
-        key: (item) => item.name, value: (item) => Settings.readItem(item));
+        key: (item) {
+          return item.toString().split('.').elementAt(1);
+        }, value: (item) => Settings.readItem(item));
 
+    settings['referenceCoordinate'] = {"latitude": settings['referenceCoordinate'].latitude,
+      "longitude": settings['referenceCoordinate'].longitude
+    };
+  print('aaa');
     String json = jsonEncode(settings);
     await file.writeAsString(json);
   }
 
-  static void readFile() async {
+  static Future<void> readFile() async {
     final Directory? directory = await getApplicationDocumentsDirectory();
     final String filename = '${directory?.path}/settings.json';
     File file = File(filename);
 
+    bool isExist = await file.exists();
+    if (!isExist) return;
+
     String json = await file.readAsString();
     Map mapFromJson = jsonDecode(json);
-
     mapFromJson.forEach((key, value) {
-      writeItem(key, value);
+      print("read settings.. $key, $value");
+      writeItem(items.values.byName(key), value);
+      if(key == 'referenceCoordinate') {
+        Coordinate referenceCoordinate = Coordinate(value['latitude'], value['longitude']);
+        writeItem(items.values.byName(key), referenceCoordinate);
+      }
     });
+    print(Settings.directories);
   }
 
   static void apply() {
-    Directories.selectedDirectories = Settings.directories.keys
-        .where((element) => Settings.directories[element]).toList() as List<String>;
+    // irectories = Settings.directories.keys
+    //     .where((element) => Settings.directories[element]).toList() as List<String>;
     global.referenceCoordinate = Settings.referenceCoordinate;
     global.kMinimumTimeDifferenceBetweenImages_ZoomIn = Settings.minimumTime;
   }
+
 }

@@ -31,8 +31,7 @@ class AndroidSettingsScreen extends StatefulWidget {
 }
 
 class _AndroidSettingsScreenState extends State<AndroidSettingsScreen> {
-  Map selectedDirectories = Map.fromIterable(Directories.directories,
-      key: (item) => item, value: (item) => false);
+  Map directories = Settings.directories;
 
   late PermissionManager permissionManager;
   _AndroidSettingsScreenState(permissionManager) {
@@ -113,14 +112,16 @@ class _AndroidSettingsScreenState extends State<AndroidSettingsScreen> {
                   description: Column(
                       children: List<Widget>.generate(
                           Directories.directories.length, (i) {
+                            String key = Settings.directories.keys.elementAt(i);
                     return CheckboxListTile(
-                      title: Text(Directories.directories.elementAt(i)),
+                      title: Text(key),
                       onChanged: (flag) {
-                        // selectedDirectories[i] = flag!;
-                        // setDirectory();
+                        directories[key] = flag;
+                        Settings.writeItem(items.directories, directories);
+                        Settings.writeFile();
                         setState(() {});
                       },
-                      value: false,
+                      value: directories[key],
                     );
                   }))),
               SettingsTile(

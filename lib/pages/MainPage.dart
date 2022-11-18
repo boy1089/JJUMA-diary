@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:location/location.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:test_location_2nd/Location/AddressFinder.dart';
 import 'package:test_location_2nd/Location/LocationDataManager.dart';
 import 'package:test_location_2nd/Util/global.dart' as global;
+import '../Settings.dart';
 import '../navigation.dart';
 import 'package:test_location_2nd/pages/SettingPage.dart';
 import 'package:test_location_2nd/Permissions/PermissionManager.dart';
@@ -194,10 +196,10 @@ class MainPageState extends State<MainPage> {
         floatingActionButton: FloatingActionButton(
           onPressed: () async {
             Stopwatch stopwatch = Stopwatch()..start();
-            print(global.infoFromFiles);
-            Directories.init(Directories.directories);
-            print(dataManager.files);
-            print(Directories.selectedDirectories);
+
+            // print(await getApplicationDocumentsDirectory());
+            // Settings.init();
+            print(items.values.byName("directories"));
           },
         ),
       ),

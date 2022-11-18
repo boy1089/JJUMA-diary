@@ -23,6 +23,7 @@ import 'package:test_location_2nd/Note/NoteManager.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 import 'package:test_location_2nd/Data/Directories.dart';
+import 'Settings.dart';
 
 void main() {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
@@ -91,6 +92,7 @@ class _MyAppState extends State<MyApp> {
     Stopwatch stopwatch = new Stopwatch()..start();
     isInitializationDone = false;
     Directories.init(Directories.directories);
+    Settings.init();
     await permissionManager.init();
     print("init process, time elapsed : ${stopwatch.elapsed}");
     await noteManager.init();

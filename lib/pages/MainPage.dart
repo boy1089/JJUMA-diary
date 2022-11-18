@@ -194,6 +194,9 @@ class MainPageState extends State<MainPage> {
         floatingActionButton: FloatingActionButton(
           onPressed: () async {
             Stopwatch stopwatch = Stopwatch()..start();
+            print(global.infoFromFiles);
+            Directories.init(Directories.directories);
+            print(dataManager.files);
             print(Directories.selectedDirectories);
           },
         ),

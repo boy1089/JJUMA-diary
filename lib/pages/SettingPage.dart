@@ -11,10 +11,13 @@ import 'package:test_location_2nd/Util/Util.dart';
 
 import 'package:test_location_2nd/Data/Directories.dart';
 import 'package:test_location_2nd/Settings.dart';
+import 'dart:io';
+import 'package:url_launcher/url_launcher.dart';
 
 enum buttons { googleAccount, Location, Audio, Phone }
 
 class AndroidSettingsScreen extends StatefulWidget {
+
   // final GoogleAccountManager = googleAccountManager;
   //
   // static var googleAccountManager;
@@ -33,7 +36,7 @@ class AndroidSettingsScreen extends StatefulWidget {
 
 class _AndroidSettingsScreenState extends State<AndroidSettingsScreen> {
   Map directories = Settings.directories;
-
+  String urlOfTerm = "https://www.termsfeed.com/live/c780905a-d580-4e20-83a0-3f88929eca2e";
   late PermissionManager permissionManager;
   _AndroidSettingsScreenState(permissionManager) {
     this.permissionManager = permissionManager;
@@ -58,51 +61,32 @@ class _AndroidSettingsScreenState extends State<AndroidSettingsScreen> {
             tiles: [
               SettingsTile(title: Text("Language"), onPressed: (context) {}),
               SettingsTile(
-                title: Text("About"),
-                onPressed: (context) {
-                  showDialog(
-                      context: (context),
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                            content: Container(
-                              height: physicalHeight / 5,
-                              child: Row(
-                                children: [
-                                  Column(
-                                      // mainAxisAlignment: MainAxisAlignment.start,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text("application"),
-                                        Text("version"),
-                                        Text("madeby"),
-                                        Text("email")
-                                      ]),
-                                  Column(
-                                      // mainAxisAlignment: MainAxisAlignment.start,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(" : lateD"),
-                                        Text(" : 1.0"),
-                                        Text(" : Team ?"),
-                                        Text(" : boytoboy0108@gmail.com")
-                                      ]),
-                                ],
-                              ),
-                            ),
-                            actions: [
-                              TextButton(
-                                  child: const Text("close"),
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  })
-                            ]);
-                      });
+                title : Text("About"),
+                onPressed: (context){
+                  showAboutDialog(
+                      context: context,
+                    applicationIcon: const Image(image: AssetImage('images/playstore.png'),
+                    width : 40,
+                    height : 40,),
+                    applicationVersion: "1.0",
+                    applicationName: "lateD",
+                    // children:[
+                    //   TextButton(onPressed: (){},child: Text("send feedback")),
+                    // ]
+                  );
                 },
               ),
               SettingsTile(
-                  title: Text("Term of Service"), onPressed: (context) {}),
+                  title: Text("Term of Service"), onPressed: (context) {
+                    launch(urlOfTerm);
+                    // showDialog(context: context, builder: (BuildContext context){
+                    //   return SimpleDialog(
+                    //     children : [Text("")]
+                    //
+                    //   );
+                    // });
+
+              }),
             ],
           ),
           //
@@ -197,3 +181,6 @@ class _AndroidSettingsScreenState extends State<AndroidSettingsScreen> {
     );
   }
 }
+
+
+String termOfService = "";

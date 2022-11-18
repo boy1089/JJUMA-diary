@@ -154,8 +154,6 @@ class _AndroidSettingsScreenState extends State<AndroidSettingsScreen> {
                         title : Text("Minimum time difference [min]"),
                       // trailing : Text('aa'),
                     ),
-
-
                   ]
                 )
               ),

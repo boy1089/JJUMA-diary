@@ -23,6 +23,9 @@ class Settings {
   static double minimumTime = 0.005;
 
   static void init() async {
+    var currentCoordinate = await determinePosition();
+    referenceCoordinate = Coordinate(
+        currentCoordinate.latitude.abs(), currentCoordinate.longitude.abs());
     await readFile();
     apply();
   }
@@ -69,12 +72,14 @@ class Settings {
     Map settings = Map.fromIterable(items.values,
         key: (item) {
           return item.toString().split('.').elementAt(1);
-        }, value: (item) => Settings.readItem(item));
+        },
+        value: (item) => Settings.readItem(item));
 
-    settings['referenceCoordinate'] = {"latitude": settings['referenceCoordinate'].latitude,
+    settings['referenceCoordinate'] = {
+      "latitude": settings['referenceCoordinate'].latitude,
       "longitude": settings['referenceCoordinate'].longitude
     };
-  print('aaa');
+    print('aaa');
     String json = jsonEncode(settings);
     await file.writeAsString(json);
   }
@@ -92,8 +97,9 @@ class Settings {
     mapFromJson.forEach((key, value) {
       print("read settings.. $key, $value");
       writeItem(items.values.byName(key), value);
-      if(key == 'referenceCoordinate') {
-        Coordinate referenceCoordinate = Coordinate(value['latitude'], value['longitude']);
+      if (key == 'referenceCoordinate') {
+        Coordinate referenceCoordinate =
+            Coordinate(value['latitude'], value['longitude']);
         writeItem(items.values.byName(key), referenceCoordinate);
       }
     });
@@ -106,7 +112,6 @@ class Settings {
     global.referenceCoordinate = Settings.referenceCoordinate;
     global.kMinimumTimeDifferenceBetweenImages_ZoomIn = Settings.minimumTime;
   }
-
 
   static Future<Position> determinePosition() async {
     bool serviceEnabled;

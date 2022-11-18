@@ -118,7 +118,7 @@ class PolarTimeIndicator {
           angle: atan2(yLocation, xLocation),
           child: SizedBox(
             child: Text(
-              address == null ? "$index" : "$index\n$address",
+              [null, "null"].contains(address) ? "$index" : "$index\n$address",
               textAlign: TextAlign.center,
               style:
                   TextStyle(fontSize: 60, color: global.kColor_backgroundText),

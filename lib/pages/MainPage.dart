@@ -199,7 +199,8 @@ class MainPageState extends State<MainPage> {
 
             // print(await getApplicationDocumentsDirectory());
             // Settings.init();
-            print(items.values.byName("directories"));
+            var a = await Settings.determinePosition();
+            print(a);
           },
         ),
       ),

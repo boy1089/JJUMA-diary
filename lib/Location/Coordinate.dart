@@ -11,7 +11,8 @@ class Coordinate {
       );
 
   String toString(){
-    return "latitude : $latitude, longitude : $longitude}";
+    return "$latitude, $longitude";
+    // return "latitude : $latitude, longitude : $longitude";
   }
 }
 

@@ -1,6 +1,8 @@
+
 import 'package:permission_handler/permission_handler.dart';
 import 'package:test_location_2nd/Permissions/PermissionManager.dart';
 
+import '../Location/Coordinate.dart';
 import 'android_notifications_screen.dart';
 import '../navigation.dart';
 import 'package:flutter/material.dart';
@@ -125,35 +127,39 @@ class _AndroidSettingsScreenState extends State<AndroidSettingsScreen> {
                     );
                   }))),
               SettingsTile(
-                  title: Text("Set reference coordinate"),
-                  onPressed: (context) {
-                    showDialog(
-                        context: (context),
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                              content: Text(
-                                  "Current coordinate will be set as reference coordiante, and contents will be updated with it."),
-                              actions: [
-                                TextButton(
-                                    child: const Text("ok"),
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    }),
-                                TextButton(
-                                    child: const Text("close"),
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    })
-                              ]);
-                        });
-                  }),
-              SettingsTile(
-                  title: Row(
-                      children: [Text("Minimum number of images for graph")]),
-                  onPressed: (context) {}),
-              SettingsTile(
-                  title: Text("Minimum time bewteen images"),
-                  onPressed: (context) {})
+                title : Text("Analysis settings"),
+                description:Column(
+                  children : [
+                    ListTile(
+                      title : Text("Reference Coordiante"),
+                      subtitle: Text("${Settings.referenceCoordinate}"),
+                      trailing: ElevatedButton(
+                        child : Text("Get"),
+                        onPressed: () async {
+                          var position = await Settings.determinePosition();
+                          Settings.writeItem(items.referenceCoordinate,
+                          Coordinate(position.latitude.abs(), position.longitude.abs()));
+                          setState(() {
+                          });
+                          },
+                      ),
+                    ),
+                    ListTile(
+                        title : Text("Minimum number of images in a day"),
+                      // trailing :
+
+                    ),
+
+                    ListTile(
+                        title : Text("Minimum time difference [min]"),
+                      // trailing : Text('aa'),
+                    ),
+
+
+                  ]
+                )
+              ),
+
             ],
           )
         ],

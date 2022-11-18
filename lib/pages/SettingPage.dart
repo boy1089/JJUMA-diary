@@ -17,7 +17,6 @@ import 'package:url_launcher/url_launcher.dart';
 enum buttons { googleAccount, Location, Audio, Phone }
 
 class AndroidSettingsScreen extends StatefulWidget {
-
   // final GoogleAccountManager = googleAccountManager;
   //
   // static var googleAccountManager;
@@ -36,7 +35,10 @@ class AndroidSettingsScreen extends StatefulWidget {
 
 class _AndroidSettingsScreenState extends State<AndroidSettingsScreen> {
   Map directories = Settings.directories;
-  String urlOfTerm = "https://www.termsfeed.com/live/c780905a-d580-4e20-83a0-3f88929eca2e";
+  String urlOfTerm =
+      "https://www.termsfeed.com/live/c780905a-d580-4e20-83a0-3f88929eca2e";
+  String email = "latediary.info@gmail.com";
+
   late PermissionManager permissionManager;
   _AndroidSettingsScreenState(permissionManager) {
     this.permissionManager = permissionManager;
@@ -61,32 +63,38 @@ class _AndroidSettingsScreenState extends State<AndroidSettingsScreen> {
             tiles: [
               SettingsTile(title: Text("Language"), onPressed: (context) {}),
               SettingsTile(
-                title : Text("About"),
-                onPressed: (context){
+                title: Text("About"),
+                onPressed: (context) {
                   showAboutDialog(
                       context: context,
-                    applicationIcon: const Image(image: AssetImage('images/playstore.png'),
-                    width : 40,
-                    height : 40,),
-                    applicationVersion: "1.0",
-                    applicationName: "lateD",
-                    // children:[
-                    //   TextButton(onPressed: (){},child: Text("send feedback")),
-                    // ]
-                  );
+                      applicationIcon: const Image(
+                        image: AssetImage('images/playstore.png'),
+                        width: 40,
+                        height: 40,
+                      ),
+                      applicationVersion: "version 1.0",
+                      applicationName: "lateD",
+                      anchorPoint: Offset(0, 0),
+                      children: [
+                        Column(
+                          crossAxisAlignment : CrossAxisAlignment.end,
+                          children: [
+                            TextButton(
+                                onPressed: () {
+                                  launchUrl(Uri.parse(
+                                      'mailto:$email?subject=&body='));
+                                },
+                                child: Text(email)),
+                          ],
+                        ),
+                      ]);
                 },
               ),
               SettingsTile(
-                  title: Text("Term of Service"), onPressed: (context) {
+                  title: Text("Term of Service"),
+                  onPressed: (context) {
                     launch(urlOfTerm);
-                    // showDialog(context: context, builder: (BuildContext context){
-                    //   return SimpleDialog(
-                    //     children : [Text("")]
-                    //
-                    //   );
-                    // });
-
-              }),
+                  }),
             ],
           ),
           //
@@ -99,19 +107,23 @@ class _AndroidSettingsScreenState extends State<AndroidSettingsScreen> {
                     showDialog(
                         context: (context),
                         builder: (BuildContext context) {
-                          return AlertDialog(content: Text("Existing analysis data will be reset.\nPlease restart the service afterward."),
-                          actions : [
-                              TextButton(
-                              child : const Text("cancel"),
-                          onPressed: (){
-                                Navigator.of(context).pop();
-                          },),
-                            TextButton(
-                            child : const Text("ok"),
-                            onPressed: (){
-                              Navigator.of(context).pop();
-                            },
-                          )]);
+                          return AlertDialog(
+                              content: Text(
+                                  "Existing analysis data will be reset.\nPlease restart the service afterward."),
+                              actions: [
+                                TextButton(
+                                  child: const Text("cancel"),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                                TextButton(
+                                  child: const Text("ok"),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                )
+                              ]);
                         });
                   }),
               SettingsTile(
@@ -181,6 +193,5 @@ class _AndroidSettingsScreenState extends State<AndroidSettingsScreen> {
     );
   }
 }
-
 
 String termOfService = "";

@@ -4,8 +4,8 @@ import 'package:provider/provider.dart';
 import 'package:lateDiary/Location/LocationDataManager.dart';
 import 'package:lateDiary/Photo/PhotoDataManager.dart';
 
-import 'package:lateDiary/Sensor/AudioRecorder.dart';
-import 'package:lateDiary/Sensor/SensorRecorder.dart';
+// import 'package:lateDiary/Sensor/AudioRecorder.dart';
+// import 'package:lateDiary/Sensor/SensorRecorder.dart';
 import 'package:lateDiary/Util/global.dart';
 
 import 'package:lateDiary/pages/MainPage.dart';

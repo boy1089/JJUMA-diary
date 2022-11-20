@@ -1,7 +1,7 @@
-import 'package:location/location.dart';
+// import 'package:location/location.dart';
 import 'package:flutter/foundation.dart';
 import 'package:permission_handler/permission_handler.dart' as PermissionHandler;
-import 'package:record/record.dart';
+// import 'package:record/record.dart';
 
 class PermissionManager {
   bool isLocationPermissionGranted = false;
@@ -60,10 +60,10 @@ class PermissionManager {
 
   }
 
-  void checkPhonePermission() async {
-    isPhonePermissionGranted = await PermissionHandler.Permission.phone.isGranted;
-    print("PermissionManager, checkPhonePermission : $isAudioPermissionGranted");
-  }
+  // void checkPhonePermission() async {
+  //   isPhonePermissionGranted = await PermissionHandler.Permission.phone.isGranted;
+  //   print("PermissionManager, checkPhonePermission : $isAudioPermissionGranted");
+  // }
 
   Future getLocationPermission() async {
     if (!isLocationPermissionGranted){
@@ -79,11 +79,11 @@ class PermissionManager {
     print("PermissionManager, getLocationPermission : $isLocationPermissionGranted");
   }
 
-  Future getAudioPermission() async {
-    final audioRecorder = Record();
-    if (await audioRecorder.hasPermission() == false) return;
-
-  }
+  // Future getAudioPermission() async {
+  //   final audioRecorder = Record();
+  //   if (await audioRecorder.hasPermission() == false) return;
+  //
+  // }
 
   Future<void> getStoragePermission() async {
     if (!isStoragePermissionGranted){
@@ -105,13 +105,13 @@ class PermissionManager {
     print("PermissionManager, getMediaLibraryPermission : $isMediaLibraryPermissionGranted");
   }
 
-  Future getPhonePermission() async {
-    if (!isPhonePermissionGranted){
-      PermissionHandler.Permission.phone.request();
-    }
-    isPhonePermissionGranted = await PermissionHandler.Permission.phone.isGranted;
-    print("PermissionManager, getPhonePermission : $isPhonePermissionGranted");
-  }
+  // Future getPhonePermission() async {
+  //   if (!isPhonePermissionGranted){
+  //     PermissionHandler.Permission.phone.request();
+  //   }
+  //   isPhonePermissionGranted = await PermissionHandler.Permission.phone.isGranted;
+  //   print("PermissionManager, getPhonePermission : $isPhonePermissionGranted");
+  // }
   Future getCameraPermission() async {
     if (!isCameraPermissionGranted){
       PermissionHandler.Permission.camera.request();

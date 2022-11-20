@@ -7,15 +7,15 @@
             <data android:scheme="https" />
         </intent>
         <!-- If your app makes calls -->
-        <intent>
-            <action android:name="android.intent.action.DIAL" />
-            <data android:scheme="tel" />
-        </intent>
+<!--        <intent>-->
+<!--            <action android:name="android.intent.action.DIAL" />-->
+<!--            <data android:scheme="tel" />-->
+<!--        </intent>-->
         <!-- If your sends SMS messages -->
-        <intent>
-            <action android:name="android.intent.action.SENDTO" />
-            <data android:scheme="smsto" />
-        </intent>
+<!--        <intent>-->
+<!--            <action android:name="android.intent.action.SENDTO" />-->
+<!--            <data android:scheme="smsto" />-->
+<!--        </intent>-->
         <!-- If your app sends emails -->
         <intent>
             <action android:name="android.intent.action.SEND" />
@@ -23,16 +23,17 @@
         </intent>
     </queries>
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+<!--    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"/>-->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+<!--    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>-->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+<!--    <uses-permission android:name="android.permission.RECORD_AUDIO" />-->
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
     <uses-permission android:name="android.permission.ACCESS_MEDIA_LOCATION"/>
     <meta-data android:name="com.google.android.geo.API_KEY"
         android:value="AIzaSyC0uiUc1qYZhRXgRi-TEpa6ZkltHuj76zI"/>
    <application
-        android:label="com.lateDiary"
+        android:label="lateDiary"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
         android:requestLegacyExternalStorage="true"

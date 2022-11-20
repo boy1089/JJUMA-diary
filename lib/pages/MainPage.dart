@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:location/location.dart';
+// import 'package:location/location.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:lateDiary/Location/AddressFinder.dart';
 import 'package:lateDiary/Location/LocationDataManager.dart';
@@ -194,16 +194,16 @@ class MainPageState extends State<MainPage> {
             ),
           ),
         ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () async {
-            Stopwatch stopwatch = Stopwatch()..start();
-
-            // print(await getApplicationDocumentsDirectory());
-            // Settings.init();
-            var a = await Settings.determinePosition();
-            print(a);
-          },
-        ),
+        // floatingActionButton: FloatingActionButton(
+        //   onPressed: () async {
+        //     Stopwatch stopwatch = Stopwatch()..start();
+        //
+        //     // print(await getApplicationDocumentsDirectory());
+        //     // Settings.init();
+        //     var a = await Settings.determinePosition();
+        //     print(a);
+        //   },
+        // ),
       ),
     );
   }

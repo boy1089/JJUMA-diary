@@ -12,7 +12,7 @@ import 'package:lateDiary/Util/Util.dart';
 import 'package:lateDiary/Data/Directories.dart';
 import 'package:lateDiary/Settings.dart';
 import 'dart:io';
-import 'package:url_launcher/url_launcher.dart';
+// import 'package:url_launcher/url_launcher.dart';
 
 enum buttons { googleAccount, Location, Audio, Phone }
 
@@ -81,8 +81,8 @@ class _AndroidSettingsScreenState extends State<AndroidSettingsScreen> {
                           children: [
                             TextButton(
                                 onPressed: () {
-                                  launchUrl(Uri.parse(
-                                      'mailto:$email?subject=&body='));
+                                  // launchUrl(Uri.parse(
+                                  //     'mailto:$email?subject=&body='));
                                 },
                                 child: Text(email)),
                           ],
@@ -93,7 +93,7 @@ class _AndroidSettingsScreenState extends State<AndroidSettingsScreen> {
               SettingsTile(
                   title: Text("Term of Service"),
                   onPressed: (context) {
-                    launch(urlOfTerm);
+                    // launch(urlOfTerm);
                   }),
             ],
           ),

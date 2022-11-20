@@ -272,13 +272,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.7"
-  flutter_sensors:
-    dependency: "direct main"
-    description:
-      name: flutter_sensors
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.1"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -520,27 +513,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.0"
-  location:
-    dependency: "direct main"
-    description:
-      name: location
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "4.4.0"
-  location_platform_interface:
-    dependency: transitive
-    description:
-      name: location_platform_interface
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.3.0"
-  location_web:
-    dependency: transitive
-    description:
-      name: location_web
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "3.1.1"
   logging:
     dependency: transitive
     description:
@@ -793,69 +765,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.1.0"
-  record:
-    dependency: "direct main"
-    description:
-      name: record
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "4.3.1"
-  record_linux:
-    dependency: transitive
-    description:
-      name: record_linux
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.3.1"
-  record_macos:
-    dependency: transitive
-    description:
-      name: record_macos
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.2.1"
-  record_platform_interface:
-    dependency: transitive
-    description:
-      name: record_platform_interface
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.4.0"
-  record_web:
-    dependency: transitive
-    description:
-      name: record_web
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.4.0"
-  record_windows:
-    dependency: transitive
-    description:
-      name: record_windows
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.6.0"
-  sensors_plus:
-    dependency: "direct main"
-    description:
-      name: sensors_plus
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.3.2"
-  sensors_plus_platform_interface:
-    dependency: transitive
-    description:
-      name: sensors_plus_platform_interface
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.1.1"
-  sensors_plus_web:
-    dependency: transitive
-    description:
-      name: sensors_plus_web
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.1.1"
   settings_ui:
     dependency: "direct main"
     description:
@@ -1001,62 +910,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.4"
-  url_launcher:
-    dependency: "direct main"
-    description:
-      name: url_launcher
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "6.1.6"
-  url_launcher_android:
-    dependency: transitive
-    description:
-      name: url_launcher_android
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "6.0.21"
-  url_launcher_ios:
-    dependency: transitive
-    description:
-      name: url_launcher_ios
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "6.0.17"
-  url_launcher_linux:
-    dependency: transitive
-    description:
-      name: url_launcher_linux
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "3.0.1"
-  url_launcher_macos:
-    dependency: transitive
-    description:
-      name: url_launcher_macos
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "3.0.1"
-  url_launcher_platform_interface:
-    dependency: transitive
-    description:
-      name: url_launcher_platform_interface
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.1.1"
-  url_launcher_web:
-    dependency: transitive
-    description:
-      name: url_launcher_web
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.0.13"
-  url_launcher_windows:
-    dependency: transitive
-    description:
-      name: url_launcher_windows
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "3.0.1"
   vector_math:
     dependency: transitive
     description:

@@ -91,10 +91,11 @@ class _MyAppState extends State<MyApp> {
   Future<int> init() async {
     Stopwatch stopwatch = new Stopwatch()..start();
     isInitializationDone = false;
+    await permissionManager.init();
+    print("init process, permission manater init done. time elapsed : ${stopwatch.elapsed}");
     Directories.init(Directories.directories);
     Settings.init();
-    await permissionManager.init();
-    print("init process, time elapsed : ${stopwatch.elapsed}");
+
     await noteManager.init();
     print("init process, time elapsed : ${stopwatch.elapsed}");
     // FlutterNativeSplash.remove();

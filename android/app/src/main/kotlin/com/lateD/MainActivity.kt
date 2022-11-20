@@ -1,4 +1,4 @@
-package com.example.test_location_2nd
+package lateDiary
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -5,7 +5,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:csv/csv.dart';
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
-import 'package:test_location_2nd/Util/Util.dart';
+import 'package:lateDiary/Util/Util.dart';
 import 'package:csv/csv.dart';
 import 'package:glob/glob.dart';
 

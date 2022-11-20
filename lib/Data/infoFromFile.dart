@@ -1,4 +1,4 @@
-import 'package:test_location_2nd/Location/Coordinate.dart';
+import 'package:lateDiary/Location/Coordinate.dart';
 
 
 class InfoFromFiles {

@@ -1,6 +1,6 @@
 
 import 'dart:math' as Math;
-import 'package:test_location_2nd/Util/global.dart' as global;
+import 'package:lateDiary/Util/global.dart' as global;
 
 class Coordinate {
   final double? latitude;

@@ -1,14 +1,14 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:test_location_2nd/Util/Util.dart';
-import 'package:test_location_2nd/StateProvider/StateProvider.dart';
+import 'package:lateDiary/Util/Util.dart';
+import 'package:lateDiary/StateProvider/StateProvider.dart';
 import 'package:provider/provider.dart';
-import 'package:test_location_2nd/Util/global.dart' as global;
+import 'package:lateDiary/Util/global.dart' as global;
 import 'package:intl/intl.dart';
 
-import 'package:test_location_2nd/StateProvider/YearPageStateProvider.dart';
-import 'package:test_location_2nd/StateProvider/DayPageStateProvider.dart';
-import 'package:test_location_2nd/StateProvider/NavigationIndexStateProvider.dart';
+import 'package:lateDiary/StateProvider/YearPageStateProvider.dart';
+import 'package:lateDiary/StateProvider/DayPageStateProvider.dart';
+import 'package:lateDiary/StateProvider/NavigationIndexStateProvider.dart';
 
 class PolarMonthIndicators {
   @override

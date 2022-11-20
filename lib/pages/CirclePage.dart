@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:matrix2d/matrix2d.dart';
-import 'package:test_location_2nd/Util/Util.dart';
-import 'package:test_location_2nd/Util/global.dart' as global;
-import 'package:test_location_2nd/Util/DateHandler.dart';
+import 'package:lateDiary/Util/Util.dart';
+import 'package:lateDiary/Util/global.dart' as global;
+import 'package:lateDiary/Util/DateHandler.dart';
 import 'dart:math' as math;
 
 class CirclePage extends StatefulWidget {

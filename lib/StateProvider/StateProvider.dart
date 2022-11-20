@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:test_location_2nd/Util/DateHandler.dart';
+import 'package:lateDiary/Util/DateHandler.dart';
 import '../Util/global.dart';
-import 'package:test_location_2nd/Util/Util.dart';
+import 'package:lateDiary/Util/Util.dart';
 import 'dart:math';
 import 'package:intl/intl.dart';
 

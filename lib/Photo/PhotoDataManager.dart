@@ -1,13 +1,13 @@
 import 'package:exif/exif.dart';
 import 'package:glob/list_local_fs.dart';
-import 'package:test_location_2nd/Util/DateHandler.dart';
+import 'package:lateDiary/Util/DateHandler.dart';
 import 'package:intl/intl.dart';
 import 'dart:io';
 import 'package:glob/glob.dart';
-import 'package:test_location_2nd/Util/global.dart' as global;
-import 'package:test_location_2nd/Data/infoFromFile.dart';
-import 'package:test_location_2nd/Util/Util.dart';
-import 'package:test_location_2nd/Data/Directories.dart';
+import 'package:lateDiary/Util/global.dart' as global;
+import 'package:lateDiary/Data/infoFromFile.dart';
+import 'package:lateDiary/Util/Util.dart';
+import 'package:lateDiary/Data/Directories.dart';
 //
 // List<String> Directories.selectedDirectories = [
 //   "/storage/emulated/0/DCIM",

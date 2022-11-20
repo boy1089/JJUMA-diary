@@ -1,16 +1,16 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:test_location_2nd/Note/NoteManager.dart';
-import 'package:test_location_2nd/Util/DateHandler.dart';
+import 'package:lateDiary/Note/NoteManager.dart';
+import 'package:lateDiary/Util/DateHandler.dart';
 import '../Util/global.dart';
-import 'package:test_location_2nd/Util/Util.dart';
-import 'package:test_location_2nd/Photo/PhotoDataManager.dart';
-import 'package:test_location_2nd/Sensor/SensorDataManager.dart';
+import 'package:lateDiary/Util/Util.dart';
+import 'package:lateDiary/Photo/PhotoDataManager.dart';
+import 'package:lateDiary/Sensor/SensorDataManager.dart';
 
-import 'package:test_location_2nd/Util/global.dart' as global;
+import 'package:lateDiary/Util/global.dart' as global;
 
-import 'package:test_location_2nd/Location/AddressFinder.dart';
-import 'package:test_location_2nd/Location/Coordinate.dart';
+import 'package:lateDiary/Location/AddressFinder.dart';
+import 'package:lateDiary/Location/Coordinate.dart';
 import 'package:geocoding/geocoding.dart';
 import 'dart:math';
 

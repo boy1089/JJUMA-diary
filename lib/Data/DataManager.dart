@@ -4,14 +4,14 @@ import 'package:glob/list_local_fs.dart';
 import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:glob/glob.dart';
-import 'package:test_location_2nd/Util/DateHandler.dart';
-import 'package:test_location_2nd/Util/Util.dart';
-import 'package:test_location_2nd/Util/global.dart' as global;
-import 'package:test_location_2nd/Photo/PhotoDataManager.dart';
-import 'package:test_location_2nd/Location/LocationDataManager.dart';
-import "package:test_location_2nd/Location/Coordinate.dart";
+import 'package:lateDiary/Util/DateHandler.dart';
+import 'package:lateDiary/Util/Util.dart';
+import 'package:lateDiary/Util/global.dart' as global;
+import 'package:lateDiary/Photo/PhotoDataManager.dart';
+import 'package:lateDiary/Location/LocationDataManager.dart';
+import "package:lateDiary/Location/Coordinate.dart";
 import 'infoFromFile.dart';
-import 'package:test_location_2nd/Data/Directories.dart';
+import 'package:lateDiary/Data/Directories.dart';
 //
 // List<String> Directories.selectedDirectories = [
 //   "/storage/emulated/0/DCIM",

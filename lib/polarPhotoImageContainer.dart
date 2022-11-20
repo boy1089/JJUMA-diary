@@ -1,12 +1,12 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:test_location_2nd/Util/Util.dart';
+import 'package:lateDiary/Util/Util.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:provider/provider.dart';
 import 'dart:io';
-import 'package:test_location_2nd/Util/global.dart';
+import 'package:lateDiary/Util/global.dart';
 
-import 'package:test_location_2nd/StateProvider/DayPageStateProvider.dart';
+import 'package:lateDiary/StateProvider/DayPageStateProvider.dart';
 
 class polarPhotoImageContainers {
   var photoDataForPlot;

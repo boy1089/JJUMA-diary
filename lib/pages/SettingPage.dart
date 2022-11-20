@@ -1,16 +1,16 @@
 import 'package:permission_handler/permission_handler.dart';
-import 'package:test_location_2nd/Permissions/PermissionManager.dart';
+import 'package:lateDiary/Permissions/PermissionManager.dart';
 
 import '../Location/Coordinate.dart';
 import 'android_notifications_screen.dart';
 import '../navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:settings_ui/settings_ui.dart';
-import 'package:test_location_2nd/Util/global.dart' as global;
-import 'package:test_location_2nd/Util/Util.dart';
+import 'package:lateDiary/Util/global.dart' as global;
+import 'package:lateDiary/Util/Util.dart';
 
-import 'package:test_location_2nd/Data/Directories.dart';
-import 'package:test_location_2nd/Settings.dart';
+import 'package:lateDiary/Data/Directories.dart';
+import 'package:lateDiary/Settings.dart';
 import 'dart:io';
 import 'package:url_launcher/url_launcher.dart';
 

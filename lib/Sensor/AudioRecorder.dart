@@ -5,7 +5,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:flutter/foundation.dart';
 import 'package:record/record.dart';
 import 'package:intl/intl.dart';
-import 'package:test_location_2nd/Permissions/PermissionManager.dart';
+import 'package:lateDiary/Permissions/PermissionManager.dart';
 
 class AudioRecorder {
   late PermissionManager permissionManager;

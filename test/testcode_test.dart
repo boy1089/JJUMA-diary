@@ -1,5 +1,5 @@
 import 'package:test/test.dart';
-import 'package:test_location_2nd/testcode.dart';
+import 'package:lateDiary/testcode.dart';
 
 void main() {
   group('Counter', () {

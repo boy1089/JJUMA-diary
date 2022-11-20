@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'dart:io';
 // import 'package:intl/intl.dart';
 import 'package:glob/glob.dart';
-import 'package:test_location_2nd/Util/Util.dart';
-import 'package:test_location_2nd/Util/global.dart' as global;
+import 'package:lateDiary/Util/Util.dart';
+import 'package:lateDiary/Util/global.dart' as global;
 import 'dart:collection';
 
 class NoteManager {

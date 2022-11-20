@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:graphic/graphic.dart';
-import 'package:test_location_2nd/Util/Util.dart';
-import 'package:test_location_2nd/Util/global.dart' as global;
+import 'package:lateDiary/Util/Util.dart';
+import 'package:lateDiary/Util/global.dart' as global;
 import 'package:provider/provider.dart';
 import 'dart:async';
-import 'package:test_location_2nd/PolarMonthIndicator.dart';
-import 'package:test_location_2nd/CustomWidget/ZoomableWidgets.dart';
-import 'package:test_location_2nd/StateProvider/YearPageStateProvider.dart';
-import 'package:test_location_2nd/StateProvider/DayPageStateProvider.dart';
-import 'package:test_location_2nd/StateProvider/NavigationIndexStateProvider.dart';
-import 'package:test_location_2nd/Note/NoteManager.dart';
-import 'package:test_location_2nd/Util/DateHandler.dart';
+import 'package:lateDiary/PolarMonthIndicator.dart';
+import 'package:lateDiary/CustomWidget/ZoomableWidgets.dart';
+import 'package:lateDiary/StateProvider/YearPageStateProvider.dart';
+import 'package:lateDiary/StateProvider/DayPageStateProvider.dart';
+import 'package:lateDiary/StateProvider/NavigationIndexStateProvider.dart';
+import 'package:lateDiary/Note/NoteManager.dart';
+import 'package:lateDiary/Util/DateHandler.dart';
 
 import 'dart:ui';
 

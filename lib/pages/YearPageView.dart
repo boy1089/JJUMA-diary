@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:test_location_2nd/StateProvider/StateProvider.dart';
+import 'package:lateDiary/StateProvider/StateProvider.dart';
 import 'YearPage.dart';
 import 'package:provider/provider.dart';
 
-import 'package:test_location_2nd/StateProvider/YearPageStateProvider.dart';
+import 'package:lateDiary/StateProvider/YearPageStateProvider.dart';
 
 class YearPageView extends StatelessWidget {
   YearPageView({Key? key}) : super(key: key) {}

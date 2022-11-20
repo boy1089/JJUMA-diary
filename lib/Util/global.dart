@@ -1,8 +1,8 @@
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
-import "package:test_location_2nd/Location/Coordinate.dart";
-import 'package:test_location_2nd/Data/infoFromFile.dart';
-import 'package:test_location_2nd/Util/Util.dart';
+import "package:lateDiary/Location/Coordinate.dart";
+import 'package:lateDiary/Data/infoFromFile.dart';
+import 'package:lateDiary/Util/Util.dart';
 
 DateTime selectedDate = DateTime(2022, 1, 1);
 

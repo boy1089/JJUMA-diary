@@ -1,13 +1,13 @@
 import 'package:glob/list_local_fs.dart';
-import 'package:test_location_2nd/Util/DateHandler.dart';
-import 'package:test_location_2nd/Util/responseParser.dart';
+import 'package:lateDiary/Util/DateHandler.dart';
+import 'package:lateDiary/Util/responseParser.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
 import 'dart:io';
 import 'package:csv/csv.dart';
 import 'dart:convert';
-import 'package:test_location_2nd/Data/DataManager.dart';
+import 'package:lateDiary/Data/DataManager.dart';
 import 'package:glob/glob.dart';
 
 //TODO : move getPhoto and updatePhoto of dayPage to googlePhotoDataManager

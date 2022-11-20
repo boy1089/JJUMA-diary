@@ -2,8 +2,8 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'DayPage.dart';
 import 'package:provider/provider.dart';
-import 'package:test_location_2nd/StateProvider/DayPageStateProvider.dart';
-import 'package:test_location_2nd/StateProvider/NavigationIndexStateProvider.dart';
+import 'package:lateDiary/StateProvider/DayPageStateProvider.dart';
+import 'package:lateDiary/StateProvider/NavigationIndexStateProvider.dart';
 
 class DayPageView extends StatelessWidget {
 

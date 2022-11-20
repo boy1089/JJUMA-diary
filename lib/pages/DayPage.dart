@@ -1,21 +1,21 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:test_location_2nd/Util/Util.dart';
+import 'package:lateDiary/Util/Util.dart';
 import 'package:provider/provider.dart';
-import 'package:test_location_2nd/polarPhotoImageContainer.dart';
-import 'package:test_location_2nd/PolarPhotoDataPlot.dart';
-import 'package:test_location_2nd/Util/global.dart' as global;
+import 'package:lateDiary/polarPhotoImageContainer.dart';
+import 'package:lateDiary/PolarPhotoDataPlot.dart';
+import 'package:lateDiary/Util/global.dart' as global;
 import 'package:intl/intl.dart';
-import 'package:test_location_2nd/PolarTimeIndicators.dart';
-import 'package:test_location_2nd/Util/DateHandler.dart';
+import 'package:lateDiary/PolarTimeIndicators.dart';
+import 'package:lateDiary/Util/DateHandler.dart';
 
-import 'package:test_location_2nd/CustomWidget/ZoomableWidgets.dart';
+import 'package:lateDiary/CustomWidget/ZoomableWidgets.dart';
 import 'package:flutter_keyboard_size/flutter_keyboard_size.dart';
 
-import 'package:test_location_2nd/StateProvider/DayPageStateProvider.dart';
-import 'package:test_location_2nd/StateProvider/NavigationIndexStateProvider.dart';
+import 'package:lateDiary/StateProvider/DayPageStateProvider.dart';
+import 'package:lateDiary/StateProvider/NavigationIndexStateProvider.dart';
 
-import 'package:test_location_2nd/CustomWidget/NoteEditor.dart';
+import 'package:lateDiary/CustomWidget/NoteEditor.dart';
 import 'dart:math';
 import 'dart:ui';
 

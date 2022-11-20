@@ -1,14 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:test_location_2nd/Util/Util.dart';
-import 'package:test_location_2nd/Util/DateHandler.dart';
-import 'package:test_location_2nd/Util/global.dart' as global;
-import 'package:test_location_2nd/Data/DataManager.dart';
-import 'package:test_location_2nd/Note/NoteManager.dart';
-import 'package:test_location_2nd/StateProvider/NavigationIndexStateProvider.dart';
-import 'package:test_location_2nd/StateProvider/YearPageStateProvider.dart';
-import 'package:test_location_2nd/StateProvider/DayPageStateProvider.dart';
+import 'package:lateDiary/Util/Util.dart';
+import 'package:lateDiary/Util/DateHandler.dart';
+import 'package:lateDiary/Util/global.dart' as global;
+import 'package:lateDiary/Data/DataManager.dart';
+import 'package:lateDiary/Note/NoteManager.dart';
+import 'package:lateDiary/StateProvider/NavigationIndexStateProvider.dart';
+import 'package:lateDiary/StateProvider/YearPageStateProvider.dart';
+import 'package:lateDiary/StateProvider/DayPageStateProvider.dart';
 
 class DiaryPage extends StatefulWidget {
   NoteManager noteManager;

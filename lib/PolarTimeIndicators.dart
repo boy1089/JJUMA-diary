@@ -2,12 +2,12 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:graphic/graphic.dart';
-import 'package:test_location_2nd/Util/Util.dart';
+import 'package:lateDiary/Util/Util.dart';
 import 'package:provider/provider.dart';
-import 'package:test_location_2nd/Util/global.dart' as global;
-import 'package:test_location_2nd/Location/AddressFinder.dart';
-import 'package:test_location_2nd/Location/Coordinate.dart';
-import 'package:test_location_2nd/StateProvider/DayPageStateProvider.dart';
+import 'package:lateDiary/Util/global.dart' as global;
+import 'package:lateDiary/Location/AddressFinder.dart';
+import 'package:lateDiary/Location/Coordinate.dart';
+import 'package:lateDiary/StateProvider/DayPageStateProvider.dart';
 
 class PolarTimeIndicators extends StatelessWidget {
   var photoDataForPlot;

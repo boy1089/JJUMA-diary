@@ -1,28 +1,28 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:test_location_2nd/Location/LocationDataManager.dart';
-import 'package:test_location_2nd/Photo/PhotoDataManager.dart';
+import 'package:lateDiary/Location/LocationDataManager.dart';
+import 'package:lateDiary/Photo/PhotoDataManager.dart';
 
-import 'package:test_location_2nd/Sensor/AudioRecorder.dart';
-import 'package:test_location_2nd/Sensor/SensorRecorder.dart';
-import 'package:test_location_2nd/Util/global.dart';
+import 'package:lateDiary/Sensor/AudioRecorder.dart';
+import 'package:lateDiary/Sensor/SensorRecorder.dart';
+import 'package:lateDiary/Util/global.dart';
 
-import 'package:test_location_2nd/pages/MainPage.dart';
+import 'package:lateDiary/pages/MainPage.dart';
 import 'pages/SettingPage.dart';
 
-import 'package:test_location_2nd/Permissions/PermissionManager.dart';
-import 'package:test_location_2nd/Data/DataManager.dart';
-import 'package:test_location_2nd/StateProvider/YearPageStateProvider.dart';
-import 'package:test_location_2nd/StateProvider/DayPageStateProvider.dart';
-import 'package:test_location_2nd/StateProvider/NavigationIndexStateProvider.dart';
+import 'package:lateDiary/Permissions/PermissionManager.dart';
+import 'package:lateDiary/Data/DataManager.dart';
+import 'package:lateDiary/StateProvider/YearPageStateProvider.dart';
+import 'package:lateDiary/StateProvider/DayPageStateProvider.dart';
+import 'package:lateDiary/StateProvider/NavigationIndexStateProvider.dart';
 
-import 'package:test_location_2nd/Sensor/SensorDataManager.dart';
-import 'package:test_location_2nd/Note/NoteManager.dart';
+import 'package:lateDiary/Sensor/SensorDataManager.dart';
+import 'package:lateDiary/Note/NoteManager.dart';
 
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 
-import 'package:test_location_2nd/Data/Directories.dart';
+import 'package:lateDiary/Data/Directories.dart';
 import 'Settings.dart';
 
 void main() {

@@ -1,18 +1,18 @@
 import 'package:flutter/cupertino.dart';
-import 'package:test_location_2nd/Data/infoFromFile.dart';
-import 'package:test_location_2nd/Location/AddressFinder.dart';
+import 'package:lateDiary/Data/infoFromFile.dart';
+import 'package:lateDiary/Location/AddressFinder.dart';
 import 'package:glob/glob.dart';
 import 'package:glob/list_local_fs.dart';
-import 'package:test_location_2nd/Util/DateHandler.dart';
-import 'package:test_location_2nd/Util/global.dart' as global;
-import "package:test_location_2nd/Location/Coordinate.dart";
+import 'package:lateDiary/Util/DateHandler.dart';
+import 'package:lateDiary/Util/global.dart' as global;
+import "package:lateDiary/Location/Coordinate.dart";
 import 'dart:math';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 import 'package:csv/csv.dart';
 import 'dart:convert';
-import 'package:test_location_2nd/Util/Util.dart';
-import 'package:test_location_2nd/Data/Directories.dart';
+import 'package:lateDiary/Util/Util.dart';
+import 'package:lateDiary/Data/Directories.dart';
 
 
 class LocationDataManager {

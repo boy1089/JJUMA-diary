@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:test_location_2nd/Util/global.dart' as global;
-import 'package:test_location_2nd/Util/Util.dart';
+import 'package:lateDiary/Util/global.dart' as global;
+import 'package:lateDiary/Util/Util.dart';
 
 class ZoomableWidgets {
   bool isZoomIn = false;

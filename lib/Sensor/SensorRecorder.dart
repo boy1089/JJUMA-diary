@@ -4,9 +4,9 @@ import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_sensors/flutter_sensors.dart';
-import 'package:test_location_2nd/Sensor/SensorData.dart';
+import 'package:lateDiary/Sensor/SensorData.dart';
 import 'package:intl/intl.dart';
-import 'package:test_location_2nd/Permissions/PermissionManager.dart';
+import 'package:lateDiary/Permissions/PermissionManager.dart';
 
 class SensorRecorder {
   late PermissionManager permissionManager;

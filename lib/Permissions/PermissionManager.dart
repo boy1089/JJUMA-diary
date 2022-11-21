@@ -43,8 +43,8 @@ class PermissionManager {
     print("PermissionManager, checkCameraPermission : $isCameraPermissionGranted");
   }
 
-  void checkLocationPermission() async{
-    isLocationPermissionGranted = await PermissionHandler.Permission.locationAlways.isGranted;
+  Future<void> checkLocationPermission() async{
+    isLocationPermissionGranted = await PermissionHandler.Permission.location.isGranted;
     print("PermissionManager, checkLocationPermission : $isLocationPermissionGranted");
   }
 

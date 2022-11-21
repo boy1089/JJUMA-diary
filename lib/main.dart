@@ -26,6 +26,8 @@ import 'package:lateDiary/Data/Directories.dart';
 import 'Settings.dart';
 import 'pages/PermissionPage.dart';
 
+import 'navigation.dart';
+
 void main() {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
@@ -49,7 +51,7 @@ void main() {
           },
         ),
       ],
-      child: const MyApp(),
+      child: MaterialApp(home: MyApp()),
     ),
   );
 }
@@ -92,16 +94,23 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<int> init() async {
-
     Stopwatch stopwatch = new Stopwatch()..start();
     isInitializationDone = false;
     await permissionManager.init();
+
     print(
         "init process, permission manater init done. time elapsed : ${stopwatch.elapsed}");
 
-    if (!permissionManager.isLocationPermissionGranted | !permissionManager.isLocationPermissionGranted) {
+    if (!permissionManager.isLocationPermissionGranted |
+        !permissionManager.isLocationPermissionGranted) {
+      // Navigator.pushNamed(context, '/permission');
       FlutterNativeSplash.remove();
-      initialRoute = '/permission';
+      Navigation.navigateTo(
+          context: context,
+          screen: PermissionPage(permissionManager),
+          style: NavigationRouteStyle.material);
+      setState(() {});
+      return 0;
     }
 
     await Directories.init(Directories.directories);
@@ -120,28 +129,48 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    print(initialRoute);
-    return FutureBuilder(
-        future: initApp,
-        builder: (BuildContext context, AsyncSnapshot snapshot) {
-          print(snapshot.data);
-          return MaterialApp(
-            initialRoute: initialRoute,
-            routes: {
-              '/permission' : (context) => PermissionPage(),
-              '/daily': (context) => MainPage(
-                    permissionManager,
-                    dataManager,
-                    sensorDataManager,
-                    photoDataManager,
-                    noteManager,
-                  ),
-              '/settings': (context) =>
-                  AndroidSettingsScreen(permissionManager),
-            },
-            useInheritedMediaQuery: true,
-          );
-        });
+    return MaterialApp(
+      initialRoute: '/daily',
+      routes: {
+        '/permission': (context) => PermissionPage(permissionManager),
+        '/daily': (context) => FutureBuilder(
+            future: initApp,
+            builder: (BuildContext context, AsyncSnapshot snapshot) {
+              return MainPage(
+                permissionManager,
+                dataManager,
+                sensorDataManager,
+                photoDataManager,
+                noteManager,
+              );
+            }),
+        '/settings': (context) => AndroidSettingsScreen(permissionManager),
+      },
+      useInheritedMediaQuery: true,
+    );
+
+    //
+    // return FutureBuilder(
+    //     future: initApp,
+    //     builder: (BuildContext context, AsyncSnapshot snapshot) {
+    //       print(snapshot.data);
+    //       return MaterialApp(
+    //         initialRoute: initialRoute,
+    //         routes: {
+    //           '/permission' : (context) => PermissionPage(),
+    //           '/daily': (context) => MainPage(
+    //                 permissionManager,
+    //                 dataManager,
+    //                 sensorDataManager,
+    //                 photoDataManager,
+    //                 noteManager,
+    //               ),
+    //           '/settings': (context) =>
+    //               AndroidSettingsScreen(permissionManager),
+    //         },
+    //         useInheritedMediaQuery: true,
+    //       );
+    //     });
   }
 
   // @override

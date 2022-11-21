@@ -194,14 +194,13 @@ class MainPageState extends State<MainPage> {
             ),
           ),
         ),
-        // floatingActionButton: FloatingActionButton(
-        //   onPressed: () async {
-        //     Stopwatch stopwatch = Stopwatch()..start();
-        //     print(permissionManager.isLocationPermissionGranted);
-        //     await permissionManager.getLocationPermission();
-        //
-        //   },
-        // ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () async {
+            // Stopwatch stopwatch = Stopwatch()..start();
+            // print(permissionManager.isLocationPermissionGranted);
+            // await permissionManager.getLocationPermission();
+          },
+        ),
       ),
     );
   }

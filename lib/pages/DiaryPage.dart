@@ -79,11 +79,6 @@ class _DiaryPageState extends State<DiaryPage> {
             }),
       ),
 
-      floatingActionButton: FloatingActionButton(
-        onPressed: (){
-          print(noteManager.notes);
-        },
-      ),
     );
   }
 }

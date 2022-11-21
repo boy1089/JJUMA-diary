@@ -4,6 +4,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:lateDiary/Util/global.dart' as global;
 import 'package:flutter_shake_animated/flutter_shake_animated.dart';
 
+
 class PermissionPage extends StatefulWidget {
   late PermissionManager permissionManager;
   PermissionPage(this.permissionManager, {Key? key}) : super(key: key);

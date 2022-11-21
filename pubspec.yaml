@@ -65,6 +65,7 @@ dependencies:
   external_path:
   url_launcher:
   flutter_shake_animated:
+  numberpicker:
 
 dev_dependencies:
   flutter_test:

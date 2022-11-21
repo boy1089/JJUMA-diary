@@ -13,6 +13,7 @@ import 'package:lateDiary/Data/Directories.dart';
 import 'package:lateDiary/Settings.dart';
 import 'dart:io';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:numberpicker/numberpicker.dart';
 
 enum buttons { googleAccount, Location, Audio, Phone }
 
@@ -39,6 +40,7 @@ class _AndroidSettingsScreenState extends State<AndroidSettingsScreen> {
       "https://www.termsfeed.com/live/c780905a-d580-4e20-83a0-3f88929eca2e";
   String email = "latediary.info@gmail.com";
 
+  int _minimumNumberOfImages = 1;
   late PermissionManager permissionManager;
   _AndroidSettingsScreenState(permissionManager) {
     this.permissionManager = permissionManager;
@@ -61,7 +63,7 @@ class _AndroidSettingsScreenState extends State<AndroidSettingsScreen> {
           SettingsSection(
             title: Text("Common"),
             tiles: [
-              SettingsTile(title: Text("Language"), onPressed: (context) {}),
+              // SettingsTile(title: Text("Language"), onPressed: (context) {}),
               SettingsTile(
                 title: Text("About"),
                 onPressed: (context) {
@@ -77,7 +79,7 @@ class _AndroidSettingsScreenState extends State<AndroidSettingsScreen> {
                       anchorPoint: Offset(0, 0),
                       children: [
                         Column(
-                          crossAxisAlignment : CrossAxisAlignment.end,
+                          crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
                             TextButton(
                                 onPressed: () {
@@ -101,31 +103,31 @@ class _AndroidSettingsScreenState extends State<AndroidSettingsScreen> {
           SettingsSection(
             title: Text("Photo"),
             tiles: [
-              SettingsTile(
-                  title: Text("Reset Data"),
-                  onPressed: (context) {
-                    showDialog(
-                        context: (context),
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                              content: Text(
-                                  "Existing analysis data will be reset.\nPlease restart the service afterward."),
-                              actions: [
-                                TextButton(
-                                  child: const Text("cancel"),
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                ),
-                                TextButton(
-                                  child: const Text("ok"),
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                )
-                              ]);
-                        });
-                  }),
+              // SettingsTile(
+              //     title: Text("Reset Data"),
+              //     onPressed: (context) {
+              //       showDialog(
+              //           context: (context),
+              //           builder: (BuildContext context) {
+              //             return AlertDialog(
+              //                 content: Text(
+              //                     "Existing analysis data will be reset.\nPlease restart the service afterward."),
+              //                 actions: [
+              //                   TextButton(
+              //                     child: const Text("cancel"),
+              //                     onPressed: () {
+              //                       Navigator.of(context).pop();
+              //                     },
+              //                   ),
+              //                   TextButton(
+              //                     child: const Text("ok"),
+              //                     onPressed: () {
+              //                       Navigator.of(context).pop();
+              //                     },
+              //                   )
+              //                 ]);
+              //           });
+              //     }),
               SettingsTile(
                   title: Text("Directories"),
                   description: Column(
@@ -162,14 +164,23 @@ class _AndroidSettingsScreenState extends State<AndroidSettingsScreen> {
                         },
                       ),
                     ),
-                    ListTile(
-                      title: Text("Minimum number of images in a day"),
-                      // trailing :
-                    ),
-                    ListTile(
-                      title: Text("Minimum time difference [min]"),
-                      // trailing : Text('aa'),
-                    ),
+                    // ListTile(
+                    //   title: Text("Minimum number of images in a day"),
+                    //   trailing: NumberPicker(
+                    //     decoration: BoxDecoration(
+                    //       border : Border.all(width :1)
+                    //
+                    //     ),
+                    //       value: _minimumNumberOfImages,
+                    //       minValue: 1,
+                    //       maxValue: 20,
+                    //       onChanged: (value) =>
+                    //           setState(() => _minimumNumberOfImages = value)),
+                    // ),
+                    // ListTile(
+                    //   title: Text("Minimum time difference [min]"),
+                    //   // trailing : Text('aa'),
+                    // ),
                   ])),
             ],
           )

@@ -230,8 +230,7 @@ class DayPageStateProvider with ChangeNotifier {
     noteManager.tryDeleteNote(date);
   }
 
-  void setKeyboardSize(){
-
+  void setKeyboardSize() {
     final viewInsets = EdgeInsets.fromWindowPadding(
         WidgetsBinding.instance.window.viewInsets,
         WidgetsBinding.instance.window.devicePixelRatio);
@@ -240,6 +239,7 @@ class DayPageStateProvider with ChangeNotifier {
     print("daypage set keyboard size :$keyboardSize");
     notifyListeners();
   }
+
   void setDate(String date) {
     this.date = date;
     print("date : ${this.date}");

@@ -22,7 +22,6 @@ class Directories {
     for (int i = 0; i < selectedDirectories.length; i++) {
       String path = await ExternalPath.getExternalStoragePublicDirectory(
           selectedDirectories.elementAt(i));
-      print(path);
       selectedDirectories_path.add(
           path);
     }

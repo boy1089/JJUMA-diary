@@ -86,11 +86,11 @@ class NoteManager {
     final String folder = '${directory?.path}/noteData';
     bool isFolderExists = await Directory(folder).exists();
 
-    final File file = File('${folder}/${date}_note.csv');
-
     if (!isFolderExists) {
-      Directory(folder).create(recursive: true);
+      await Directory(folder).create(recursive: true);
     }
+
+    final File file = File('${folder}/${date}_note.csv');
 
     debugPrint("writing note to Local..");
     await file.writeAsString(note, mode: FileMode.write);

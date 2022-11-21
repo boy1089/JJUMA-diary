@@ -58,7 +58,6 @@ class PermissionManager {
   Future<void> checkStoragePermission() async {
     isStoragePermissionGranted = await PermissionHandler.Permission.storage.isGranted;
     print("PermissionManager, checkStoragePermission : $isStoragePermissionGranted");
-
   }
 
   // void checkPhonePermission() async {
@@ -69,14 +68,14 @@ class PermissionManager {
   Future getLocationPermission() async {
     if (!isLocationPermissionGranted){
       await PermissionHandler.Permission.location.request();
-      await PermissionHandler.Permission.locationAlways.request();
+      // await PermissionHandler.Permission.location.
+      // await PermissionHandler.Permission.locationAlways.request();
     }
     if (isLocationPermissionGranted){
       await PermissionHandler.Permission.locationAlways.value;
     }
 
-
-      isLocationPermissionGranted = await PermissionHandler.Permission.locationAlways.isGranted;
+    isLocationPermissionGranted = await PermissionHandler.Permission.location.isGranted;
     print("PermissionManager, getLocationPermission : $isLocationPermissionGranted");
   }
 

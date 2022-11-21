@@ -24,6 +24,7 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 import 'package:lateDiary/Data/Directories.dart';
 import 'Settings.dart';
+import 'pages/PermissionPage.dart';
 
 void main() {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
@@ -61,6 +62,8 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  String initialRoute = '/daily';
+
   final permissionManager = PermissionManager();
   final sensorDataManager = SensorDataManager();
   final noteManager = NoteManager();
@@ -89,10 +92,18 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<int> init() async {
+
     Stopwatch stopwatch = new Stopwatch()..start();
     isInitializationDone = false;
     await permissionManager.init();
-    print("init process, permission manater init done. time elapsed : ${stopwatch.elapsed}");
+    print(
+        "init process, permission manater init done. time elapsed : ${stopwatch.elapsed}");
+
+    if (!permissionManager.isLocationPermissionGranted | !permissionManager.isLocationPermissionGranted) {
+      FlutterNativeSplash.remove();
+      initialRoute = '/permission';
+    }
+
     await Directories.init(Directories.directories);
     await Settings.init();
     await noteManager.init();
@@ -101,23 +112,23 @@ class _MyAppState extends State<MyApp> {
     await dataManager.init();
     print("init process, time elapsed : ${stopwatch.elapsed}");
     isInitializationDone = true;
+    FlutterNativeSplash.remove();
     print("init done,executed in ${stopwatch.elapsed}");
     dataManager.executeSlowProcesses();
-    FlutterNativeSplash.remove();
     return 0;
   }
 
   @override
   Widget build(BuildContext context) {
-    print("start building app..");
+    print(initialRoute);
     return FutureBuilder(
         future: initApp,
         builder: (BuildContext context, AsyncSnapshot snapshot) {
-          // print("snapshot.hasData? ${snapshot.hasData}, ${snapshot.data}");
           print(snapshot.data);
           return MaterialApp(
-            initialRoute: '/daily',
+            initialRoute: initialRoute,
             routes: {
+              '/permission' : (context) => PermissionPage(),
               '/daily': (context) => MainPage(
                     permissionManager,
                     dataManager,

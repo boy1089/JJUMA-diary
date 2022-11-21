@@ -77,6 +77,8 @@ class _MyAppState extends State<MyApp> {
   late final audioRecorder;
   late final dataManager;
 
+  bool test = false;
+
   Future initApp = Future.delayed(const Duration(seconds: 5));
 
   _MyAppState() {
@@ -101,23 +103,21 @@ class _MyAppState extends State<MyApp> {
     print(
         "init process, permission manater init done. time elapsed : ${stopwatch.elapsed}");
 
-    if (!permissionManager.isLocationPermissionGranted |
+    if (!permissionManager.isStoragePermissionGranted |
         !permissionManager.isLocationPermissionGranted) {
-      // Navigator.pushNamed(context, '/permission');
       FlutterNativeSplash.remove();
-      Navigation.navigateTo(
+      test = await Navigation.navigateTo(
           context: context,
           screen: PermissionPage(permissionManager),
           style: NavigationRouteStyle.material);
       setState(() {});
-      return 0;
+      // return 0;
     }
 
     await Directories.init(Directories.directories);
     await Settings.init();
     await noteManager.init();
     print("init process, time elapsed : ${stopwatch.elapsed}");
-    // FlutterNativeSplash.remove();
     await dataManager.init();
     print("init process, time elapsed : ${stopwatch.elapsed}");
     isInitializationDone = true;

@@ -1,14 +1,7 @@
 import 'package:animations/animations.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:image_picker/image_picker.dart';
-// import 'package:location/location.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:lateDiary/Location/AddressFinder.dart';
-import 'package:lateDiary/Location/LocationDataManager.dart';
 import 'package:lateDiary/Util/global.dart' as global;
-import '../Settings.dart';
 import '../navigation.dart';
 import 'package:lateDiary/pages/SettingPage.dart';
 import 'package:lateDiary/Permissions/PermissionManager.dart';
@@ -25,7 +18,6 @@ import 'DayPageView.dart';
 import 'package:lateDiary/StateProvider/YearPageStateProvider.dart';
 import 'package:lateDiary/StateProvider/DayPageStateProvider.dart';
 import 'package:lateDiary/StateProvider/NavigationIndexStateProvider.dart';
-import 'package:lateDiary/Data/Directories.dart';
 
 class MainPage extends StatefulWidget {
   PermissionManager permissionManager;

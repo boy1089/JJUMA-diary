@@ -25,7 +25,7 @@ class PermissionManager {
   }
 
  Future<void> checkPermissions() async {
-    // checkLocationPermission();
+    await checkLocationPermission();
     // checkAudioPermission();
     await checkStoragePermission();
     // checkPhonePermission();

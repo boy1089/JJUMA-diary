@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:lateDiary/Permissions/PermissionManager.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:lateDiary/navigation.dart';
 import 'package:lateDiary/Util/global.dart' as global;
 import 'package:flutter_shake_animated/flutter_shake_animated.dart';
-
-import '../main.dart';
 
 class PermissionPage extends StatefulWidget {
   late PermissionManager permissionManager;
@@ -33,34 +30,35 @@ class _PermissionPageState extends State<PermissionPage> {
 
   @override
   Widget build(BuildContext context) {
-    print(widget.permissionManager.isMediaLibraryPermissionGranted);
-    print(widget.permissionManager.isLocationPermissionGranted);
-    print(isOkToProceed);
-
     return Container(
         color: Colors.white,
         child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+
+
               Offstage(
                 offstage:
-                    widget.permissionManager.isMediaLibraryPermissionGranted,
+                    widget.permissionManager.isStoragePermissionGranted,
                 child: const Text(
-                  "access to photo is needed to access photos in the device.",
+                  "Access to photo is needed to display photo in the device.",
                   style: const TextStyle(
                       fontSize: 20, color: global.kColor_backgroundText),
                 ),
               ),
+
               SizedBox(height: 50),
+
               Offstage(
                 offstage: widget.permissionManager.isLocationPermissionGranted,
                 child: const Text(
-                    "access to location is needed to analyze the distance of photo and your location.",
+                    "Access to location is needed to analyze the meta data of photo.",
                     style: TextStyle(
                         fontSize: 20, color: global.kColor_backgroundText)),
               ),
               SizedBox(height: 50),
+
               ElevatedButton(
                   onPressed: () async {
                     await openAppSettings();
@@ -68,21 +66,20 @@ class _PermissionPageState extends State<PermissionPage> {
                     setState(() {});
                   },
                   child: const Text("Allow permission")),
+
               ShakeWidget(
                 duration: Duration(milliseconds: global.animationTime),
                 shakeConstant: ShakeHorizontalConstant1(),
                 autoPlay: shakeButton,
                 child: ElevatedButton(
                     onPressed: () async {
-
                       await checkOkToProceed();
                       if (isOkToProceed) {
-                        // Navigator.pop(context);
-                        Navigation.navigateTo(
-                            context: context,
-                            screen: MyApp(),
-                            style: NavigationRouteStyle.material);
-
+                        Navigator.pop(context, true);
+                        // Navigation.navigateTo(
+                        //     context: context,
+                        //     screen: MyApp(),
+                        //     style: NavigationRouteStyle.material);
                       }
 
                       setState(() {
@@ -92,8 +89,6 @@ class _PermissionPageState extends State<PermissionPage> {
                       setState(() {
                         shakeButton = false;
                       });
-
-
                     },
                     child: Text("continue")),
               ),

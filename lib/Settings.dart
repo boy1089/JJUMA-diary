@@ -22,7 +22,7 @@ class Settings {
   static int minimumNumberOfPhoto = 0;
   static double minimumTime = 0.005;
 
-  static void init() async {
+  static Future<void> init() async {
     var currentCoordinate = await determinePosition();
     referenceCoordinate = Coordinate(
         currentCoordinate.latitude.abs(), currentCoordinate.longitude.abs());

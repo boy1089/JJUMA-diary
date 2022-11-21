@@ -93,9 +93,8 @@ class _MyAppState extends State<MyApp> {
     isInitializationDone = false;
     await permissionManager.init();
     print("init process, permission manater init done. time elapsed : ${stopwatch.elapsed}");
-    Directories.init(Directories.directories);
-    Settings.init();
-
+    await Directories.init(Directories.directories);
+    await Settings.init();
     await noteManager.init();
     print("init process, time elapsed : ${stopwatch.elapsed}");
     // FlutterNativeSplash.remove();

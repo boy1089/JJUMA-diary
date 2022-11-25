@@ -254,7 +254,7 @@ class DataManager {
   Future<void> addFilesToInfo(List<String>? filenames) async {
     if (filenames.runtimeType == null || filenames!.isEmpty) filenames = files;
 
-    for (int i = 0; i < filenames!.length; i++) {
+    for (int i = 0; i < filenames.length; i++) {
       // if (i % 100 == 0) print("addFilesToInfo $i / ${filenames.length}");
       String filename = filenames.elementAt(i);
       if (global.infoFromFiles[filename] == null) {
@@ -306,7 +306,7 @@ class DataManager {
   }
 
   Future<void> updateDateOnInfo(List<String>? filenames) async {
-    if (filenames == null || filenames!.isEmpty)
+    if (filenames == null || filenames.isEmpty)
       filenames = global.infoFromFiles.keys.toList();
 
     for (int i = 0; i < filenames.length; i++) {

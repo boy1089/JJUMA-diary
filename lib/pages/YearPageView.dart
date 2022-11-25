@@ -6,7 +6,6 @@ import 'package:provider/provider.dart';
 import 'dart:async';
 import 'package:lateDiary/PolarMonthIndicator.dart';
 import 'package:lateDiary/CustomWidget/ZoomableWidgets.dart';
-import 'package:lateDiary/StateProvider/YearPageStateProvider.dart';
 import 'package:lateDiary/StateProvider/DayPageStateProvider.dart';
 import 'package:lateDiary/StateProvider/NavigationIndexStateProvider.dart';
 import 'package:lateDiary/Note/NoteManager.dart';
@@ -80,7 +79,6 @@ class YearPageView extends StatelessWidget {
                       Offset tapPosition = calculateTapPositionRefCenter(
                           details, 0, layout_yearPage);
                       double angleZoomIn = calculateTapAngle(tapPosition, 0, 0);
-                      print("angle : $angleZoomIn");
                       product.setZoomInRotationAngle(angleZoomIn);
                     };
                   }),
@@ -111,58 +109,8 @@ class YearPageView extends StatelessWidget {
                 .build(context),
             Positioned(
                 width: physicalWidth,
-                // height: 10,
                 bottom: global.kMarginOfBottomOnDayPage,
-                child: AnimatedContainer(
-                    duration: Duration(milliseconds: global.animationTime),
-                    curve: global.animationCurve,
-                    // margin: EdgeInsets.all(10),
-                    height: layout_yearPage['textHeight'][product.isZoomIn],
-                    child: ListView.builder(
-                        itemCount: noteManager.notesOfYear.length,
-                        itemBuilder: (BuildContext buildContext, int index) {
-                          String date =
-                              noteManager.notesOfYear.keys.elementAt(index);
-                          return MaterialButton(
-                            onPressed: () {
-                              var provider =
-                                  Provider.of<NavigationIndexProvider>(context,
-                                      listen: false);
-
-                              provider.setNavigationIndex(2);
-                              provider.setDate(formatDateString(date));
-                              Provider.of<DayPageStateProvider>(context,
-                                      listen: false)
-                                  .setAvailableDates(product.availableDates);
-                            },
-                            // padding: EdgeInsets.all(5),
-                            child: Container(
-                              margin: EdgeInsets.all(5),
-                              width: physicalWidth,
-                              color: global.kColor_container,
-                              //Colors.black12.withAlpha(10),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "${formateDate2(formatDateString(date))}",
-                                    style: TextStyle(
-                                        fontWeight:
-                                            global.kFontWeight_diaryTitle,
-                                        color: global.kColor_diaryText),
-                                  ),
-                                  Text(
-                                    "${noteManager.notesOfYear[date]}",
-                                    style: TextStyle(
-                                        fontWeight:
-                                            global.kFontWeight_diaryContents,
-                                        color: global.kColor_diaryText),
-                                  )
-                                ],
-                              ),
-                            ),
-                          );
-                        }))),
+                child: NoteListView(product, noteManager).build(context)),
           ]),
     );
   }
@@ -234,5 +182,58 @@ class YearPageChart {
           ..label = null
       ],
     );
+  }
+}
+
+class NoteListView {
+  var product;
+  var noteManager;
+  NoteListView(this.product, this.noteManager);
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedContainer(
+        duration: Duration(milliseconds: global.animationTime),
+        curve: global.animationCurve,
+        // margin: EdgeInsets.all(10),
+        height: layout_yearPage['textHeight'][product.isZoomIn],
+        child: ListView.builder(
+            itemCount: noteManager.notesOfYear.length,
+            itemBuilder: (BuildContext buildContext, int index) {
+              String date = noteManager.notesOfYear.keys.elementAt(index);
+              return MaterialButton(
+                onPressed: () {
+                  var provider = Provider.of<NavigationIndexProvider>(context,
+                      listen: false);
+                  provider.setNavigationIndex(2);
+                  provider.setDate(formatDateString(date));
+                  Provider.of<DayPageStateProvider>(context, listen: false)
+                      .setAvailableDates(product.availableDates);
+                },
+                // padding: EdgeInsets.all(5),
+                child: Container(
+                  margin: EdgeInsets.all(5),
+                  width: physicalWidth,
+                  color: global.kColor_container,
+                  //Colors.black12.withAlpha(10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "${formateDate2(formatDateString(date))}",
+                        style: TextStyle(
+                            fontWeight: global.kFontWeight_diaryTitle,
+                            color: global.kColor_diaryText),
+                      ),
+                      Text(
+                        "${noteManager.notesOfYear[date]}",
+                        style: TextStyle(
+                            fontWeight: global.kFontWeight_diaryContents,
+                            color: global.kColor_diaryText),
+                      )
+                    ],
+                  ),
+                ),
+              );
+            }));
   }
 }

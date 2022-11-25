@@ -107,8 +107,7 @@ class _DayPageViewState extends State<DayPageView> {
                     "${DateFormat('MMM').format(DateTime.parse(date))} "
                     "${DateFormat('dd').format(DateTime.parse(date))}/"
                     "${DateFormat('yyyy').format(DateTime.parse(date))}",
-                    style: TextStyle(
-                        fontSize: 20, color: global.kColor_backgroundText),
+                    style: Theme.of(context).textTheme.headline3
                   )),
             ]),
         floatingActionButton: FloatingActionButton(

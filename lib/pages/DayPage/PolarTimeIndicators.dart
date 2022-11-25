@@ -120,8 +120,7 @@ class PolarTimeIndicator {
             child: Text(
               [null, "null"].contains(address) ? "$index" : "$index\n$address",
               textAlign: TextAlign.center,
-              style:
-                  TextStyle(fontSize: 60, color: global.kColor_backgroundText),
+              style: Theme.of(context).textTheme.headline2
             ),
           )),
     );

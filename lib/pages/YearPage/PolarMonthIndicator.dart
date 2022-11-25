@@ -49,7 +49,7 @@ class PolarMonthIndicator {
           angle: atan2(yLocation, xLocation),
           child: Text(
             "${DateFormat('MMM').format(DateTime(2022, index + 1))}",
-            style: TextStyle(fontSize: 60, color: global.kColor_backgroundText),
+            style: Theme.of(context).textTheme.headline2
           )),
     );
   }

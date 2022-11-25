@@ -17,6 +17,7 @@ import 'package:lateDiary/StateProvider/NavigationIndexStateProvider.dart';
 
 import 'package:lateDiary/CustomWidget/NoteEditor.dart';
 import 'dart:ui';
+import 'package:lateDiary/Util/layouts.dart';
 
 class DayPageView extends StatefulWidget {
   static String id = '/daily';
@@ -55,48 +56,7 @@ class _DayPageViewState extends State<DayPageView> {
   }
 
   bool isZoomInImageVisible = false;
-  late double graphSize = physicalWidth - global.kMarginForDayPage * 2;
-  late double availableHeight = physicalHeight -
-      global.kHeightOfArbitraryWidgetOnBottom -
-      global.kBottomNavigationBarHeight;
-  late Map layout_dayPage = {
-    'graphSize': {
-      true: graphSize * global.kMagnificationOnDayPage,
-      false: graphSize
-    },
-    'left': {
-      true: -graphSize / 2 * global.kMagnificationOnDayPage -
-          graphSize / 2 * global.kMagnificationOnDayPage * (1 - 0.4),
-      false: global.kMarginForDayPage
-    },
-    'top': {
-      true: null,
-      false: (physicalHeight -
-                  global.kBottomNavigationBarHeight -
-                  global.kHeightOfArbitraryWidgetOnBottom) *
-              (global.kYPositionRatioOfGraph) -
-          graphSize / 2
-    },
-    'graphCenter': {
-      true: null,
-      false: Offset(
-          physicalWidth / 2,
-          (physicalHeight -
-                  global.kBottomNavigationBarHeight -
-                  global.kHeightOfArbitraryWidgetOnBottom) *
-              (global.kYPositionRatioOfGraph))
-    },
-    'textHeight': {
-      true: (availableHeight -
-                  (availableHeight * global.kYPositionRatioOfGraph +
-                      graphSize / 2)) /
-              2 -
-          20,
-      false: availableHeight -
-          (availableHeight * global.kYPositionRatioOfGraph + graphSize / 2) -
-          20
-    }
-  };
+
 
   final viewInsets = EdgeInsets.fromWindowPadding(
       WidgetsBinding.instance.window.viewInsets,

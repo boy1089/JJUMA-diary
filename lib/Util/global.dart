@@ -91,6 +91,8 @@ double kSizeOfScatter_ZoomInMin =
 double kSizeOfScatter_ZoomInMax =
     kSizeOfScatter_ZoomOutMax * kMagnificationOnYearPage;
 
+// parameters f
+double kDayPageGraphSize = physicalWidth - 2 * kMarginForDayPage;
 double kMarginForDayPage = physicalWidth / 10;
 // double kMagnificationOnDayPage = 7;
 double kMagnificationOnDayPage = 7.5;

@@ -41,3 +41,47 @@ Map layout_yearPage = {
         (global.kAvailableHeight * global.kYPositionRatioOfGraph + global.kYearPageGraphSize / 2)
   }
 };
+
+
+Map layout_dayPage = {
+  'graphSize': {
+    true: global.kDayPageGraphSize * global.kMagnificationOnDayPage,
+    false: global.kDayPageGraphSize
+  },
+  'left': {
+    true: -global.kDayPageGraphSize / 2 * global.kMagnificationOnDayPage -
+        global.kDayPageGraphSize /
+            2 *
+            global.kMagnificationOnDayPage *
+            (1 - 0.4),
+    false: global.kMarginForDayPage
+  },
+  'top': {
+    true: null,
+    false: (physicalHeight -
+        global.kBottomNavigationBarHeight -
+        global.kHeightOfArbitraryWidgetOnBottom) *
+        (global.kYPositionRatioOfGraph) -
+        global.kDayPageGraphSize / 2
+  },
+  'graphCenter': {
+    true: null,
+    false: Offset(
+        physicalWidth / 2,
+        (physicalHeight -
+            global.kBottomNavigationBarHeight -
+            global.kHeightOfArbitraryWidgetOnBottom) *
+            (global.kYPositionRatioOfGraph))
+  },
+  'textHeight': {
+    true: (global.kAvailableHeight -
+        (global.kAvailableHeight * global.kYPositionRatioOfGraph +
+            global.kDayPageGraphSize / 2)) /
+        2 -
+        20,
+    false: global.kAvailableHeight -
+        (global.kAvailableHeight * global.kYPositionRatioOfGraph +
+            global.kDayPageGraphSize / 2) -
+        20
+  }
+};

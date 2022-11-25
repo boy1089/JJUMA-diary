@@ -37,18 +37,18 @@ class _DiaryPageState extends State<DiaryPage> {
               String date = noteManager.notes.keys.elementAt(index);
               return MaterialButton(
                 onPressed: () {
-
-                  var provider =
-                  Provider.of<NavigationIndexProvider>(context, listen: false);
+                  var provider = Provider.of<NavigationIndexProvider>(context,
+                      listen: false);
                   var yearPageStateProvider =
-                  Provider.of<YearPageStateProvider>(context, listen: false);
+                      Provider.of<YearPageStateProvider>(context,
+                          listen: false);
 
                   provider.setNavigationIndex(2);
                   provider.setDate(formatDateString(date));
-                  yearPageStateProvider.setAvailableDates(int.parse(date.substring(0, 4)));
+                  yearPageStateProvider
+                      .setAvailableDates(int.parse(date.substring(0, 4)));
                   Provider.of<DayPageStateProvider>(context, listen: false)
                       .setAvailableDates(yearPageStateProvider.availableDates);
-
                 },
                 // padding: EdgeInsets.all(5),
                 child: Container(
@@ -77,7 +77,6 @@ class _DiaryPageState extends State<DiaryPage> {
               );
             }),
       ),
-
     );
   }
 }

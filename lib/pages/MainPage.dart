@@ -8,7 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:lateDiary/Note/NoteManager.dart';
 import 'DiaryPage.dart';
 import 'YearPage/YearPage.dart';
-import 'DayPage/DayPageView.dart';
+import 'DayPage/DayPage.dart';
 
 import 'package:lateDiary/StateProvider/YearPageStateProvider.dart';
 import 'package:lateDiary/StateProvider/DayPageStateProvider.dart';
@@ -38,7 +38,7 @@ class MainPageState extends State<MainPage> {
     noteManager = widget.noteManager;
 
     YearPage yearPageView = YearPage();
-    DayPageView dayPageView = DayPageView();
+    DayPage dayPageView = DayPage();
     DiaryPage diaryPage = DiaryPage(noteManager);
     AndroidSettingsScreen androidSettingsScreen = AndroidSettingsScreen();
 

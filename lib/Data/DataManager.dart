@@ -24,9 +24,8 @@ import 'package:lateDiary/Data/Directories.dart';
 class DataManager {
   Map<String, int> summaryOfPhotoData = {};
   Map<String, Coordinate> summaryOfCoordinate = {};
-  PhotoDataManager photoDataManager;
-  LocationDataManager locationDataManager;
-  DataManager(this.photoDataManager, this.locationDataManager) {}
+  LocationDataManager locationDataManager = LocationDataManager();
+  DataManager() {}
 
   List<String> files = [];
   List<String>? filesNotUpdated = [];

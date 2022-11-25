@@ -8,7 +8,6 @@ import 'package:lateDiary/pages/SettingPage.dart';
 import 'package:lateDiary/Permissions/PermissionManager.dart';
 import 'package:lateDiary/Data/DataManager.dart';
 import 'package:provider/provider.dart';
-import 'package:lateDiary/Sensor/SensorDataManager.dart';
 import 'DayPage.dart';
 import 'package:lateDiary/Photo/PhotoDataManager.dart';
 import 'package:lateDiary/Note/NoteManager.dart';
@@ -22,14 +21,11 @@ import 'package:lateDiary/StateProvider/NavigationIndexStateProvider.dart';
 
 class MainPage extends StatefulWidget {
   static String id = 'main';
-  PermissionManager permissionManager;
   DataManager dataManager;
-  SensorDataManager sensorDataManager;
-  PhotoDataManager localPhotoDataManager;
   NoteManager noteManager;
 
-  MainPage(this.permissionManager, this.dataManager, this.sensorDataManager,
-      this.localPhotoDataManager, this.noteManager,
+  MainPage(this.dataManager,
+      this.noteManager,
       {Key? key})
       : super(key: key);
 
@@ -38,7 +34,6 @@ class MainPage extends StatefulWidget {
 }
 
 class MainPageState extends State<MainPage> {
-  late PermissionManager permissionManager;
   late DataManager dataManager;
   late NoteManager noteManager;
 
@@ -54,7 +49,6 @@ class MainPageState extends State<MainPage> {
   void initState() {
     readData = _fetchData();
     super.initState();
-    permissionManager = widget.permissionManager;
     dataManager = widget.dataManager;
     noteManager = widget.noteManager;
 
@@ -63,7 +57,7 @@ class MainPageState extends State<MainPage> {
 
     DiaryPage diaryPage = DiaryPage(noteManager);
     AndroidSettingsScreen androidSettingsScreen =
-        AndroidSettingsScreen(permissionManager);
+        AndroidSettingsScreen();
 
     _widgetOptions = <Widget>[
       yearPageView,
@@ -101,7 +95,6 @@ class MainPageState extends State<MainPage> {
               setState(() {
                 yearPageStateProvider.setZoomInState(false);
                 yearPageStateProvider.setZoomInRotationAngle(0);
-                // provider.isZoomIn = false;
               });
             }
             break;
@@ -110,7 +103,6 @@ class MainPageState extends State<MainPage> {
             break;
           case 2:
             //when zoomed in, make daypage zoom out
-            // provider.setZoomInState(false);
             global.indexForZoomInImage = -1;
             global.isImageClicked = false;
 
@@ -161,13 +153,12 @@ class MainPageState extends State<MainPage> {
               }
             }),
         backgroundColor: global.kBackGroundColor,
-        bottomNavigationBar:
-           SizedBox(
-            height: global.kBottomNavigationBarHeight,
-            // width : 200,
-            child:Offstage(
-              offstage: !provider.isBottomNavigationBarShown,
-              child : BottomNavigationBar(
+        bottomNavigationBar: SizedBox(
+          height: global.kBottomNavigationBarHeight,
+          // width : 200,
+          child: Offstage(
+            offstage: !provider.isBottomNavigationBarShown,
+            child: BottomNavigationBar(
               selectedFontSize: 0,
               type: BottomNavigationBarType.fixed,
               items: const <BottomNavigationBarItem>[
@@ -188,12 +179,6 @@ class MainPageState extends State<MainPage> {
             ),
           ),
         ),
-        // floatingActionButton: FloatingActionButton(
-        //   onPressed: () async {
-        //     print(Directories.directories);
-        //     print(Directories.selectedDirectories);
-        //   },
-        // ),
       ),
     );
   }
@@ -213,7 +198,7 @@ class MainPageState extends State<MainPage> {
       case 2:
         Navigation.navigateTo(
             context: context,
-            screen: AndroidSettingsScreen(permissionManager),
+            screen: AndroidSettingsScreen(),
             style: NavigationRouteStyle.material);
     }
   }

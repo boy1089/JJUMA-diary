@@ -11,7 +11,6 @@ import 'dart:collection';
 class NoteManager {
   Map notes = {};
   Map notesOfYear = {};
-
   List files = [];
   Map summaryOfNotes = {};
   NoteManager._privateConstructor();

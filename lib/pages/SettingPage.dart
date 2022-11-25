@@ -22,17 +22,14 @@ class AndroidSettingsScreen extends StatefulWidget {
   // final GoogleAccountManager = googleAccountManager;
   //
   // static var googleAccountManager;
-  var googleAccountManager;
-  PermissionManager permissionManager;
-  AndroidSettingsScreen(
-    PermissionManager permissionManager, {
+  AndroidSettingsScreen({
     Key? key,
-  })  : permissionManager = permissionManager,
+  })  :
         super(key: key);
 
   @override
   State<AndroidSettingsScreen> createState() =>
-      _AndroidSettingsScreenState(permissionManager);
+      _AndroidSettingsScreenState();
 }
 
 class _AndroidSettingsScreenState extends State<AndroidSettingsScreen> {
@@ -42,10 +39,6 @@ class _AndroidSettingsScreenState extends State<AndroidSettingsScreen> {
   String email = "latediary.info@gmail.com";
 
   int _minimumNumberOfImages = 1;
-  late PermissionManager permissionManager;
-  _AndroidSettingsScreenState(permissionManager) {
-    this.permissionManager = permissionManager;
-  }
 
   @override
   Widget build(BuildContext context) {

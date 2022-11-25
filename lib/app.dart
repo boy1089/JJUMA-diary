@@ -1,10 +1,6 @@
-
 import 'package:flutter/material.dart';
 import 'package:lateDiary/Permissions/PermissionManager.dart';
-import 'package:lateDiary/Sensor/SensorDataManager.dart';
 import 'package:lateDiary/Note/NoteManager.dart';
-import 'package:lateDiary/Photo/PhotoDataManager.dart';
-import 'package:lateDiary/Location/LocationDataManager.dart';
 import 'package:lateDiary/Data/DataManager.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:lateDiary/navigation.dart';
@@ -15,39 +11,24 @@ import 'pages/MainPage.dart';
 import 'pages/SettingPage.dart';
 import 'package:lateDiary/Util/global.dart' as global;
 
-import 'pages/DayPage.dart';
-import 'pages/YearPage.dart';
-import 'pages/DiaryPage.dart';
-import 'pages/SettingPage.dart';
 
 
 class App extends StatefulWidget {
   const App({Key? key}) : super(key: key);
-
   @override
   State<App> createState() => _AppState();
 }
 
 class _AppState extends State<App> {
-
   final permissionManager = PermissionManager();
-  final sensorDataManager = SensorDataManager();
   final noteManager = NoteManager();
-
-  late final photoDataManager;
-  late final locationDataManager;
-
   late final dataManager;
 
-  bool test = false;
+  bool isPermissionOk = false;
   Future initApp = Future.delayed(const Duration(seconds: 5));
 
   _AppState() {
-
-    photoDataManager = PhotoDataManager();
-    locationDataManager = LocationDataManager();
-    dataManager = DataManager(photoDataManager, locationDataManager);
-
+    dataManager = DataManager();
     initApp = init();
     super.initState();
   }
@@ -57,9 +38,9 @@ class _AppState extends State<App> {
     global.isInitializationDone = false;
     await permissionManager.init();
     if (!permissionManager.isStoragePermissionGranted |
-    !permissionManager.isLocationPermissionGranted) {
+        !permissionManager.isLocationPermissionGranted) {
       FlutterNativeSplash.remove();
-      test = await Navigation.navigateTo(
+      isPermissionOk = await Navigation.navigateTo(
           context: context,
           screen: PermissionPage(permissionManager),
           style: NavigationRouteStyle.material);
@@ -84,19 +65,17 @@ class _AppState extends State<App> {
     return MaterialApp(
       initialRoute: MainPage.id,
       routes: {
-        PermissionPage.id : (context) => PermissionPage(permissionManager),
+        PermissionPage.id: (context) => PermissionPage(permissionManager),
         MainPage.id: (context) => FutureBuilder(
             future: initApp,
             builder: (BuildContext context, AsyncSnapshot snapshot) {
               return MainPage(
-                permissionManager,
                 dataManager,
-                sensorDataManager,
-                photoDataManager,
                 noteManager,
               );
             }),
-        AndroidSettingsScreen.id: (context) => AndroidSettingsScreen(permissionManager),
+        AndroidSettingsScreen.id: (context) =>
+            AndroidSettingsScreen(),
       },
       useInheritedMediaQuery: true,
     );

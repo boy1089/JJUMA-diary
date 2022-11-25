@@ -1,18 +1,14 @@
 import 'package:animations/animations.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:lateDiary/Data/Directories.dart';
 import 'package:lateDiary/Util/global.dart' as global;
 import '../navigation.dart';
 import 'package:lateDiary/pages/SettingPage.dart';
-import 'package:lateDiary/Permissions/PermissionManager.dart';
-import 'package:lateDiary/Data/DataManager.dart';
 import 'package:provider/provider.dart';
 import 'DayPage.dart';
-import 'package:lateDiary/Photo/PhotoDataManager.dart';
 import 'package:lateDiary/Note/NoteManager.dart';
 import 'DiaryPage.dart';
-import 'YearPageView.dart';
+import 'YearPage.dart';
 import 'DayPageView.dart';
 
 import 'package:lateDiary/StateProvider/YearPageStateProvider.dart';
@@ -21,43 +17,31 @@ import 'package:lateDiary/StateProvider/NavigationIndexStateProvider.dart';
 
 class MainPage extends StatefulWidget {
   static String id = 'main';
-  DataManager dataManager;
   NoteManager noteManager;
 
-  MainPage(this.dataManager,
-      this.noteManager,
-      {Key? key})
-      : super(key: key);
+  MainPage(this.noteManager, {Key? key}) : super(key: key);
 
   @override
   State<MainPage> createState() => MainPageState();
 }
 
 class MainPageState extends State<MainPage> {
-  late DataManager dataManager;
   late NoteManager noteManager;
 
-  int dataIndex = 0;
-  List<List<String>> responseResult = [];
   Future readData = Future.delayed(const Duration(seconds: 1));
 
   List<Widget> _widgetOptions = [];
-  int a = 0;
-  late DayPage dayPage;
 
   @override
   void initState() {
     readData = _fetchData();
     super.initState();
-    dataManager = widget.dataManager;
     noteManager = widget.noteManager;
 
-    YearPageView yearPageView = YearPageView();
+    YearPage yearPageView = YearPage();
     DayPageView dayPageView = DayPageView();
-
     DiaryPage diaryPage = DiaryPage(noteManager);
-    AndroidSettingsScreen androidSettingsScreen =
-        AndroidSettingsScreen();
+    AndroidSettingsScreen androidSettingsScreen = AndroidSettingsScreen();
 
     _widgetOptions = <Widget>[
       yearPageView,
@@ -68,7 +52,6 @@ class MainPageState extends State<MainPage> {
   }
 
   Future<int> _fetchData() async {
-    print("initialization : ${global.isInitializationDone}");
     while (!global.isInitializationDone) {
       print("initialization on going..");
       await Future.delayed(const Duration(seconds: 1));
@@ -79,7 +62,6 @@ class MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
-    print("build MainPage");
     var provider = Provider.of<NavigationIndexProvider>(context, listen: false);
     var dayPageStateProvider =
         Provider.of<DayPageStateProvider>(context, listen: false);

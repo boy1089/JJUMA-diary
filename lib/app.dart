@@ -11,8 +11,6 @@ import 'pages/MainPage.dart';
 import 'pages/SettingPage.dart';
 import 'package:lateDiary/Util/global.dart' as global;
 
-
-
 class App extends StatefulWidget {
   const App({Key? key}) : super(key: key);
   @override
@@ -70,7 +68,6 @@ class _AppState extends State<App> {
             future: initApp,
             builder: (BuildContext context, AsyncSnapshot snapshot) {
               return MainPage(
-                dataManager,
                 noteManager,
               );
             }),

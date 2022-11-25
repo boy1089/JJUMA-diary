@@ -16,7 +16,6 @@ import 'package:lateDiary/StateProvider/DayPageStateProvider.dart';
 import 'package:lateDiary/StateProvider/NavigationIndexStateProvider.dart';
 
 import 'package:lateDiary/CustomWidget/NoteEditor.dart';
-import 'dart:math';
 import 'dart:ui';
 
 class DayPageView extends StatefulWidget {
@@ -31,16 +30,9 @@ class DayPageView extends StatefulWidget {
 class _DayPageViewState extends State<DayPageView> {
   String date = formatDate(DateTime.now());
   Future readData = Future.delayed(const Duration(seconds: 1));
-  List photoForPlot = [];
-  dynamic photoData = [[]];
-  dynamic sensorDataForPlot = [[]];
-  List<List<dynamic>> photoDataForPlot = [[]];
-  Map<int, String?> addresses = {};
-  String note = "";
 
   FocusNode focusNode = FocusNode();
   final myTextController = TextEditingController();
-  List files = [];
 
   @override
   void initState() {
@@ -49,7 +41,6 @@ class _DayPageViewState extends State<DayPageView> {
     Provider.of<DayPageStateProvider>(context, listen: false).setDate(date);
     Provider.of<NavigationIndexProvider>(context, listen: false)
         .setDate(formatDateString(date));
-    print("dayPAge");
     readData = _fetchData();
   }
 
@@ -60,12 +51,6 @@ class _DayPageViewState extends State<DayPageView> {
     myTextController.text = provider.note;
     print("fetchData done, ${provider.photoForPlot}");
 
-    photoForPlot = []..addAll(provider.photoForPlot);
-    photoData = []..addAll(provider.photoData);
-    sensorDataForPlot = []..addAll(provider.sensorDataForPlot);
-    photoDataForPlot = []..addAll(provider.photoDataForPlot);
-    addresses = {}..addAll(provider.addresses);
-
     return provider.photoForPlot;
   }
 
@@ -74,7 +59,6 @@ class _DayPageViewState extends State<DayPageView> {
   late double availableHeight = physicalHeight -
       global.kHeightOfArbitraryWidgetOnBottom -
       global.kBottomNavigationBarHeight;
-  //layout for zoomIn and zoomOut state
   late Map layout_dayPage = {
     'graphSize': {
       true: graphSize * global.kMagnificationOnDayPage,
@@ -132,30 +116,24 @@ class _DayPageViewState extends State<DayPageView> {
 
   @override
   Widget build(BuildContext context) {
-    print("building DayPage..");
-
     return Consumer<DayPageStateProvider>(builder: (context, product, child) {
-      final viewInsets = EdgeInsets.fromWindowPadding(
-          WidgetsBinding.instance.window.viewInsets,
-          WidgetsBinding.instance.window.devicePixelRatio);
-      // product.setKeyboardSize(viewInsets.bottom);
       return Scaffold(
-                          backgroundColor: global.kBackGroundColor,
-                          body: Stack(
-                          alignment:
-                          product.isZoomIn ? Alignment.center : Alignment.bottomCenter,
-                          children: [
-                          FutureBuilder(
-                          future: readData,
-                          builder: (BuildContext context, AsyncSnapshot snapshot) {
-                          return ZoomableWidgets(
-                          layout: layout_dayPage,
-                          isZoomIn: product.isZoomIn,
-                          provider: product,
-                          gestures: {
+        backgroundColor: global.kBackGroundColor,
+        body: Stack(
+            alignment:
+                product.isZoomIn ? Alignment.center : Alignment.bottomCenter,
+            children: [
+              FutureBuilder(
+                  future: readData,
+                  builder: (BuildContext context, AsyncSnapshot snapshot) {
+                    return ZoomableWidgets(
+                        layout: layout_dayPage,
+                        isZoomIn: product.isZoomIn,
+                        provider: product,
+                        gestures: {
                           AllowMultipleGestureRecognizer:
-                          GestureRecognizerFactoryWithHandlers<
-                          AllowMultipleGestureRecognizer>(
+                              GestureRecognizerFactoryWithHandlers<
+                                      AllowMultipleGestureRecognizer>(
                                   () => AllowMultipleGestureRecognizer(),
                                   (AllowMultipleGestureRecognizer instance) {
                             instance.onTapUp = (details) {
@@ -166,7 +144,6 @@ class _DayPageViewState extends State<DayPageView> {
 
                               if (product.isZoomIn) return;
                               if (focusNode.hasFocus) {
-                                print("has focus? ${focusNode.hasFocus}");
                                 dismissKeyboard(product);
                                 setState(() {});
                                 return;
@@ -201,7 +178,8 @@ class _DayPageViewState extends State<DayPageView> {
                           )
                         },
                         widgets: [
-                          PolarTimeIndicators(photoForPlot, addresses)
+                          PolarTimeIndicators(
+                                  product.photoForPlot, product.addresses)
                               .build(context),
                           // PolarSensorDataPlot(
                           //         (sensorDataForPlot[0].length == 0) |
@@ -209,8 +187,9 @@ class _DayPageViewState extends State<DayPageView> {
                           //             ? global.dummyData1
                           //             : sensorDataForPlot)
                           //     .build(context),
-                          PolarPhotoDataPlot(photoDataForPlot).build(context),
-                          polarPhotoImageContainers(photoForPlot)
+                          PolarPhotoDataPlot(product.photoDataForPlot)
+                              .build(context),
+                          polarPhotoImageContainers(product.photoForPlot)
                               .build(context),
                         ]).build(context);
                   }),
@@ -226,13 +205,6 @@ class _DayPageViewState extends State<DayPageView> {
                     style: TextStyle(
                         fontSize: 20, color: global.kColor_backgroundText),
                   )),
-              // Positioned(
-              //   top : 30,
-              //   left : EdgeInsets.fromWindowPadding(
-              //       WidgetsBinding.instance.window.viewInsets,
-              //       WidgetsBinding.instance.window.devicePixelRatio).bottom,
-              //   child : Text("aaaa")
-              // )
             ]),
         floatingActionButton: FloatingActionButton(
           mini: true,
@@ -242,12 +214,6 @@ class _DayPageViewState extends State<DayPageView> {
             borderRadius: BorderRadius.all(Radius.circular(15.0)),
           ),
           onPressed: () {
-            // global.infoFromFiles.forEach((key, value) {
-            //   if(key.contains('20220120'))
-            //     print("${key}, ${value}");
-            // });
-            // print(product.note);
-
             if (focusNode.hasFocus) {
               dismissKeyboard(product);
             } else {

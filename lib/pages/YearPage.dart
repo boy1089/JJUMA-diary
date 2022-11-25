@@ -14,19 +14,18 @@ class YearPage extends StatelessWidget {
         body: Consumer<YearPageStateProvider>(
       builder: (context, product, child) => PageView.builder(
           physics:
-              Provider.of<YearPageStateProvider>(context, listen: true).isZoomIn
+              product.isZoomIn
                   ? NeverScrollableScrollPhysics()
                   : BouncingScrollPhysics(),
           controller: PageController(
               viewportFraction: 1.0,
               initialPage:
-                  Provider.of<YearPageStateProvider>(context, listen: false)
-                      .index),
+                  product.index),
           itemCount: 20,
           reverse: true,
           itemBuilder: (BuildContext context, int index) {
             year = DateTime.now().year - index;
-            return YearPageView2(year, product, context);
+            return YearPageView(year, product, context);
           }),
     ));
   }

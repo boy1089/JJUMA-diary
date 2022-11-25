@@ -64,6 +64,11 @@ FontWeight kFontWeight_diaryContents = FontWeight.w400;
 FontWeight kFontWeight_diaryTitle = FontWeight.w700;
 
 //parameters for Year Pages
+double kYearPageGraphSize = physicalWidth - 2 * kMarginForYearPage;
+double kAvailableHeight = physicalHeight -
+    kHeightOfArbitraryWidgetOnBottom -
+    kBottomNavigationBarHeight;
+
 double kSize_polarPlotPhotoScatter = 5;
 
 double kMarginForYearPage = physicalWidth / 40;

@@ -10,6 +10,7 @@ import 'package:lateDiary/Data/Directories.dart';
 import 'pages/MainPage.dart';
 import 'pages/SettingPage.dart';
 import 'package:lateDiary/Util/global.dart' as global;
+import 'package:lateDiary/theme/theme.dart';
 
 class App extends StatefulWidget {
   const App({Key? key}) : super(key: key);
@@ -61,6 +62,7 @@ class _AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      theme: LateDiaryTheme.light,
       initialRoute: MainPage.id,
       routes: {
         PermissionPage.id: (context) => PermissionPage(permissionManager),

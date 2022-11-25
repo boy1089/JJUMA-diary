@@ -15,6 +15,12 @@ import 'pages/MainPage.dart';
 import 'pages/SettingPage.dart';
 import 'package:lateDiary/Util/global.dart' as global;
 
+import 'pages/DayPage.dart';
+import 'pages/YearPage.dart';
+import 'pages/DiaryPage.dart';
+import 'pages/SettingPage.dart';
+
+
 class App extends StatefulWidget {
   const App({Key? key}) : super(key: key);
 
@@ -23,7 +29,6 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> {
-  String initialRoute = '/daily';
 
   final permissionManager = PermissionManager();
   final sensorDataManager = SensorDataManager();
@@ -51,10 +56,6 @@ class _AppState extends State<App> {
     Stopwatch stopwatch = new Stopwatch()..start();
     global.isInitializationDone = false;
     await permissionManager.init();
-
-    print(
-        "init process, permission manater init done. time elapsed : ${stopwatch.elapsed}");
-
     if (!permissionManager.isStoragePermissionGranted |
     !permissionManager.isLocationPermissionGranted) {
       FlutterNativeSplash.remove();
@@ -81,10 +82,10 @@ class _AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      initialRoute: '/daily',
+      initialRoute: MainPage.id,
       routes: {
-        '/permission': (context) => PermissionPage(permissionManager),
-        '/daily': (context) => FutureBuilder(
+        PermissionPage.id : (context) => PermissionPage(permissionManager),
+        MainPage.id: (context) => FutureBuilder(
             future: initApp,
             builder: (BuildContext context, AsyncSnapshot snapshot) {
               return MainPage(
@@ -95,7 +96,7 @@ class _AppState extends State<App> {
                 noteManager,
               );
             }),
-        '/settings': (context) => AndroidSettingsScreen(permissionManager),
+        AndroidSettingsScreen.id: (context) => AndroidSettingsScreen(permissionManager),
       },
       useInheritedMediaQuery: true,
     );

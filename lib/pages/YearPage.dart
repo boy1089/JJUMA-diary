@@ -14,6 +14,7 @@ import 'package:lateDiary/Util/DateHandler.dart';
 import 'dart:ui';
 
 class YearPage extends StatefulWidget {
+  static String id = 'year';
   int year = DateTime.now().year;
   YearPage(this.year, {Key? key}) : super(key: key) {}
 

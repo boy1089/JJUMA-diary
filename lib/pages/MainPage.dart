@@ -21,6 +21,7 @@ import 'package:lateDiary/StateProvider/DayPageStateProvider.dart';
 import 'package:lateDiary/StateProvider/NavigationIndexStateProvider.dart';
 
 class MainPage extends StatefulWidget {
+  static String id = 'main';
   PermissionManager permissionManager;
   DataManager dataManager;
   SensorDataManager sensorDataManager;

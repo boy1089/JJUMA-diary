@@ -18,6 +18,7 @@ import 'package:numberpicker/numberpicker.dart';
 enum buttons { googleAccount, Location, Audio, Phone }
 
 class AndroidSettingsScreen extends StatefulWidget {
+  static String id = 'setting';
   // final GoogleAccountManager = googleAccountManager;
   //
   // static var googleAccountManager;

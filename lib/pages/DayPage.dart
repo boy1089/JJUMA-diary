@@ -20,6 +20,7 @@ import 'dart:math';
 import 'dart:ui';
 
 class DayPage extends StatefulWidget {
+  static String id = '/daily';
   String date = formatDate(DateTime.now());
   @override
   State<DayPage> createState() => _DayPageState();

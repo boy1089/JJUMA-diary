@@ -17,16 +17,13 @@ import 'package:lateDiary/Util/layouts.dart';
 class YearPageView extends StatelessWidget {
   static String id = 'year';
   int year = DateTime.now().year;
-
   var product;
   var context;
-
   NoteManager noteManager = NoteManager();
   FocusNode focusNode = FocusNode();
   final myTextController = TextEditingController();
 
   var heatmapChannel = StreamController<Selected?>.broadcast();
-
 
   YearPageView(int year, product, context) {
     this.year = year;
@@ -37,6 +34,13 @@ class YearPageView extends StatelessWidget {
 
   void initState() {
     print("year page create");
+
+    addListenerToChart();
+    product.setYear(year, notify: false);
+    noteManager.setNotesOfYear(year);
+  }
+
+  void addListenerToChart() {
     heatmapChannel.stream.listen(
       (value) {
         var provider =
@@ -55,9 +59,6 @@ class YearPageView extends StatelessWidget {
             .setAvailableDates(product.availableDates);
       },
     );
-    Provider.of<YearPageStateProvider>(context, listen: false)
-        .setYear(year, notify: false);
-    noteManager.setNotesOfYear(year);
   }
 
   @override
@@ -102,65 +103,7 @@ class YearPageView extends StatelessWidget {
                     style: TextStyle(fontSize: 30),
                   ),
                   PolarMonthIndicators().build(context),
-                  Chart(
-                    data: product.data,
-                    elements: [
-                      PointElement(
-                        position: Varset('week') * (Varset('day')),
-                        size: SizeAttr(
-                          variable: 'value',
-                          values: !product.isZoomIn
-                              ? [
-                                  global.kSizeOfScatter_ZoomOutMin,
-                                  global.kSizeOfScatter_ZoomOutMax
-                                ]
-                              : [
-                                  global.kSizeOfScatter_ZoomInMin,
-                                  global.kSizeOfScatter_ZoomInMax
-                                ],
-                        ),
-                        color: ColorAttr(
-                          encoder: (tuple) => global
-                              .kColorForYearPage[tuple['distance'].toInt()]
-                              .withAlpha((50 + tuple['value']).toInt()),
-                        ),
-                        selectionChannel: heatmapChannel,
-                      ),
-                    ],
-                    variables: {
-                      'week': Variable(
-                        accessor: (List datum) => datum[0] + 0.5
-                            as num, // 0.5 is added to match the tap area and dot
-                        scale: LinearScale(min: 0, max: 52, tickCount: 12),
-                      ),
-                      'day': Variable(
-                        accessor: (List datum) => datum[1] as num,
-                      ),
-                      'value': Variable(
-                        accessor: (List datum) => datum[2] as num,
-                      ),
-                      'distance': Variable(
-                        accessor: (List datum) =>
-                            // math.log(datum[3]) + 0.1 as num,
-                            datum[3] as num,
-                      ),
-                    },
-                    selections: {
-                      'choose': PointSelection(
-                        on: {GestureType.tap},
-                        toggle: true,
-                        nearest: false,
-                        testRadius: product.isZoomIn ? 10 : 0,
-                      )
-                    },
-                    coord: PolarCoord()
-                      ..radiusRange = [1 - global.kRatioOfScatterInYearPage, 1],
-                    axes: [
-                      Defaults.circularAxis
-                        ..grid = null
-                        ..label = null
-                    ],
-                  ),
+                  YearPageChart(product, heatmapChannel).build(context)
                 ],
                     isZoomIn: product.isZoomIn,
                     layout: layout_yearPage,
@@ -185,16 +128,12 @@ class YearPageView extends StatelessWidget {
                               var provider =
                                   Provider.of<NavigationIndexProvider>(context,
                                       listen: false);
-                              var yearPageStateProvider =
-                                  Provider.of<YearPageStateProvider>(context,
-                                      listen: false);
 
                               provider.setNavigationIndex(2);
                               provider.setDate(formatDateString(date));
                               Provider.of<DayPageStateProvider>(context,
                                       listen: false)
-                                  .setAvailableDates(
-                                      yearPageStateProvider.availableDates);
+                                  .setAvailableDates(product.availableDates);
                             },
                             // padding: EdgeInsets.all(5),
                             child: Container(
@@ -225,6 +164,75 @@ class YearPageView extends StatelessWidget {
                           );
                         }))),
           ]),
+    );
+  }
+}
+
+class YearPageChart {
+  var product;
+  var heatmapChannel;
+  YearPageChart(this.product, this.heatmapChannel);
+
+  @override
+  Widget build(BuildContext context) {
+    return Chart(
+      data: product.data,
+      elements: [
+        PointElement(
+          position: Varset('week') * (Varset('day')),
+          size: SizeAttr(
+            variable: 'value',
+            values: !product.isZoomIn
+                ? [
+                    global.kSizeOfScatter_ZoomOutMin,
+                    global.kSizeOfScatter_ZoomOutMax
+                  ]
+                : [
+                    global.kSizeOfScatter_ZoomInMin,
+                    global.kSizeOfScatter_ZoomInMax
+                  ],
+          ),
+          color: ColorAttr(
+            encoder: (tuple) => global
+                .kColorForYearPage[tuple['distance'].toInt()]
+                .withAlpha((50 + tuple['value']).toInt()),
+          ),
+          selectionChannel: heatmapChannel,
+        ),
+      ],
+      variables: {
+        'week': Variable(
+          accessor: (List datum) => datum[0] + 0.5
+              as num, // 0.5 is added to match the tap area and dot
+          scale: LinearScale(min: 0, max: 52, tickCount: 12),
+        ),
+        'day': Variable(
+          accessor: (List datum) => datum[1] as num,
+        ),
+        'value': Variable(
+          accessor: (List datum) => datum[2] as num,
+        ),
+        'distance': Variable(
+          accessor: (List datum) =>
+              // math.log(datum[3]) + 0.1 as num,
+              datum[3] as num,
+        ),
+      },
+      selections: {
+        'choose': PointSelection(
+          on: {GestureType.tap},
+          toggle: true,
+          nearest: false,
+          testRadius: product.isZoomIn ? 10 : 0,
+        )
+      },
+      coord: PolarCoord()
+        ..radiusRange = [1 - global.kRatioOfScatterInYearPage, 1],
+      axes: [
+        Defaults.circularAxis
+          ..grid = null
+          ..label = null
+      ],
     );
   }
 }

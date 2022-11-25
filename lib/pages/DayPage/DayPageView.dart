@@ -22,6 +22,7 @@ import 'package:lateDiary/Util/layouts.dart';
 class DayPageView extends StatefulWidget {
   static String id = '/daily';
   String date = formatDate(DateTime.now());
+
   @override
   State<DayPageView> createState() => _DayPageViewState();
 
@@ -48,30 +49,8 @@ class _DayPageViewState extends State<DayPageView> {
   Future<List<dynamic>> _fetchData() async {
     var provider = Provider.of<DayPageStateProvider>(context, listen: false);
     await provider.updateDataForUi();
-
     myTextController.text = provider.note;
-    print("fetchData done, ${provider.photoForPlot}");
-
     return provider.photoForPlot;
-  }
-
-  bool isZoomInImageVisible = false;
-
-
-  final viewInsets = EdgeInsets.fromWindowPadding(
-      WidgetsBinding.instance.window.viewInsets,
-      WidgetsBinding.instance.window.devicePixelRatio);
-  late double kKeyboardHeight = viewInsets.bottom;
-
-  void showKeyboard() {
-    focusNode.requestFocus();
-    setState(() {});
-  }
-
-  void dismissKeyboard(product) async {
-    product.setNote(myTextController.text);
-    focusNode.unfocus();
-    await product.writeNote();
   }
 
   @override
@@ -96,44 +75,16 @@ class _DayPageViewState extends State<DayPageView> {
                                       AllowMultipleGestureRecognizer>(
                                   () => AllowMultipleGestureRecognizer(),
                                   (AllowMultipleGestureRecognizer instance) {
-                            instance.onTapUp = (details) {
-                              if (!global.isImageClicked)
-                                global.indexForZoomInImage = -1;
-                              global.isImageClicked = false;
-                              setState(() {});
-
-                              if (product.isZoomIn) return;
-                              if (focusNode.hasFocus) {
-                                dismissKeyboard(product);
-                                setState(() {});
-                                return;
-                              }
-
-                              Offset tapPosition =
-                                  calculateTapPositionRefCenter(
-                                      details, 0, layout_dayPage);
-                              double angleZoomIn =
-                                  calculateTapAngle(tapPosition, 0, 0);
-                              product.setZoomInRotationAngle(angleZoomIn);
-
-                              product.setZoomInState(true);
-                              product.setIsZoomInImageVisible(true);
-                              product.setZoomInRotationAngle(angleZoomIn);
-                              FocusManager.instance.primaryFocus?.unfocus();
-                            };
+                            instance.onTapUp =
+                                (details) => onTap(details, context, product);
                           }),
                           AllowMultipleGestureRecognizer2:
                               GestureRecognizerFactoryWithHandlers<
                                   AllowMultipleGestureRecognizer2>(
                             () => AllowMultipleGestureRecognizer2(),
                             (AllowMultipleGestureRecognizer2 instance) {
-                              instance.onUpdate = (details) {
-                                if (!product.isZoomIn) return;
-                                product.setZoomInRotationAngle(product.isZoomIn
-                                    ? product.zoomInAngle +
-                                        details.delta.dy / 1000
-                                    : 0);
-                              };
+                              instance.onUpdate =
+                                  (details) => onPan(details, context, product);
                             },
                           )
                         },
@@ -141,12 +92,6 @@ class _DayPageViewState extends State<DayPageView> {
                           PolarTimeIndicators(
                                   product.photoForPlot, product.addresses)
                               .build(context),
-                          // PolarSensorDataPlot(
-                          //         (sensorDataForPlot[0].length == 0) |
-                          //                 (sensorDataForPlot.length == 0)
-                          //             ? global.dummyData1
-                          //             : sensorDataForPlot)
-                          //     .build(context),
                           PolarPhotoDataPlot(product.photoDataForPlot)
                               .build(context),
                           polarPhotoImageContainers(product.photoForPlot)
@@ -179,7 +124,6 @@ class _DayPageViewState extends State<DayPageView> {
             } else {
               showKeyboard();
             }
-            ;
             setState(() {});
           },
         ),
@@ -188,10 +132,50 @@ class _DayPageViewState extends State<DayPageView> {
     });
   }
 
+  void onTap(details, context, product) {
+    if (!global.isImageClicked) global.indexForZoomInImage = -1;
+    global.isImageClicked = false;
+    setState(() {});
+
+    if (product.isZoomIn) return;
+    if (focusNode.hasFocus) {
+      dismissKeyboard(product);
+      setState(() {});
+      return;
+    }
+
+    Offset tapPosition =
+        calculateTapPositionRefCenter(details, 0, layout_dayPage);
+    double angleZoomIn = calculateTapAngle(tapPosition, 0, 0);
+    product.setZoomInRotationAngle(angleZoomIn);
+
+    product.setZoomInState(true);
+    product.setIsZoomInImageVisible(true);
+    product.setZoomInRotationAngle(angleZoomIn);
+    FocusManager.instance.primaryFocus?.unfocus();
+  }
+
+  void onPan(details, context, product) {
+    if (!product.isZoomIn) return;
+    product.setZoomInRotationAngle(
+        product.isZoomIn ? product.zoomInAngle + details.delta.dy / 1000 : 0);
+  }
+
   @override
   void dispose() {
     print("dispose..");
     focusNode.dispose();
     super.dispose();
+  }
+
+  void showKeyboard() {
+    focusNode.requestFocus();
+    setState(() {});
+  }
+
+  void dismissKeyboard(product) async {
+    product.setNote(myTextController.text);
+    focusNode.unfocus();
+    await product.writeNote();
   }
 }

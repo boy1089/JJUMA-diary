@@ -6,7 +6,6 @@ import 'package:lateDiary/StateProvider/DayPageStateProvider.dart';
 import 'package:lateDiary/StateProvider/NavigationIndexStateProvider.dart';
 
 class DayPage extends StatelessWidget {
-
   DayPage({Key? key}) : super(key: key);
 
   @override
@@ -17,19 +16,16 @@ class DayPage extends StatelessWidget {
         Provider.of<NavigationIndexProvider>(context, listen: false);
     return Scaffold(
         body: PageView.builder(
-          dragStartBehavior: DragStartBehavior.down,
-            physics:
-              dayPageStateProvider.isZoomIn
-                ?NeverScrollableScrollPhysics():
-              BouncingScrollPhysics(),
+            dragStartBehavior: DragStartBehavior.down,
+            physics: dayPageStateProvider.isZoomIn
+                ? NeverScrollableScrollPhysics()
+                : BouncingScrollPhysics(),
             controller: PageController(
                 initialPage: dayPageStateProvider.availableDates
                     .indexOf(navigation.date)),
             itemCount: dayPageStateProvider.availableDates.length,
             reverse: false,
             itemBuilder: (BuildContext context, int index) {
-              // navigation.setDate(
-              //     formatDateString(dayPageStateProvider.availableDates[index]));
               String date = dayPageStateProvider.availableDates[index];
               return DayPageView(date);
             }));

@@ -22,63 +22,38 @@ class DayPageStateProvider with ChangeNotifier {
   double zoomInAngle = 0.0;
   bool isZoomIn = false;
   bool isBottomNavigationBarShown = true;
-  int lastNavigationIndex = 0;
   bool isZoomInImageVisible = false;
   String date = formatDate(DateTime.now());
 
   List<String> availableDates = [];
-  Map summaryOfGooglePhotoData = {};
   List photoForPlot = [];
   dynamic photoData = [[]];
-  dynamic sensorDataForPlot = [[]];
   List<List<dynamic>> photoDataForPlot = [[]];
   Map<int, String?> addresses = {};
   String note = "";
 
   double keyboardSize = 300;
 
-  //input : [global.dates, global.datetimes, global.infoFromFiles, global.kMinimumTimeDifferenceBetweenImages_ZoomOut, date];
-  Future<List> updateDateForUi_compute() async {
-    // print("date222 : $date");
-    // global.dates = input[0];
-    // global.datetimes = input[1];
-    // global.infoFromFiles = input[2];
-    // global.kMinimumTimeDifferenceBetweenImages_ZoomOut = input[3];
-    // date = input[4];
-    List input = [
-      global.dates,
-      global.datetimes,
-      global.infoFromFiles,
-      global.kMinimumTimeDifferenceBetweenImages_ZoomOut,
-      date
-    ];
-    // var result = await compute(compute2, input);
-    // print("result : $result");
-    // await updateDataForUi();
-
-    //result = [photoForPlot, photoDataForPlot, photoData, addresses, sensorDataForPlot, note];
-    return [0];
-    // return [photoForPlot, photoDataForPlot, photoData, addresses, sensorDataForPlot, note];
-  }
-
   Future<void> updateDataForUi() async {
     photoForPlot = [];
     photoDataForPlot = [];
     photoData = [[]];
-
+    Stopwatch stopwatch = Stopwatch()..start();
     try {
       photoData = await updatePhotoData();
+      print("time elapsed1 : ${stopwatch.elapsed}");
       photoForPlot = selectPhotoForPlot(photoData, true);
+      print("time elapsed2 : ${stopwatch.elapsed}");
     } catch (e) {
       print("while updating Ui, error is occrued : $e");
     }
     // //convert data type..
     photoDataForPlot = List<List>.generate(
         photoForPlot.length, (index) => photoForPlot.elementAt(index));
+    print("time elapsed3 : ${stopwatch.elapsed}");
 
-    addresses = await updateAddress();
-
-    await updateSensorData();
+    // addresses = await updateAddress();
+    print("time elapsed4 : ${stopwatch.elapsed}");
 
     try {
       note = await noteManager.readNote(date);
@@ -86,19 +61,18 @@ class DayPageStateProvider with ChangeNotifier {
       note = "";
       print("while updating UI, reading note, error is occured : $e");
     }
+    print("time elapsed5 : ${stopwatch.elapsed}");
+
     print("updateUi done");
   }
 
   Future updatePhotoData() async {
-    print("dayPage, updatePhotoFromLocal, date : $date");
     List<List<dynamic>> data = await photoDataManager.getPhotoOfDate(date);
-    print("dayPage, updatePhotoFromLocal, files : $data");
     photoData = modifyListForPlot(data, executeTranspose: true);
     return photoData;
   }
 
   List selectPhotoForPlot(List input, bool sampleImages) {
-    print("DayPage selectImageForPlot : ${input}");
     if (input[0] == null) return photoForPlot;
     if (input[0].length == 0) return photoForPlot;
 
@@ -134,31 +108,20 @@ class DayPageStateProvider with ChangeNotifier {
       }
     }
 
-    // for (int i = 1; i < input.length - 2; i++) {
-    //   if ((input[i][0] - photoForPlot[j][0]).abs() >
-    //       global.kMinimumTimeDifferenceBetweenImages_ZoomOut) {
-    //     photoForPlot.add([input[i][0], input[i][1], input[i][2], true]);
-    //     j = i;
-    //   } else {
-    //     photoForPlot.add([input[i][0], input[i][1], input[i][2], false]);
-    //   }
-    // }
-
     photoForPlot.add([input.last[0], input.last[1], input.last[2], true]);
-    print("selectImagesForPlot done, $photoForPlot");
     return photoForPlot;
   }
 
-  Future<void> updateSensorData() async {
-    var sensorData = await this.sensorDataManager.openFile(date);
-    try {
-      sensorDataForPlot = modifyListForPlot(subsampleList(sensorData, 10));
-    } catch (e) {
-      sensorDataForPlot = [[]];
-      print("error during updating sensorData : $e");
-    }
-    print("sensorDataForPlot : $sensorDataForPlot");
-  }
+  // Future<void> updateSensorData() async {
+  //   var sensorData = await this.sensorDataManager.openFile(date);
+  //   try {
+  //     sensorDataForPlot = modifyListForPlot(subsampleList(sensorData, 10));
+  //   } catch (e) {
+  //     sensorDataForPlot = [[]];
+  //     print("error during updating sensorData : $e");
+  //   }
+  //   print("sensorDataForPlot : $sensorDataForPlot");
+  // }
 
   Future<Map<int, String?>> updateAddress() async {
     Map<int, int> selectedIndex = {};
@@ -254,14 +217,6 @@ class DayPageStateProvider with ChangeNotifier {
     this.isBottomNavigationBarShown = isBottomNavigationBarShown;
     print("isBottomNavigationBarShown : $isBottomNavigationBarShown");
     notifyListeners();
-  }
-
-  void setLastNavigationIndex(int index) {
-    lastNavigationIndex = index;
-  }
-
-  void setSummaryOfGooglePhotoData(data) {
-    summaryOfGooglePhotoData = data;
   }
 
   void setZoomInRotationAngle(angle) {

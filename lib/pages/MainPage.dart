@@ -62,7 +62,7 @@ class MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     var navigationProvider =
-        Provider.of<NavigationIndexProvider>(context, listen: false);
+        Provider.of<NavigationIndexProvider>(context, listen: true);
     var dayPageStateProvider =
         Provider.of<DayPageStateProvider>(context, listen: false);
     var yearPageStateProvider =

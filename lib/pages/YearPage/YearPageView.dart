@@ -98,7 +98,7 @@ class YearPageView extends StatelessWidget {
                     widgets: [
                   Text(
                     "${year}",
-                    style: TextStyle(fontSize: 30),
+                    style: Theme.of(context).textTheme.headline1,
                   ),
                   PolarMonthIndicators().build(context),
                   YearPageChart(product, heatmapChannel).build(context)
@@ -220,15 +220,10 @@ class NoteListView {
                     children: [
                       Text(
                         "${formateDate2(formatDateString(date))}",
-                        style: TextStyle(
-                            fontWeight: global.kFontWeight_diaryTitle,
-                            color: global.kColor_diaryText),
-                      ),
+                        style: Theme.of(context).textTheme.subtitle1),
                       Text(
                         "${noteManager.notesOfYear[date]}",
-                        style: TextStyle(
-                            fontWeight: global.kFontWeight_diaryContents,
-                            color: global.kColor_diaryText),
+                        style: Theme.of(context).textTheme.bodyText1
                       )
                     ],
                   ),

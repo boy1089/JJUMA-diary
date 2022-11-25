@@ -61,15 +61,10 @@ class _DiaryPageState extends State<DiaryPage> {
                     children: [
                       Text(
                         "${formateDate2(formatDateString(date))}",
-                        style: TextStyle(
-                            fontWeight: global.kFontWeight_diaryTitle,
-                            color: global.kColor_diaryText),
-                      ),
+                        style: Theme.of(context).textTheme.subtitle1),
                       Text(
                         "${noteManager.notes[date]}",
-                        style: TextStyle(
-                            fontWeight: global.kFontWeight_diaryContents,
-                            color: global.kColor_diaryText),
+                        style: Theme.of(context).textTheme.bodyText1
                       )
                     ],
                   ),

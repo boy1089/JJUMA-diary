@@ -62,6 +62,7 @@ Color kColor_badge = kMainColor_cool.withAlpha(255);
 
 FontWeight kFontWeight_diaryContents = FontWeight.w400;
 FontWeight kFontWeight_diaryTitle = FontWeight.w700;
+FontWeight kFontWeight_yearTitle = FontWeight.w500;
 
 //parameters for Year Pages
 double kYearPageGraphSize = physicalWidth - 2 * kMarginForYearPage;

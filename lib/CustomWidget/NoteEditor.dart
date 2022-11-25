@@ -56,25 +56,6 @@ class NoteEditor {
             color: focusNode.hasFocus
                 ? global.kColor_containerFocused
                 : global.kColor_container,
-            // child: EditableText(
-            //   // readOnly: isZoomIn ? true : false,
-            //   maxLines: 15,
-            //   controller: textController,
-            //   onChanged: (a) {
-            //     print(
-            //         "keyboard size now : ${global.kKeyboardSize}, ${keyboardSize}");
-            //   },
-            //   onEditingComplete: () {
-            //     print("editing completed");
-            //     dismissKeyboard(product);
-            //   },
-            //   focusNode: focusNode,
-            //   style: TextStyle(color: global.kColor_diaryText),
-            //   cursorColor: Colors.black12,
-            //   backgroundCursorColor: Colors.black12,
-            //   textAlign: TextAlign.left,
-            // ),
-            //
              child : TextField(
                maxLines : 15,
                controller: textController,
@@ -84,7 +65,7 @@ class NoteEditor {
                    dismissKeyboard(product);
                  },
                  focusNode: focusNode,
-                 style: TextStyle(color: global.kColor_diaryText),
+                 style: Theme.of(context).textTheme.bodyText1,
                  cursorColor: Colors.black12,
                  // backgroundCursorColor: Colors.black12,
                  textAlign: TextAlign.left,

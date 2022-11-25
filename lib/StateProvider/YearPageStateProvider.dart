@@ -19,7 +19,7 @@ class YearPageStateProvider with ChangeNotifier {
   List<String> availableDates = [];
   int maxOfSummary = 0;
 
-  void setAvailableDates(int year ){
+  void setAvailableDates(int year) {
     availableDates = summaryOfPhotoData.keys.where((element) {
       return element.substring(0, 4) == year.toString();
     }).toList();
@@ -44,16 +44,16 @@ class YearPageStateProvider with ChangeNotifier {
 
     //generate data for graph plot
     data = List.generate(availableDates.length, (index) {
-
       String date = availableDates[index];
 
-      int days = int.parse(DateFormat("D").format(DateTime.parse(date))) + weekdayOfJan01 + offsetToMakeWeekendOutward;
+      int days = int.parse(DateFormat("D").format(DateTime.parse(date))) +
+          weekdayOfJan01 +
+          offsetToMakeWeekendOutward;
       int value =
           summaryOfPhotoData[date]! > 200 ? 200 : summaryOfPhotoData[date]!;
       double distance = 4;
-      if(summaryOfLocationData.containsKey(date))
-        distance =
-               floorDistance(summaryOfLocationData[date]!);
+      if (summaryOfLocationData.containsKey(date))
+        distance = floorDistance(summaryOfLocationData[date]!);
       return [
         (days / 7).floor(),
         days % 7,
@@ -61,7 +61,6 @@ class YearPageStateProvider with ChangeNotifier {
         distance,
       ];
     });
-
 
     List<int> dummy3 = List<int>.generate(transpose(data)[0].length,
         (index) => int.parse(transpose(data)[2][index].toString()));
@@ -71,18 +70,13 @@ class YearPageStateProvider with ChangeNotifier {
     // notifyListeners();
   }
 
-  double floorDistance(double? distance){
-    if (distance==null)
-      return 4;
+  double floorDistance(double? distance) {
+    if (distance == null) return 4;
 
-    if (distance>50)
-      return 0;
-    if(distance! > 20)
-      return 1;
-    if(distance!> 5)
-      return 2;
-    if(distance!>1)
-      return 3;
+    if (distance > 50) return 0;
+    if (distance! > 20) return 1;
+    if (distance! > 5) return 2;
+    if (distance! > 1) return 3;
     return 4;
   }
 

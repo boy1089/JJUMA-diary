@@ -4,7 +4,7 @@ import 'package:lateDiary/Util/Util.dart';
 import 'package:lateDiary/Util/global.dart' as global;
 import 'package:provider/provider.dart';
 import 'dart:async';
-import 'package:lateDiary/PolarMonthIndicator.dart';
+import 'package:lateDiary/pages/YearPage/PolarMonthIndicator.dart';
 import 'package:lateDiary/CustomWidget/ZoomableWidgets.dart';
 import 'package:lateDiary/StateProvider/DayPageStateProvider.dart';
 import 'package:lateDiary/StateProvider/NavigationIndexStateProvider.dart';

@@ -3,7 +3,7 @@ import 'package:graphic/graphic.dart';
 
 import 'package:flutter/foundation.dart';
 import 'package:lateDiary/Util/Util.dart';
-import 'Util/global.dart' as global;
+import '../../Util/global.dart' as global;
 
 class PolarSensorDataPlot {
   Color ColorForSensorDataOutline = Colors.black12;

@@ -5,11 +5,10 @@ import 'package:lateDiary/Util/global.dart' as global;
 import '../navigation.dart';
 import 'package:lateDiary/pages/SettingPage.dart';
 import 'package:provider/provider.dart';
-import 'DayPage.dart';
 import 'package:lateDiary/Note/NoteManager.dart';
 import 'DiaryPage.dart';
-import 'YearPage.dart';
-import 'DayPageView.dart';
+import 'YearPage/YearPage.dart';
+import 'DayPage/DayPageView.dart';
 
 import 'package:lateDiary/StateProvider/YearPageStateProvider.dart';
 import 'package:lateDiary/StateProvider/DayPageStateProvider.dart';
@@ -62,7 +61,8 @@ class MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
-    var provider = Provider.of<NavigationIndexProvider>(context, listen: false);
+    var navigationProvider =
+        Provider.of<NavigationIndexProvider>(context, listen: false);
     var dayPageStateProvider =
         Provider.of<DayPageStateProvider>(context, listen: false);
     var yearPageStateProvider =
@@ -70,8 +70,8 @@ class MainPageState extends State<MainPage> {
 
     return WillPopScope(
       onWillPop: () async {
-        print("back button pressed : ${provider.navigationIndex}");
-        switch (provider.navigationIndex) {
+        print("back button pressed : ${navigationProvider.navigationIndex}");
+        switch (navigationProvider.navigationIndex) {
           case 0:
             if (yearPageStateProvider.isZoomIn) {
               setState(() {
@@ -81,7 +81,7 @@ class MainPageState extends State<MainPage> {
             }
             break;
           case 1:
-            provider.setNavigationIndex(0);
+            navigationProvider.setNavigationIndex(0);
             break;
           case 2:
             //when zoomed in, make daypage zoom out
@@ -95,13 +95,14 @@ class MainPageState extends State<MainPage> {
               });
             }
 
-            if (provider.lastNavigationIndex == 1) {
-              provider.setNavigationIndex(provider.lastNavigationIndex);
+            if (navigationProvider.lastNavigationIndex == 1) {
+              navigationProvider
+                  .setNavigationIndex(navigationProvider.lastNavigationIndex);
               break;
             }
             //when zoomed out, go to month page
             if (!dayPageStateProvider.isZoomIn) {
-              provider.setNavigationIndex(0);
+              navigationProvider.setNavigationIndex(0);
               return Navigator.canPop(context);
             }
             break;
@@ -127,10 +128,7 @@ class MainPageState extends State<MainPage> {
                   ),
                   child:
                       // _widgetOptions[2]
-                      _widgetOptions[Provider.of<NavigationIndexProvider>(
-                              context,
-                              listen: false)
-                          .navigationIndex],
+                      _widgetOptions[navigationProvider.navigationIndex],
                 );
               }
             }),
@@ -139,7 +137,7 @@ class MainPageState extends State<MainPage> {
           height: global.kBottomNavigationBarHeight,
           // width : 200,
           child: Offstage(
-            offstage: !provider.isBottomNavigationBarShown,
+            offstage: !navigationProvider.isBottomNavigationBarShown,
             child: BottomNavigationBar(
               selectedFontSize: 0,
               type: BottomNavigationBarType.fixed,
@@ -152,9 +150,7 @@ class MainPageState extends State<MainPage> {
                 const BottomNavigationBarItem(
                     icon: Icon(Icons.settings), label: "Settings"),
               ],
-              currentIndex:
-                  Provider.of<NavigationIndexProvider>(context, listen: true)
-                      .navigationIndex,
+              currentIndex: navigationProvider.navigationIndex,
               onTap: (index) {
                 onTap(context, index);
               },
@@ -165,6 +161,8 @@ class MainPageState extends State<MainPage> {
     );
   }
 
+  void onBackButton(event) {}
+
   void onTap(BuildContext context, int item) {
     debugPrint(item.toString());
     var provider = Provider.of<NavigationIndexProvider>(context, listen: false);
@@ -174,7 +172,6 @@ class MainPageState extends State<MainPage> {
         provider.setBottomNavigationBarShown(true);
         break;
       case 1:
-        print('bottom navigation bar 1 clicked');
         provider.setNavigationIndex(1);
         break;
       case 2:

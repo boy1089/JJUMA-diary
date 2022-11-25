@@ -1,6 +1,7 @@
 import 'package:animations/animations.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:lateDiary/Data/Directories.dart';
 import 'package:lateDiary/Util/global.dart' as global;
 import '../navigation.dart';
 import 'package:lateDiary/pages/SettingPage.dart';
@@ -188,9 +189,8 @@ class MainPageState extends State<MainPage> {
         ),
         // floatingActionButton: FloatingActionButton(
         //   onPressed: () async {
-        //     // Stopwatch stopwatch = Stopwatch()..start();
-        //     // print(permissionManager.isLocationPermissionGranted);
-        //     // await permissionManager.getLocationPermission();
+        //     print(Directories.directories);
+        //     print(Directories.selectedDirectories);
         //   },
         // ),
       ),

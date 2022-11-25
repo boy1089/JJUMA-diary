@@ -11,7 +11,6 @@ import 'package:lateDiary/StateProvider/DayPageStateProvider.dart';
 import 'package:lateDiary/StateProvider/NavigationIndexStateProvider.dart';
 import 'package:lateDiary/Note/NoteManager.dart';
 import 'package:lateDiary/Util/DateHandler.dart';
-
 import 'dart:ui';
 
 class YearPage extends StatefulWidget {
@@ -78,7 +77,6 @@ class _YearPageState extends State<YearPage> {
   @override
   void initState() {
     print("year page create");
-    // Provider.of<YearPageStateProvider>(context, listen: false).updateData();
     heatmapChannel.stream.listen(
       (value) {
         var provider =
@@ -170,15 +168,7 @@ class _YearPageState extends State<YearPage> {
                                     global.kSizeOfScatter_ZoomInMax
                                   ],
                           ),
-                          // label: LabelAttr(
-                          //     encoder: (tuple) =>
-                          //         Label("${
-                          //             // tuple['week'].toString()}, ${tuple['day'].toString()
-                          //             // formatDate(DateTime(year).add(Duration(days:tuple['week']*7 + tuple['day'] )))
-                          //             tuple['distance']
-                          //             // tuple['week']*7 + tuple['day']
-                          //         //
-                          //         }")),
+
                           color: ColorAttr(
                             encoder: (tuple) => global
                                 .kColorForYearPage[tuple['distance'].toInt()]
@@ -288,189 +278,8 @@ class _YearPageState extends State<YearPage> {
                             );
                           }))),
             ]),
-        // floatingActionButton: FloatingActionButton(
-        //   onPressed: () {
-        //     print(data);
-        //     print('bb');
-        //   },
-        // ),
+
       ),
     );
   }
 }
-
-//
-//
-// return Consumer<YearPageStateProvider>(
-// builder: (context, product, child) => Scaffold(
-// body: RawGestureDetector(
-// behavior: HitTestBehavior.opaque,
-// gestures: {
-// AllowMultipleGestureRecognizer:
-// GestureRecognizerFactoryWithHandlers<
-// AllowMultipleGestureRecognizer>(
-// () => AllowMultipleGestureRecognizer(),
-// (AllowMultipleGestureRecognizer instance) {
-// instance.onTapUp = (details) {
-// product.setZoomInState(true);
-// if (product.isZoomIn) return;
-//
-// if (details.globalPosition.dy >
-// physicalHeight - layout_yearPage['textHeight'][false])
-// return;
-// Offset tapPosition = calculateTapPositionRefCenter(
-// details, 0, layout_yearPage);
-// double angleZoomIn = calculateTapAngle(tapPosition, 0, 0);
-// product.setZoomInRotationAngle(angleZoomIn);
-// };
-// }),
-// AllowMultipleGestureRecognizer2:
-// GestureRecognizerFactoryWithHandlers<
-// AllowMultipleGestureRecognizer2>(
-// () => AllowMultipleGestureRecognizer2(),
-// (AllowMultipleGestureRecognizer2 instance) {
-// instance.onUpdate = (details) {
-// if (!product.isZoomIn) return;
-// product.setZoomInRotationAngle(product.isZoomIn
-// ? product.zoomInAngle + details.delta.dy / 400
-//     : 0);
-// };
-// },
-// )
-// },
-// child: Stack(
-// alignment:
-// product.isZoomIn ? Alignment.center : Alignment.topCenter,
-// children: [
-// ZoomableWidgets(
-// widgets: [
-// Chart(
-// data: data,
-// elements: [
-// PointElement(
-// size: SizeAttr(
-// variable: 'value',
-// values: !product.isZoomIn
-// ? [
-// global.kSizeOfScatter_ZoomOutMin,
-// global.kSizeOfScatter_ZoomOutMax
-// ]
-// : [
-// global.kSizeOfScatter_ZoomInMin,
-// global.kSizeOfScatter_ZoomInMax
-// ],
-// ),
-// color: ColorAttr(
-// variable: 'distance',
-// values: [
-// Colors.blue.withAlpha(200),
-// Colors.red.withAlpha(200),
-// ],
-// ),
-// selectionChannel: heatmapChannel,
-// ),
-// ],
-// variables: {
-// 'week': Variable(
-// accessor: (List datum) => datum[0] as num,
-// scale:
-// LinearScale(min: 0, max: 52, tickCount: 12),
-// ),
-// 'day': Variable(
-// accessor: (List datum) => datum[1] as num,
-// ),
-// 'value': Variable(
-// accessor: (List datum) => datum[2] as num,
-// ),
-// 'distance': Variable(
-// accessor: (List datum) =>
-// // math.log(datum[3]) + 0.1 as num,
-// datum[3] as num,
-// ),
-// },
-// selections: {
-// 'choose': PointSelection(
-// on: {GestureType.hover},
-// toggle: true,
-// nearest: false,
-// testRadius: product.isZoomIn ? 10 : 0,
-// )
-// },
-// coord: PolarCoord()
-// ..radiusRange = [
-// 1 - global.kRatioOfScatterInYearPage,
-// 1
-// ],
-// axes: [
-// Defaults.circularAxis
-// ..grid = null
-// ..label = null
-// ],
-// ),
-// Text(
-// "${widget.year}",
-// style: TextStyle(fontSize: 30),
-// ),
-// PolarMonthIndicators().build(context),
-// ],
-// isZoomIn: product.isZoomIn,
-// layout: layout_yearPage,
-// provider: product)
-// .build(context),
-// Positioned(
-// width: physicalWidth,
-// height: 10,
-// bottom: global.kMarginOfBottomOnDayPage,
-// child: AnimatedContainer(
-// duration:
-// Duration(milliseconds: global.animationTime),
-// curve: global.animationCurve,
-// // margin: EdgeInsets.all(10),
-// height: layout_yearPage['textHeight']
-// [product.isZoomIn],
-// child: ListView.builder(
-// itemCount: noteManager.notesOfYear.length,
-// itemBuilder:
-// (BuildContext buildContext, int index) {
-// String date = noteManager.notesOfYear.keys
-//     .elementAt(index);
-// return MaterialButton(
-// onPressed: () {
-// print("text clicked");
-// buildContext
-//     .read<NavigationIndexProvider>()
-//     .setDate(formatDateString(date));
-// buildContext
-//     .read<NavigationIndexProvider>()
-//     .setNavigationIndex(2);
-// },
-// // padding: EdgeInsets.all(5),
-// child: Container(
-// margin: EdgeInsets.all(5),
-// width: physicalWidth,
-// color: global
-//     .kColor_container, //Colors.black12.withAlpha(10),
-// child: Column(
-// crossAxisAlignment:
-// CrossAxisAlignment.start,
-// children: [
-// Text(
-// "${formateDate2(formatDateString(date))}",
-// style: TextStyle(
-// fontWeight:
-// global.kFontWeight_diaryTitle,
-// color: global.kColor_diaryText),
-// ),
-// Text(
-// "${noteManager.notesOfYear[date]}",
-// style: TextStyle(
-// fontWeight: global
-//     .kFontWeight_diaryContents,
-// color: global.kColor_diaryText),
-// )
-// ],
-// ),
-// ),
-// );
-// }))),
-// ])),

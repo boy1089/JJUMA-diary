@@ -24,6 +24,12 @@ class Directories {
           selectedDirectories.elementAt(i));
       selectedDirectories_path.add(
           path);
+      selectedDirectories_path.add(
+          path + '/*');
+      selectedDirectories_path.add(
+          path + '/*/*');
+      selectedDirectories_path.add(
+          path + '/*/*/*');
     }
     return selectedDirectories_path;
   }

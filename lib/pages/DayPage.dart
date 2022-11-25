@@ -103,10 +103,13 @@ class _DayPageState extends State<DayPage> {
     },
     'textHeight': {
       true: (availableHeight -
-              (availableHeight * global.kYPositionRatioOfGraph +
-                  graphSize / 2)) / 2 - 20,
+                  (availableHeight * global.kYPositionRatioOfGraph +
+                      graphSize / 2)) /
+              2 -
+          20,
       false: availableHeight -
-          (availableHeight * global.kYPositionRatioOfGraph + graphSize / 2) - 20
+          (availableHeight * global.kYPositionRatioOfGraph + graphSize / 2) -
+          20
     }
   };
 
@@ -136,22 +139,22 @@ class _DayPageState extends State<DayPage> {
           WidgetsBinding.instance.window.devicePixelRatio);
       // product.setKeyboardSize(viewInsets.bottom);
       return Scaffold(
-        backgroundColor: global.kBackGroundColor,
-        body: Stack(
-            alignment:
-                product.isZoomIn ? Alignment.center : Alignment.bottomCenter,
-            children: [
-              FutureBuilder(
-                  future: readData,
-                  builder: (BuildContext context, AsyncSnapshot snapshot) {
-                    return ZoomableWidgets(
-                        layout: layout_dayPage,
-                        isZoomIn: product.isZoomIn,
-                        provider: product,
-                        gestures: {
+                          backgroundColor: global.kBackGroundColor,
+                          body: Stack(
+                          alignment:
+                          product.isZoomIn ? Alignment.center : Alignment.bottomCenter,
+                          children: [
+                          FutureBuilder(
+                          future: readData,
+                          builder: (BuildContext context, AsyncSnapshot snapshot) {
+                          return ZoomableWidgets(
+                          layout: layout_dayPage,
+                          isZoomIn: product.isZoomIn,
+                          provider: product,
+                          gestures: {
                           AllowMultipleGestureRecognizer:
-                              GestureRecognizerFactoryWithHandlers<
-                                      AllowMultipleGestureRecognizer>(
+                          GestureRecognizerFactoryWithHandlers<
+                          AllowMultipleGestureRecognizer>(
                                   () => AllowMultipleGestureRecognizer(),
                                   (AllowMultipleGestureRecognizer instance) {
                             instance.onTapUp = (details) {

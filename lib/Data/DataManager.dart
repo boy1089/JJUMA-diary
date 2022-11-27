@@ -31,6 +31,7 @@ class DataManager extends ChangeNotifier {
   List<String> files = [];
   List<String>? filesNotUpdated = [];
   List<String>? datesOutOfDate = [];
+
   late DataStateProvider dataStateProvider;
   var context;
 
@@ -41,25 +42,18 @@ class DataManager extends ChangeNotifier {
   Future<void> init() async {
     // dataStateProvider = Provider.of<DataStateProvider>(context, listen: false);
     Stopwatch stopwatch = Stopwatch()..start();
-    print("DataManager instance is initializing..");
-    // var a = await readSummaryOfPhotoData();
 
+    print("DataManager instance is initializing..");
     //get list of image files from local. --> update new images
     files = await getAllFiles();
     print("getAllFiles done, time elapsed : ${stopwatch.elapsed}");
-    //read previously processed Info
     await readInfoFromJson();
-    print("readInfo done, time elapsed : ${stopwatch.elapsed}");
     await readSummaryOfPhoto();
-    print("readSummaryOfPhoto done, time elapsed : ${stopwatch.elapsed}");
     await readSummaryOfLocation();
-    print("readSummaryOfLocation done, time elapsed : ${stopwatch.elapsed}");
     notifyListeners();
+
     // find the files which are in local but not in Info
-    // if (global.infoFromFiles.length > 1000)
-    // filesNotUpdated = await matchFilesAndInfo();
     filesNotUpdated = await matchFilesAndInfo2();
-    // filesNotUpdated = files;
 
     print("time elapsed : ${stopwatch.elapsed}");
     // update info which are not updated

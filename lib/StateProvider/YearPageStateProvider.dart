@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:lateDiary/Util/DateHandler.dart';
-import '../Util/global.dart' as global;
 import 'package:lateDiary/Util/Util.dart';
 import 'dart:math';
 import 'package:intl/intl.dart';
@@ -15,7 +14,8 @@ class YearPageStateProvider with ChangeNotifier {
   int lastNavigationIndex = 0;
   int year = DateTime.now().year;
   int index = 0;
-  var dataManager;
+
+  DataManager dataManager;
   YearPageStateProvider(this.dataManager);
 
   dynamic data;

@@ -117,7 +117,6 @@ class YearPageView extends StatelessWidget {
           ]),
       floatingActionButton: FloatingActionButton(onPressed: (){
         var dataManager = DataManager();
-        var dataStateProvider = Provider.of<DataStateProvider>(context, listen : false);
         // dataManager.setProvider(dataStateProvider);
         dataManager.init();
 

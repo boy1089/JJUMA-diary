@@ -17,37 +17,36 @@ void bootstrap(int i) {
     log(details.exceptionAsString(), stackTrace: details.stack);
   };
 
-
   // final todosRepository = TodosRepository(todosApi: todosApi);
 
   runZonedGuarded(
-        () =>   runApp(
-          MultiProvider(
-            providers: [
-              ChangeNotifierProvider<DataManager>(
-                create: (context){
-                  return DataManager();
-                },
-              ),
-              ChangeNotifierProvider<NavigationIndexProvider>(
-                create: (context) {
-                  return NavigationIndexProvider();
-                },
-              ),
-              ChangeNotifierProxyProvider<DataManager, YearPageStateProvider>(
-                update : (context, dataManager, a)=>YearPageStateProvider(dataManager),
-                create : (context)=> YearPageStateProvider(null),
-
-              ),
-              ChangeNotifierProvider<DayPageStateProvider>(
-                create: (context) {
-                  return DayPageStateProvider();
-                },
-              ),
-            ],
-            child: App(),
+    () => runApp(
+      MultiProvider(
+        providers: [
+          ChangeNotifierProvider<DataManager>(
+            create: (context) {
+              return DataManager();
+            },
           ),
-        ),
-        (error, stackTrace) => log(error.toString(), stackTrace: stackTrace),
+          ChangeNotifierProvider<NavigationIndexProvider>(
+            create: (context) {
+              return NavigationIndexProvider();
+            },
+          ),
+          ChangeNotifierProxyProvider<DataManager, YearPageStateProvider>(
+            update: (context, dataManager, a) =>
+                YearPageStateProvider(dataManager),
+            create: (context) => YearPageStateProvider(DataManager()),
+          ),
+          ChangeNotifierProvider<DayPageStateProvider>(
+            create: (context) {
+              return DayPageStateProvider();
+            },
+          ),
+        ],
+        child: App(),
+      ),
+    ),
+    (error, stackTrace) => log(error.toString(), stackTrace: stackTrace),
   );
 }

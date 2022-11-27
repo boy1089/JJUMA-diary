@@ -57,7 +57,6 @@ class _DayPageViewState extends State<DayPageView> {
   Widget build(BuildContext context) {
     return Consumer<DayPageStateProvider>(builder: (context, product, child) {
       return Scaffold(
-        backgroundColor: global.kBackGroundColor,
         body: Stack(
             alignment:
                 product.isZoomIn ? Alignment.center : Alignment.bottomCenter,

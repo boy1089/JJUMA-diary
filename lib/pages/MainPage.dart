@@ -16,16 +16,15 @@ import 'package:lateDiary/StateProvider/NavigationIndexStateProvider.dart';
 
 class MainPage extends StatefulWidget {
   static String id = 'main';
-  NoteManager noteManager;
 
-  MainPage(this.noteManager, {Key? key}) : super(key: key);
+  MainPage({Key? key}) : super(key: key);
 
   @override
   State<MainPage> createState() => MainPageState();
 }
 
 class MainPageState extends State<MainPage> {
-  late NoteManager noteManager;
+  NoteManager noteManager = NoteManager();
 
   Future readData = Future.delayed(const Duration(seconds: 1));
 
@@ -35,7 +34,6 @@ class MainPageState extends State<MainPage> {
   void initState() {
     readData = _fetchData();
     super.initState();
-    noteManager = widget.noteManager;
 
     YearPage yearPageView = YearPage();
     DayPage dayPageView = DayPage();
@@ -180,5 +178,12 @@ class MainPageState extends State<MainPage> {
             screen: AndroidSettingsScreen(),
             style: NavigationRouteStyle.material);
     }
+  }
+}
+
+class MainPageView {
+  @override
+  Widget build(BuildContext context) {
+    return Text('a');
   }
 }

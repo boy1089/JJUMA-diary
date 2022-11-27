@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:lateDiary/Util/global.dart' as global;
 import 'package:lateDiary/Util/Util.dart';
@@ -35,46 +34,37 @@ class NoteEditor {
   Widget build(BuildContext context) {
     return KeyboardVisibilityBuilder(builder: (context, isKeyboardVisible) {
       return Positioned(
-        width: physicalWidth,
-        bottom: global.kMarginOfBottomOnDayPage,
-        // height : layout['graphSize'][false],
-        child:
-           AnimatedContainer(
-            duration: Duration(milliseconds: global.animationTime),
-            curve: global.animationCurve,
-            margin: EdgeInsets.all(10),
-            // height : noteEditorHeight_hasFocus - global.kKeyboardSize,
-            height: isKeyboardVisible
-                ? noteEditorHeight_hasFocus - product.keyboardSize
-                : layout['textHeight'][product.isZoomIn],
+          width: physicalWidth,
+          bottom: global.kMarginOfBottomOnDayPage,
+          // height : layout['graphSize'][false],
+          child: AnimatedContainer(
+              duration: Duration(milliseconds: global.animationTime),
+              curve: global.animationCurve,
+              margin: EdgeInsets.all(10),
+              // height : noteEditorHeight_hasFocus - global.kKeyboardSize,
+              height: isKeyboardVisible
+                  ? noteEditorHeight_hasFocus - product.keyboardSize
+                  : layout['textHeight'][product.isZoomIn],
+              onEnd: () {
+                if (isKeyboardVisible) product.setKeyboardSize();
+              },
+              color: focusNode.hasFocus
+                  ? global.kColor_containerFocused
+                  : global.kColor_container,
+              child: TextField(
+                maxLines: 15,
+                controller: textController,
 
-            onEnd: (){
-              if(isKeyboardVisible)
-              product.setKeyboardSize();
-            },
-
-            color: focusNode.hasFocus
-                ? global.kColor_containerFocused
-                : global.kColor_container,
-             child : TextField(
-               maxLines : 15,
-               controller: textController,
-
-                 onEditingComplete: () {
-                   print("editing completed");
-                   dismissKeyboard(product);
-                 },
-                 focusNode: focusNode,
-                 style: Theme.of(context).textTheme.bodyText1,
-                 cursorColor: Colors.black12,
-                 // backgroundCursorColor: Colors.black12,
-                 textAlign: TextAlign.left,
-
-             )
-
-          )
-
-      );
+                onEditingComplete: () {
+                  print("editing completed");
+                  dismissKeyboard(product);
+                },
+                focusNode: focusNode,
+                style: Theme.of(context).textTheme.bodyText1,
+                cursorColor: Colors.black12,
+                // backgroundCursorColor: Colors.black12,
+                textAlign: TextAlign.left,
+              )));
     });
   }
 }

@@ -39,7 +39,7 @@ void bootstrap(int i) {
                 },
               ),
             ],
-            child: MaterialApp(home: App()),
+            child: App(),
           ),
         ),
         (error, stackTrace) => log(error.toString(), stackTrace: stackTrace),

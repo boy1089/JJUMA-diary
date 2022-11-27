@@ -69,12 +69,9 @@ class _AppState extends State<App> {
         MainPage.id: (context) => FutureBuilder(
             future: initApp,
             builder: (BuildContext context, AsyncSnapshot snapshot) {
-              return MainPage(
-                noteManager,
-              );
+              return MainPage();
             }),
-        AndroidSettingsScreen.id: (context) =>
-            AndroidSettingsScreen(),
+        AndroidSettingsScreen.id: (context) => AndroidSettingsScreen(),
       },
       useInheritedMediaQuery: true,
     );

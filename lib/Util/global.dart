@@ -105,9 +105,6 @@ double kZoomInImageSize = physicalWidth - kMarginForDayPage;
 
 double kMarginOfBottomOnDayPage = 20;
 
-double kSizeOfProgressIndicator = 140;
-double kStrokeWidthOfProgressIndicator = 10;
-
 const event_color_goingOut = Colors.red;
 const event_color_backHome = Colors.blue;
 

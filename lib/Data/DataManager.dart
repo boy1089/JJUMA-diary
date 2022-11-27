@@ -9,7 +9,6 @@ import 'package:lateDiary/Location/LocationDataManager.dart';
 import "package:lateDiary/Location/Coordinate.dart";
 import 'infoFromFile.dart';
 import 'package:lateDiary/Data/Directories.dart';
-import 'package:flutter/material.dart';
 import 'DataRepository.dart';
 
 class DataManager extends ChangeNotifier {
@@ -79,8 +78,6 @@ class DataManager extends ChangeNotifier {
   }
 
   void executeSlowProcesses() async {
-    Stopwatch stopwatch = new Stopwatch()..start();
-
     if (filesNotUpdated == []) return;
 
     int lengthOfFiles = filesNotUpdated!.length;
@@ -196,7 +193,7 @@ class DataManager extends ChangeNotifier {
   }
 
   Future<void> addFilesToInfo(List<String>? filenames) async {
-    if (filenames.runtimeType == null || filenames!.isEmpty) filenames = files;
+    if (filenames!.isEmpty) filenames = files;
 
     for (int i = 0; i < filenames.length; i++) {
       // if (i % 100 == 0) print("addFilesToInfo $i / ${filenames.length}");
@@ -235,7 +232,7 @@ class DataManager extends ChangeNotifier {
 
     dates = [...dates];
     datetimes = [...datetimes];
-    // print("date during init, ${dates.length}");
+
     dates.removeWhere((i) => i == null);
     datetimes.removeWhere((i) => i == null);
     setOfDates = dates;
@@ -255,64 +252,25 @@ class DataManager extends ChangeNotifier {
       if (inferredDatetime != null) {
         infoFromFiles[filename]?.datetime = DateTime.parse(inferredDatetime);
         infoFromFiles[filename]?.date = inferredDatetime.substring(0, 8);
-
       }
     }
   }
 
-  Future<void> updateExifOnInfo(List<String>? filenames) async {
-    if (filenames == null) filenames = infoFromFiles.keys.toList();
-
-    for (int i = 0; i < filenames.length; i++) {
-      String filename = filenames.elementAt(i);
-      List ExifData = await getExifInfoOfFile(filename);
-      if (i % 100 == 0)
-        print(
-            "updateExifOninfo : $i / ${filenames.length}, $filename, ${ExifData[0]}, ${ExifData[1]}");
-      infoFromFiles[filename]?.coordinate = ExifData[1];
-
-      if (ExifData[1] != null) {
-        infoFromFiles[filename]?.distance = calculateDistanceToRef(ExifData[1]);
-      }
-
-      //if datetime is updated from filename, then does not overwrite with exif
-      if (infoFromFiles[filename]?.datetime != null) continue;
-
-      //update the datetime of EXif if there is datetime is null from filename
-      // print("filename : $filename, ExifData : ${ExifData[0]}");
-      if ((ExifData[0] != null) &
-          (ExifData[0] != "") &
-          (ExifData[0] != "null")) {
-        infoFromFiles[filename]?.datetime = DateTime.parse(ExifData[0]);
-        infoFromFiles[filename]?.date = ExifData[0].substring(0, 8);
-        continue;
-      }
-
-      //if there is no info from filename and exif, then use changed datetime.
-      DateTime datetime =
-          DateTime.parse(formatDatetime(FileStat.statSync(filename).changed));
-      infoFromFiles[filename]?.datetime = datetime;
-      infoFromFiles[filename]?.date = formatDate(datetime);
-    }
-  }
-
-  //input : [filenames, infoFromFiles]
   Future<Map<String, InfoFromFile>> updateExifOnInfo_compute(List input) async {
     List<String> filenames = input[0];
     infoFromFiles = input[1];
-    if (filenames == null) filenames = infoFromFiles.keys.toList();
 
     for (int i = 0; i < filenames.length; i++) {
       String filename = filenames.elementAt(i);
-      List ExifData = await getExifInfoOfFile(filename);
+      List exifData = await getExifInfoOfFile(filename);
 
       if (i % 100 == 0)
         print(
-            "updateExifOninfo : $i / ${filenames.length}, $filename, ${ExifData[0]}, ${ExifData[1]}");
-      infoFromFiles[filename]?.coordinate = ExifData[1];
+            "updateExifOnInfo : $i / ${filenames.length}, $filename, ${exifData[0]}, ${exifData[1]}");
+      infoFromFiles[filename]?.coordinate = exifData[1];
 
-      if (ExifData[1] != null) {
-        infoFromFiles[filename]?.distance = calculateDistanceToRef(ExifData[1]);
+      if (exifData[1] != null) {
+        infoFromFiles[filename]?.distance = calculateDistanceToRef(exifData[1]);
       }
 
       infoFromFiles[filename]?.isUpdated = true;
@@ -320,12 +278,11 @@ class DataManager extends ChangeNotifier {
       if (infoFromFiles[filename]?.datetime != null) continue;
 
       //update the datetime of EXif if there is datetime is null from filename
-      // print("filename : $filename, ExifData : ${ExifData[0]}");
-      if ((ExifData[0] != null) &
-          (ExifData[0] != "") &
-          (ExifData[0] != "null")) {
-        infoFromFiles[filename]?.datetime = DateTime.parse(ExifData[0]);
-        infoFromFiles[filename]?.date = ExifData[0].substring(0, 8);
+      if ((exifData[0] != null) &
+          (exifData[0] != "") &
+          (exifData[0] != "null")) {
+        infoFromFiles[filename]?.datetime = DateTime.parse(exifData[0]);
+        infoFromFiles[filename]?.date = exifData[0].substring(0, 8);
         continue;
       }
 
@@ -340,17 +297,9 @@ class DataManager extends ChangeNotifier {
 
   static Future<Map<String, int>> updateSummaryOfPhotoFromInfo(
       List input) async {
-    List dates = [];
-    Map<String, int> summaryOfPhotoData = {};
-
-    if (input.isNotEmpty) {
-      dates = input[0];
-      summaryOfPhotoData = input[1];
-    }
-    // dates.removeWhere((i) => i == null);
+    List dates = input[0];
     Map<String, int> counts = {};
 
-    // dates.map((e) => counts.containsKey(e) ? counts[e]++ : counts[e] = 1);
     for (int i = 0; i < dates.length; i++) {
       String? date = dates[i];
       if (date == null) continue;
@@ -361,8 +310,6 @@ class DataManager extends ChangeNotifier {
       }
       counts[date] = 1;
     }
-
-    summaryOfPhotoData = counts;
     return counts;
   }
 
@@ -395,7 +342,6 @@ class DataManager extends ChangeNotifier {
     }
     return distances;
   }
-
 
   //input : [global.dates, global.summaryOfPhotoData, infoFromFiles]
   static Future<Map<String, double>>
@@ -431,8 +377,7 @@ class DataManager extends ChangeNotifier {
     files = files.where((element) => !element.contains('thumbnail')).toList();
 
     infoFromFiles = {};
-    infoFromFiles.addAll(
-        Map.fromIterable(files, key: (v) => v, value: (v) => InfoFromFile()));
+    infoFromFiles.addAll({for (var v in files) v: InfoFromFile()});
 
     return files;
   }

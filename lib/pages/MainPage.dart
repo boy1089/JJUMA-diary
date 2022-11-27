@@ -25,14 +25,10 @@ class MainPage extends StatefulWidget {
 
 class MainPageState extends State<MainPage> {
   NoteManager noteManager = NoteManager();
-
-  Future readData = Future.delayed(const Duration(seconds: 1));
-
   List<Widget> _widgetOptions = [];
 
   @override
   void initState() {
-    readData = _fetchData();
     super.initState();
 
     YearPage yearPageView = YearPage();
@@ -46,15 +42,6 @@ class MainPageState extends State<MainPage> {
       dayPageView,
       androidSettingsScreen,
     ];
-  }
-
-  Future<int> _fetchData() async {
-    while (!global.isInitializationDone) {
-      print("initialization on going..");
-      await Future.delayed(const Duration(seconds: 1));
-    }
-    await Future.delayed(const Duration(seconds: 1));
-    return 0;
   }
 
   @override
@@ -108,14 +95,7 @@ class MainPageState extends State<MainPage> {
         return Navigator.canPop(context);
       },
       child: Scaffold(
-        body: FutureBuilder(
-            future: readData,
-            builder: (BuildContext context, AsyncSnapshot snapshot) {
-              print("building MAinPage.. ${snapshot.hasData}");
-              if (snapshot.hasData == false) {
-                return Center(child: CircularProgressIndicator());
-              } else {
-                return PageTransitionSwitcher(
+        body: PageTransitionSwitcher(
                   duration: Duration(milliseconds: 1000),
                   transitionBuilder:
                       (child, primaryAnimation, secondaryAnimation) =>
@@ -127,9 +107,7 @@ class MainPageState extends State<MainPage> {
                   child:
                       // _widgetOptions[2]
                       _widgetOptions[navigationProvider.navigationIndex],
-                );
-              }
-            }),
+                ),
         backgroundColor: global.kBackGroundColor,
         bottomNavigationBar: SizedBox(
           height: global.kBottomNavigationBarHeight,

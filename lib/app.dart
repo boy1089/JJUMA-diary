@@ -53,6 +53,7 @@ class _AppState extends State<App> {
     await dataManager.init();
     print("init process, time elapsed : ${stopwatch.elapsed}");
     global.isInitializationDone = true;
+    await Future.delayed(Duration(seconds : 1));
     FlutterNativeSplash.remove();
     print("init done,executed in ${stopwatch.elapsed}");
     dataManager.executeSlowProcesses();

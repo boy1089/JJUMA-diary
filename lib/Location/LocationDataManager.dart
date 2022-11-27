@@ -78,12 +78,13 @@ class LocationDataManager {
   }
 
   List<double?> getDistancesOfDate(String date) {
-    Stopwatch stopwatch = Stopwatch()..start();
 
     //find the index which date is contained in infoFromFiles.
     List dates = global.setOfDates;
+
     // List indexOfDate = List.generate(
     //     global.dates.length, (i) => (dates.elementAt(i) == date) ? i : null);
+
     var endIndex = dates.lastIndexOf(date);
     var startIndex = endIndex - 1000;
     if(startIndex<0) startIndex = 0;

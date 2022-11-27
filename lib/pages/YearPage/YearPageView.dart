@@ -14,7 +14,6 @@ import 'dart:ui';
 import 'package:lateDiary/Util/layouts.dart';
 
 import '../../Data/DataManager.dart';
-import 'package:lateDiary/StateProvider/DataStateProvider.dart';
 
 class YearPageView extends StatelessWidget {
   static String id = 'year';

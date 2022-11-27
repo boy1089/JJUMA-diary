@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:geocoding/geocoding.dart';
 import 'package:glob/list_local_fs.dart';
 import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
@@ -13,11 +12,9 @@ import "package:lateDiary/Location/Coordinate.dart";
 import 'infoFromFile.dart';
 import 'package:lateDiary/Data/Directories.dart';
 import 'package:lateDiary/StateProvider/DataStateProvider.dart';
-import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 
 class DataManager extends ChangeNotifier {
-
   DataManager._privateConstructor();
   static final DataManager _instance = DataManager._privateConstructor();
   factory DataManager() {
@@ -32,6 +29,8 @@ class DataManager extends ChangeNotifier {
   List<String> files = [];
   List<String>? filesNotUpdated = [];
   List<String>? datesOutOfDate = [];
+
+  Map<String, InfoFromFile> infoFromFiles = {};
 
   late DataStateProvider dataStateProvider;
   var context;
@@ -64,8 +63,8 @@ class DataManager extends ChangeNotifier {
     await updateDateOnInfo(filesNotUpdated);
     print("updateDateOnInfo done, time elapsed : ${stopwatch.elapsed}");
 
-    var result = await compute(
-        updateDatesFromInfo, [global.infoFromFiles, filesNotUpdated]);
+    var result =
+        await compute(updateDatesFromInfo, [infoFromFiles, filesNotUpdated]);
     print("updateDatesFromInfo done, time elapsed : ${stopwatch.elapsed}");
     global.setOfDates = result[0];
     global.setOfDatetimes = result[1];
@@ -98,12 +97,12 @@ class DataManager extends ChangeNotifier {
           lengthOfFiles < (i + 1) * 100 ? lengthOfFiles : (i + 1) * 100);
 
       // await updateExifOnInfo(partOfFilesNotupdated);
-      global.infoFromFiles = await compute(updateExifOnInfo_compute,
-          [partOfFilesNotupdated, global.infoFromFiles]);
+      infoFromFiles = await compute(
+          updateExifOnInfo_compute, [partOfFilesNotupdated, infoFromFiles]);
 
       if (i % 5 == 0) {
         var result = await compute(
-            updateDatesFromInfo, [global.infoFromFiles, filesNotUpdated]);
+            updateDatesFromInfo, [infoFromFiles, filesNotUpdated]);
         global.setOfDates = result[0];
         global.setOfDatetimes = result[1];
         global.dates = result[2];
@@ -117,10 +116,8 @@ class DataManager extends ChangeNotifier {
         await writeSummaryOfPhoto2(null, true);
       }
       if (i % 10 == 0) {
-
         global.summaryOfLocationData = await compute(
-            updateSummaryOfLocationDataFromInfo2_compute,
-            [global.infoFromFiles]);
+            updateSummaryOfLocationDataFromInfo2_compute, [infoFromFiles]);
 
         await writeSummaryOfLocation2(null, true);
       }
@@ -130,11 +127,8 @@ class DataManager extends ChangeNotifier {
         [global.setOfDates, global.summaryOfPhotoData]);
 
     global.summaryOfLocationData = await compute(
-        updateSummaryOfLocationDataFromInfo_compute, [
-      global.setOfDates,
-      global.summaryOfLocationData,
-      global.infoFromFiles
-    ]);
+        updateSummaryOfLocationDataFromInfo_compute,
+        [global.setOfDates, global.summaryOfLocationData, infoFromFiles]);
 
     // await writeInfo(null, true);
     await writeInfoAsJson(null, true);
@@ -168,7 +162,7 @@ class DataManager extends ChangeNotifier {
   // ii) check whether this file is saved previously.
   Future<List<String>?> matchFilesAndInfo() async {
     List<String>? filesNotUpdated = [];
-    List<String> filenamesFromInfo = global.infoFromFiles.keys.toList();
+    List<String> filenamesFromInfo = infoFromFiles.keys.toList();
 
     for (int i = 0; i < files.length; i++) {
       String filename = files.elementAt(i);
@@ -182,8 +176,8 @@ class DataManager extends ChangeNotifier {
 
       filenamesFromInfo.remove(filename);
 
-      DateTime? dateTimeInInfo = global.infoFromFiles[filename]?.datetime;
-      Coordinate? coordinateInInfo = global.infoFromFiles[filename]?.coordinate;
+      DateTime? dateTimeInInfo = infoFromFiles[filename]?.datetime;
+      Coordinate? coordinateInInfo = infoFromFiles[filename]?.coordinate;
 
       if (dateTimeInInfo == null || coordinateInInfo?.latitude == null) {
         filesNotUpdated.add(filename);
@@ -196,9 +190,9 @@ class DataManager extends ChangeNotifier {
 
   Future<List<String>?> matchFilesAndInfo2() async {
     List<String>? filesNotUpdated = [];
-    List<String> filenamesFromInfo = global.infoFromFiles.keys.toList();
+    List<String> filenamesFromInfo = infoFromFiles.keys.toList();
     filenamesFromInfo.sort((a, b) => a.compareTo(b));
-    Map info = {...global.infoFromFiles};
+    Map info = {...infoFromFiles};
     int j = 0;
     for (int i = 0; i < files.length; i++) {
       String filename = files.elementAt(i);
@@ -225,20 +219,15 @@ class DataManager extends ChangeNotifier {
     return filesNotUpdated;
   }
 
-  Future<List<String>?> matchFilesAndInfo3() async {
-    List<String>? filesNotUpdated = [];
-    List<String> filenamesFromInfo = global.infoFromFiles.keys.toList();
-  }
-
   Future<void> addFilesToInfo(List<String>? filenames) async {
     if (filenames.runtimeType == null || filenames!.isEmpty) filenames = files;
 
     for (int i = 0; i < filenames.length; i++) {
       // if (i % 100 == 0) print("addFilesToInfo $i / ${filenames.length}");
       String filename = filenames.elementAt(i);
-      if (global.infoFromFiles[filename] == null) {
+      if (infoFromFiles[filename] == null) {
         // print("info not found during addFilestoInfo");
-        global.infoFromFiles[filename] = InfoFromFile(isUpdated: false);
+        infoFromFiles[filename] = InfoFromFile(isUpdated: false);
       }
     }
   }
@@ -246,8 +235,9 @@ class DataManager extends ChangeNotifier {
   static Future<List> updateDatesFromInfo(List input) async {
     Stopwatch stopwatch = Stopwatch()..start();
     List filesNotUpdated = [];
+    Map<String, InfoFromFile> infoFromFiles = {};
     if (input.isNotEmpty) {
-      global.infoFromFiles = input[0];
+      infoFromFiles = input[0];
       filesNotUpdated = input[1];
     }
 
@@ -255,7 +245,7 @@ class DataManager extends ChangeNotifier {
     List<String?> dates = [];
     List<DateTime?> datetimes = [];
 
-    List<InfoFromFile> values = global.infoFromFiles.values.toList();
+    List<InfoFromFile> values = infoFromFiles.values.toList();
 
     print("updateDatesFromInfo0 : ${stopwatch.elapsed}");
 
@@ -283,28 +273,27 @@ class DataManager extends ChangeNotifier {
 
   Future<void> updateDateOnInfo(List<String>? filenames) async {
     if (filenames == null || filenames.isEmpty)
-      filenames = global.infoFromFiles.keys.toList();
+      filenames = infoFromFiles.keys.toList();
 
     for (int i = 0; i < filenames.length; i++) {
       String filename = filenames.elementAt(i);
       String? inferredDatetime = inferDatetimeFromFilename(filename);
       // print(inferredDatetime);
       if (inferredDatetime != null) {
-        global.infoFromFiles[filename]?.datetime =
-            DateTime.parse(inferredDatetime);
-        global.infoFromFiles[filename]?.date = inferredDatetime.substring(0, 8);
+        infoFromFiles[filename]?.datetime = DateTime.parse(inferredDatetime);
+        infoFromFiles[filename]?.date = inferredDatetime.substring(0, 8);
 
         // if (i % 1000 == 0)
         //   print("updateDateOnInfo : $i / ${filenames.length},"
-        //       "$filename, ${global.infoFromFiles[filename].toString()}");
+        //       "$filename, ${infoFromFiles[filename].toString()}");
       }
       // print("updateDateOnInfo : $i / ${filenames.length},"
-      //     "$filename, ${global.infoFromFiles[filename].toString()}");
+      //     "$filename, ${infoFromFiles[filename].toString()}");
     }
   }
 
   Future<void> updateExifOnInfo(List<String>? filenames) async {
-    if (filenames == null) filenames = global.infoFromFiles.keys.toList();
+    if (filenames == null) filenames = infoFromFiles.keys.toList();
 
     for (int i = 0; i < filenames.length; i++) {
       String filename = filenames.elementAt(i);
@@ -312,39 +301,38 @@ class DataManager extends ChangeNotifier {
       if (i % 100 == 0)
         print(
             "updateExifOninfo : $i / ${filenames.length}, $filename, ${ExifData[0]}, ${ExifData[1]}");
-      global.infoFromFiles[filename]?.coordinate = ExifData[1];
+      infoFromFiles[filename]?.coordinate = ExifData[1];
 
       if (ExifData[1] != null) {
-        global.infoFromFiles[filename]?.distance =
-            calculateDistanceToRef(ExifData[1]);
+        infoFromFiles[filename]?.distance = calculateDistanceToRef(ExifData[1]);
       }
 
       //if datetime is updated from filename, then does not overwrite with exif
-      if (global.infoFromFiles[filename]?.datetime != null) continue;
+      if (infoFromFiles[filename]?.datetime != null) continue;
 
       //update the datetime of EXif if there is datetime is null from filename
       // print("filename : $filename, ExifData : ${ExifData[0]}");
       if ((ExifData[0] != null) &
           (ExifData[0] != "") &
           (ExifData[0] != "null")) {
-        global.infoFromFiles[filename]?.datetime = DateTime.parse(ExifData[0]);
-        global.infoFromFiles[filename]?.date = ExifData[0].substring(0, 8);
+        infoFromFiles[filename]?.datetime = DateTime.parse(ExifData[0]);
+        infoFromFiles[filename]?.date = ExifData[0].substring(0, 8);
         continue;
       }
 
       //if there is no info from filename and exif, then use changed datetime.
       DateTime datetime =
           DateTime.parse(formatDatetime(FileStat.statSync(filename).changed));
-      global.infoFromFiles[filename]?.datetime = datetime;
-      global.infoFromFiles[filename]?.date = formatDate(datetime);
+      infoFromFiles[filename]?.datetime = datetime;
+      infoFromFiles[filename]?.date = formatDate(datetime);
     }
   }
 
-  //input : [filenames, global.infoFromFiles]
+  //input : [filenames, infoFromFiles]
   Future<Map<String, InfoFromFile>> updateExifOnInfo_compute(List input) async {
     List<String> filenames = input[0];
-    global.infoFromFiles = input[1];
-    if (filenames == null) filenames = global.infoFromFiles.keys.toList();
+    infoFromFiles = input[1];
+    if (filenames == null) filenames = infoFromFiles.keys.toList();
 
     for (int i = 0; i < filenames.length; i++) {
       String filename = filenames.elementAt(i);
@@ -353,37 +341,37 @@ class DataManager extends ChangeNotifier {
       if (i % 100 == 0)
         print(
             "updateExifOninfo : $i / ${filenames.length}, $filename, ${ExifData[0]}, ${ExifData[1]}");
-      global.infoFromFiles[filename]?.coordinate = ExifData[1];
+      infoFromFiles[filename]?.coordinate = ExifData[1];
 
       if (ExifData[1] != null) {
-        global.infoFromFiles[filename]?.distance =
-            calculateDistanceToRef(ExifData[1]);
+        infoFromFiles[filename]?.distance = calculateDistanceToRef(ExifData[1]);
       }
 
-      global.infoFromFiles[filename]?.isUpdated = true;
+      infoFromFiles[filename]?.isUpdated = true;
       //if datetime is updated from filename, then does not overwrite with exif
-      if (global.infoFromFiles[filename]?.datetime != null) continue;
+      if (infoFromFiles[filename]?.datetime != null) continue;
 
       //update the datetime of EXif if there is datetime is null from filename
       // print("filename : $filename, ExifData : ${ExifData[0]}");
       if ((ExifData[0] != null) &
           (ExifData[0] != "") &
           (ExifData[0] != "null")) {
-        global.infoFromFiles[filename]?.datetime = DateTime.parse(ExifData[0]);
-        global.infoFromFiles[filename]?.date = ExifData[0].substring(0, 8);
+        infoFromFiles[filename]?.datetime = DateTime.parse(ExifData[0]);
+        infoFromFiles[filename]?.date = ExifData[0].substring(0, 8);
         continue;
       }
 
       //if there is no info from filename and exif, then use changed datetime.
       DateTime datetime =
           DateTime.parse(formatDatetime(FileStat.statSync(filename).changed));
-      global.infoFromFiles[filename]?.datetime = datetime;
-      global.infoFromFiles[filename]?.date = formatDate(datetime);
+      infoFromFiles[filename]?.datetime = datetime;
+      infoFromFiles[filename]?.date = formatDate(datetime);
     }
-    return global.infoFromFiles;
+    return infoFromFiles;
   }
 
-  static Future<Map<String, int>> updateSummaryOfPhotoFromInfo(List input) async {
+  static Future<Map<String, int>> updateSummaryOfPhotoFromInfo(
+      List input) async {
     List dates = global.dates;
     if (input.isNotEmpty) {
       dates = input[0];
@@ -410,15 +398,13 @@ class DataManager extends ChangeNotifier {
 
   Future<Map<String, double>> updateSummaryOfLocationDataFromInfo2_compute(
       List input) async {
-    global.infoFromFiles = input[0];
-    var infoFromFiles = [...global.infoFromFiles.values];
-    Stopwatch stopwatch = Stopwatch()..start();
-    // dates.removeWhere((i) => i == null);
+    Map<String, InfoFromFile> infoFromFiles = input[0];
+    var infoFromFiles2 = [...infoFromFiles.values];
     Map<String, double> distances = {};
 
     // dates.map((e) => counts.containsKey(e) ? counts[e]++ : counts[e] = 1);
-    for (int i = 0; i < infoFromFiles.length; i++) {
-      InfoFromFile infoFromFile = infoFromFiles.elementAt(i);
+    for (int i = 0; i < infoFromFiles2.length; i++) {
+      InfoFromFile infoFromFile = infoFromFiles2.elementAt(i);
       String? date = infoFromFile.date;
       if (date == null) continue;
 
@@ -436,33 +422,6 @@ class DataManager extends ChangeNotifier {
         continue;
       }
       distances[date] = infoFromFile.distance!;
-    }
-    return distances;
-  }
-
-  Map<String, double?> updateSummaryOfLocationDataFromInfo2() {
-    var infoFromFiles = [...global.infoFromFiles.values];
-    Map<String, double?> distances = {};
-
-    for (int i = 0; i < infoFromFiles.length; i++) {
-      InfoFromFile infoFromFile = infoFromFiles.elementAt(i);
-      String? date = infoFromFile.date;
-      if (date == null) continue;
-
-      bool isContained = distances.containsKey(date);
-      bool isNull = infoFromFile.distance == null ? true : false;
-
-      if (isNull) {
-        continue;
-      }
-
-      if (isContained) {
-        distances[date] = distances[date]! > infoFromFile.distance!
-            ? distances[date]
-            : infoFromFile.distance;
-        continue;
-      }
-      distances[date] = infoFromFile.distance;
     }
     return distances;
   }
@@ -486,11 +445,12 @@ class DataManager extends ChangeNotifier {
     return global.summaryOfPhotoData;
   }
 
-  //input : [global.dates, global.summaryOfPhotoData, global.infoFromFiles]
-  static Future<Map<String, double>> updateSummaryOfLocationDataFromInfo_compute(
-      List input) async {
+  //input : [global.dates, global.summaryOfPhotoData, infoFromFiles]
+  static Future<Map<String, double>>
+      updateSummaryOfLocationDataFromInfo_compute(List input) async {
     List listOfDates = input[0].toList();
-    global.infoFromFiles = input[2];
+    Map<String, InfoFromFile> infoFromFiles = input[2];
+
     global.setOfDates = input[0];
     print("updateSummaryOfLocationData..");
     LocationDataManager locationDataManager = LocationDataManager();
@@ -524,8 +484,8 @@ class DataManager extends ChangeNotifier {
 
     files = files.where((element) => !element.contains('thumbnail')).toList();
 
-    global.infoFromFiles = {};
-    global.infoFromFiles.addAll(
+    infoFromFiles = {};
+    infoFromFiles.addAll(
         Map.fromIterable(files, key: (v) => v, value: (v) => InfoFromFile()));
 
     return files;
@@ -533,12 +493,11 @@ class DataManager extends ChangeNotifier {
 
   Future<void> writeInfoAsJson(List<String>? filenames, bool overwrite) async {
     if (overwrite == null) overwrite = false;
-    if (filenames == null) filenames = global.infoFromFiles.keys.toList();
+    if (filenames == null) filenames = infoFromFiles.keys.toList();
 
     final Directory? directory = await getApplicationDocumentsDirectory();
     final File file = File('${directory?.path}/InfoOfFiles.json');
 
-    var infoFromFiles = global.infoFromFiles;
     // await file.writeAsString(jsonEncode(input));
     var test = {};
     for (int i = 0; i < filenames.length; i++) {
@@ -551,7 +510,7 @@ class DataManager extends ChangeNotifier {
 
   Future<void> writeInfo(List<String>? filenames, bool overwrite) async {
     if (overwrite == null) overwrite = false;
-    if (filenames == null) filenames = global.infoFromFiles.keys.toList();
+    if (filenames == null) filenames = infoFromFiles.keys.toList();
 
     final Directory? directory = await getApplicationDocumentsDirectory();
     final File file = File('${directory?.path}/InfoOfFiles.csv');
@@ -562,7 +521,6 @@ class DataManager extends ChangeNotifier {
           'filename,datetime,date,latitude,longitude,distance,isUpdated\n',
           mode: FileMode.write);
     }
-    var infoFromFiles = global.infoFromFiles;
     String stringToWrite = "";
     for (int i = 0; i < filenames.length; i++) {
       String filename = filenames.elementAt(i);
@@ -599,8 +557,9 @@ class DataManager extends ChangeNotifier {
       String filename = filenames.elementAt(i);
       test[filename] = InfoFromFile(map: mapFromJson[filename]);
     }
-    global.infoFromFiles = test;
-    // dataStateProvider.setInfoFromFiles(test);
+    infoFromFiles = test;
+    infoFromFiles = test;
+
     return test;
   }
 
@@ -655,11 +614,12 @@ class DataManager extends ChangeNotifier {
       }
       // print("$i, time elapsed : ${stopwatch.elapsed}");
 
-      global.infoFromFiles[filename] = infoFromFile;
+      infoFromFiles[filename] = infoFromFile;
+      infoFromFiles[filename] = infoFromFile;
       // print("$i, time elapsed : ${stopwatch.elapsed}");
     }
     // print(" time elapsed : ${stopwatch2.elapsed}");
-    return global.infoFromFiles;
+    return infoFromFiles;
   }
 
   Future<void> writeSummaryOfLocation2(

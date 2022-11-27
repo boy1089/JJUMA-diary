@@ -38,9 +38,12 @@ void bootstrap(int i) {
                 YearPageStateProvider(dataManager),
             create: (context) => YearPageStateProvider(DataManager()),
           ),
-          ChangeNotifierProvider<DayPageStateProvider>(
+
+          ChangeNotifierProxyProvider<DataManager, DayPageStateProvider>(
+            update : (context, dataManager, a)=>
+            DayPageStateProvider(dataManager),
             create: (context) {
-              return DayPageStateProvider();
+              return DayPageStateProvider(DataManager());
             },
           ),
         ],

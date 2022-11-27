@@ -13,6 +13,7 @@ import 'package:lateDiary/Location/AddressFinder.dart';
 import 'package:lateDiary/Location/Coordinate.dart';
 import 'package:geocoding/geocoding.dart';
 import 'dart:math';
+import 'package:lateDiary/Data/DataManager.dart';
 
 class DayPageStateProvider with ChangeNotifier {
   PhotoDataManager photoDataManager = PhotoDataManager();
@@ -33,27 +34,24 @@ class DayPageStateProvider with ChangeNotifier {
   String note = "";
 
   double keyboardSize = 300;
+  DataManager dataManager;
+  DayPageStateProvider(this.dataManager);
 
   Future<void> updateDataForUi() async {
     photoForPlot = [];
     photoDataForPlot = [];
     photoData = [[]];
-    Stopwatch stopwatch = Stopwatch()..start();
     try {
       photoData = await updatePhotoData();
-      print("time elapsed1 : ${stopwatch.elapsed}");
       photoForPlot = selectPhotoForPlot(photoData, true);
-      print("time elapsed2 : ${stopwatch.elapsed}");
     } catch (e) {
       print("while updating Ui, error is occrued : $e");
     }
     // //convert data type..
     photoDataForPlot = List<List>.generate(
         photoForPlot.length, (index) => photoForPlot.elementAt(index));
-    print("time elapsed3 : ${stopwatch.elapsed}");
 
     // addresses = await updateAddress();
-    print("time elapsed4 : ${stopwatch.elapsed}");
 
     try {
       note = await noteManager.readNote(date);
@@ -61,7 +59,6 @@ class DayPageStateProvider with ChangeNotifier {
       note = "";
       print("while updating UI, reading note, error is occured : $e");
     }
-    print("time elapsed5 : ${stopwatch.elapsed}");
 
     print("updateUi done");
   }
@@ -147,7 +144,7 @@ class DayPageStateProvider with ChangeNotifier {
   Map<int, int> selectIndexForLocation(files) {
     Map<int, int> indexForSelectedFile = {};
     List<DateTime?> datetimes = List<DateTime?>.generate(files.length,
-        (i) => global.infoFromFiles[files.elementAt(i)]?.datetime);
+        (i) => dataManager.infoFromFiles[files.elementAt(i)]?.datetime);
     datetimes = datetimes.whereType<DateTime>().toList();
     List<int> times =
         List<int>.generate(datetimes.length, (i) => datetimes[i]!.hour);
@@ -162,7 +159,7 @@ class DayPageStateProvider with ChangeNotifier {
     List<Placemark?> listOfAddress = [];
     for (int i = 0; i < index.length; i++) {
       Coordinate? coordinate =
-          global.infoFromFiles[files[index.elementAt(i)]]!.coordinate;
+          dataManager.infoFromFiles[files[index.elementAt(i)]]!.coordinate;
       if (coordinate == null) {
         listOfAddress.add(null);
       }

@@ -8,37 +8,33 @@ import 'package:lateDiary/Util/global.dart' as global;
 import 'package:lateDiary/Data/infoFromFile.dart';
 import 'package:lateDiary/Util/Util.dart';
 import 'package:lateDiary/Data/Directories.dart';
+import 'package:lateDiary/Data/DataManager.dart';
 
 class PhotoDataManager {
   List datetimes = [];
   List dates = [];
   List<String> files = [];
 
+  DataManager dataManager = DataManager();
   PhotoDataManager() {
     // init();
   }
 
   Future getPhotoOfDate(String date) async {
-    Stopwatch stopwatch = Stopwatch()..start();
-
     List<int?> indexOfDate = List<int?>.generate(global.dates.length, (i) {
       if (global.dates.elementAt(i) == date) return i;
       return null;
     });
 
-    print("time elapsed1 : ${stopwatch.elapsed}");
     indexOfDate = indexOfDate.whereType<int>().toList();
-    print("time elapsed2 : ${stopwatch.elapsed}");
-    List files = global.infoFromFiles.keys.toList();
+    List files = dataManager.infoFromFiles.keys.toList();
     List filesOfDate = List.generate(
         indexOfDate.length, (i) => files.elementAt(indexOfDate.elementAt(i)!));
 
-    print("time elapsed3 : ${stopwatch.elapsed}");
     List dateOfDate = List.generate(
         indexOfDate.length,
         (i) => formatDatetime(
             global.datetimes.elementAt(indexOfDate.elementAt(i)!)));
-    print("time elapsed4 : ${stopwatch.elapsed}");
     // for (int i = 0; i < indexOfDate.length; i++) {
     //   print("${dateOfDate[i]}, ${filesOfDate[i]}");
     // }
@@ -52,5 +48,4 @@ class PhotoDataManager {
 
     return transpose(list);
   }
-
 }

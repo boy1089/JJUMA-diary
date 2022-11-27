@@ -21,8 +21,8 @@ class PhotoDataManager {
   }
 
   Future getPhotoOfDate(String date) async {
-    List<int?> indexOfDate = List<int?>.generate(global.dates.length, (i) {
-      if (global.dates.elementAt(i) == date) return i;
+    List<int?> indexOfDate = List<int?>.generate(dataManager.dates.length, (i) {
+      if (dataManager.dates.elementAt(i) == date) return i;
       return null;
     });
 
@@ -34,7 +34,7 @@ class PhotoDataManager {
     List dateOfDate = List.generate(
         indexOfDate.length,
         (i) => formatDatetime(
-            global.datetimes.elementAt(indexOfDate.elementAt(i)!)));
+            dataManager.datetimes.elementAt(indexOfDate.elementAt(i)!)));
     // for (int i = 0; i < indexOfDate.length; i++) {
     //   print("${dateOfDate[i]}, ${filesOfDate[i]}");
     // }

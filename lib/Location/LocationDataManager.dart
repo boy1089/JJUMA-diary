@@ -19,28 +19,24 @@ import 'package:lateDiary/Data/DataManager.dart';
 class LocationDataManager {
   List<String> files = [];
   List<Coordinate?> coordinateOfFiles = [];
+  Map<String, InfoFromFile> infoFromFiles = {};
 
-  // DataManager dataManager = DataManager();
+  LocationDataManager(this.infoFromFiles);
 
-  LocationDataManager() {
-    // init();
-  }
+  DataManager dataManager = DataManager();
 
   Future<void> init() async {
-    // await readLocationData();
-    // getCoordinatesFromPhotoFiles();
     print("locationDataManager initializaton done");
   }
 
   void getCoordinatesFromPhotoFiles() async {
     global.isLocationUpadating = true;
-    List files = global.files;
+    List files = dataManager.files;
     List<String> filesForSave = [];
     List<Coordinate?> coordinateForSave = [];
 
     for (int i = 0; i < files.length; i++) {
       if (global.locationDataAll.containsKey(files[i])) {
-        // print("${files[i]} is already in the saved data");
         continue;
       }
 
@@ -59,6 +55,7 @@ class LocationDataManager {
         coordinateForSave = [];
       }
     }
+
     await writeLocationData(files, coordinateOfFiles);
     global.locations = coordinateOfFiles;
     global.isLocationUpadating = false;
@@ -66,16 +63,17 @@ class LocationDataManager {
 
   List getCoordinatesOfDate(String date) {
     //find the index which date is contained in infoFromFiles.
-    Set indexOfDate = List.generate(global.setOfDates.length,
-            (i) => (global.setOfDates.elementAt(i).contains(date)) ? i : null)
+    Set indexOfDate = List.generate(
+            dataManager.setOfDates.length,
+            (i) =>
+                (dataManager.setOfDates.elementAt(i).contains(date)) ? i : null)
         .toSet();
     indexOfDate.remove(null);
 
     List coordinatesOfDate = List.generate(indexOfDate.length, (i) {
       var data =
-          global.infoFromFiles.values.elementAt(indexOfDate.elementAt(i));
+          dataManager.infoFromFiles.values.elementAt(indexOfDate.elementAt(i));
       Coordinate? coordinate = data.coordinate;
-      print(coordinate.toString());
       return coordinate;
     });
     return coordinatesOfDate;
@@ -85,19 +83,19 @@ class LocationDataManager {
     //find the index which date is contained in infoFromFiles.
     List dates = global.setOfDates;
 
-    // List indexOfDate = List.generate(
-    //     global.dates.length, (i) => (dates.elementAt(i) == date) ? i : null);
-
     var endIndex = dates.lastIndexOf(date);
     var startIndex = endIndex - 1000;
+
+    print("$endIndex, $startIndex");
     if (startIndex < 0) startIndex = 0;
     List indexOfDate = List.generate(endIndex - startIndex, (i) {
       if (dates.elementAt(startIndex + i) == date) return startIndex + i;
     });
 
     indexOfDate.removeWhere((item) => item == null);
+    print("indexOfDate : $indexOfDate");
     List<double?> distancesOfDate = [];
-    List values = global.infoFromFiles.values.toList();
+    List values = infoFromFiles.values.toList();
     indexOfDate.forEach((element) {
       InfoFromFile data = values.elementAt(element);
       distancesOfDate.add(data.distance);
@@ -106,24 +104,16 @@ class LocationDataManager {
   }
 
   double getMaxDistanceOfDate(String date) {
-    // Stopwatch stopwatch = new Stopwatch()..start();
     List<double?> distancesOfDate = getDistancesOfDate(date);
-    // print("step1 ${stopwatch.elapsed}");
     List<double> distancesOfDate2 =
         distancesOfDate.whereType<double>().toList();
-    // print("step2 ${stopwatch.elapsed}");
 
-    // print("distancesOfDate : ${distancesOfDate}");
-    // if(distancesOfDate2 == ["null"]) return 0;
     if (distancesOfDate2 == [null]) return 0;
     if (distancesOfDate2.length == 0) return 0;
     if (distancesOfDate2 == null) return 0;
     if (distancesOfDate2 == "null") return 0;
-    // if(distancesOfDate2.length ==1) return distancesOfDate2[0];
 
     double maxDistance = distancesOfDate2.reduce(max);
-    // print("step3 ${stopwatch.elapsed}");
-    // stopwatch.stop();
     return maxDistance;
   }
 
@@ -152,33 +142,4 @@ class LocationDataManager {
       }
     }
   }
-  //
-  // Future<void> readLocationData() async {
-  //   final Directory? directory = await getApplicationDocumentsDirectory();
-  //   try {
-  //     final fileName =
-  //         Glob('${directory?.path}/locationData.csv').listSync().elementAt(0);
-  //     print("read ${fileName.path}");
-  //     var data = await openFile(fileName.path);
-  //     for (int i = 1; i < data.length; i++) {
-  //       if (data[i].length > 1) {
-  //         // print("${data[i][0]},${data[i][1]}, ${data[i][2]}");
-  //         // print(data[i]);
-  //         global.locationDataAll[data[i][0]] =
-  //             Coordinate(data[i][1], data[i][2]);
-  //         //updating summaryOfLocationData with reading data so as facilitate followup update.
-  //         String? inferredDatetime = inferDatetimeFromFilename(data[i][0]);
-  //
-  //         inferredDatetime = inferredDatetime == null
-  //             ? null
-  //             : inferredDatetime!.substring(0, 8);
-  //         global.summaryOfLocationData[inferredDatetime] = 0;
-  //         coordinateOfFiles.add(Coordinate(data[i][1], data[i][2]));
-  //       }
-  //     }
-  //     print("readLocation done");
-  //   } catch (e) {
-  //     print("error during readLocationData : $e");
-  //   }
-  // }
 }

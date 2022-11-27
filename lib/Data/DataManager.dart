@@ -24,7 +24,6 @@ class DataManager extends ChangeNotifier {
   Map<String, int> summaryOfPhotoData = {};
   Map<String, double> summaryOfLocationData = {};
   Map<String, Coordinate> summaryOfCoordinate = {};
-  LocationDataManager locationDataManager = LocationDataManager();
 
   List setOfDates = [];
   List dates = [];
@@ -140,6 +139,7 @@ class DataManager extends ChangeNotifier {
     await writeSummaryOfPhoto2(null, true);
 
     print("executeSlowProcesses done,executed in ${stopwatch.elapsed}");
+    notifyListeners();
   }
 
   Future<List<String>> getAllFiles() async {
@@ -452,17 +452,12 @@ class DataManager extends ChangeNotifier {
   static Future<Map<String, double>>
       updateSummaryOfLocationDataFromInfo_compute(List input) async {
     List listOfDates = input[0].toList();
-
     global.setOfDates = input[0];
+
     print("updateSummaryOfLocationData..");
-    LocationDataManager locationDataManager = LocationDataManager();
+    LocationDataManager locationDataManager = LocationDataManager(input[2]);
     Set setOfDates = listOfDates.toSet();
-    // Stopwatch stopwatch = new Stopwatch();
     for (int i = 0; i < setOfDates.length; i++) {
-      if (i % 100 == 0) {
-        // stopwatch..start();
-        print("updateSummaryOfLocationData.. $i / ${setOfDates.length}");
-      }
       String date = setOfDates.elementAt(i);
       input[1][date] = locationDataManager.getMaxDistanceOfDate(date);
     }

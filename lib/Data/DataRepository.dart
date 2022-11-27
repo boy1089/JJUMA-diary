@@ -19,13 +19,7 @@ class DataRepository {
   Map<String, double> summaryOfLocationData = {};
   Map<String, Coordinate> summaryOfCoordinate = {};
 
-  List setOfDates = [];
-  List dates = [];
-  List datetimes = [];
-  List setOfDatetimes = [];
   List<String> files = [];
-  List<String>? filesNotUpdated = [];
-  List<String>? datesOutOfDate = [];
 
   Map<String, InfoFromFile> infoFromFiles = {};
 
@@ -76,8 +70,7 @@ class DataRepository {
     }
 
     infoFromFiles = test;
-
-    return test;
+    return infoFromFiles;
   }
 
   Future<Map<String, int>> readSummaryOfPhoto() async {

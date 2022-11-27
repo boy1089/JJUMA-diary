@@ -1,8 +1,6 @@
-import 'dart:convert';
 import 'dart:io';
 import 'package:glob/list_local_fs.dart';
 import 'package:flutter/foundation.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:glob/glob.dart';
 import 'package:lateDiary/Util/DateHandler.dart';
 import 'package:lateDiary/Util/Util.dart';
@@ -11,7 +9,6 @@ import 'package:lateDiary/Location/LocationDataManager.dart';
 import "package:lateDiary/Location/Coordinate.dart";
 import 'infoFromFile.dart';
 import 'package:lateDiary/Data/Directories.dart';
-import 'package:lateDiary/StateProvider/DataStateProvider.dart';
 import 'package:flutter/material.dart';
 import 'DataRepository.dart';
 
@@ -46,7 +43,6 @@ class DataManager extends ChangeNotifier {
     print("DataManager instance is initializing..");
     //get list of image files from local. --> update new images
     files = await dataRepository.getAllFiles();
-    print("getAllFiles done, time elapsed : ${stopwatch.elapsed}");
     infoFromFiles = await dataRepository.readInfoFromJson();
     summaryOfPhotoData = await dataRepository.readSummaryOfPhoto();
     summaryOfLocationData = await dataRepository.readSummaryOfLocation();
@@ -55,7 +51,6 @@ class DataManager extends ChangeNotifier {
     // find the files which are in local but not in Info
     filesNotUpdated = await matchFilesAndInfo2();
 
-    print("time elapsed : ${stopwatch.elapsed}");
     // update info which are not updated
     await addFilesToInfo(filesNotUpdated);
     print("addFilesToinfo done, time elapsed : ${stopwatch.elapsed}");
@@ -91,14 +86,10 @@ class DataManager extends ChangeNotifier {
     int lengthOfFiles = filesNotUpdated!.length;
 
     for (int i = 0; i < lengthOfFiles / 100.floor(); i++) {
-      // for (int i = 0; i < 4; i++) {
-      print("executingSlowProcesses... $i / ${lengthOfFiles / 100.floor()}");
-
       //part of Files
       List<String> partOfFilesNotupdated = filesNotUpdated!.sublist(i * 100,
           lengthOfFiles < (i + 1) * 100 ? lengthOfFiles : (i + 1) * 100);
 
-      // await updateExifOnInfo(partOfFilesNotupdated);
       infoFromFiles = await compute(
           updateExifOnInfo_compute, [partOfFilesNotupdated, infoFromFiles]);
 
@@ -115,15 +106,18 @@ class DataManager extends ChangeNotifier {
             updateSummaryOfPhotoFromInfo, [setOfDates, summaryOfPhotoData]);
 
         await dataRepository.writeInfoAsJson(infoFromFiles, true);
-        await dataRepository.writeSummaryOfPhoto2(summaryOfPhotoData, true, datesOutOfDate);
+        await dataRepository.writeSummaryOfPhoto2(
+            summaryOfPhotoData, true, setOfDates);
       }
+
       if (i % 10 == 0) {
         summaryOfLocationData = await compute(
             updateSummaryOfLocationDataFromInfo2_compute, [infoFromFiles]);
-        await dataRepository.writeSummaryOfLocation2(summaryOfLocationData, true, setOfDates);
+        await dataRepository.writeSummaryOfLocation2(
+            summaryOfLocationData, true, setOfDates);
       }
     }
-    //update the summaryOflocation only on the specific date.
+
     summaryOfPhotoData = await compute(
         updateSummaryOfPhotoFromInfo, [setOfDates, summaryOfPhotoData]);
 
@@ -131,33 +125,13 @@ class DataManager extends ChangeNotifier {
         updateSummaryOfLocationDataFromInfo_compute,
         [setOfDates, summaryOfLocationData, infoFromFiles]);
 
-    // await writeInfo(null, true);
     await dataRepository.writeInfoAsJson(infoFromFiles, true);
-    await dataRepository.writeSummaryOfLocation2(summaryOfLocationData, true, setOfDates);
-    await dataRepository.writeSummaryOfPhoto2(summaryOfPhotoData, true, setOfDates);
+    await dataRepository.writeSummaryOfLocation2(
+        summaryOfLocationData, true, setOfDates);
+    await dataRepository.writeSummaryOfPhoto2(
+        summaryOfPhotoData, true, setOfDates);
 
-    print("executeSlowProcesses done,executed in ${stopwatch.elapsed}");
     notifyListeners();
-  }
-
-  Future<List<String>> getAllFiles() async {
-    List<String> files = [];
-    List newFiles = [];
-    for (int i = 0; i < Directories.selectedDirectories.length; i++) {
-      String path = Directories.selectedDirectories.elementAt(i);
-
-      newFiles = Glob("$path/*.jpg").listSync();
-      files.addAll(List.generate(
-          newFiles.length, (index) => newFiles.elementAt(index).path));
-
-      newFiles = Glob("$path/*.png").listSync();
-      files.addAll(List.generate(
-          newFiles.length, (index) => newFiles.elementAt(index).path));
-    }
-    files = files.where((element) => !element.contains('thumbnail')).toList();
-    files.sort((a, b) => a.compareTo(b));
-    // dataStateProvider.setFiles(files);
-    return files;
   }
 
   // i) check whether this file is contained in Info
@@ -282,12 +256,7 @@ class DataManager extends ChangeNotifier {
         infoFromFiles[filename]?.datetime = DateTime.parse(inferredDatetime);
         infoFromFiles[filename]?.date = inferredDatetime.substring(0, 8);
 
-        // if (i % 1000 == 0)
-        //   print("updateDateOnInfo : $i / ${filenames.length},"
-        //       "$filename, ${infoFromFiles[filename].toString()}");
       }
-      // print("updateDateOnInfo : $i / ${filenames.length},"
-      //     "$filename, ${infoFromFiles[filename].toString()}");
     }
   }
 
@@ -426,25 +395,7 @@ class DataManager extends ChangeNotifier {
     }
     return distances;
   }
-  //
-  // Future<Map> updateSummaryOfLocationDataFromInfo(
-  //     List<String>? datesOutOfDate) async {
-  //   List listOfDates = [];
-  //   listOfDates =
-  //       (datesOutOfDate == null) ? global.setOfDates.toList() : datesOutOfDate!;
-  //
-  //   print("updateSummaryOfLocationData..");
-  //
-  //   Set setOfDates = listOfDates.toSet();
-  //   for (int i = 0; i < setOfDates.length; i++) {
-  //     if (i % 100 == 0)
-  //       print("updateSummaryOfLocationData.. $i / ${setOfDates.length}");
-  //     String date = setOfDates.elementAt(i);
-  //     global.summaryOfLocationData[date] =
-  //         locationDataManager.getMaxDistanceOfDate(date);
-  //   }
-  //   return global.summaryOfPhotoData;
-  // }
+
 
   //input : [global.dates, global.summaryOfPhotoData, infoFromFiles]
   static Future<Map<String, double>>
@@ -485,33 +436,4 @@ class DataManager extends ChangeNotifier {
 
     return files;
   }
-
-}
-
-DateTime? parseToDatetime(input) {
-  if (input == null) return null;
-  if (input.runtimeType == String) {
-    try {
-      return DateTime.parse(input);
-    } catch (e) {
-      print("error in parseToDatetime, invalid format? $e");
-      return null;
-    }
-  }
-  return input;
-}
-
-String? parseToString(input) {
-  if (input == "null") return null;
-  if (input == null) return null;
-  return input.toString();
-}
-
-double? parseToDouble(input) {
-  if (input == "null") return null;
-  if (input == null) return null;
-  if (input.runtimeType == "String") return double.parse(input);
-  if (input.runtimeType == double) return input;
-  if (input.runtimeType == int) return input.toDouble();
-  return double.parse(input);
 }

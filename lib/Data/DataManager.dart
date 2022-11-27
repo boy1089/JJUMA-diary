@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:geocoding/geocoding.dart';
 import 'package:glob/list_local_fs.dart';
 import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
@@ -242,8 +243,9 @@ class DataManager extends ChangeNotifier {
     }
   }
 
-  Future<List> updateDatesFromInfo(List input) async {
+  static Future<List> updateDatesFromInfo(List input) async {
     Stopwatch stopwatch = Stopwatch()..start();
+    List filesNotUpdated = [];
     if (input.isNotEmpty) {
       global.infoFromFiles = input[0];
       filesNotUpdated = input[1];
@@ -381,7 +383,7 @@ class DataManager extends ChangeNotifier {
     return global.infoFromFiles;
   }
 
-  Future<Map<String, int>> updateSummaryOfPhotoFromInfo(List input) async {
+  static Future<Map<String, int>> updateSummaryOfPhotoFromInfo(List input) async {
     List dates = global.dates;
     if (input.isNotEmpty) {
       dates = input[0];
@@ -485,13 +487,13 @@ class DataManager extends ChangeNotifier {
   }
 
   //input : [global.dates, global.summaryOfPhotoData, global.infoFromFiles]
-  Future<Map<String, double>> updateSummaryOfLocationDataFromInfo_compute(
+  static Future<Map<String, double>> updateSummaryOfLocationDataFromInfo_compute(
       List input) async {
     List listOfDates = input[0].toList();
     global.infoFromFiles = input[2];
     global.setOfDates = input[0];
     print("updateSummaryOfLocationData..");
-
+    LocationDataManager locationDataManager = LocationDataManager();
     Set setOfDates = listOfDates.toSet();
     // Stopwatch stopwatch = new Stopwatch();
     for (int i = 0; i < setOfDates.length; i++) {

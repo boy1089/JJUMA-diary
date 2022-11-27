@@ -26,6 +26,10 @@ class DataManager extends ChangeNotifier {
   Map<String, Coordinate> summaryOfCoordinate = {};
   LocationDataManager locationDataManager = LocationDataManager();
 
+  List setOfDates = [];
+  List dates = [];
+  List datetimes = [];
+  List setOfDatetimes = [];
   List<String> files = [];
   List<String>? filesNotUpdated = [];
   List<String>? datesOutOfDate = [];
@@ -66,15 +70,15 @@ class DataManager extends ChangeNotifier {
     var result =
         await compute(updateDatesFromInfo, [infoFromFiles, filesNotUpdated]);
     print("updateDatesFromInfo done, time elapsed : ${stopwatch.elapsed}");
-    global.setOfDates = result[0];
-    global.setOfDatetimes = result[1];
-    global.dates = result[2];
-    global.datetimes = result[3];
-    print("date during init, ${global.dates.length}");
+    setOfDates = result[0];
+    setOfDatetimes = result[1];
+    dates = result[2];
+    datetimes = result[3];
+    print("date during init, ${dates.length}");
 
     //find the dates which are out of date based on the number of photo.
-    global.summaryOfPhotoData = await compute(updateSummaryOfPhotoFromInfo,
-        [global.setOfDates, global.summaryOfPhotoData]);
+    summaryOfPhotoData = await compute(
+        updateSummaryOfPhotoFromInfo, [setOfDates, summaryOfPhotoData]);
     print("updateSummaryOfPhoto done, time elapsed : ${stopwatch.elapsed}");
 
     print("DataManager initialization done");
@@ -103,32 +107,32 @@ class DataManager extends ChangeNotifier {
       if (i % 5 == 0) {
         var result = await compute(
             updateDatesFromInfo, [infoFromFiles, filesNotUpdated]);
-        global.setOfDates = result[0];
-        global.setOfDatetimes = result[1];
-        global.dates = result[2];
-        global.datetimes = result[3];
+        setOfDates = result[0];
+        setOfDatetimes = result[1];
+        dates = result[2];
+        datetimes = result[3];
 
         //update the summaryOflocation only on the specific date.
-        global.summaryOfPhotoData = await compute(updateSummaryOfPhotoFromInfo,
-            [global.setOfDates, global.summaryOfPhotoData]);
+        summaryOfPhotoData = await compute(
+            updateSummaryOfPhotoFromInfo, [setOfDates, summaryOfPhotoData]);
 
         await writeInfoAsJson(null, true);
         await writeSummaryOfPhoto2(null, true);
       }
       if (i % 10 == 0) {
-        global.summaryOfLocationData = await compute(
+        summaryOfLocationData = await compute(
             updateSummaryOfLocationDataFromInfo2_compute, [infoFromFiles]);
 
         await writeSummaryOfLocation2(null, true);
       }
     }
     //update the summaryOflocation only on the specific date.
-    global.summaryOfPhotoData = await compute(updateSummaryOfPhotoFromInfo,
-        [global.setOfDates, global.summaryOfPhotoData]);
+    summaryOfPhotoData = await compute(
+        updateSummaryOfPhotoFromInfo, [setOfDates, summaryOfPhotoData]);
 
-    global.summaryOfLocationData = await compute(
+    summaryOfLocationData = await compute(
         updateSummaryOfLocationDataFromInfo_compute,
-        [global.setOfDates, global.summaryOfLocationData, infoFromFiles]);
+        [setOfDates, summaryOfLocationData, infoFromFiles]);
 
     // await writeInfo(null, true);
     await writeInfoAsJson(null, true);
@@ -244,6 +248,8 @@ class DataManager extends ChangeNotifier {
     print("updateDatesFromInfo aa: ${stopwatch.elapsed}");
     List<String?> dates = [];
     List<DateTime?> datetimes = [];
+    List setOfDates = [];
+    List setOfDatetimes = [];
 
     List<InfoFromFile> values = infoFromFiles.values.toList();
 
@@ -255,20 +261,15 @@ class DataManager extends ChangeNotifier {
     }
     print("updateDatesFromInfo 1: ${stopwatch.elapsed}");
 
-    global.dates = [...dates];
-    global.datetimes = [...datetimes];
+    dates = [...dates];
+    datetimes = [...datetimes];
     // print("date during init, ${dates.length}");
     dates.removeWhere((i) => i == null);
     datetimes.removeWhere((i) => i == null);
-    global.setOfDates = dates;
-    global.setOfDatetimes = datetimes;
+    setOfDates = dates;
+    setOfDatetimes = datetimes;
     print("updateDatesFromInfo 2: ${stopwatch.elapsed}");
-    return [
-      global.setOfDates,
-      global.setOfDatetimes,
-      global.dates,
-      global.datetimes
-    ];
+    return [setOfDates, setOfDatetimes, dates, datetimes];
   }
 
   Future<void> updateDateOnInfo(List<String>? filenames) async {
@@ -372,10 +373,12 @@ class DataManager extends ChangeNotifier {
 
   static Future<Map<String, int>> updateSummaryOfPhotoFromInfo(
       List input) async {
-    List dates = global.dates;
+    List dates = [];
+    Map<String, int> summaryOfPhotoData = {};
+
     if (input.isNotEmpty) {
       dates = input[0];
-      global.summaryOfPhotoData = input[1];
+      summaryOfPhotoData = input[1];
     }
     // dates.removeWhere((i) => i == null);
     Map<String, int> counts = {};
@@ -392,7 +395,7 @@ class DataManager extends ChangeNotifier {
       counts[date] = 1;
     }
 
-    global.summaryOfPhotoData = counts;
+    summaryOfPhotoData = counts;
     return counts;
   }
 
@@ -425,31 +428,30 @@ class DataManager extends ChangeNotifier {
     }
     return distances;
   }
-
-  Future<Map> updateSummaryOfLocationDataFromInfo(
-      List<String>? datesOutOfDate) async {
-    List listOfDates = [];
-    listOfDates =
-        (datesOutOfDate == null) ? global.setOfDates.toList() : datesOutOfDate!;
-
-    print("updateSummaryOfLocationData..");
-
-    Set setOfDates = listOfDates.toSet();
-    for (int i = 0; i < setOfDates.length; i++) {
-      if (i % 100 == 0)
-        print("updateSummaryOfLocationData.. $i / ${setOfDates.length}");
-      String date = setOfDates.elementAt(i);
-      global.summaryOfLocationData[date] =
-          locationDataManager.getMaxDistanceOfDate(date);
-    }
-    return global.summaryOfPhotoData;
-  }
+  //
+  // Future<Map> updateSummaryOfLocationDataFromInfo(
+  //     List<String>? datesOutOfDate) async {
+  //   List listOfDates = [];
+  //   listOfDates =
+  //       (datesOutOfDate == null) ? global.setOfDates.toList() : datesOutOfDate!;
+  //
+  //   print("updateSummaryOfLocationData..");
+  //
+  //   Set setOfDates = listOfDates.toSet();
+  //   for (int i = 0; i < setOfDates.length; i++) {
+  //     if (i % 100 == 0)
+  //       print("updateSummaryOfLocationData.. $i / ${setOfDates.length}");
+  //     String date = setOfDates.elementAt(i);
+  //     global.summaryOfLocationData[date] =
+  //         locationDataManager.getMaxDistanceOfDate(date);
+  //   }
+  //   return global.summaryOfPhotoData;
+  // }
 
   //input : [global.dates, global.summaryOfPhotoData, infoFromFiles]
   static Future<Map<String, double>>
       updateSummaryOfLocationDataFromInfo_compute(List input) async {
     List listOfDates = input[0].toList();
-    Map<String, InfoFromFile> infoFromFiles = input[2];
 
     global.setOfDates = input[0];
     print("updateSummaryOfLocationData..");
@@ -624,27 +626,26 @@ class DataManager extends ChangeNotifier {
 
   Future<void> writeSummaryOfLocation2(
       List<String>? datesOutOfDate, bool overwrite) async {
-    Set setOfDates = global.setOfDates.toSet();
+    // Set setOfDates = global.setOfDates.toSet();
     if (overwrite == null) overwrite = false;
     if (datesOutOfDate != null) {
-      setOfDates = datesOutOfDate.toSet();
+      setOfDates = datesOutOfDate;
     }
     final Directory? directory = await getApplicationDocumentsDirectory();
     final File file = File('${directory?.path}/summaryOfLocation.csv');
 
     if (!((await file.exists())) || overwrite) {
-      print("overwritting");
       await file.writeAsString('date,distance\n', mode: FileMode.write);
     }
 
-    var summaryOfLocation = global.summaryOfLocationData;
+    // var summaryOfLocation = global.summaryOfLocationData;
     String stringToWrite = "";
     for (int i = 0; i < setOfDates.length; i++) {
       if (i % 100 == 0)
         print("writingSummaryOfLocation.. $i/${setOfDates.length}");
 
       String date = setOfDates.elementAt(i);
-      stringToWrite += '${date},${summaryOfLocation[date]}\n';
+      stringToWrite += '${date},${summaryOfLocationData[date]}\n';
     }
     await file.writeAsString(stringToWrite, mode: FileMode.append);
   }
@@ -662,21 +663,21 @@ class DataManager extends ChangeNotifier {
       // if (i % 100 == 0)
       //   print("readSummaryOfLocation.. $i / ${data.length}, ${data[i]}");
       if ([null, "null"].contains(data[i][1])) {
-        global.summaryOfLocationData[data[i][0].toString()] = 0.0;
+        summaryOfLocationData[data[i][0].toString()] = 0.0;
         continue;
       }
-      global.summaryOfLocationData[data[i][0].toString()] = data[i][1];
+      summaryOfLocationData[data[i][0].toString()] = data[i][1];
     }
-    summaryOfLocationData = global.summaryOfLocationData;
+    summaryOfLocationData = summaryOfLocationData;
     // dataStateProvider.setSummaryOfLocationData(global.summaryOfLocationData);
   }
 
   Future<void> writeSummaryOfPhoto2(
       List<String>? datesOutOfDate, bool overwrite) async {
-    Set setOfDates = global.setOfDates.toSet();
+    // Set setOfDates = global.setOfDates.toSet();
     if (overwrite == null) overwrite = false;
     if (datesOutOfDate != null) {
-      setOfDates = datesOutOfDate.toSet();
+      setOfDates = datesOutOfDate;
     }
     final Directory? directory = await getApplicationDocumentsDirectory();
     final File file = File('${directory?.path}/summaryOfPhoto.csv');
@@ -686,7 +687,7 @@ class DataManager extends ChangeNotifier {
       await file.writeAsString('date,numberOfPhoto\n', mode: FileMode.write);
     }
 
-    var summaryOfPhoto = global.summaryOfPhotoData;
+    var summaryOfPhoto = summaryOfPhotoData;
     String stringToWrite = "";
     for (int i = 0; i < setOfDates.length; i++) {
       if (i % 100 == 0) print("writingInfo.. $i/${setOfDates.length}");
@@ -708,9 +709,8 @@ class DataManager extends ChangeNotifier {
       if (data[i].length < 2) return;
       // if (i % 100 == 0)
       //   print("readSummaryOfPhoto.. $i / ${data.length}, ${data[i]}");
-      global.summaryOfPhotoData[data[i][0].toString()] = data[i][1];
+      summaryOfPhotoData[data[i][0].toString()] = data[i][1];
     }
-    summaryOfPhotoData = global.summaryOfPhotoData;
     // dataStateProvider.setSummaryOfPhotoData(global.summaryOfPhotoData);
   }
 }

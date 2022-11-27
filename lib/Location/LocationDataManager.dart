@@ -14,10 +14,13 @@ import 'dart:convert';
 import 'package:lateDiary/Util/Util.dart';
 import 'package:lateDiary/Data/Directories.dart';
 
+import 'package:lateDiary/Data/DataManager.dart';
 
 class LocationDataManager {
   List<String> files = [];
   List<Coordinate?> coordinateOfFiles = [];
+
+  // DataManager dataManager = DataManager();
 
   LocationDataManager() {
     // init();
@@ -64,7 +67,8 @@ class LocationDataManager {
   List getCoordinatesOfDate(String date) {
     //find the index which date is contained in infoFromFiles.
     Set indexOfDate = List.generate(global.setOfDates.length,
-        (i) => (global.setOfDates.elementAt(i).contains(date)) ? i : null).toSet();
+            (i) => (global.setOfDates.elementAt(i).contains(date)) ? i : null)
+        .toSet();
     indexOfDate.remove(null);
 
     List coordinatesOfDate = List.generate(indexOfDate.length, (i) {
@@ -78,7 +82,6 @@ class LocationDataManager {
   }
 
   List<double?> getDistancesOfDate(String date) {
-
     //find the index which date is contained in infoFromFiles.
     List dates = global.setOfDates;
 
@@ -87,11 +90,9 @@ class LocationDataManager {
 
     var endIndex = dates.lastIndexOf(date);
     var startIndex = endIndex - 1000;
-    if(startIndex<0) startIndex = 0;
-    List indexOfDate = List.generate(
-        endIndex-startIndex, (i) {
-    if(dates.elementAt(startIndex + i) == date)
-      return startIndex + i;
+    if (startIndex < 0) startIndex = 0;
+    List indexOfDate = List.generate(endIndex - startIndex, (i) {
+      if (dates.elementAt(startIndex + i) == date) return startIndex + i;
     });
 
     indexOfDate.removeWhere((item) => item == null);

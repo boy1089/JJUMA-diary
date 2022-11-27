@@ -31,7 +31,6 @@ class _AppState extends State<App> {
     dataManager = DataManager();
     super.initState();
     initApp = init();
-
   }
 
   Future<int> init() async {
@@ -56,7 +55,7 @@ class _AppState extends State<App> {
     await dataManager.init();
     print("init process, time elapsed : ${stopwatch.elapsed}");
     global.isInitializationDone = true;
-    await Future.delayed(Duration(seconds : 1));
+    await Future.delayed(Duration(seconds: 1));
     print("init done,executed in ${stopwatch.elapsed}");
     dataManager.executeSlowProcesses();
     return 0;

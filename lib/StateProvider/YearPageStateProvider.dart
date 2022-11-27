@@ -4,20 +4,24 @@ import '../Util/global.dart';
 import 'package:lateDiary/Util/Util.dart';
 import 'dart:math';
 import 'package:intl/intl.dart';
+import 'package:lateDiary/Data/DataManager.dart';
+import 'package:provider/provider.dart';
 
 class YearPageStateProvider with ChangeNotifier {
   String date = formatDate(DateTime.now());
-  Map summaryOfGooglePhotoData = {};
   double zoomInAngle = 0.0;
   bool isZoomIn = false;
   bool isBottomNavigationBarShown = true;
   int lastNavigationIndex = 0;
   int year = DateTime.now().year;
   int index = 0;
+  var dataManager;
+  YearPageStateProvider(this.dataManager);
 
   dynamic data;
   List<String> availableDates = [];
   int maxOfSummary = 0;
+
 
   void setAvailableDates(int year) {
     availableDates = summaryOfPhotoData.keys.where((element) {
@@ -95,9 +99,6 @@ class YearPageStateProvider with ChangeNotifier {
     print("date : ${this.date}");
   }
 
-  void setSummaryOfGooglePhotoData(data) {
-    summaryOfGooglePhotoData = data;
-  }
 
   void setZoomInRotationAngle(angle) {
     // print("provider set zoomInAngle to $angle");

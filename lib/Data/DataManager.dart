@@ -7,31 +7,36 @@ import 'package:glob/glob.dart';
 import 'package:lateDiary/Util/DateHandler.dart';
 import 'package:lateDiary/Util/Util.dart';
 import 'package:lateDiary/Util/global.dart' as global;
-import 'package:lateDiary/Photo/PhotoDataManager.dart';
 import 'package:lateDiary/Location/LocationDataManager.dart';
 import "package:lateDiary/Location/Coordinate.dart";
 import 'infoFromFile.dart';
 import 'package:lateDiary/Data/Directories.dart';
-//
-// List<String> Directories.selectedDirectories = [
-//   "/storage/emulated/0/DCIM",
-//   "/storage/emulated/0/DCIM/Camera",
-//   "/storage/emulated/0/Pictures",
-//   "/storage/emulated/0/Pictures/*",
-//   "/storage/emulated/0/Pictures/*/*",
-// ];
+import 'package:lateDiary/StateProvider/DataStateProvider.dart';
+import 'package:provider/provider.dart';
+import 'package:flutter/material.dart';
 
-class DataManager {
+class DataManager extends ChangeNotifier {
   Map<String, int> summaryOfPhotoData = {};
   Map<String, Coordinate> summaryOfCoordinate = {};
   LocationDataManager locationDataManager = LocationDataManager();
-  DataManager() {}
 
+  DataManager._privateConstructor();
+  static final DataManager _instance = DataManager._privateConstructor();
+  factory DataManager() {
+    return _instance;
+  }
   List<String> files = [];
   List<String>? filesNotUpdated = [];
   List<String>? datesOutOfDate = [];
+  late DataStateProvider dataStateProvider;
+  var context;
+
+  void setProvider(provider) {
+    this.dataStateProvider = provider;
+  }
 
   Future<void> init() async {
+    // dataStateProvider = Provider.of<DataStateProvider>(context, listen: false);
     Stopwatch stopwatch = Stopwatch()..start();
     print("DataManager instance is initializing..");
     // var a = await readSummaryOfPhotoData();
@@ -40,13 +45,13 @@ class DataManager {
     files = await getAllFiles();
     print("getAllFiles done, time elapsed : ${stopwatch.elapsed}");
     //read previously processed Info
-    // await readInfo([]);
     await readInfoFromJson();
     print("readInfo done, time elapsed : ${stopwatch.elapsed}");
     await readSummaryOfPhoto();
     print("readSummaryOfPhoto done, time elapsed : ${stopwatch.elapsed}");
     await readSummaryOfLocation();
     print("readSummaryOfLocation done, time elapsed : ${stopwatch.elapsed}");
+    notifyListeners();
     // find the files which are in local but not in Info
     // if (global.infoFromFiles.length > 1000)
     // filesNotUpdated = await matchFilesAndInfo();
@@ -64,7 +69,6 @@ class DataManager {
     var result = await compute(
         updateDatesFromInfo, [global.infoFromFiles, filesNotUpdated]);
     print("updateDatesFromInfo done, time elapsed : ${stopwatch.elapsed}");
-
     global.setOfDates = result[0];
     global.setOfDatetimes = result[1];
     global.dates = result[2];
@@ -77,6 +81,7 @@ class DataManager {
     print("updateSummaryOfPhoto done, time elapsed : ${stopwatch.elapsed}");
 
     print("DataManager initialization done");
+    notifyListeners();
   }
 
   void executeSlowProcesses() async {
@@ -105,22 +110,16 @@ class DataManager {
         global.setOfDatetimes = result[1];
         global.dates = result[2];
         global.datetimes = result[3];
-        //update the summaryOflocation only on the specific date.
 
+        //update the summaryOflocation only on the specific date.
         global.summaryOfPhotoData = await compute(updateSummaryOfPhotoFromInfo,
             [global.setOfDates, global.summaryOfPhotoData]);
 
-        // await writeInfo(null, true);
         await writeInfoAsJson(null, true);
         await writeSummaryOfPhoto2(null, true);
       }
       if (i % 10 == 0) {
-        // global.summaryOfLocationData = await compute(
-        //     updateSummaryOfLocationDataFromInfo_compute, [
-        //   global.setOfDates,
-        //   global.summaryOfLocationData,
-        //   global.infoFromFiles
-        // ]);
+
         global.summaryOfLocationData = await compute(
             updateSummaryOfLocationDataFromInfo2_compute,
             [global.infoFromFiles]);
@@ -131,8 +130,6 @@ class DataManager {
     //update the summaryOflocation only on the specific date.
     global.summaryOfPhotoData = await compute(updateSummaryOfPhotoFromInfo,
         [global.setOfDates, global.summaryOfPhotoData]);
-    // await updateSummaryOfLocationDataFromInfo(null);
-    // await updateSummaryOfLocationDataFromInfo(null);
 
     global.summaryOfLocationData = await compute(
         updateSummaryOfLocationDataFromInfo_compute, [
@@ -165,26 +162,10 @@ class DataManager {
     }
     files = files.where((element) => !element.contains('thumbnail')).toList();
     files.sort((a, b) => a.compareTo(b));
+    // dataStateProvider.setFiles(files);
     return files;
   }
-  Future<List<String>> getAllFiles2() async {
-    List<String> files = [];
-    List newFiles = [];
-    for (int i = 0; i < Directories.selectedDirectories.length; i++) {
-      String path = Directories.selectedDirectories.elementAt(i);
 
-      newFiles = Glob("$path/*.jpg").listSync();
-      files.addAll(List.generate(
-          newFiles.length, (index) => newFiles.elementAt(index).path));
-
-      newFiles = Glob("$path/*.png").listSync();
-      files.addAll(List.generate(
-          newFiles.length, (index) => newFiles.elementAt(index).path));
-    }
-    files = files.where((element) => !element.contains('thumbnail')).toList();
-    files.sort((a, b) => a.compareTo(b));
-    return files;
-  }
   // i) check whether this file is contained in Info
   // ii) check whether this file is saved previously.
   Future<List<String>?> matchFilesAndInfo() async {
@@ -280,10 +261,6 @@ class DataManager {
     print("updateDatesFromInfo0 : ${stopwatch.elapsed}");
 
     for (int i = 0; i < values.length; i++) {
-      // InfoFromFile value = values.elementAt(i);
-      // dates.add(value.date);
-      // datetimes.add(value.datetime);
-      // InfoFromFile value = values.elementAt(i);
       dates.add(values.elementAt(i).date);
       datetimes.add(values.elementAt(i).datetime);
     }
@@ -624,6 +601,7 @@ class DataManager {
       test[filename] = InfoFromFile(map: mapFromJson[filename]);
     }
     global.infoFromFiles = test;
+    // dataStateProvider.setInfoFromFiles(test);
     return test;
   }
 
@@ -730,6 +708,7 @@ class DataManager {
       }
       global.summaryOfLocationData[data[i][0].toString()] = data[i][1];
     }
+    // dataStateProvider.setSummaryOfLocationData(global.summaryOfLocationData);
   }
 
   Future<void> writeSummaryOfPhoto2(
@@ -771,6 +750,7 @@ class DataManager {
       //   print("readSummaryOfPhoto.. $i / ${data.length}, ${data[i]}");
       global.summaryOfPhotoData[data[i][0].toString()] = data[i][1];
     }
+    // dataStateProvider.setSummaryOfPhotoData(global.summaryOfPhotoData);
   }
 }
 

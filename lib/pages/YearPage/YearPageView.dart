@@ -13,6 +13,9 @@ import 'package:lateDiary/Util/DateHandler.dart';
 import 'dart:ui';
 import 'package:lateDiary/Util/layouts.dart';
 
+import '../../Data/DataManager.dart';
+import 'package:lateDiary/StateProvider/DataStateProvider.dart';
+
 class YearPageView extends StatelessWidget {
   static String id = 'year';
   int year = DateTime.now().year;
@@ -112,6 +115,13 @@ class YearPageView extends StatelessWidget {
                 bottom: global.kMarginOfBottomOnDayPage,
                 child: NoteListView(product, noteManager).build(context)),
           ]),
+      floatingActionButton: FloatingActionButton(onPressed: (){
+        var dataManager = DataManager();
+        var dataStateProvider = Provider.of<DataStateProvider>(context, listen : false);
+        // dataManager.setProvider(dataStateProvider);
+        dataManager.init();
+
+      },),
     );
   }
 }

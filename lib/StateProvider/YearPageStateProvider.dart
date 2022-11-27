@@ -33,14 +33,15 @@ class YearPageStateProvider with ChangeNotifier {
   void updateData() {
     setAvailableDates(year);
 
-    data = List.generate(52, (index) {
+    data = List.generate(1, (index) {
       return [
-        index,
+        0,
         1,
         10,
         0.01,
       ];
     });
+
     if (availableDates.length == 0) return data;
 
     int weekdayOfJan01 = DateTime(year).weekday;

@@ -13,6 +13,7 @@ import 'infoFromFile.dart';
 import 'package:lateDiary/Data/Directories.dart';
 import 'package:lateDiary/StateProvider/DataStateProvider.dart';
 import 'package:flutter/material.dart';
+import 'DataRepository.dart';
 
 class DataManager extends ChangeNotifier {
   DataManager._privateConstructor();
@@ -35,12 +36,8 @@ class DataManager extends ChangeNotifier {
 
   Map<String, InfoFromFile> infoFromFiles = {};
 
-  late DataStateProvider dataStateProvider;
   var context;
-
-  void setProvider(provider) {
-    this.dataStateProvider = provider;
-  }
+  DataRepository dataRepository = DataRepository();
 
   Future<void> init() async {
     // dataStateProvider = Provider.of<DataStateProvider>(context, listen: false);
@@ -48,11 +45,11 @@ class DataManager extends ChangeNotifier {
 
     print("DataManager instance is initializing..");
     //get list of image files from local. --> update new images
-    files = await getAllFiles();
+    files = await dataRepository.getAllFiles();
     print("getAllFiles done, time elapsed : ${stopwatch.elapsed}");
-    await readInfoFromJson();
-    await readSummaryOfPhoto();
-    await readSummaryOfLocation();
+    infoFromFiles = await dataRepository.readInfoFromJson();
+    summaryOfPhotoData = await dataRepository.readSummaryOfPhoto();
+    summaryOfLocationData = await dataRepository.readSummaryOfLocation();
     notifyListeners();
 
     // find the files which are in local but not in Info
@@ -69,10 +66,12 @@ class DataManager extends ChangeNotifier {
     var result =
         await compute(updateDatesFromInfo, [infoFromFiles, filesNotUpdated]);
     print("updateDatesFromInfo done, time elapsed : ${stopwatch.elapsed}");
+
     setOfDates = result[0];
     setOfDatetimes = result[1];
     dates = result[2];
     datetimes = result[3];
+
     print("date during init, ${dates.length}");
 
     //find the dates which are out of date based on the number of photo.
@@ -115,14 +114,13 @@ class DataManager extends ChangeNotifier {
         summaryOfPhotoData = await compute(
             updateSummaryOfPhotoFromInfo, [setOfDates, summaryOfPhotoData]);
 
-        await writeInfoAsJson(null, true);
-        await writeSummaryOfPhoto2(null, true);
+        await dataRepository.writeInfoAsJson(infoFromFiles, true);
+        await dataRepository.writeSummaryOfPhoto2(summaryOfPhotoData, true, datesOutOfDate);
       }
       if (i % 10 == 0) {
         summaryOfLocationData = await compute(
             updateSummaryOfLocationDataFromInfo2_compute, [infoFromFiles]);
-
-        await writeSummaryOfLocation2(null, true);
+        await dataRepository.writeSummaryOfLocation2(summaryOfLocationData, true, setOfDates);
       }
     }
     //update the summaryOflocation only on the specific date.
@@ -134,9 +132,9 @@ class DataManager extends ChangeNotifier {
         [setOfDates, summaryOfLocationData, infoFromFiles]);
 
     // await writeInfo(null, true);
-    await writeInfoAsJson(null, true);
-    await writeSummaryOfLocation2(null, true);
-    await writeSummaryOfPhoto2(null, true);
+    await dataRepository.writeInfoAsJson(infoFromFiles, true);
+    await dataRepository.writeSummaryOfLocation2(summaryOfLocationData, true, setOfDates);
+    await dataRepository.writeSummaryOfPhoto2(summaryOfPhotoData, true, setOfDates);
 
     print("executeSlowProcesses done,executed in ${stopwatch.elapsed}");
     notifyListeners();
@@ -488,226 +486,6 @@ class DataManager extends ChangeNotifier {
     return files;
   }
 
-  Future<void> writeInfoAsJson(List<String>? filenames, bool overwrite) async {
-    if (overwrite == null) overwrite = false;
-    if (filenames == null) filenames = infoFromFiles.keys.toList();
-
-    final Directory? directory = await getApplicationDocumentsDirectory();
-    final File file = File('${directory?.path}/InfoOfFiles.json');
-
-    // await file.writeAsString(jsonEncode(input));
-    var test = {};
-    for (int i = 0; i < filenames.length; i++) {
-      String filename = filenames.elementAt(i);
-      Map mapOfInfo = infoFromFiles[filename]!.toMap();
-      test[filename] = mapOfInfo;
-    }
-    file.writeAsString(jsonEncode(test));
-  }
-
-  Future<void> writeInfo(List<String>? filenames, bool overwrite) async {
-    if (overwrite == null) overwrite = false;
-    if (filenames == null) filenames = infoFromFiles.keys.toList();
-
-    final Directory? directory = await getApplicationDocumentsDirectory();
-    final File file = File('${directory?.path}/InfoOfFiles.csv');
-
-    if (!((await file.exists())) || overwrite) {
-      print("overwritting");
-      await file.writeAsString(
-          'filename,datetime,date,latitude,longitude,distance,isUpdated\n',
-          mode: FileMode.write);
-    }
-    String stringToWrite = "";
-    for (int i = 0; i < filenames.length; i++) {
-      String filename = filenames.elementAt(i);
-      stringToWrite += '${filename},'
-          '${infoFromFiles[filename]!.datetime},'
-          '${infoFromFiles[filename]!.date},'
-          '${infoFromFiles[filename]!.coordinate?.latitude},'
-          '${infoFromFiles[filename]!.coordinate?.longitude},'
-          '${infoFromFiles[filename]!.distance},'
-          '${infoFromFiles[filename]!.isUpdated}\n';
-
-      if (i % 100 == 0) {
-        await file.writeAsString(stringToWrite, mode: FileMode.append);
-        stringToWrite = "";
-        print("writingInfo.. $i/${filenames.length}");
-      }
-      ;
-    }
-    await file.writeAsString(stringToWrite, mode: FileMode.append);
-  }
-
-  Future<Map<String, InfoFromFile>> readInfoFromJson() async {
-    final Directory? directory = await getApplicationDocumentsDirectory();
-    final File file = File('${directory?.path}/InfoOfFiles.json');
-
-    bool isFileExist = await file.exists();
-    if (!isFileExist) return {};
-    var data = await file.readAsString();
-    Map mapFromJson = jsonDecode(data);
-
-    Map<String, InfoFromFile> test = {};
-    List filenames = mapFromJson.keys.toList();
-    for (int i = 0; i < mapFromJson.length; i++) {
-      String filename = filenames.elementAt(i);
-      test[filename] = InfoFromFile(map: mapFromJson[filename]);
-    }
-    infoFromFiles = test;
-    infoFromFiles = test;
-
-    return test;
-  }
-
-  Future<Map<String, InfoFromFile>> readInfo(List input) async {
-    final Directory? directory = await getApplicationDocumentsDirectory();
-    final File file = File('${directory?.path}/InfoOfFiles.csv');
-
-    bool isFileExist = await file.exists();
-    if (!isFileExist) return {};
-
-    var data = await openFile(file.path);
-    // Stopwatch stopwatch2 = Stopwatch()..start();
-    for (int i = 1; i < data.length; i++) {
-      // for (int i = 1; i < 100; i++) {
-      if (data[i].length < 2) return {};
-      // if (i % 1000 == 0)
-      // print("readInfo.. $i / ${data.length}, ${data[i]}");
-      // Stopwatch stopwatch = Stopwatch()..start();
-      InfoFromFile infoFromFile = InfoFromFile();
-      var data_temp = data[i];
-      int lengthOfData = data_temp.length;
-
-      // print("$i, time elapsed : ${stopwatch.elapsed}");
-      infoFromFile.datetime = parseToDatetime(data_temp[lengthOfData - 6]);
-      // print("$i, time elapsed : ${stopwatch.elapsed}");
-
-      infoFromFile.date = parseToString(data_temp[lengthOfData - 5]);
-
-      // print("$i, time elapsed : ${stopwatch.elapsed}");
-      infoFromFile.coordinate = Coordinate(
-          parseToDouble(data_temp[lengthOfData - 4]),
-          parseToDouble(data_temp[lengthOfData - 3]));
-      // print("$i, time elapsed : ${stopwatch.elapsed}");
-
-      infoFromFile.distance = data_temp[lengthOfData - 2] == "null"
-          ? null
-          : parseToDouble(data_temp[lengthOfData - 2]);
-      // print("$i, time elapsed : ${stopwatch.elapsed}");
-      // print(data_temp['lengthOfData']);
-      infoFromFile.isUpdated =
-          data_temp[lengthOfData - 1].toLowerCase() == 'true';
-
-      String filename = data_temp[0];
-      // print("$i, time elapsed : ${stopwatch.elapsed}");
-
-      if (lengthOfData > 6) {
-        filename = "";
-        for (int j = 0; j < lengthOfData - 6; j++) {
-          filename += data_temp[j] + ',';
-        }
-        filename = filename.substring(0, filename.length - 1);
-      }
-      // print("$i, time elapsed : ${stopwatch.elapsed}");
-
-      infoFromFiles[filename] = infoFromFile;
-      infoFromFiles[filename] = infoFromFile;
-      // print("$i, time elapsed : ${stopwatch.elapsed}");
-    }
-    // print(" time elapsed : ${stopwatch2.elapsed}");
-    return infoFromFiles;
-  }
-
-  Future<void> writeSummaryOfLocation2(
-      List<String>? datesOutOfDate, bool overwrite) async {
-    // Set setOfDates = global.setOfDates.toSet();
-    if (overwrite == null) overwrite = false;
-    if (datesOutOfDate != null) {
-      setOfDates = datesOutOfDate;
-    }
-    final Directory? directory = await getApplicationDocumentsDirectory();
-    final File file = File('${directory?.path}/summaryOfLocation.csv');
-
-    if (!((await file.exists())) || overwrite) {
-      await file.writeAsString('date,distance\n', mode: FileMode.write);
-    }
-
-    // var summaryOfLocation = global.summaryOfLocationData;
-    String stringToWrite = "";
-    for (int i = 0; i < setOfDates.length; i++) {
-      if (i % 100 == 0)
-        print("writingSummaryOfLocation.. $i/${setOfDates.length}");
-
-      String date = setOfDates.elementAt(i);
-      stringToWrite += '${date},${summaryOfLocationData[date]}\n';
-    }
-    await file.writeAsString(stringToWrite, mode: FileMode.append);
-  }
-
-  Future<void> readSummaryOfLocation() async {
-    final Directory? directory = await getApplicationDocumentsDirectory();
-    final File file = File('${directory?.path}/summaryOfLocation.csv');
-
-    bool isFileExist = await file.exists();
-    if (!isFileExist) return;
-
-    var data = await openFile(file.path);
-    for (int i = 1; i < data.length; i++) {
-      if (data[i].length < 2) return;
-      // if (i % 100 == 0)
-      //   print("readSummaryOfLocation.. $i / ${data.length}, ${data[i]}");
-      if ([null, "null"].contains(data[i][1])) {
-        summaryOfLocationData[data[i][0].toString()] = 0.0;
-        continue;
-      }
-      summaryOfLocationData[data[i][0].toString()] = data[i][1];
-    }
-    summaryOfLocationData = summaryOfLocationData;
-    // dataStateProvider.setSummaryOfLocationData(global.summaryOfLocationData);
-  }
-
-  Future<void> writeSummaryOfPhoto2(
-      List<String>? datesOutOfDate, bool overwrite) async {
-    // Set setOfDates = global.setOfDates.toSet();
-    if (overwrite == null) overwrite = false;
-    if (datesOutOfDate != null) {
-      setOfDates = datesOutOfDate;
-    }
-    final Directory? directory = await getApplicationDocumentsDirectory();
-    final File file = File('${directory?.path}/summaryOfPhoto.csv');
-
-    if (!((await file.exists())) || overwrite) {
-      print("overwritting");
-      await file.writeAsString('date,numberOfPhoto\n', mode: FileMode.write);
-    }
-
-    var summaryOfPhoto = summaryOfPhotoData;
-    String stringToWrite = "";
-    for (int i = 0; i < setOfDates.length; i++) {
-      if (i % 100 == 0) print("writingInfo.. $i/${setOfDates.length}");
-      String date = setOfDates.elementAt(i);
-      stringToWrite += '${date},${summaryOfPhoto[date]}\n';
-    }
-    await file.writeAsString(stringToWrite, mode: FileMode.append);
-  }
-
-  Future<void> readSummaryOfPhoto() async {
-    final Directory? directory = await getApplicationDocumentsDirectory();
-    final File file = File('${directory?.path}/summaryOfPhoto.csv');
-
-    bool isFileExist = await file.exists();
-    if (!isFileExist) return;
-
-    var data = await openFile(file.path);
-    for (int i = 1; i < data.length; i++) {
-      if (data[i].length < 2) return;
-      // if (i % 100 == 0)
-      //   print("readSummaryOfPhoto.. $i / ${data.length}, ${data[i]}");
-      summaryOfPhotoData[data[i][0].toString()] = data[i][1];
-    }
-    // dataStateProvider.setSummaryOfPhotoData(global.summaryOfPhotoData);
-  }
 }
 
 DateTime? parseToDatetime(input) {

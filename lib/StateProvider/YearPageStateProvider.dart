@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lateDiary/Util/DateHandler.dart';
-import '../Util/global.dart';
+import '../Util/global.dart' as global;
 import 'package:lateDiary/Util/Util.dart';
 import 'dart:math';
 import 'package:intl/intl.dart';
@@ -24,7 +24,7 @@ class YearPageStateProvider with ChangeNotifier {
 
 
   void setAvailableDates(int year) {
-    availableDates = summaryOfPhotoData.keys.where((element) {
+    availableDates = dataManager.summaryOfPhotoData.keys.where((element) {
       return element.substring(0, 4) == year.toString();
     }).toList();
     availableDates.sort();
@@ -54,10 +54,10 @@ class YearPageStateProvider with ChangeNotifier {
           weekdayOfJan01 +
           offsetToMakeWeekendOutward;
       int value =
-          summaryOfPhotoData[date]! > 200 ? 200 : summaryOfPhotoData[date]!;
+      dataManager.summaryOfPhotoData[date]! > 200 ? 200 : dataManager.summaryOfPhotoData[date]!;
       double distance = 4;
-      if (summaryOfLocationData.containsKey(date))
-        distance = floorDistance(summaryOfLocationData[date]!);
+      if (dataManager.summaryOfLocationData.containsKey(date))
+        distance = floorDistance(dataManager.summaryOfLocationData[date]!);
       return [
         (days / 7).floor(),
         days % 7,

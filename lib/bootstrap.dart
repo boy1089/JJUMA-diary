@@ -17,7 +17,6 @@ void bootstrap(int i) {
     log(details.exceptionAsString(), stackTrace: details.stack);
   };
 
-  // Bloc.observer = AppBlocObserver();
 
   // final todosRepository = TodosRepository(todosApi: todosApi);
 

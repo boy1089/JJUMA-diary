@@ -16,15 +16,18 @@ import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 
 class DataManager extends ChangeNotifier {
-  Map<String, int> summaryOfPhotoData = {};
-  Map<String, Coordinate> summaryOfCoordinate = {};
-  LocationDataManager locationDataManager = LocationDataManager();
 
   DataManager._privateConstructor();
   static final DataManager _instance = DataManager._privateConstructor();
   factory DataManager() {
     return _instance;
   }
+
+  Map<String, int> summaryOfPhotoData = {};
+  Map<String, double> summaryOfLocationData = {};
+  Map<String, Coordinate> summaryOfCoordinate = {};
+  LocationDataManager locationDataManager = LocationDataManager();
+
   List<String> files = [];
   List<String>? filesNotUpdated = [];
   List<String>? datesOutOfDate = [];
@@ -708,6 +711,7 @@ class DataManager extends ChangeNotifier {
       }
       global.summaryOfLocationData[data[i][0].toString()] = data[i][1];
     }
+    summaryOfLocationData = global.summaryOfLocationData;
     // dataStateProvider.setSummaryOfLocationData(global.summaryOfLocationData);
   }
 
@@ -750,6 +754,7 @@ class DataManager extends ChangeNotifier {
       //   print("readSummaryOfPhoto.. $i / ${data.length}, ${data[i]}");
       global.summaryOfPhotoData[data[i][0].toString()] = data[i][1];
     }
+    summaryOfPhotoData = global.summaryOfPhotoData;
     // dataStateProvider.setSummaryOfPhotoData(global.summaryOfPhotoData);
   }
 }

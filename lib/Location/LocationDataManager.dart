@@ -1,20 +1,6 @@
-import 'package:flutter/cupertino.dart';
 import 'package:lateDiary/Data/infoFromFile.dart';
-import 'package:lateDiary/Location/AddressFinder.dart';
-import 'package:glob/glob.dart';
-import 'package:glob/list_local_fs.dart';
-import 'package:lateDiary/Util/DateHandler.dart';
 import 'package:lateDiary/Util/global.dart' as global;
-import "package:lateDiary/Location/Coordinate.dart";
 import 'dart:math';
-import 'package:path_provider/path_provider.dart';
-import 'dart:io';
-import 'package:csv/csv.dart';
-import 'dart:convert';
-import 'package:lateDiary/Util/Util.dart';
-import 'package:lateDiary/Data/Directories.dart';
-
-import 'package:lateDiary/Data/DataManager.dart';
 
 class LocationDataManager {
   Map<String, InfoFromFile> infoFromFiles = {};
@@ -40,10 +26,10 @@ class LocationDataManager {
     indexOfDate.removeWhere((item) => item == null);
     List<double?> distancesOfDate = [];
     List values = infoFromFiles.values.toList();
-    indexOfDate.forEach((element) {
+    for (var element in indexOfDate) {
       InfoFromFile data = values.elementAt(element);
       distancesOfDate.add(data.distance);
-    });
+    }
     return distancesOfDate;
   }
 
@@ -53,8 +39,7 @@ class LocationDataManager {
         distancesOfDate.whereType<double>().toList();
 
     if (distancesOfDate2 == [null]) return 0;
-    if (distancesOfDate2.length == 0) return 0;
-    if (distancesOfDate2 == null) return 0;
+    if (distancesOfDate2.isEmpty) return 0;
     if (distancesOfDate2 == "null") return 0;
 
     double maxDistance = distancesOfDate2.reduce(max);

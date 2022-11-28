@@ -117,8 +117,8 @@ class YearPageView extends StatelessWidget {
           ]),
       floatingActionButton: FloatingActionButton(onPressed: (){
         print('aa');
-        DataRepository dataRepository = DataRepository();
-        dataRepository.writeInfoAsJson(dataRepository.infoFromFiles, true);
+        var dataManager = DataManager();
+        print(dataManager.infoFromFiles);
 
       },),
     );

@@ -21,9 +21,11 @@ import 'package:lateDiary/Util/layouts.dart';
 import 'dart:io' show Platform;
 import 'dart:io';
 
+import '../../Data/DataManager.dart';
+
 class YearPageView extends StatelessWidget {
   static String id = 'year';
-  var image = AssetEntity(id : "98195866-3C5E-484E-95BF-DBF9A3D0EEB9/L0/001",
+  var image = AssetEntity(id : "EC80B67C-D234-48B0-AB3E-5F218D3BE0BE/L0/001",
   height : 50, width : 50, typeInt : 1);
   int year = DateTime.now().year;
   var product;
@@ -142,8 +144,16 @@ class YearPageView extends StatelessWidget {
           ]),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          var dataRepo = DataRepository();
-          var b = await dataRepo.getAllFiles();
+          final List<AssetPathEntity> paths = await PhotoManager.getAssetPathList();
+          var assets = [];
+          for(var path in paths){
+            var asset = await path.getAssetListRange(start: 0, end: 100000);
+            assets.addAll(asset);
+          }
+          for(var asset in assets){
+            // AssetEntity
+            print(await asset.file);
+          }
         },
       ),
     );

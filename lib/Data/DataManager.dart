@@ -40,6 +40,7 @@ class DataManager extends ChangeNotifier {
     print("DataManager instance is initializing..");
     //get list of image files from local. --> update new images
     files = await dataRepository.getAllFiles();
+    print('b');
     infoFromFiles = await dataRepository.readInfoFromJson();
     summaryOfPhotoData = await dataRepository.readSummaryOfPhoto();
     summaryOfLocationData = await dataRepository.readSummaryOfLocation();

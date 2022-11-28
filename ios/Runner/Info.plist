@@ -28,6 +28,17 @@
 		<key>NSPhotoLibraryUsageDescription</key>
         <string>In order to access your photo library</string>
 
+        <key>NSAppTransportSecurity</key>
+        <dict>
+          <key>NSAllowsArbitraryLoads</key><true/>
+        </dict>
+
+        <key>NSBonjourServices</key>
+        <array>
+            <string>_dartobservatory._tcp</string>
+        </array>
+
+
 		<!-- Permission options for the `location` group -->
             <key>NSLocationWhenInUseUsageDescription</key>
             <string>Need location when in use</string>

@@ -130,16 +130,19 @@ class YearPageView extends StatelessWidget {
           // var assets = [];
           // for(var path in paths){
           //   var asset = await path.getAssetListRange(start: 0, end: 100000);
-          //   assets.addAll(asset);
+            // assets.addAll(asset);
+            // print("$path, $asset");
           // }
+
           // for(var asset in assets){
-          //   // AssetEntity
+          //   AssetEntity
           //   print(await asset.file);
-          //   print(asset);
+            // print(asset);
           // }
           var dataManager =DataManager();
+          dataManager.init();
           // dataManager.executeSlowProcesses();
-          print(dataManager.infoFromFiles);
+          // print(dataManager.infoFromFiles);
         },
       ),
     );

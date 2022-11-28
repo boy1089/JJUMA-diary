@@ -113,7 +113,6 @@ class DataRepository {
     final Directory directory = await getApplicationDocumentsDirectory();
     final File file = File('${directory.path}/InfoOfFiles.json');
 
-    // await file.writeAsString(jsonEncode(input));
     var test = {};
     for (int i = 0; i < filenames.length; i++) {
       String filename = filenames.elementAt(i);
@@ -134,12 +133,11 @@ class DataRepository {
       await file.writeAsString('date,numberOfPhoto\n', mode: FileMode.write);
     }
 
-    var summaryOfPhoto = summaryOfPhotoData;
     String stringToWrite = "";
     for (int i = 0; i < setOfDates.length; i++) {
       if (i % 100 == 0) print("writingInfo.. $i/${setOfDates.length}");
       String date = setOfDates.elementAt(i);
-      stringToWrite += '${date},${summaryOfPhoto[date]}\n';
+      stringToWrite += '${date},${summaryOfPhotoData[date]}\n';
     }
     await file.writeAsString(stringToWrite, mode: FileMode.append);
   }

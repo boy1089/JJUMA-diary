@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:graphic/graphic.dart';
+import 'package:lateDiary/Data/DataRepository.dart';
 import 'package:lateDiary/Util/Util.dart';
 import 'package:lateDiary/Util/global.dart' as global;
 import 'package:provider/provider.dart';
@@ -115,9 +116,9 @@ class YearPageView extends StatelessWidget {
                 child: NoteListView(product, noteManager).build(context)),
           ]),
       floatingActionButton: FloatingActionButton(onPressed: (){
-        var dataManager = DataManager();
-        // dataManager.setProvider(dataStateProvider);
-        dataManager.init();
+        print('aa');
+        DataRepository dataRepository = DataRepository();
+        dataRepository.writeInfoAsJson(dataRepository.infoFromFiles, true);
 
       },),
     );

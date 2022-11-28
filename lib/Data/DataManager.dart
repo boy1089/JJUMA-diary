@@ -32,11 +32,9 @@ class DataManager extends ChangeNotifier {
 
   Map<String, InfoFromFile> infoFromFiles = {};
 
-  var context;
   DataRepository dataRepository = DataRepository();
 
   Future<void> init() async {
-    // dataStateProvider = Provider.of<DataStateProvider>(context, listen: false);
     Stopwatch stopwatch = Stopwatch()..start();
 
     print("DataManager instance is initializing..");
@@ -78,12 +76,11 @@ class DataManager extends ChangeNotifier {
   }
 
   void executeSlowProcesses() async {
-    if (filesNotUpdated == []) return;
-
+    if (filesNotUpdated!.isEmpty) return;
+    print("executing slow process..");
     int lengthOfFiles = filesNotUpdated!.length;
 
     for (int i = 0; i < lengthOfFiles / 100.floor(); i++) {
-      //part of Files
       List<String> partOfFilesNotupdated = filesNotUpdated!.sublist(i * 100,
           lengthOfFiles < (i + 1) * 100 ? lengthOfFiles : (i + 1) * 100);
 
@@ -114,17 +111,19 @@ class DataManager extends ChangeNotifier {
             summaryOfLocationData, true, setOfDates);
       }
     }
-
+    print("executing slow process..2");
     summaryOfPhotoData = await compute(
         updateSummaryOfPhotoFromInfo, [setOfDates, summaryOfPhotoData]);
-
+    print("executing slow process..3");
     summaryOfLocationData = await compute(
         updateSummaryOfLocationDataFromInfo_compute,
         [setOfDates, summaryOfLocationData, infoFromFiles]);
-
+    print("executing slow process..4");
     await dataRepository.writeInfoAsJson(infoFromFiles, true);
+    print("executing slow process..5");
     await dataRepository.writeSummaryOfLocation2(
         summaryOfLocationData, true, setOfDates);
+    print("executing slow process..6");
     await dataRepository.writeSummaryOfPhoto2(
         summaryOfPhotoData, true, setOfDates);
 
@@ -196,10 +195,8 @@ class DataManager extends ChangeNotifier {
     if (filenames!.isEmpty) filenames = files;
 
     for (int i = 0; i < filenames.length; i++) {
-      // if (i % 100 == 0) print("addFilesToInfo $i / ${filenames.length}");
       String filename = filenames.elementAt(i);
       if (infoFromFiles[filename] == null) {
-        // print("info not found during addFilestoInfo");
         infoFromFiles[filename] = InfoFromFile(isUpdated: false);
       }
     }
@@ -248,7 +245,6 @@ class DataManager extends ChangeNotifier {
     for (int i = 0; i < filenames.length; i++) {
       String filename = filenames.elementAt(i);
       String? inferredDatetime = inferDatetimeFromFilename(filename);
-      // print(inferredDatetime);
       if (inferredDatetime != null) {
         infoFromFiles[filename]?.datetime = DateTime.parse(inferredDatetime);
         infoFromFiles[filename]?.date = inferredDatetime.substring(0, 8);
@@ -256,9 +252,9 @@ class DataManager extends ChangeNotifier {
     }
   }
 
-  Future<Map<String, InfoFromFile>> updateExifOnInfo_compute(List input) async {
+  static Future<Map<String, InfoFromFile>> updateExifOnInfo_compute(List input) async {
     List<String> filenames = input[0];
-    infoFromFiles = input[1];
+    Map<String, InfoFromFile> infoFromFiles = input[1];
 
     for (int i = 0; i < filenames.length; i++) {
       String filename = filenames.elementAt(i);
@@ -313,13 +309,12 @@ class DataManager extends ChangeNotifier {
     return counts;
   }
 
-  Future<Map<String, double>> updateSummaryOfLocationDataFromInfo2_compute(
+  static Future<Map<String, double>> updateSummaryOfLocationDataFromInfo2_compute(
       List input) async {
     Map<String, InfoFromFile> infoFromFiles = input[0];
     var infoFromFiles2 = [...infoFromFiles.values];
     Map<String, double> distances = {};
 
-    // dates.map((e) => counts.containsKey(e) ? counts[e]++ : counts[e] = 1);
     for (int i = 0; i < infoFromFiles2.length; i++) {
       InfoFromFile infoFromFile = infoFromFiles2.elementAt(i);
       String? date = infoFromFile.date;

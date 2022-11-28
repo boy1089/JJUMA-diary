@@ -3,7 +3,6 @@ import 'package:lateDiary/Permissions/PermissionManager.dart';
 import 'package:lateDiary/Note/NoteManager.dart';
 import 'package:lateDiary/Data/DataManager.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
-import 'package:lateDiary/StateProvider/DataStateProvider.dart';
 import 'package:lateDiary/navigation.dart';
 import 'pages/PermissionPage.dart';
 import 'package:lateDiary/Settings.dart';
@@ -12,7 +11,6 @@ import 'pages/MainPage.dart';
 import 'pages/SettingPage.dart';
 import 'package:lateDiary/Util/global.dart' as global;
 import 'package:lateDiary/theme/theme.dart';
-import 'package:provider/provider.dart';
 
 class App extends StatefulWidget {
   const App({Key? key}) : super(key: key);

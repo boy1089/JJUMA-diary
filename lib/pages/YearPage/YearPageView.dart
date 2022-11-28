@@ -55,7 +55,7 @@ class YearPageView extends StatelessWidget {
             .elementAt(int.parse(value.values.first.first.toString())));
 
         if (!product.isZoomIn) return;
-        provider.setNavigationIndex(2);
+        provider.setNavigationIndex(navigationIndex.day);
         provider.setDate(date);
         Provider.of<DayPageStateProvider>(context, listen: false)
             .setAvailableDates(product.availableDates);
@@ -116,7 +116,6 @@ class YearPageView extends StatelessWidget {
                 child: NoteListView(product, noteManager).build(context)),
           ]),
       floatingActionButton: FloatingActionButton(onPressed: (){
-        print('aa');
         var dataManager = DataManager();
         print(dataManager.infoFromFiles);
 
@@ -213,7 +212,7 @@ class NoteListView {
                 onPressed: () {
                   var provider = Provider.of<NavigationIndexProvider>(context,
                       listen: false);
-                  provider.setNavigationIndex(2);
+                  provider.setNavigationIndex(navigationIndex.day);
                   provider.setDate(formatDateString(date));
                   Provider.of<DayPageStateProvider>(context, listen: false)
                       .setAvailableDates(product.availableDates);

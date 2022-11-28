@@ -1,17 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:lateDiary/Util/DateHandler.dart';
-import '../Util/global.dart';
-import 'package:lateDiary/Util/Util.dart';
-import 'dart:math';
-import 'package:intl/intl.dart';
 
 class NavigationIndexProvider with ChangeNotifier {
-  int navigationIndex = 0;
+  navigationIndex currentNavigationIndex = navigationIndex.year;
   String date = formatDate(DateTime.now());
   double zoomInAngle = 0.0;
   bool isZoomIn = false;
   bool isBottomNavigationBarShown = true;
-  int lastNavigationIndex = 0;
+  navigationIndex lastNavigationIndex = navigationIndex.year;
 
   void setBottomNavigationBarShown(bool isBottomNavigationBarShown) {
     this.isBottomNavigationBarShown = isBottomNavigationBarShown;
@@ -19,24 +15,24 @@ class NavigationIndexProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void setLastNavigationIndex(int index) {
+  void setLastNavigationIndex(navigationIndex index) {
     lastNavigationIndex = index;
   }
 
-  void setNavigationIndex(int index) {
-    setLastNavigationIndex(navigationIndex);
-    navigationIndex = index;
-    print("index : $navigationIndex");
+  void setNavigationIndex(navigationIndex index) {
+    setLastNavigationIndex(currentNavigationIndex);
+    currentNavigationIndex = index;
+    print("index : $currentNavigationIndex");
 
     notifyListeners();
 
-    if (index == 0) {
+    if (index == navigationIndex.year) {
       setBottomNavigationBarShown(true);
     }
-    if (index == 1) {
+    if (index == navigationIndex.diary) {
       setBottomNavigationBarShown(true);
     }
-    if (index == 2) {
+    if (index == navigationIndex.day) {
       setBottomNavigationBarShown(false);
     }
   }
@@ -47,4 +43,8 @@ class NavigationIndexProvider with ChangeNotifier {
     if(notify)
       notifyListeners();
   }
+}
+
+enum navigationIndex{
+  year,diary, day,  setting
 }

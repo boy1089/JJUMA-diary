@@ -94,7 +94,6 @@ class DayPageStateProvider with ChangeNotifier {
     return photoForPlot;
   }
 
-
   void writeNote() {
     if (note != "") {
       noteManager.writeNote(date, note);
@@ -160,7 +159,6 @@ class DayPageStateProvider with ChangeNotifier {
   }
 
   void setNote(note) {
-    // print("provider set zoomInAngle to $angle");
     this.note = note;
     notifyListeners();
   }

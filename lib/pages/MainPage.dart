@@ -1,5 +1,4 @@
 import 'package:animations/animations.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:lateDiary/Util/global.dart' as global;
 import '../navigation.dart';
@@ -9,7 +8,6 @@ import 'package:lateDiary/Note/NoteManager.dart';
 import 'DiaryPage.dart';
 import 'YearPage/YearPage.dart';
 import 'DayPage/DayPage.dart';
-
 import 'package:lateDiary/StateProvider/YearPageStateProvider.dart';
 import 'package:lateDiary/StateProvider/DayPageStateProvider.dart';
 import 'package:lateDiary/StateProvider/NavigationIndexStateProvider.dart';
@@ -17,7 +15,7 @@ import 'package:lateDiary/StateProvider/NavigationIndexStateProvider.dart';
 class MainPage extends StatefulWidget {
   static String id = 'main';
 
-  MainPage({Key? key}) : super(key: key);
+  const MainPage({Key? key}) : super(key: key);
 
   @override
   State<MainPage> createState() => MainPageState();
@@ -26,6 +24,11 @@ class MainPage extends StatefulWidget {
 class MainPageState extends State<MainPage> {
   NoteManager noteManager = NoteManager();
   List<Widget> _widgetOptions = [];
+
+
+  var navigationProvider;
+  var dayPageStateProvider;
+  var yearPageStateProvider;
 
   @override
   void initState() {
@@ -42,22 +45,23 @@ class MainPageState extends State<MainPage> {
       dayPageView,
       androidSettingsScreen,
     ];
+
   }
 
   @override
   Widget build(BuildContext context) {
-    var navigationProvider =
-        Provider.of<NavigationIndexProvider>(context, listen: true);
-    var dayPageStateProvider =
-        Provider.of<DayPageStateProvider>(context, listen: false);
-    var yearPageStateProvider =
-        Provider.of<YearPageStateProvider>(context, listen: false);
 
+    navigationProvider =
+        Provider.of<NavigationIndexProvider>(context, listen: true);
+    dayPageStateProvider =
+        Provider.of<DayPageStateProvider>(context, listen: false);
+    yearPageStateProvider =
+        Provider.of<YearPageStateProvider>(context, listen: false);
     return WillPopScope(
       onWillPop: () async {
-        print("back button pressed : ${navigationProvider.navigationIndex}");
-        switch (navigationProvider.navigationIndex) {
-          case 0:
+        print("back button pressed : ${navigationProvider.currentNavigationIndex}");
+        switch (navigationProvider.currentNavigationIndex) {
+          case navigationIndex.year:
             if (yearPageStateProvider.isZoomIn) {
               setState(() {
                 yearPageStateProvider.setZoomInState(false);
@@ -65,10 +69,10 @@ class MainPageState extends State<MainPage> {
               });
             }
             break;
-          case 1:
-            navigationProvider.setNavigationIndex(0);
+          case navigationIndex.diary:
+            navigationProvider.setNavigationIndex(navigationIndex.year);
             break;
-          case 2:
+          case navigationIndex.day:
             //when zoomed in, make daypage zoom out
             global.indexForZoomInImage = -1;
             global.isImageClicked = false;
@@ -80,14 +84,14 @@ class MainPageState extends State<MainPage> {
               });
             }
 
-            if (navigationProvider.lastNavigationIndex == 1) {
+            if (navigationProvider.lastNavigationIndex == navigationIndex.diary) {
               navigationProvider
                   .setNavigationIndex(navigationProvider.lastNavigationIndex);
               break;
             }
             //when zoomed out, go to month page
             if (!dayPageStateProvider.isZoomIn) {
-              navigationProvider.setNavigationIndex(0);
+              navigationProvider.setNavigationIndex(navigationIndex.year);
               return Navigator.canPop(context);
             }
             break;
@@ -96,7 +100,7 @@ class MainPageState extends State<MainPage> {
       },
       child: Scaffold(
         body: PageTransitionSwitcher(
-                  duration: Duration(milliseconds: 1000),
+                  duration: const Duration(milliseconds: 1000),
                   transitionBuilder:
                       (child, primaryAnimation, secondaryAnimation) =>
                           FadeThroughTransition(
@@ -105,8 +109,7 @@ class MainPageState extends State<MainPage> {
                     child: child,
                   ),
                   child:
-                      // _widgetOptions[2]
-                      _widgetOptions[navigationProvider.navigationIndex],
+                      _widgetOptions[navigationProvider.currentNavigationIndex.index],
                 ),
         backgroundColor: global.kBackGroundColor,
         bottomNavigationBar: SizedBox(
@@ -118,17 +121,17 @@ class MainPageState extends State<MainPage> {
               selectedFontSize: 0,
               type: BottomNavigationBarType.fixed,
               items: const <BottomNavigationBarItem>[
-                const BottomNavigationBarItem(
+                BottomNavigationBarItem(
                     icon: Icon(Icons.photo_camera_back_outlined),
                     label: "Photo"),
-                const BottomNavigationBarItem(
+                 BottomNavigationBarItem(
                     icon: Icon(Icons.bookmark), label: "Diary"),
-                const BottomNavigationBarItem(
+                 BottomNavigationBarItem(
                     icon: Icon(Icons.settings), label: "Settings"),
               ],
-              currentIndex: navigationProvider.navigationIndex,
+              currentIndex: navigationProvider.currentNavigationIndex.index,
               onTap: (index) {
-                onTap(context, index);
+                onTap(context, navigationIndex.values[index]);
               },
             ),
           ),
@@ -137,20 +140,20 @@ class MainPageState extends State<MainPage> {
     );
   }
 
-  void onBackButton(event) {}
+  void onWillPop(event) {}
 
-  void onTap(BuildContext context, int item) {
+  void onTap(BuildContext context, navigationIndex item) {
     debugPrint(item.toString());
     var provider = Provider.of<NavigationIndexProvider>(context, listen: false);
     switch (item) {
-      case 0:
-        provider.setNavigationIndex(0);
+      case navigationIndex.year:
+        provider.setNavigationIndex(navigationIndex.year);
         provider.setBottomNavigationBarShown(true);
         break;
-      case 1:
-        provider.setNavigationIndex(1);
+      case navigationIndex.diary:
+        provider.setNavigationIndex(navigationIndex.diary);
         break;
-      case 2:
+      case navigationIndex.day:
         Navigation.navigateTo(
             context: context,
             screen: AndroidSettingsScreen(),

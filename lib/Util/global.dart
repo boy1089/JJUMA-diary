@@ -4,26 +4,11 @@ import "package:lateDiary/Location/Coordinate.dart";
 import 'package:lateDiary/Data/infoFromFile.dart';
 import 'package:lateDiary/Util/Util.dart';
 
-DateTime selectedDate = DateTime(2022, 1, 1);
-
-int mainPageSelectionIndex = 0;
-
-Map<String, int> summaryOfPhotoData = {};
 Map<String, int> summaryOfNoteData = {};
-Map<String, double> summaryOfLocationData = {};
-Map<String, double> summaryOfDistanceData = {};
-Map mapForJson = {};
 
-Map locationDataAll = {};
-bool isLocationUpadating = false;
 bool isInitializationDone = false;
 
-List files = [];
 List setOfDates = [];
-List dates = [];
-List datetimes = [];
-List setOfDatetimes = [];
-List locations = [];
 
 Map<String, InfoFromFile> infoFromFiles = {};
 

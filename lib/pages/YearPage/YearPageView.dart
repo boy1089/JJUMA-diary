@@ -1,8 +1,13 @@
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
+import 'package:glob/glob.dart';
+import 'package:glob/list_local_fs.dart';
 import 'package:graphic/graphic.dart';
 import 'package:lateDiary/Data/DataRepository.dart';
 import 'package:lateDiary/Util/Util.dart';
 import 'package:lateDiary/Util/global.dart' as global;
+import 'package:path_provider/path_provider.dart';
+import 'package:photo_manager/photo_manager.dart';
 import 'package:provider/provider.dart';
 import 'dart:async';
 import 'package:lateDiary/pages/YearPage/PolarMonthIndicator.dart';
@@ -13,11 +18,13 @@ import 'package:lateDiary/Note/NoteManager.dart';
 import 'package:lateDiary/Util/DateHandler.dart';
 import 'dart:ui';
 import 'package:lateDiary/Util/layouts.dart';
-
-import '../../Data/DataManager.dart';
+import 'dart:io' show Platform;
+import 'dart:io';
 
 class YearPageView extends StatelessWidget {
   static String id = 'year';
+  var image = AssetEntity(id : "98195866-3C5E-484E-95BF-DBF9A3D0EEB9/L0/001",
+  height : 50, width : 50, typeInt : 1);
   int year = DateTime.now().year;
   var product;
   var context;
@@ -32,6 +39,20 @@ class YearPageView extends StatelessWidget {
     this.product = product;
     this.context = context;
     initState();
+    getImage();
+  }
+
+  void getImage() async {
+    final List<AssetPathEntity> paths = await PhotoManager.getAssetPathList();
+    for (var path in paths) {
+      final List<AssetEntity> entities =
+          await path.getAssetListRange(start: 0, end: 80);
+      // print("$path, $entities");
+      if (entities.isNotEmpty) {
+        image = entities[0];
+        print(image);
+      }
+    }
   }
 
   void initState() {
@@ -114,12 +135,17 @@ class YearPageView extends StatelessWidget {
                 width: physicalWidth,
                 bottom: global.kMarginOfBottomOnDayPage,
                 child: NoteListView(product, noteManager).build(context)),
+            Positioned(
+                width: 100,
+                height: 100,
+                child: AssetEntityImage(image))
           ]),
-      floatingActionButton: FloatingActionButton(onPressed: (){
-        var dataManager = DataManager();
-        print(dataManager.infoFromFiles);
-
-      },),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          var dataRepo = DataRepository();
+          var b = await dataRepo.getAllFiles();
+        },
+      ),
     );
   }
 }
@@ -202,7 +228,6 @@ class NoteListView {
     return AnimatedContainer(
         duration: Duration(milliseconds: global.animationTime),
         curve: global.animationCurve,
-        // margin: EdgeInsets.all(10),
         height: layout_yearPage['textHeight'][product.isZoomIn],
         child: ListView.builder(
             itemCount: noteManager.notesOfYear.length,
@@ -217,22 +242,17 @@ class NoteListView {
                   Provider.of<DayPageStateProvider>(context, listen: false)
                       .setAvailableDates(product.availableDates);
                 },
-                // padding: EdgeInsets.all(5),
                 child: Container(
                   margin: EdgeInsets.all(5),
                   width: physicalWidth,
                   color: global.kColor_container,
-                  //Colors.black12.withAlpha(10),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        "${formateDate2(formatDateString(date))}",
-                        style: Theme.of(context).textTheme.subtitle1),
-                      Text(
-                        "${noteManager.notesOfYear[date]}",
-                        style: Theme.of(context).textTheme.bodyText1
-                      )
+                      Text("${formateDate2(formatDateString(date))}",
+                          style: Theme.of(context).textTheme.subtitle1),
+                      Text("${noteManager.notesOfYear[date]}",
+                          style: Theme.of(context).textTheme.bodyText1)
                     ],
                   ),
                 ),

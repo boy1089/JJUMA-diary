@@ -1,7 +1,8 @@
 import "package:external_path/external_path.dart";
+import "package:lateDiary/Util/global.dart";
 
 class Directories {
-  //
+
   static List<String> directories = [
     ExternalPath.DIRECTORY_DCIM,
     ExternalPath.DIRECTORY_PICTURES,
@@ -13,11 +14,21 @@ class Directories {
   static List<String> selectedDirectories = [];
 
   static Future<void> init(directories) async {
-    selectedDirectories = await getPathOfDirectory(directories);
+    // if(kOs =="android") {
+      selectedDirectories = await getPathOfDirectory(directories);
+    // }
+
+    // if(kOs == 'ios'){
+    //   selected
+    // }
+
+    print("selectedDirectories : $selectedDirectories");
+
   }
 
   static Future<List<String>> getPathOfDirectory(
       List<String> selectedDirectories) async {
+
     List<String> selectedDirectories_path = [];
     for (int i = 0; i < selectedDirectories.length; i++) {
       String path = await ExternalPath.getExternalStoragePublicDirectory(
@@ -33,4 +44,8 @@ class Directories {
     }
     return selectedDirectories_path;
   }
+
+
+
+
 }

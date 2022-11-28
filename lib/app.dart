@@ -35,9 +35,10 @@ class _AppState extends State<App> {
     Stopwatch stopwatch = new Stopwatch()..start();
     global.isInitializationDone = false;
     await permissionManager.init();
+    print('ccc');
     if (!permissionManager.isStoragePermissionGranted |
         !permissionManager.isLocationPermissionGranted) {
-      FlutterNativeSplash.remove();
+      // FlutterNativeSplash.remove();
       isPermissionOk = await Navigation.navigateTo(
           context: context,
           screen: PermissionPage(permissionManager),
@@ -45,8 +46,11 @@ class _AppState extends State<App> {
       setState(() {});
     }
 
-    await Directories.init(Directories.directories);
-    await Settings.init();
+    if(global.kOs=="android") {
+      await Directories.init(Directories.directories);
+      await Settings.init();
+    }
+    print('bbb');
     await noteManager.init();
     print("init process, time elapsed : ${stopwatch.elapsed}");
     FlutterNativeSplash.remove();

@@ -44,6 +44,7 @@ class DataManager extends ChangeNotifier {
     summaryOfPhotoData = await dataRepository.readSummaryOfPhoto();
     summaryOfLocationData = await dataRepository.readSummaryOfLocation();
     notifyListeners();
+    print("DataManager init, $files");
 
     // find the files which are in local but not in Info
     filesNotUpdated = await matchFilesAndInfo2();

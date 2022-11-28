@@ -15,11 +15,9 @@ class NoteEditor {
     viewInsets = EdgeInsets.fromWindowPadding(
         WidgetsBinding.instance.window.viewInsets,
         WidgetsBinding.instance.window.devicePixelRatio);
-    // keyboardHeight = double.parse(viewInsets.bottom.toString());
     noteEditorHeight_hasFocus = physicalHeight -
         global.kBottomNavigationBarHeight -
         global.kHeightOfArbitraryWidgetOnBottom;
-    // -keyboardHeight;
   }
 
   var textController = TextEditingController();
@@ -30,17 +28,15 @@ class NoteEditor {
     await product.writeNote();
   }
 
-  @override
   Widget build(BuildContext context) {
     return KeyboardVisibilityBuilder(builder: (context, isKeyboardVisible) {
       return Positioned(
           width: physicalWidth,
           bottom: global.kMarginOfBottomOnDayPage,
-          // height : layout['graphSize'][false],
           child: AnimatedContainer(
               duration: Duration(milliseconds: global.animationTime),
               curve: global.animationCurve,
-              margin: EdgeInsets.all(10),
+              margin: const EdgeInsets.all(10),
               // height : noteEditorHeight_hasFocus - global.kKeyboardSize,
               height: isKeyboardVisible
                   ? noteEditorHeight_hasFocus - product.keyboardSize

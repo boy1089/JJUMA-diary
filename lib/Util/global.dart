@@ -3,13 +3,14 @@ import 'package:flutter/material.dart';
 import "package:lateDiary/Location/Coordinate.dart";
 import 'package:lateDiary/Data/infoFromFile.dart';
 import 'package:lateDiary/Util/Util.dart';
+import 'dart:io' show Platform;
 
 Map<String, int> summaryOfNoteData = {};
 
 bool isInitializationDone = false;
 
 List setOfDates = [];
-
+String kOs = Platform.operatingSystem;
 Map<String, InfoFromFile> infoFromFiles = {};
 
 Coordinate referenceCoordinate = Coordinate(37.364, 126.718);

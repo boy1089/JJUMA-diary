@@ -2,11 +2,13 @@ import 'package:glob/list_local_fs.dart';
 import 'package:lateDiary/Location/Coordinate.dart';
 import 'package:lateDiary/Data/infoFromFile.dart';
 import 'package:glob/glob.dart';
+import 'package:photo_manager/photo_manager.dart';
 import 'Directories.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:convert';
 import 'dart:io';
 import 'package:lateDiary/Util/Util.dart';
+import 'package:lateDiary/Util/global.dart' as global;
 
 class DataRepository {
   DataRepository._privateConstructor();
@@ -35,9 +37,18 @@ class DataRepository {
     List<String> files = [];
     List newFiles = [];
 
+    if(global.kOs=="ios"){
+      final List<AssetPathEntity> paths = await PhotoManager.getAssetPathList();
+      for(var path in paths){
+        var assets = await path.getAssetListRange(start: 0, end: 100000);
+        files.addAll([for(var asset in assets) asset.id]);
+      }
+      return files;
+    }
+
+
     for (int i = 0; i < Directories.selectedDirectories.length; i++) {
       String path = Directories.selectedDirectories.elementAt(i);
-
       newFiles = Glob("$path/*.jpg").listSync();
       files.addAll(List.generate(
           newFiles.length, (index) => newFiles.elementAt(index).path));
@@ -46,10 +57,13 @@ class DataRepository {
       files.addAll(List.generate(
           newFiles.length, (index) => newFiles.elementAt(index).path));
     }
+    print(newFiles);
 
     files = files.where((element) => !element.contains('thumbnail')).toList();
     files.sort((a, b) => a.compareTo(b));
     return files;
+
+
   }
 
   Future<Map<String, InfoFromFile>> readInfoFromJson() async {

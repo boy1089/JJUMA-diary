@@ -67,6 +67,7 @@ dependencies:
   flutter_shake_animated:
   numberpicker:
   flutter_bloc:
+  photo_manager:
 
 dev_dependencies:
   flutter_test:

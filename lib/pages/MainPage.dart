@@ -25,7 +25,6 @@ class MainPageState extends State<MainPage> {
   NoteManager noteManager = NoteManager();
   List<Widget> _widgetOptions = [];
 
-
   var navigationProvider;
   var dayPageStateProvider;
   var yearPageStateProvider;

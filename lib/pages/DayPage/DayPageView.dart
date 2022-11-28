@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:lateDiary/Util/Util.dart';
 import 'package:provider/provider.dart';
@@ -16,7 +15,6 @@ import 'package:lateDiary/StateProvider/DayPageStateProvider.dart';
 import 'package:lateDiary/StateProvider/NavigationIndexStateProvider.dart';
 
 import 'package:lateDiary/CustomWidget/NoteEditor.dart';
-import 'dart:ui';
 import 'package:lateDiary/Util/layouts.dart';
 
 class DayPageView extends StatefulWidget {
@@ -102,18 +100,16 @@ class _DayPageViewState extends State<DayPageView> {
               Positioned(
                   top: 30,
                   child: Text(
-                    "${DateFormat('EEEE').format(DateTime.parse(date))}/"
-                    "${DateFormat('MMM').format(DateTime.parse(date))} "
-                    "${DateFormat('dd').format(DateTime.parse(date))}/"
-                    "${DateFormat('yyyy').format(DateTime.parse(date))}",
-                    style: Theme.of(context).textTheme.headline3
-                  )),
+                      "${DateFormat('EEEE').format(DateTime.parse(date))}/"
+                      "${DateFormat('MMM').format(DateTime.parse(date))} "
+                      "${DateFormat('dd').format(DateTime.parse(date))}/"
+                      "${DateFormat('yyyy').format(DateTime.parse(date))}",
+                      style: Theme.of(context).textTheme.headline3)),
             ]),
         floatingActionButton: FloatingActionButton(
           mini: true,
           backgroundColor: global.kMainColor_warm,
-          child: focusNode.hasFocus ? Text("save") : Icon(Icons.add),
-          shape: RoundedRectangleBorder(
+          shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(15.0)),
           ),
           onPressed: () {
@@ -124,6 +120,8 @@ class _DayPageViewState extends State<DayPageView> {
             }
             setState(() {});
           },
+          child:
+              focusNode.hasFocus ? const Text("save") : const Icon(Icons.add),
         ),
         resizeToAvoidBottomInset: false,
       );

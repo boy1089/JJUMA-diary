@@ -14,8 +14,8 @@ class YearPage extends StatelessWidget {
       builder: (context, product, child) => PageView.builder(
           physics:
               product.isZoomIn
-                  ? NeverScrollableScrollPhysics()
-                  : BouncingScrollPhysics(),
+                  ? const NeverScrollableScrollPhysics()
+                  : const BouncingScrollPhysics(),
           controller: PageController(
               viewportFraction: 1.0,
               initialPage:

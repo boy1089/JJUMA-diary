@@ -16,8 +16,7 @@ enum items {
 
 class Settings {
   static String language = 'kor';
-  static Map directories = Map.fromIterable(Directories.directories,
-      key: (item) => item, value: (item) => true);
+  static Map directories = { for (var item in Directories.directories) item : true };
   static Coordinate referenceCoordinate = Coordinate(0, 0);
   static int minimumNumberOfPhoto = 0;
   static double minimumTime = 0.005;
@@ -66,14 +65,10 @@ class Settings {
   }
 
   static void writeFile() async {
-    final Directory? directory = await getApplicationDocumentsDirectory();
-    final String filename = '${directory?.path}/settings.json';
+    final Directory directory = await getApplicationDocumentsDirectory();
+    final String filename = '${directory.path}/settings.json';
     File file = File(filename);
-    Map settings = Map.fromIterable(items.values,
-        key: (item) {
-          return item.toString().split('.').elementAt(1);
-        },
-        value: (item) => Settings.readItem(item));
+    Map settings = { for (var item in items.values) item.toString().split('.').elementAt(1) : Settings.readItem(item) };
 
     settings['referenceCoordinate'] = {
       "latitude": settings['referenceCoordinate'].latitude,
@@ -85,8 +80,8 @@ class Settings {
   }
 
   static Future<void> readFile() async {
-    final Directory? directory = await getApplicationDocumentsDirectory();
-    final String filename = '${directory?.path}/settings.json';
+    final Directory directory = await getApplicationDocumentsDirectory();
+    final String filename = '${directory.path}/settings.json';
     File file = File(filename);
 
     bool isExist = await file.exists();

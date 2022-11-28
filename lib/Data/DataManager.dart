@@ -259,7 +259,13 @@ class DataManager extends ChangeNotifier {
 
     for (int i = 0; i < filenames.length; i++) {
       String filename = filenames.elementAt(i);
-      List exifData = await getExifInfoOfFile(filename);
+      List exifData = [];
+      // if(global.kOs == "android"){
+        exifData = await getExifInfoOfFile(filename);
+      // }
+      // if(global.kOs == "ios"){
+      //   exifData = await getExifInfoOfFile_ios(filename);
+      // }
 
       if (i % 100 == 0)
         print(

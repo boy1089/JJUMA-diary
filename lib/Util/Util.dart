@@ -13,6 +13,9 @@ import 'package:csv/csv.dart';
 import 'dart:convert';
 import 'package:exif/exif.dart';
 import "package:lateDiary/Location/Coordinate.dart";
+import 'package:photo_manager/photo_manager.dart';
+
+import 'DateHandler.dart';
 
 const bool kDebugMode = !kReleaseMode && !kProfileMode;
 
@@ -356,6 +359,20 @@ Future getExifInfoOfFile(String file) async {
   return [dateInExif, coordinate];
 }
 
+Future getExifInfoOfFile_ios(AssetEntity assetEntity) async {
+  // var bytes = await File(file).readAsBytes();
+  // print("byte : ${bytes}");
+  // var data = await readExifFromBytes(bytes.sublist(0, 2000));
+
+  String? dateInExif = null;
+
+  dateInExif = formatDate(DateTime.fromMicrosecondsSinceEpoch(assetEntity.createDateSecond!));
+  Coordinate? coordinate = Coordinate(
+      assetEntity.longitude,
+      assetEntity.latitude);
+  if (coordinate.latitude == null) coordinate = null;
+  return [dateInExif, coordinate];
+}
 double? convertTagToValue(tag) {
   if (tag == null) return null;
 

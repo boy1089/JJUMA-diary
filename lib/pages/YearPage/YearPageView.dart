@@ -25,8 +25,7 @@ import '../../Data/DataManager.dart';
 
 class YearPageView extends StatelessWidget {
   static String id = 'year';
-  var image = AssetEntity(id : "EC80B67C-D234-48B0-AB3E-5F218D3BE0BE/L0/001",
-  height : 50, width : 50, typeInt : 1);
+
   int year = DateTime.now().year;
   var product;
   var context;
@@ -41,20 +40,6 @@ class YearPageView extends StatelessWidget {
     this.product = product;
     this.context = context;
     initState();
-    getImage();
-  }
-
-  void getImage() async {
-    final List<AssetPathEntity> paths = await PhotoManager.getAssetPathList();
-    for (var path in paths) {
-      final List<AssetEntity> entities =
-          await path.getAssetListRange(start: 0, end: 80);
-      // print("$path, $entities");
-      if (entities.isNotEmpty) {
-        image = entities[0];
-        print(image);
-      }
-    }
   }
 
   void initState() {
@@ -137,23 +122,24 @@ class YearPageView extends StatelessWidget {
                 width: physicalWidth,
                 bottom: global.kMarginOfBottomOnDayPage,
                 child: NoteListView(product, noteManager).build(context)),
-            Positioned(
-                width: 100,
-                height: 100,
-                child: AssetEntityImage(image))
+
           ]),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          final List<AssetPathEntity> paths = await PhotoManager.getAssetPathList();
-          var assets = [];
-          for(var path in paths){
-            var asset = await path.getAssetListRange(start: 0, end: 100000);
-            assets.addAll(asset);
-          }
-          for(var asset in assets){
-            // AssetEntity
-            print(await asset.file);
-          }
+          // final List<AssetPathEntity> paths = await PhotoManager.getAssetPathList();
+          // var assets = [];
+          // for(var path in paths){
+          //   var asset = await path.getAssetListRange(start: 0, end: 100000);
+          //   assets.addAll(asset);
+          // }
+          // for(var asset in assets){
+          //   // AssetEntity
+          //   print(await asset.file);
+          //   print(asset);
+          // }
+          var dataManager =DataManager();
+          // dataManager.executeSlowProcesses();
+          print(dataManager.infoFromFiles);
         },
       ),
     );

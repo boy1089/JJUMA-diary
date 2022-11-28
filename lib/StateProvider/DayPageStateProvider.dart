@@ -1,23 +1,17 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:lateDiary/Note/NoteManager.dart';
 import 'package:lateDiary/Util/DateHandler.dart';
-import '../Util/global.dart';
 import 'package:lateDiary/Util/Util.dart';
 import 'package:lateDiary/Photo/PhotoDataManager.dart';
-import 'package:lateDiary/Sensor/SensorDataManager.dart';
 
 import 'package:lateDiary/Util/global.dart' as global;
-
 import 'package:lateDiary/Location/AddressFinder.dart';
 import 'package:lateDiary/Location/Coordinate.dart';
 import 'package:geocoding/geocoding.dart';
-import 'dart:math';
 import 'package:lateDiary/Data/DataManager.dart';
 
 class DayPageStateProvider with ChangeNotifier {
   PhotoDataManager photoDataManager = PhotoDataManager();
-  SensorDataManager sensorDataManager = SensorDataManager();
   NoteManager noteManager = NoteManager();
 
   double zoomInAngle = 0.0;
@@ -41,25 +35,16 @@ class DayPageStateProvider with ChangeNotifier {
     photoForPlot = [];
     photoDataForPlot = [];
     photoData = [[]];
-    try {
-      photoData = await updatePhotoData();
-      photoForPlot = selectPhotoForPlot(photoData, true);
-    } catch (e) {
-      print("while updating Ui, error is occrued : $e");
-    }
+
+    photoData = await updatePhotoData();
+    photoForPlot = selectPhotoForPlot(photoData, true);
     // //convert data type..
     photoDataForPlot = List<List>.generate(
         photoForPlot.length, (index) => photoForPlot.elementAt(index));
 
     // addresses = await updateAddress();
 
-    try {
-      note = await noteManager.readNote(date);
-    } catch (e) {
-      note = "";
-      print("while updating UI, reading note, error is occured : $e");
-    }
-
+    note = await noteManager.readNote(date);
     print("updateUi done");
   }
 
@@ -109,66 +94,6 @@ class DayPageStateProvider with ChangeNotifier {
     return photoForPlot;
   }
 
-  // Future<void> updateSensorData() async {
-  //   var sensorData = await this.sensorDataManager.openFile(date);
-  //   try {
-  //     sensorDataForPlot = modifyListForPlot(subsampleList(sensorData, 10));
-  //   } catch (e) {
-  //     sensorDataForPlot = [[]];
-  //     print("error during updating sensorData : $e");
-  //   }
-  //   print("sensorDataForPlot : $sensorDataForPlot");
-  // }
-
-  Future<Map<int, String?>> updateAddress() async {
-    Map<int, int> selectedIndex = {};
-    Map<int, String?> addresses = {};
-    List<Placemark?> addressOfFiles = [];
-
-    files = transpose(photoForPlot)[1];
-
-    selectedIndex = selectIndexForLocation(files);
-    addressOfFiles = await getAddressOfFiles(selectedIndex.values.toList());
-    addresses = {
-      for (var item in List.generate(selectedIndex.keys.length, (i) => i))
-        selectedIndex.keys.elementAt(item):
-            "${addressOfFiles.elementAt(item)?.locality}"
-    };
-
-    // value: (item) => "${addressOfFiles
-    //     .elementAt(item)
-    //     ?.locality}, ${addressOfFiles.elementAt(item)?.thoroughfare}" );
-    return addresses;
-  }
-
-  Map<int, int> selectIndexForLocation(files) {
-    Map<int, int> indexForSelectedFile = {};
-    List<DateTime?> datetimes = List<DateTime?>.generate(files.length,
-        (i) => dataManager.infoFromFiles[files.elementAt(i)]?.datetime);
-    datetimes = datetimes.whereType<DateTime>().toList();
-    List<int> times =
-        List<int>.generate(datetimes.length, (i) => datetimes[i]!.hour);
-    Set<int> setOfTimes = times.toSet();
-    for (int i = 0; i < setOfTimes.length; i++)
-      indexForSelectedFile[setOfTimes.elementAt(i)] =
-          (times.indexOf(setOfTimes.elementAt(i)));
-    return indexForSelectedFile;
-  }
-
-  Future<List<Placemark?>> getAddressOfFiles(List<int> index) async {
-    List<Placemark?> listOfAddress = [];
-    for (int i = 0; i < index.length; i++) {
-      Coordinate? coordinate =
-          dataManager.infoFromFiles[files[index.elementAt(i)]]!.coordinate;
-      if (coordinate == null) {
-        listOfAddress.add(null);
-      }
-      Placemark? address = await AddressFinder.getAddressFromCoordinate(
-          coordinate?.latitude, coordinate?.longitude);
-      listOfAddress.add(address);
-    }
-    return listOfAddress;
-  }
 
   void writeNote() {
     if (note != "") {
@@ -195,7 +120,7 @@ class DayPageStateProvider with ChangeNotifier {
         WidgetsBinding.instance.window.viewInsets,
         WidgetsBinding.instance.window.devicePixelRatio);
 
-    this.keyboardSize = viewInsets.bottom;
+    keyboardSize = viewInsets.bottom;
     print("daypage set keyboard size :$keyboardSize");
     notifyListeners();
   }
@@ -242,6 +167,67 @@ class DayPageStateProvider with ChangeNotifier {
 
   @override
   void dispose() {
+    super.dispose();
     print("provider disposed");
   }
+
+// Future<void> updateSensorData() async {
+//   var sensorData = await this.sensorDataManager.openFile(date);
+//   try {
+//     sensorDataForPlot = modifyListForPlot(subsampleList(sensorData, 10));
+//   } catch (e) {
+//     sensorDataForPlot = [[]];
+//     print("error during updating sensorData : $e");
+//   }
+//   print("sensorDataForPlot : $sensorDataForPlot");
+// }
+  // Future<Map<int, String?>> updateAddress() async {
+  //   Map<int, int> selectedIndex = {};
+  //   Map<int, String?> addresses = {};
+  //   List<Placemark?> addressOfFiles = [];
+  //
+  //   files = transpose(photoForPlot)[1];
+  //
+  //   selectedIndex = selectIndexForLocation(files);
+  //   addressOfFiles = await getAddressOfFiles(selectedIndex.values.toList());
+  //   addresses = {
+  //     for (var item in List.generate(selectedIndex.keys.length, (i) => i))
+  //       selectedIndex.keys.elementAt(item):
+  //       "${addressOfFiles.elementAt(item)?.locality}"
+  //   };
+  //
+  //   // value: (item) => "${addressOfFiles
+  //   //     .elementAt(item)
+  //   //     ?.locality}, ${addressOfFiles.elementAt(item)?.thoroughfare}" );
+  //   return addresses;
+  // }
+  //
+  // Map<int, int> selectIndexForLocation(files) {
+  //   Map<int, int> indexForSelectedFile = {};
+  //   List<DateTime?> datetimes = List<DateTime?>.generate(files.length,
+  //           (i) => dataManager.infoFromFiles[files.elementAt(i)]?.datetime);
+  //   datetimes = datetimes.whereType<DateTime>().toList();
+  //   List<int> times =
+  //   List<int>.generate(datetimes.length, (i) => datetimes[i]!.hour);
+  //   Set<int> setOfTimes = times.toSet();
+  //   for (int i = 0; i < setOfTimes.length; i++)
+  //     indexForSelectedFile[setOfTimes.elementAt(i)] =
+  //     (times.indexOf(setOfTimes.elementAt(i)));
+  //   return indexForSelectedFile;
+  // }
+  //
+  // Future<List<Placemark?>> getAddressOfFiles(List<int> index) async {
+  //   List<Placemark?> listOfAddress = [];
+  //   for (int i = 0; i < index.length; i++) {
+  //     Coordinate? coordinate =
+  //         dataManager.infoFromFiles[files[index.elementAt(i)]]!.coordinate;
+  //     if (coordinate == null) {
+  //       listOfAddress.add(null);
+  //     }
+  //     Placemark? address = await AddressFinder.getAddressFromCoordinate(
+  //         coordinate?.latitude, coordinate?.longitude);
+  //     listOfAddress.add(address);
+  //   }
+  //   return listOfAddress;
+  // }
 }

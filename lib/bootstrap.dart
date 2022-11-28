@@ -16,8 +16,6 @@ void bootstrap(int i) {
     log(details.exceptionAsString(), stackTrace: details.stack);
   };
 
-  // final todosRepository = TodosRepository(todosApi: todosApi);
-
   runZonedGuarded(
     () => runApp(
       MultiProvider(

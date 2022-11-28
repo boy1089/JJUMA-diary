@@ -5,13 +5,13 @@ import 'dart:io';
 import 'package:glob/glob.dart';
 import 'package:lateDiary/Util/Util.dart';
 import 'package:lateDiary/Util/global.dart' as global;
-import 'dart:collection';
 
 class NoteManager {
   Map notes = {};
   Map notesOfYear = {};
   List files = [];
   Map summaryOfNotes = {};
+
   NoteManager._privateConstructor();
   static final NoteManager _instance = NoteManager._privateConstructor();
   factory NoteManager() {
@@ -19,9 +19,10 @@ class NoteManager {
   }
 
   void setNotesOfYear(int year) {
-    if (notes != {})
+    if (notes != {}) {
       notesOfYear = Map.from(notes)
         ..removeWhere((k, v) => !k.contains(year.toString()));
+    }
   }
 
   Future<void> init() async {
@@ -32,26 +33,32 @@ class NoteManager {
   }
 
   Future<String> readNote(String date) async {
-    final Directory? directory = await getApplicationDocumentsDirectory();
-    final String folder = '${directory?.path}/noteData';
-    final File file = File('${folder}/${date}_note.csv');
-    debugPrint("reading note from local");
-    String note = await file.readAsString();
+    final Directory directory = await getApplicationDocumentsDirectory();
+    final String folder = '${directory.path}/noteData';
+    String note = "";
+
+    try {
+      final File file = File('$folder/${date}_note.csv');
+      note = await file.readAsString();
+    } catch(e) {
+      print("while reading note, error is occured : $e");
+    }
+
     return note;
   }
 
   void tryDeleteNote(String date) async {
-    final Directory? directory = await getApplicationDocumentsDirectory();
-    final String folder = '${directory?.path}/noteData';
-    final File file = File('${folder}/${date}_note.csv');
+    final Directory directory = await getApplicationDocumentsDirectory();
+    final String folder = '${directory.path}/noteData';
+    final File file = File('$folder/${date}_note.csv');
     bool isFileExists = await file.exists();
     if (isFileExists) file.delete();
   }
 
   Future<List> getAllFiles() async {
-    final Directory? directory = await getApplicationDocumentsDirectory();
-    final String folder = '${directory?.path}/noteData';
-    final files = Glob(folder + "/*.csv").listSync();
+    final Directory directory = await getApplicationDocumentsDirectory();
+    final String folder = '${directory.path}/noteData';
+    final files = Glob("$folder/*.csv").listSync();
     return files;
   }
 
@@ -79,15 +86,15 @@ class NoteManager {
   }
 
   Future<void> writeNote(String date, note) async {
-    final Directory? directory = await getApplicationDocumentsDirectory();
-    final String folder = '${directory?.path}/noteData';
+    final Directory directory = await getApplicationDocumentsDirectory();
+    final String folder = '${directory.path}/noteData';
     bool isFolderExists = await Directory(folder).exists();
 
     if (!isFolderExists) {
       await Directory(folder).create(recursive: true);
     }
 
-    final File file = File('${folder}/${date}_note.csv');
+    final File file = File('$folder/${date}_note.csv');
 
     debugPrint("writing note to Local..");
     await file.writeAsString(note, mode: FileMode.write);

@@ -23,7 +23,7 @@ class DataRepository {
 
   List files = [];
 
-  Map<String, InfoFromFile> infoFromFiles = {};
+  Map<dynamic, InfoFromFile> infoFromFiles = {};
 
   Future<void> init() async {
     print("DataRepository instance is initializing..");
@@ -44,6 +44,7 @@ class DataRepository {
         var assets = await path.getAssetListRange(start: 0, end: 7000);
         files.addAll([for (var asset in assets) asset]);
       }
+      this.files = files;
       return files;
     }
 
@@ -61,10 +62,11 @@ class DataRepository {
 
     files = files.where((element) => !element.contains('thumbnail')).toList();
     files.sort((a, b) => a.compareTo(b));
+
     return files;
   }
 
-  Future<Map<String, InfoFromFile>> readInfoFromJson() async {
+  Future<Map<dynamic, InfoFromFile>> readInfoFromJson() async {
     final Directory directory = await getApplicationDocumentsDirectory();
     final File file = File('${directory.path}/InfoOfFiles.json');
 
@@ -74,9 +76,23 @@ class DataRepository {
     var data = await file.readAsString();
     Map mapFromJson = jsonDecode(data);
 
-    Map<String, InfoFromFile> test = {};
+    Map<dynamic, InfoFromFile> test = {};
     List filenames = mapFromJson.keys.toList();
+    var keys = files;
+    var ids = [for( var a in keys) a.id];
+    print(ids);
     for (int i = 0; i < mapFromJson.length; i++) {
+      if(global.kOs=="ios"){
+
+        String id = filenames.elementAt(i);
+        int index = ids.indexOf(id);
+        if(i%100==0) {
+          print("$i / ${mapFromJson.length}, ${index}");
+        }
+        if(index !=-1)
+          test[keys[index]] = InfoFromFile(map: mapFromJson[id]);
+        continue;
+      }
       String filename = filenames.elementAt(i);
       test[filename] = InfoFromFile(map: mapFromJson[filename]);
     }

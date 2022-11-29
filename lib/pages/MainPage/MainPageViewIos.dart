@@ -45,23 +45,22 @@ class _MainPageViewIosState extends State<MainPageViewIos> {
       floatingActionButtonLocation: FloatingActionButtonLocation.miniStartTop,
       body: CupertinoTabScaffold(
           tabBar: navigationProvider.isBottomNavigationBarShown
-          ?CupertinoTabBar(
-            height: global.kBottomNavigationBarHeight,
-            items: [
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.photo_camera_back_outlined)),
-              BottomNavigationBarItem(icon: Icon(Icons.bookmark)),
-              BottomNavigationBarItem(icon: Icon(Icons.settings)),
-            ],
-            onTap: (item) => onTap(context, navigationIndex.values[item]),
-          )
-          :InvisibleCupertinoTabBar(),
-
+              ? CupertinoTabBar(
+                  height: global.kBottomNavigationBarHeight,
+                  items: [
+                    BottomNavigationBarItem(
+                        icon: Icon(Icons.photo_camera_back_outlined)),
+                    BottomNavigationBarItem(icon: Icon(Icons.bookmark)),
+                    BottomNavigationBarItem(icon: Icon(Icons.settings)),
+                  ],
+                  onTap: (item) => onTap(context, navigationIndex.values[item]),
+                )
+              : InvisibleCupertinoTabBar(),
           tabBuilder: (context, index) {
             if (index == 2) index = 3;
-            return  CupertinoTabView(
-              builder : (context)=>widget._widgetOptions[
-                        navigationProvider.currentNavigationIndex.index],
+            return CupertinoTabView(
+              builder: (context) => widget._widgetOptions[
+                  navigationProvider.currentNavigationIndex.index],
             );
           }),
     );
@@ -102,7 +101,7 @@ class _MainPageViewIosState extends State<MainPageViewIos> {
         if (dayPageStateProvider.isZoomIn) {
           setState(() {
             dayPageStateProvider.setZoomInState(false);
-            dayPageStateProvider.setZoomInRotationAngle(0);
+            dayPageStateProvider.setZoomInRotationAngle(0.0);
           });
         }
 
@@ -129,24 +128,22 @@ class _MainPageViewIosState extends State<MainPageViewIos> {
   }
 }
 
-
 class InvisibleCupertinoTabBar extends CupertinoTabBar {
   static const dummyIcon = Icon(IconData(0x0020));
 
   InvisibleCupertinoTabBar()
       : super(
-    height : 0,
-    items: [
-      BottomNavigationBarItem(icon: dummyIcon),
-      BottomNavigationBarItem(icon: dummyIcon),
-      BottomNavigationBarItem(icon: dummyIcon),
-    ],
-  );
+          height: 0,
+          items: [
+            BottomNavigationBarItem(icon: dummyIcon),
+            BottomNavigationBarItem(icon: dummyIcon),
+            BottomNavigationBarItem(icon: dummyIcon),
+          ],
+        );
 
   @override
   Size get preferredSize => const Size.square(0);
 
   @override
   Widget build(BuildContext context) => SizedBox();
-
 }

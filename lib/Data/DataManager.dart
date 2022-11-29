@@ -40,8 +40,7 @@ class DataManager extends ChangeNotifier {
     print("DataManager instance is initializing..");
     //get list of image files from local. --> update new images
     files = await dataRepository.getAllFiles();
-    print('b');
-    // infoFromFiles = await dataRepository.readInfoFromJson();
+    infoFromFiles = await dataRepository.readInfoFromJson();
     summaryOfPhotoData = await dataRepository.readSummaryOfPhoto();
     summaryOfLocationData = await dataRepository.readSummaryOfLocation();
     notifyListeners();
@@ -77,6 +76,22 @@ class DataManager extends ChangeNotifier {
     notifyListeners();
   }
 
+  static Future<Map<dynamic, InfoFromFile>> updateDatesOnInfo_ios(List input) async {
+    List assetEntities = input[0];
+    Map<dynamic, InfoFromFile> infoFromFiles = input[1];
+
+    for (int i = 0; i<assetEntities.length; i++){
+      var assetEntity = assetEntities.elementAt(i);
+      var filename = await assetEntity.titleAsync;
+      String? inferredDatetime = inferDatetimeFromFilename(filename);
+        if (inferredDatetime != null) {
+          infoFromFiles[assetEntity]?.datetime =
+              DateTime.parse(inferredDatetime);
+          infoFromFiles[assetEntity]?.date = inferredDatetime.substring(0, 8);
+        }
+    }
+    return infoFromFiles;
+  }
   void executeSlowProcesses() async {
     if (filesNotUpdated!.isEmpty) return;
     print("executing slow process..");
@@ -84,6 +99,10 @@ class DataManager extends ChangeNotifier {
     for (int i = 0; i < lengthOfFiles / 100.floor(); i++) {
       List partOfFilesNotupdated = filesNotUpdated!.sublist(i * 100,
           lengthOfFiles < (i + 1) * 100 ? lengthOfFiles : (i + 1) * 100);
+
+      if(global.kOs=="ios")
+        // infoFromFiles = await compute(updateDatesOnInfo_ios, [partOfFilesNotupdated, infoFromFiles]);
+        infoFromFiles = await updateDatesOnInfo_ios([partOfFilesNotupdated, infoFromFiles]);
 
       infoFromFiles = await compute(
           updateExifOnInfo_compute, [partOfFilesNotupdated, infoFromFiles]);
@@ -103,6 +122,7 @@ class DataManager extends ChangeNotifier {
         await dataRepository.writeInfoAsJson(infoFromFiles, true);
         await dataRepository.writeSummaryOfPhoto2(
             summaryOfPhotoData, true, setOfDates);
+        notifyListeners();
       }
 
       if (i % 10 == 0) {
@@ -133,34 +153,6 @@ class DataManager extends ChangeNotifier {
 
   // i) check whether this file is contained in Info
   // ii) check whether this file is saved previously.
-  Future<List<String>?> matchFilesAndInfo() async {
-    List<String>? filesNotUpdated = [];
-    List filenamesFromInfo = infoFromFiles.keys.toList();
-
-    for (int i = 0; i < files.length; i++) {
-      String filename = files.elementAt(i);
-      if (i % 1000 == 0) print("matchFilesAndInfo : $i / ${files.length}");
-
-      bool isContained = filenamesFromInfo.contains(filename);
-      if (!isContained) {
-        filesNotUpdated.add(filename);
-        continue;
-      }
-
-      filenamesFromInfo.remove(filename);
-
-      DateTime? dateTimeInInfo = infoFromFiles[filename]?.datetime;
-      Coordinate? coordinateInInfo = infoFromFiles[filename]?.coordinate;
-
-      if (dateTimeInInfo == null || coordinateInInfo?.latitude == null) {
-        filesNotUpdated.add(filename);
-        continue;
-      }
-    }
-    if (filesNotUpdated == []) return null;
-    return filesNotUpdated;
-  }
-
   Future<List?> matchFilesAndInfo2() async {
     List? filesNotUpdated = [];
     List filenamesFromInfo = infoFromFiles.keys.toList();
@@ -208,7 +200,6 @@ class DataManager extends ChangeNotifier {
 
   static Future<List> updateDatesFromInfo(List input) async {
     print("input : $input");
-    Stopwatch stopwatch = Stopwatch()..start();
     List filesNotUpdated = [];
     Map<dynamic, InfoFromFile> infoFromFiles = {};
     if (input.isNotEmpty) {
@@ -216,7 +207,6 @@ class DataManager extends ChangeNotifier {
       filesNotUpdated = input[1];
     }
 
-    print("updateDatesFromInfo aa: ${stopwatch.elapsed}");
     List<String?> dates = [];
     List<DateTime?> datetimes = [];
     List setOfDates = [];
@@ -224,13 +214,11 @@ class DataManager extends ChangeNotifier {
 
     List<InfoFromFile> values = infoFromFiles.values.toList();
 
-    print("updateDatesFromInfo0 : ${stopwatch.elapsed}");
 
     for (int i = 0; i < values.length; i++) {
       dates.add(values.elementAt(i).date);
       datetimes.add(values.elementAt(i).datetime);
     }
-    print("updateDatesFromInfo 1: ${stopwatch.elapsed}");
 
     dates = [...dates];
     datetimes = [...datetimes];
@@ -239,7 +227,6 @@ class DataManager extends ChangeNotifier {
     datetimes.removeWhere((i) => i == null);
     setOfDates = dates;
     setOfDatetimes = datetimes;
-    print("updateDatesFromInfo 2: ${stopwatch.elapsed}");
     return [setOfDates, setOfDatetimes, dates, datetimes];
   }
 
@@ -248,17 +235,17 @@ class DataManager extends ChangeNotifier {
 
     //case for IOS
     if (input.elementAt(0).runtimeType != String) {
-      for (int i = 0; i < input.length; i++) {
-        if (i % 100 == 0) print("$i / ${input.length}");
-        var assetEntity = input.elementAt(i);
-        String filename = await assetEntity.titleAsync;
-        String? inferredDatetime = inferDatetimeFromFilename(filename);
-        if (inferredDatetime != null) {
-          infoFromFiles[assetEntity]?.datetime =
-              DateTime.parse(inferredDatetime);
-          infoFromFiles[assetEntity]?.date = inferredDatetime.substring(0, 8);
-        }
-      }
+      // for (int i = 0; i < input.length; i++) {
+      //   if (i % 100 == 0) print("$i / ${input.length}");
+      //   var assetEntity = input.elementAt(i);
+      //   String filename = await assetEntity.titleAsync;
+      //   String? inferredDatetime = inferDatetimeFromFilename(filename);
+      //   if (inferredDatetime != null) {
+      //     infoFromFiles[assetEntity]?.datetime =
+      //         DateTime.parse(inferredDatetime);
+      //     infoFromFiles[assetEntity]?.date = inferredDatetime.substring(0, 8);
+      //   }
+      // }
       return;
     }
 

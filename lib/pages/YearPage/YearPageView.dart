@@ -138,21 +138,23 @@ class YearPageView extends StatelessWidget {
           //   print(await asset.file);
           // print(asset);
           // }
+          print("floating action button clicked");
           var dataManager = DataManager();
-          // dataManager.executeSlowProcesses();
+          // await dataManager.init();
+          dataManager.executeSlowProcesses();
           // var a = dataManager.infoFromFiles;
           // for (int i = 0; i < a.length; i++) {
           //   // var filename = await a.keys.elementAt(i).titleAsync;
           //   // print("${a.keys.elementAt(i)}, ${a.values.elementAt(i)}, ${filename}");
           //   print("${a.keys.elementAt(i)}, ${a.values.elementAt(i)}");
           // }
-
-          var b = await AssetEntity.fromId(
-              "4DAC9242-6FFA-4863-8EF5-42EAA569BAE5/L0/001");
-          print(b!.modifiedDateTime);
-          print(await b!.titleAsync);
-
-          print(dataManager.summaryOfPhotoData);
+          // var dataRepo = DataRepository();
+          print('c');
+          // await dataRepo.getAllFiles();
+          // var b = await dataRepo.readInfoFromJson();
+          // print(b.entries.elementAt(0));
+          // print(dataRepo.infoFromFiles);
+          // print(dataRepo.files);
         },
       ),
     );

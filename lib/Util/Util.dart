@@ -364,6 +364,7 @@ Future getExifInfoOfFile_ios(AssetEntity assetEntity) async {
 
 
   dateInExif = formatDatetime(assetEntity.createDateTime);
+  // print("${assetEntity.createDateTime}, ${dateInExif}");
   Coordinate? coordinate = Coordinate(
       assetEntity.longitude,
       assetEntity.latitude);

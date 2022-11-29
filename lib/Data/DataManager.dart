@@ -164,8 +164,8 @@ class DataManager extends ChangeNotifier {
   Future<List?> matchFilesAndInfo2() async {
     List? filesNotUpdated = [];
     List filenamesFromInfo = infoFromFiles.keys.toList();
-    if (filenamesFromInfo.isNotEmpty)
-    if (filenamesFromInfo.elementAt(0).runtimeType == String)
+    if (filenamesFromInfo
+        .isNotEmpty) if (filenamesFromInfo.elementAt(0).runtimeType == String)
       filenamesFromInfo.sort((a, b) => a.compareTo(b));
 
     Map info = {...infoFromFiles};
@@ -243,13 +243,28 @@ class DataManager extends ChangeNotifier {
     return [setOfDates, setOfDatetimes, dates, datetimes];
   }
 
-  Future<void> updateDateOnInfo(List? filenames) async {
-    if (filenames == null || filenames.isEmpty)
-      filenames = infoFromFiles.keys.toList();
-    if(filenames.elementAt(0).runtimeType != String)
+  Future<void> updateDateOnInfo(List? input) async {
+    if (input == null || input.isEmpty) input = infoFromFiles.keys.toList();
+
+    //case for IOS
+    if (input.elementAt(0).runtimeType != String) {
+      for (int i = 0; i < input.length; i++) {
+        if (i % 100 == 0) print("$i / ${input.length}");
+        var assetEntity = input.elementAt(i);
+        String filename = await assetEntity.titleAsync;
+        String? inferredDatetime = inferDatetimeFromFilename(filename);
+        if (inferredDatetime != null) {
+          infoFromFiles[assetEntity]?.datetime =
+              DateTime.parse(inferredDatetime);
+          infoFromFiles[assetEntity]?.date = inferredDatetime.substring(0, 8);
+        }
+      }
       return;
-    for (int i = 0; i < filenames.length; i++) {
-      String filename = filenames.elementAt(i);
+    }
+
+    //case for android
+    for (int i = 0; i < input.length; i++) {
+      String filename = input.elementAt(i);
       String? inferredDatetime = inferDatetimeFromFilename(filename);
       if (inferredDatetime != null) {
         infoFromFiles[filename]?.datetime = DateTime.parse(inferredDatetime);
@@ -258,17 +273,18 @@ class DataManager extends ChangeNotifier {
     }
   }
 
-  static Future<Map<dynamic, InfoFromFile>> updateExifOnInfo_compute(List input) async {
+  static Future<Map<dynamic, InfoFromFile>> updateExifOnInfo_compute(
+      List input) async {
     List filenames = input[0];
     Map<dynamic, InfoFromFile> infoFromFiles = input[1];
 
     for (int i = 0; i < filenames.length; i++) {
       var filename = filenames.elementAt(i);
       List exifData = [];
-      if(global.kOs == "android"){
+      if (global.kOs == "android") {
         exifData = await getExifInfoOfFile(filename);
       }
-      if(global.kOs == "ios"){
+      if (global.kOs == "ios") {
         exifData = await getExifInfoOfFile_ios(filename);
       }
 
@@ -284,7 +300,6 @@ class DataManager extends ChangeNotifier {
       infoFromFiles[filename]?.isUpdated = true;
       //if datetime is updated from filename, then does not overwrite with exif
       if (infoFromFiles[filename]?.datetime != null) continue;
-
       //update the datetime of EXif if there is datetime is null from filename
       if ((exifData[0] != null) &
           (exifData[0] != "") &
@@ -321,8 +336,8 @@ class DataManager extends ChangeNotifier {
     return counts;
   }
 
-  static Future<Map<String, double>> updateSummaryOfLocationDataFromInfo2_compute(
-      List input) async {
+  static Future<Map<String, double>>
+      updateSummaryOfLocationDataFromInfo2_compute(List input) async {
     Map<dynamic, InfoFromFile> infoFromFiles = input[0];
     var infoFromFiles2 = [...infoFromFiles.values];
     Map<String, double> distances = {};

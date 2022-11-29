@@ -14,13 +14,7 @@ class Directories {
   static List<String> selectedDirectories = [];
 
   static Future<void> init(directories) async {
-    // if(kOs =="android") {
       selectedDirectories = await getPathOfDirectory(directories);
-    // }
-
-    // if(kOs == 'ios'){
-    //   selected
-    // }
 
     print("selectedDirectories : $selectedDirectories");
 

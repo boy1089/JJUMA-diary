@@ -123,7 +123,6 @@ class YearPageView extends StatelessWidget {
                 width: physicalWidth,
                 bottom: global.kMarginOfBottomOnDayPage,
                 child: NoteListView(product, noteManager).build(context)),
-
           ]),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
@@ -131,39 +130,29 @@ class YearPageView extends StatelessWidget {
           // var assets = [];
           // for(var path in paths){
           //   var asset = await path.getAssetListRange(start: 0, end: 100000);
-            // assets.addAll(asset);
-            // print("$path, $asset");
+          // assets.addAll(asset);
+          // print("$path, $asset");
           // }
 
           // for(var asset in assets){
           //   AssetEntity
           //   print(await asset.file);
-            // print(asset);
+          // print(asset);
           // }
-          var dataManager =DataManager();
-          dataManager.executeSlowProcesses();
+          var dataManager = DataManager();
+          // dataManager.executeSlowProcesses();
           // var a = dataManager.infoFromFiles;
-          // for(int i = 0; i< a.length; i++){
+          // for (int i = 0; i < a.length; i++) {
+          //   // var filename = await a.keys.elementAt(i).titleAsync;
+          //   // print("${a.keys.elementAt(i)}, ${a.values.elementAt(i)}, ${filename}");
           //   print("${a.keys.elementAt(i)}, ${a.values.elementAt(i)}");
           // }
 
-          // print(dataManager.files.length);
-          // AssetEntity(id: 747014DF-742B-49B2-B6B2-AAE172038B2D/L0/001 , type: AssetType.image
-          // print(a);
-          // var a = await compute(DataManager.updateDatesFromInfo,[dataManager.infoFromFiles, dataManager.filesNotUpdated] );
+          var b = await AssetEntity.fromId("4DAC9242-6FFA-4863-8EF5-42EAA569BAE5/L0/001");
+          print(b!.modifiedDateTime);
+          print(await b!.titleAsync);
 
-
-          // print(dataManager.files.length);
-          // var dataRepo = DataRepository();
-          // var a = await dataRepo.readInfoFromJson();
-          // print(a);
-          // var a = await dataRepo.getAllFiles();
-          // print(a);
-          // AssetEntity
-          // print(a.elementAt(0).createDateSecond);
-          // print(a.length);
-
-
+          print(dataManager.summaryOfPhotoData);
         },
       ),
     );

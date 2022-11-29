@@ -26,11 +26,11 @@ class DataManager extends ChangeNotifier {
   List dates = [];
   List datetimes = [];
   List setOfDatetimes = [];
-  List<String> files = [];
-  List<String>? filesNotUpdated = [];
+  List files = [];
+  List? filesNotUpdated = [];
   List<String>? datesOutOfDate = [];
 
-  Map<String, InfoFromFile> infoFromFiles = {};
+  Map<dynamic, InfoFromFile> infoFromFiles = {};
 
   DataRepository dataRepository = DataRepository();
 
@@ -41,7 +41,7 @@ class DataManager extends ChangeNotifier {
     //get list of image files from local. --> update new images
     files = await dataRepository.getAllFiles();
     print('b');
-    infoFromFiles = await dataRepository.readInfoFromJson();
+    // infoFromFiles = await dataRepository.readInfoFromJson();
     summaryOfPhotoData = await dataRepository.readSummaryOfPhoto();
     summaryOfLocationData = await dataRepository.readSummaryOfLocation();
     notifyListeners();
@@ -81,9 +81,8 @@ class DataManager extends ChangeNotifier {
     if (filesNotUpdated!.isEmpty) return;
     print("executing slow process..");
     int lengthOfFiles = filesNotUpdated!.length;
-
     for (int i = 0; i < lengthOfFiles / 100.floor(); i++) {
-      List<String> partOfFilesNotupdated = filesNotUpdated!.sublist(i * 100,
+      List partOfFilesNotupdated = filesNotUpdated!.sublist(i * 100,
           lengthOfFiles < (i + 1) * 100 ? lengthOfFiles : (i + 1) * 100);
 
       infoFromFiles = await compute(
@@ -136,7 +135,7 @@ class DataManager extends ChangeNotifier {
   // ii) check whether this file is saved previously.
   Future<List<String>?> matchFilesAndInfo() async {
     List<String>? filesNotUpdated = [];
-    List<String> filenamesFromInfo = infoFromFiles.keys.toList();
+    List filenamesFromInfo = infoFromFiles.keys.toList();
 
     for (int i = 0; i < files.length; i++) {
       String filename = files.elementAt(i);
@@ -162,14 +161,17 @@ class DataManager extends ChangeNotifier {
     return filesNotUpdated;
   }
 
-  Future<List<String>?> matchFilesAndInfo2() async {
-    List<String>? filesNotUpdated = [];
-    List<String> filenamesFromInfo = infoFromFiles.keys.toList();
-    filenamesFromInfo.sort((a, b) => a.compareTo(b));
+  Future<List?> matchFilesAndInfo2() async {
+    List? filesNotUpdated = [];
+    List filenamesFromInfo = infoFromFiles.keys.toList();
+    if (filenamesFromInfo.isNotEmpty)
+    if (filenamesFromInfo.elementAt(0).runtimeType == String)
+      filenamesFromInfo.sort((a, b) => a.compareTo(b));
+
     Map info = {...infoFromFiles};
     int j = 0;
     for (int i = 0; i < files.length; i++) {
-      String filename = files.elementAt(i);
+      var filename = files.elementAt(i);
       int sublistIndex = j + 100 < filenamesFromInfo.length
           ? j + 100
           : filenamesFromInfo.length;
@@ -193,11 +195,11 @@ class DataManager extends ChangeNotifier {
     return filesNotUpdated;
   }
 
-  Future<void> addFilesToInfo(List<String>? filenames) async {
+  Future<void> addFilesToInfo(List? filenames) async {
     if (filenames!.isEmpty) filenames = files;
-
+    print("filenames : $filenames");
     for (int i = 0; i < filenames.length; i++) {
-      String filename = filenames.elementAt(i);
+      var filename = filenames.elementAt(i);
       if (infoFromFiles[filename] == null) {
         infoFromFiles[filename] = InfoFromFile(isUpdated: false);
       }
@@ -205,9 +207,10 @@ class DataManager extends ChangeNotifier {
   }
 
   static Future<List> updateDatesFromInfo(List input) async {
+    print("input : $input");
     Stopwatch stopwatch = Stopwatch()..start();
     List filesNotUpdated = [];
-    Map<String, InfoFromFile> infoFromFiles = {};
+    Map<dynamic, InfoFromFile> infoFromFiles = {};
     if (input.isNotEmpty) {
       infoFromFiles = input[0];
       filesNotUpdated = input[1];
@@ -240,10 +243,11 @@ class DataManager extends ChangeNotifier {
     return [setOfDates, setOfDatetimes, dates, datetimes];
   }
 
-  Future<void> updateDateOnInfo(List<String>? filenames) async {
+  Future<void> updateDateOnInfo(List? filenames) async {
     if (filenames == null || filenames.isEmpty)
       filenames = infoFromFiles.keys.toList();
-
+    if(filenames.elementAt(0).runtimeType != String)
+      return;
     for (int i = 0; i < filenames.length; i++) {
       String filename = filenames.elementAt(i);
       String? inferredDatetime = inferDatetimeFromFilename(filename);
@@ -254,19 +258,19 @@ class DataManager extends ChangeNotifier {
     }
   }
 
-  static Future<Map<String, InfoFromFile>> updateExifOnInfo_compute(List input) async {
-    List<String> filenames = input[0];
-    Map<String, InfoFromFile> infoFromFiles = input[1];
+  static Future<Map<dynamic, InfoFromFile>> updateExifOnInfo_compute(List input) async {
+    List filenames = input[0];
+    Map<dynamic, InfoFromFile> infoFromFiles = input[1];
 
     for (int i = 0; i < filenames.length; i++) {
-      String filename = filenames.elementAt(i);
+      var filename = filenames.elementAt(i);
       List exifData = [];
-      // if(global.kOs == "android"){
+      if(global.kOs == "android"){
         exifData = await getExifInfoOfFile(filename);
-      // }
-      // if(global.kOs == "ios"){
-      //   exifData = await getExifInfoOfFile_ios(filename);
-      // }
+      }
+      if(global.kOs == "ios"){
+        exifData = await getExifInfoOfFile_ios(filename);
+      }
 
       if (i % 100 == 0)
         print(
@@ -319,7 +323,7 @@ class DataManager extends ChangeNotifier {
 
   static Future<Map<String, double>> updateSummaryOfLocationDataFromInfo2_compute(
       List input) async {
-    Map<String, InfoFromFile> infoFromFiles = input[0];
+    Map<dynamic, InfoFromFile> infoFromFiles = input[0];
     var infoFromFiles2 = [...infoFromFiles.values];
     Map<String, double> distances = {};
 

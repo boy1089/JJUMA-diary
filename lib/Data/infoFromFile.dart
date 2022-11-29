@@ -7,7 +7,7 @@ class InfoFromFiles {
 }
 
 class InfoFromFile{
-  String? file;
+  dynamic? file;
   DateTime? datetime;
   String? date;
   Coordinate? coordinate;

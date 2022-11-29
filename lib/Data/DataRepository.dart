@@ -21,7 +21,7 @@ class DataRepository {
   Map<String, double> summaryOfLocationData = {};
   Map<String, Coordinate> summaryOfCoordinate = {};
 
-  List<String> files = [];
+  List files = [];
 
   Map<String, InfoFromFile> infoFromFiles = {};
 
@@ -33,21 +33,19 @@ class DataRepository {
     await readSummaryOfLocation();
   }
 
-  Future<List<String>> getAllFiles() async {
-    List<String> files = [];
+  Future<List> getAllFiles() async {
+    List files = [];
     List newFiles = [];
 
-    if(global.kOs=="ios"){
-      print("ios");
+    if (global.kOs == "ios") {
       final List<AssetPathEntity> paths = await PhotoManager.getAssetPathList();
-      for(var path in paths){
-        var assets = await path.getAssetListRange(start: 0, end: 100000);
-        print("$path, ${paths.length}");
-        files.addAll([for(var asset in assets) (await asset.file)!.path]);
+      for (var path in paths) {
+        if (path.name != "Recents") continue;
+        var assets = await path.getAssetListRange(start: 0, end: 500);
+        files.addAll([for (var asset in assets) asset]);
       }
       return files;
     }
-
 
     for (int i = 0; i < Directories.selectedDirectories.length; i++) {
       String path = Directories.selectedDirectories.elementAt(i);
@@ -64,8 +62,6 @@ class DataRepository {
     files = files.where((element) => !element.contains('thumbnail')).toList();
     files.sort((a, b) => a.compareTo(b));
     return files;
-
-
   }
 
   Future<Map<String, InfoFromFile>> readInfoFromJson() async {
@@ -123,24 +119,25 @@ class DataRepository {
     return summaryOfLocationData;
   }
 
-  Future<void> writeInfoAsJson(Map<String, InfoFromFile> infoFromFiles, bool overwrite) async {
-    List<String> filenames = infoFromFiles.keys.toList();
+  Future<void> writeInfoAsJson(
+      Map<dynamic, InfoFromFile> infoFromFiles, bool overwrite) async {
+    List filenames = infoFromFiles.keys.toList();
 
     final Directory directory = await getApplicationDocumentsDirectory();
     final File file = File('${directory.path}/InfoOfFiles.json');
 
     var test = {};
     for (int i = 0; i < filenames.length; i++) {
-      String filename = filenames.elementAt(i);
+      dynamic filename = filenames.elementAt(i);
       Map mapOfInfo = infoFromFiles[filename]!.toMap();
-      test[filename] = mapOfInfo;
+      test[filename.id] = mapOfInfo;
     }
+    print(test);
     file.writeAsString(jsonEncode(test));
   }
 
   Future<void> writeSummaryOfPhoto2(
-      Map<String, int> summaryOfPhotoData, bool overwrite, setOfDates) async {
-
+      Map<dynamic, int> summaryOfPhotoData, bool overwrite, setOfDates) async {
     final Directory directory = await getApplicationDocumentsDirectory();
     final File file = File('${directory.path}/summaryOfPhoto.csv');
 
@@ -159,8 +156,9 @@ class DataRepository {
   }
 
   Future<void> writeSummaryOfLocation2(
-      Map<String, double> summaryOfLocationData, bool overwrite, setOfDates) async {
-
+      Map<String, double> summaryOfLocationData,
+      bool overwrite,
+      setOfDates) async {
     final Directory directory = await getApplicationDocumentsDirectory();
     final File file = File('${directory.path}/summaryOfLocation.csv');
 

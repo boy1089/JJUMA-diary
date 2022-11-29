@@ -360,13 +360,8 @@ Future getExifInfoOfFile(String file) async {
 }
 
 Future getExifInfoOfFile_ios(AssetEntity assetEntity) async {
-  // var bytes = await File(file).readAsBytes();
-  // print("byte : ${bytes}");
-  // var data = await readExifFromBytes(bytes.sublist(0, 2000));
-
   String? dateInExif = null;
-
-  dateInExif = formatDate(DateTime.fromMicrosecondsSinceEpoch(assetEntity.createDateSecond!));
+  dateInExif = formatDate(DateTime.fromMicrosecondsSinceEpoch(assetEntity.createDateSecond!*1000000));
   Coordinate? coordinate = Coordinate(
       assetEntity.longitude,
       assetEntity.latitude);

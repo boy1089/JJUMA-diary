@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:lateDiary/Util/Util.dart';
 import 'package:extended_image/extended_image.dart';
+import 'package:photo_manager/photo_manager.dart';
 import 'package:provider/provider.dart';
 import 'dart:io';
 import 'package:lateDiary/Util/global.dart';
@@ -150,25 +151,31 @@ class polarPhotoImageContainer {
                           ? Clip.none
                           : Clip.antiAliasWithSaveLayer,
 
-                      child: ExtendedImage.file(
-                        File(photoDataForPlot[1]),
-                        loadStateChanged: (ExtendedImageState state) {
-                          switch (state.extendedImageLoadState) {
-                            case LoadState.loading:
-                              break;
-                            case LoadState.completed:
-                              return ExtendedRawImage(
-                                image: state.extendedImageInfo?.image,
-                                // fit: BoxFit.,
-                                // imageCacheName: photoDataForPlot[1],
-                              );
-                          }
-                        },
-                        // imageCacheName: photoDataForPlot[1],
-                        enableLoadState: false,
-                        enableMemoryCache: true,
-                        compressionRatio: isZoomInImage ? 0.3 : 0.01,
-                      ),
+                      child: photoDataForPlot[1].runtimeType==String?
+                      ExtendedImage.file(
+                        File(photoDataForPlot[1])):
+                          AssetEntityImage(photoDataForPlot[1])
+                      //
+                      // ExtendedImage.file(
+                      //   File(photoDataForPlot[1]),
+                      //   loadStateChanged: (ExtendedImageState state) {
+                      //     switch (state.extendedImageLoadState) {
+                      //       case LoadState.loading:
+                      //         break;
+                      //       case LoadState.completed:
+                      //         return ExtendedRawImage(
+                      //           image: state.extendedImageInfo?.image,
+                      //           // fit: BoxFit.,
+                      //           // imageCacheName: photoDataForPlot[1],
+                      //         );
+                      //     }
+                      //   },
+                      //   // imageCacheName: photoDataForPlot[1],
+                      //   enableLoadState: false,
+                      //   enableMemoryCache: true,
+                      //   compressionRatio: isZoomInImage ? 0.3 : 0.01,
+                      // )
+                      // ,
                     )
                     // child : Container(
                     //

@@ -1,4 +1,5 @@
 import 'package:extended_image/extended_image.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:glob/glob.dart';
 import 'package:glob/list_local_fs.dart';
@@ -140,9 +141,26 @@ class YearPageView extends StatelessWidget {
             // print(asset);
           // }
           var dataManager =DataManager();
-          dataManager.init();
           // dataManager.executeSlowProcesses();
-          // print(dataManager.infoFromFiles);
+          print(dataManager.filesNotUpdated!.length);
+          // print(dataManager.files.length);
+          print(dataManager.summaryOfPhotoData);
+          // AssetEntity(id: 747014DF-742B-49B2-B6B2-AAE172038B2D/L0/001 , type: AssetType.image
+          // print(a);
+          // var a = await compute(DataManager.updateDatesFromInfo,[dataManager.infoFromFiles, dataManager.filesNotUpdated] );
+
+
+          // print(dataManager.files.length);
+          // var dataRepo = DataRepository();
+          // var a = await dataRepo.readInfoFromJson();
+          // print(a);
+          // var a = await dataRepo.getAllFiles();
+          // print(a);
+          // AssetEntity
+          // print(a.elementAt(0).createDateSecond);
+          // print(a.length);
+
+
         },
       ),
     );

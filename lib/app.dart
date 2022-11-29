@@ -52,8 +52,8 @@ class _AppState extends State<App> {
 
     await noteManager.init();
     print("init process, time elapsed : ${stopwatch.elapsed}");
-    await dataManager.init();
     FlutterNativeSplash.remove();
+    await dataManager.init();
     print("init process, time elapsed : ${stopwatch.elapsed}");
     global.isInitializationDone = true;
     await Future.delayed(Duration(seconds: 1));

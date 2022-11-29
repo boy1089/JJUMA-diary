@@ -125,35 +125,23 @@ class YearPageView extends StatelessWidget {
           ]),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          //     // final List<AssetPathEntity> paths = await PhotoManager.getAssetPathList();
-          //     // var assets = [];
-          //     // for(var path in paths){
-          //     //   var asset = await path.getAssetListRange(start: 0, end: 100000);
-          //     // assets.addAll(asset);
-          //     // print("$path, $asset");
-          //     // }
-          //
-          //     // for(var asset in assets){
-          //     //   AssetEntity
-          //     //   print(await asset.file);
-          //     // print(asset);
-          //     // }
-          //     print("floating action button clicked");
+
           var dataManager = DataManager();
           // dataManager.files = [];
           // dataManager.infoFromFiles = {};
-          // await dataManager.init();
+          // // await dataManager.init();
+          // dataManager.filesNotUpdated = dataManager.infoFromFiles.keys.toList();
           // dataManager.executeSlowProcesses();
-          // var b = await DataManager.updateExifOnInfo_compute([
-          //   dataManager.infoFromFiles.keys.toList(),
-          //   dataManager.infoFromFiles
-          // ]);
-          print(dataManager.infoFromFiles);
-          // print(global.referenceCoordinate);
+          // // var b = await DataManager.updateExifOnInfo_compute([
+          // //   dataManager.infoFromFiles.keys.toList(),
+          // //   dataManager.infoFromFiles
+          // // ]);
+          // print(dataManager.infoFromFiles);
+          // // print(global.referenceCoordinate);
 
           // dataManager.infoFromFiles = {};
           // dataManager.files = [];
-          // await dataManager.init();
+          await dataManager.init();
           // dataManager.executeSlowProcesses();
           // print(dataManager.infoFromFiles.entries.elementAt(0));
           // var a = dataManager.infoFromFiles;
@@ -161,7 +149,8 @@ class YearPageView extends StatelessWidget {
           //   // print("${a.keys.elementAt(i)}, ${a.values.elementAt(i)}, ${filename}");
           //   print("${a.keys.elementAt(i)}, ${a.values.elementAt(i)}");
           // }
-          //     // var dataRepo = DataRepository();
+          //     var dataRepo = DataRepository();
+          //     dataRepo.writeInfoAsJson({}, true);
           //     print('c');
           //     // await dataRepo.getAllFiles();
           //     // var b = await dataRepo.readInfoFromJson();

@@ -59,7 +59,7 @@ class DataManager extends ChangeNotifier {
     var result =
         await compute(updateDatesFromInfo, [infoFromFiles, filesNotUpdated]);
     print("updateDatesFromInfo done, time elapsed : ${stopwatch.elapsed}");
-
+    print(result);
     setOfDates = result[0];
     setOfDatetimes = result[1];
     dates = result[2];
@@ -103,10 +103,11 @@ class DataManager extends ChangeNotifier {
         // infoFromFiles = await compute(updateDatesOnInfo_ios, [partOfFilesNotupdated, infoFromFiles]);
         infoFromFiles =
             await updateDatesOnInfo_ios([partOfFilesNotupdated, infoFromFiles]);
-
+      await Future.delayed(Duration(seconds : 1));
+      print('a');
       infoFromFiles = await compute(
           updateExifOnInfo_compute, [partOfFilesNotupdated, infoFromFiles]);
-
+      print('b');
       if (i % 5 == 0) {
         var result = await compute(
             updateDatesFromInfo, [infoFromFiles, filesNotUpdated]);
@@ -278,7 +279,6 @@ class DataManager extends ChangeNotifier {
         print(
             "updateExifOnInfo : $i / ${filenames.length}, $filename, ${exifData[0]}, ${exifData[1]}");
       infoFromFiles[filename]?.coordinate = exifData[1];
-      print(infoFromFiles[filename]?.coordinate);
       if (exifData[1] != null) {
         infoFromFiles[filename]?.distance = calculateDistanceToRef(exifData[1]);
       }

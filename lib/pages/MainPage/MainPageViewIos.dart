@@ -44,7 +44,8 @@ class _MainPageViewIosState extends State<MainPageViewIos> {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.miniStartTop,
       body: CupertinoTabScaffold(
-          tabBar: CupertinoTabBar(
+          tabBar: navigationProvider.isBottomNavigationBarShown
+          ?CupertinoTabBar(
             height: global.kBottomNavigationBarHeight,
             items: [
               BottomNavigationBarItem(
@@ -53,7 +54,9 @@ class _MainPageViewIosState extends State<MainPageViewIos> {
               BottomNavigationBarItem(icon: Icon(Icons.settings)),
             ],
             onTap: (item) => onTap(context, navigationIndex.values[item]),
-          ),
+          )
+          :InvisibleCupertinoTabBar(),
+
           tabBuilder: (context, index) {
             if (index == 2) index = 3;
             return  CupertinoTabView(
@@ -84,7 +87,7 @@ class _MainPageViewIosState extends State<MainPageViewIos> {
         if (yearPageStateProvider.isZoomIn) {
           setState(() {
             yearPageStateProvider.setZoomInState(false);
-            yearPageStateProvider.setZoomInRotationAngle(0);
+            yearPageStateProvider.setZoomInRotationAngle(0.0);
           });
         }
         break;
@@ -124,4 +127,26 @@ class _MainPageViewIosState extends State<MainPageViewIos> {
       return false;
     return true;
   }
+}
+
+
+class InvisibleCupertinoTabBar extends CupertinoTabBar {
+  static const dummyIcon = Icon(IconData(0x0020));
+
+  InvisibleCupertinoTabBar()
+      : super(
+    height : 0,
+    items: [
+      BottomNavigationBarItem(icon: dummyIcon),
+      BottomNavigationBarItem(icon: dummyIcon),
+      BottomNavigationBarItem(icon: dummyIcon),
+    ],
+  );
+
+  @override
+  Size get preferredSize => const Size.square(0);
+
+  @override
+  Widget build(BuildContext context) => SizedBox();
+
 }

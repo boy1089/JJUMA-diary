@@ -44,8 +44,6 @@ class YearPageView extends StatelessWidget {
   }
 
   void initState() {
-    print("year page create");
-
     addListenerToChart();
     product.setYear(year, notify: false);
     noteManager.setNotesOfYear(year);
@@ -85,6 +83,7 @@ class YearPageView extends StatelessWidget {
                               AllowMultipleGestureRecognizer>(
                           () => AllowMultipleGestureRecognizer(),
                           (AllowMultipleGestureRecognizer instance) {
+                            print(instance.state);
                     instance.onTapUp = (details) {
                       if (product.isZoomIn) return;
                       product.setZoomInState(true);
@@ -148,7 +147,8 @@ class YearPageView extends StatelessWidget {
           //   print("${a.keys.elementAt(i)}, ${a.values.elementAt(i)}");
           // }
 
-          var b = await AssetEntity.fromId("4DAC9242-6FFA-4863-8EF5-42EAA569BAE5/L0/001");
+          var b = await AssetEntity.fromId(
+              "4DAC9242-6FFA-4863-8EF5-42EAA569BAE5/L0/001");
           print(b!.modifiedDateTime);
           print(await b!.titleAsync);
 
@@ -211,7 +211,7 @@ class YearPageChart {
       },
       selections: {
         'choose': PointSelection(
-          on: {GestureType.tap},
+          on: {GestureType.tapUp},
           toggle: true,
           nearest: false,
           testRadius: product.isZoomIn ? 10 : 0,

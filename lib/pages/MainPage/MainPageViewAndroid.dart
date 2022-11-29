@@ -1,55 +1,29 @@
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:lateDiary/Util/global.dart' as global;
-import '../navigation.dart';
+import '../../navigation.dart';
 import 'package:lateDiary/pages/SettingPage.dart';
 import 'package:provider/provider.dart';
-import 'package:lateDiary/Note/NoteManager.dart';
-import 'DiaryPage.dart';
-import 'YearPage/YearPage.dart';
-import 'DayPage/DayPage.dart';
 import 'package:lateDiary/StateProvider/YearPageStateProvider.dart';
 import 'package:lateDiary/StateProvider/DayPageStateProvider.dart';
 import 'package:lateDiary/StateProvider/NavigationIndexStateProvider.dart';
 
-class MainPage extends StatefulWidget {
-  static String id = 'main';
-
-  const MainPage({Key? key}) : super(key: key);
+class MainPageViewAndroid extends StatefulWidget {
+  var context;
+  var _widgetOptions;
+  MainPageViewAndroid(this.context, this._widgetOptions);
 
   @override
-  State<MainPage> createState() => MainPageState();
+  State<MainPageViewAndroid> createState() => _MainPageViewAndroidState();
 }
 
-class MainPageState extends State<MainPage> {
-  NoteManager noteManager = NoteManager();
-  List<Widget> _widgetOptions = [];
-
+class _MainPageViewAndroidState extends State<MainPageViewAndroid> {
   var navigationProvider;
   var dayPageStateProvider;
   var yearPageStateProvider;
 
   @override
-  void initState() {
-    super.initState();
-
-    YearPage yearPageView = YearPage();
-    DayPage dayPageView = DayPage();
-    DiaryPage diaryPage = DiaryPage(noteManager);
-    AndroidSettingsScreen androidSettingsScreen = AndroidSettingsScreen();
-
-    _widgetOptions = <Widget>[
-      yearPageView,
-      diaryPage,
-      dayPageView,
-      androidSettingsScreen,
-    ];
-
-  }
-
-  @override
   Widget build(BuildContext context) {
-
     navigationProvider =
         Provider.of<NavigationIndexProvider>(context, listen: true);
     dayPageStateProvider =
@@ -58,7 +32,8 @@ class MainPageState extends State<MainPage> {
         Provider.of<YearPageStateProvider>(context, listen: false);
     return WillPopScope(
       onWillPop: () async {
-        print("back button pressed : ${navigationProvider.currentNavigationIndex}");
+        print(
+            "back button pressed : ${navigationProvider.currentNavigationIndex}");
         switch (navigationProvider.currentNavigationIndex) {
           case navigationIndex.year:
             if (yearPageStateProvider.isZoomIn) {
@@ -72,7 +47,7 @@ class MainPageState extends State<MainPage> {
             navigationProvider.setNavigationIndex(navigationIndex.year);
             break;
           case navigationIndex.day:
-            //when zoomed in, make daypage zoom out
+          //when zoomed in, make daypage zoom out
             global.indexForZoomInImage = -1;
             global.isImageClicked = false;
 
@@ -83,7 +58,8 @@ class MainPageState extends State<MainPage> {
               });
             }
 
-            if (navigationProvider.lastNavigationIndex == navigationIndex.diary) {
+            if (navigationProvider.lastNavigationIndex ==
+                navigationIndex.diary) {
               navigationProvider
                   .setNavigationIndex(navigationProvider.lastNavigationIndex);
               break;
@@ -99,21 +75,21 @@ class MainPageState extends State<MainPage> {
       },
       child: Scaffold(
         body: PageTransitionSwitcher(
-                  duration: const Duration(milliseconds: 1000),
-                  transitionBuilder:
-                      (child, primaryAnimation, secondaryAnimation) =>
-                          FadeThroughTransition(
-                    animation: primaryAnimation,
-                    secondaryAnimation: secondaryAnimation,
-                    child: child,
-                  ),
-                  child:
-                      _widgetOptions[navigationProvider.currentNavigationIndex.index],
-                ),
+          duration: const Duration(milliseconds: 1000),
+          transitionBuilder: (child, primaryAnimation, secondaryAnimation) =>
+              FadeThroughTransition(
+                animation: primaryAnimation,
+                secondaryAnimation: secondaryAnimation,
+                child: child,
+              ),
+          child:
+          widget._widgetOptions[navigationProvider.currentNavigationIndex.index],
+        ),
         backgroundColor: global.kBackGroundColor,
-        bottomNavigationBar: SizedBox(
+        bottomNavigationBar: Container(
           height: global.kBottomNavigationBarHeight,
           // width : 200,
+          color: Colors.red,
           child: Offstage(
             offstage: !navigationProvider.isBottomNavigationBarShown,
             child: BottomNavigationBar(
@@ -123,9 +99,9 @@ class MainPageState extends State<MainPage> {
                 BottomNavigationBarItem(
                     icon: Icon(Icons.photo_camera_back_outlined),
                     label: "Photo"),
-                 BottomNavigationBarItem(
+                BottomNavigationBarItem(
                     icon: Icon(Icons.bookmark), label: "Diary"),
-                 BottomNavigationBarItem(
+                BottomNavigationBarItem(
                     icon: Icon(Icons.settings), label: "Settings"),
               ],
               currentIndex: navigationProvider.currentNavigationIndex.index,
@@ -138,8 +114,6 @@ class MainPageState extends State<MainPage> {
       ),
     );
   }
-
-  void onWillPop(event) {}
 
   void onTap(BuildContext context, navigationIndex item) {
     debugPrint(item.toString());
@@ -161,9 +135,3 @@ class MainPageState extends State<MainPage> {
   }
 }
 
-class MainPageView {
-  @override
-  Widget build(BuildContext context) {
-    return Text('a');
-  }
-}

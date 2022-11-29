@@ -7,7 +7,7 @@ import 'package:lateDiary/navigation.dart';
 import 'pages/PermissionPage.dart';
 import 'package:lateDiary/Settings.dart';
 import 'package:lateDiary/Data/Directories.dart';
-import 'pages/MainPage.dart';
+import 'pages/MainPage/MainPage.dart';
 import 'pages/SettingPage.dart';
 import 'package:lateDiary/Util/global.dart' as global;
 import 'package:lateDiary/theme/theme.dart';

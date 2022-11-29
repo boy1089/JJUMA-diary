@@ -278,7 +278,7 @@ class DataManager extends ChangeNotifier {
         print(
             "updateExifOnInfo : $i / ${filenames.length}, $filename, ${exifData[0]}, ${exifData[1]}");
       infoFromFiles[filename]?.coordinate = exifData[1];
-
+      print(infoFromFiles[filename]?.coordinate);
       if (exifData[1] != null) {
         infoFromFiles[filename]?.distance = calculateDistanceToRef(exifData[1]);
       }
@@ -386,7 +386,6 @@ class DataManager extends ChangeNotifier {
 
     infoFromFiles = {};
     infoFromFiles.addAll({for (var v in files) v: InfoFromFile()});
-
     return files;
   }
 }

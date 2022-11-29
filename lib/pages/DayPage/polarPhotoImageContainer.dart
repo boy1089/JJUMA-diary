@@ -175,52 +175,7 @@ class polarPhotoImageContainer {
                                 isOriginal: isZoomInImage,
                           fit : BoxFit.cover,
                               )
-                        //
-                        // ExtendedImage.file(
-                        //   File(photoDataForPlot[1]),
-                        //   loadStateChanged: (ExtendedImageState state) {
-                        //     switch (state.extendedImageLoadState) {
-                        //       case LoadState.loading:
-                        //         break;
-                        //       case LoadState.completed:
-                        //         return ExtendedRawImage(
-                        //           image: state.extendedImageInfo?.image,
-                        //           // fit: BoxFit.,
-                        //           // imageCacheName: photoDataForPlot[1],
-                        //         );
-                        //     }
-                        //   },
-                        //   // imageCacheName: photoDataForPlot[1],
-                        //   enableLoadState: false,
-                        //   enableMemoryCache: true,
-                        //   compressionRatio: isZoomInImage ? 0.3 : 0.01,
-                        // )
-                        // ,
                         )
-                    // child : Container(
-                    //
-                    //     child: ExtendedImage.file(
-                    //       File(photoDataForPlot[1]),
-                    //       loadStateChanged: (ExtendedImageState state) {
-                    //         switch (state.extendedImageLoadState) {
-                    //           case LoadState.loading:
-                    //             break;
-                    //           case LoadState.completed:
-                    //             return ExtendedRawImage(
-                    //               image: state.extendedImageInfo?.image,
-                    //               // fit: BoxFit.cover,
-                    //               // imageCacheName: photoDataForPlot[1],
-                    //             );
-                    //         }
-                    //       },
-                    //       // imageCacheName: photoDataForPlot[1],
-                    //       enableLoadState: false,
-                    //       enableMemoryCache: true,
-                    //       compressionRatio: 0.01,
-                    //     ),
-                    //
-                    // )
-
                     ),
               ))),
     );

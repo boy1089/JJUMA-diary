@@ -99,7 +99,6 @@ var physicalScreenSize = window.physicalSize / window.devicePixelRatio;
 var physicalWidth = physicalScreenSize.width;
 var physicalHeight = physicalScreenSize.height;
 
-
 const kSensorPlotRadius = 1.0;
 const kPhotoPlotRadius = 2.0;
 const kDataReaderSubsampleFactor = 50;
@@ -328,7 +327,7 @@ Future<List> openFile(filePath) async {
 
 Future getExifInfoOfFile(String file) async {
   // var bytes = await File(file).readAsBytes();
-  var byte2 = await File(file).open(mode : FileMode.read);
+  var byte2 = await File(file).open(mode: FileMode.read);
   // print("byte : ${bytes}");
   // var data = await readExifFromBytes(bytes.sublist(0, 2000));
   var data = await readExifFromBytes(await byte2.read(2000));
@@ -338,11 +337,11 @@ Future getExifInfoOfFile(String file) async {
 
   String? dateInExif = null;
   List<String> keys = data.keys.toList();
-  List<String> keysOfDateTime = keys.where((element){
+  List<String> keysOfDateTime = keys.where((element) {
     return (element.contains("DateTime"));
   }).toList();
 
-  for(int i= 0; i<keysOfDateTime.length; i++){
+  for (int i = 0; i < keysOfDateTime.length; i++) {
     String key = keysOfDateTime.elementAt(i);
     IfdTag? datetimeInExif = data[key];
     if (datetimeInExif != null) {
@@ -362,15 +361,14 @@ Future getExifInfoOfFile(String file) async {
 Future getExifInfoOfFile_ios(AssetEntity assetEntity) async {
   String? dateInExif = null;
 
-
   dateInExif = formatDatetime(assetEntity.createDateTime);
   // print("${assetEntity.createDateTime}, ${dateInExif}");
-  Coordinate? coordinate = Coordinate(
-      assetEntity.longitude,
-      assetEntity.latitude);
+  Coordinate? coordinate =
+      Coordinate(assetEntity.latitude, assetEntity.longitude);
   if (coordinate.latitude == null) coordinate = null;
   return [dateInExif, coordinate];
 }
+
 double? convertTagToValue(tag) {
   if (tag == null) return null;
 

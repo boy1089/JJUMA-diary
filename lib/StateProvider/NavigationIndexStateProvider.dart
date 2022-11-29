@@ -24,8 +24,6 @@ class NavigationIndexProvider with ChangeNotifier {
     currentNavigationIndex = index;
     print("index : $currentNavigationIndex");
 
-    notifyListeners();
-
     if (index == navigationIndex.year) {
       setBottomNavigationBarShown(true);
     }
@@ -41,14 +39,11 @@ class NavigationIndexProvider with ChangeNotifier {
     }
   }
 
-  void setDate(DateTime date, {bool notify : false}) {
+  void setDate(DateTime date, {bool notify: false}) {
     this.date = formatDate(date);
     print("date : ${this.date}, 1111");
-    if(notify)
-      notifyListeners();
+    if (notify) notifyListeners();
   }
 }
 
-enum navigationIndex{
-  year,diary, day,  setting
-}
+enum navigationIndex { year, diary, day, setting }

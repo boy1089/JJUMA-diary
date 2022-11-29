@@ -31,7 +31,9 @@ class _MainPageViewIosState extends State<MainPageViewIos> {
         Provider.of<DayPageStateProvider>(context, listen: false);
     yearPageStateProvider =
         Provider.of<YearPageStateProvider>(context, listen: true);
+
     bool offstage = offstageLogicForBackbutton();
+
     return Scaffold(
       floatingActionButton: Offstage(
         offstage: offstage,
@@ -50,33 +52,29 @@ class _MainPageViewIosState extends State<MainPageViewIos> {
               BottomNavigationBarItem(icon: Icon(Icons.bookmark)),
               BottomNavigationBarItem(icon: Icon(Icons.settings)),
             ],
-            onTap: (item)=>onTap(context, navigationIndex.values[item]),
+            onTap: (item) => onTap(context, navigationIndex.values[item]),
           ),
-
           tabBuilder: (context, index) {
             if (index == 2) index = 3;
-            return widget._widgetOptions
-                .elementAt(navigationProvider.currentNavigationIndex.index);
+            return  CupertinoTabView(
+              builder : (context)=>widget._widgetOptions[
+                        navigationProvider.currentNavigationIndex.index],
+            );
           }),
     );
   }
 
-  void onTap(BuildContext context, navigationIndex item) {
-    debugPrint(item.toString());
-    var provider = Provider.of<NavigationIndexProvider>(context, listen: false);
+  void onTap(BuildContext context, navigationIndex item) async {
     switch (item) {
       case navigationIndex.year:
-        provider.setNavigationIndex(navigationIndex.year);
-        provider.setBottomNavigationBarShown(true);
+        navigationProvider.setNavigationIndex(navigationIndex.year);
         break;
       case navigationIndex.diary:
-        provider.setNavigationIndex(navigationIndex.diary);
+        navigationProvider.setNavigationIndex(navigationIndex.diary);
         break;
-
       case navigationIndex.day:
-        provider.setNavigationIndex(navigationIndex.setting);
+        navigationProvider.setNavigationIndex(navigationIndex.setting);
         break;
-
     }
   }
 

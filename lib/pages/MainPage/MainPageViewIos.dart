@@ -50,10 +50,13 @@ class _MainPageViewIosState extends State<MainPageViewIos> {
               BottomNavigationBarItem(icon: Icon(Icons.bookmark)),
               BottomNavigationBarItem(icon: Icon(Icons.settings)),
             ],
+            onTap: (item)=>onTap(context, navigationIndex.values[item]),
           ),
+
           tabBuilder: (context, index) {
             if (index == 2) index = 3;
-            return widget._widgetOptions.elementAt(index);
+            return widget._widgetOptions
+                .elementAt(navigationProvider.currentNavigationIndex.index);
           }),
     );
   }
@@ -69,11 +72,11 @@ class _MainPageViewIosState extends State<MainPageViewIos> {
       case navigationIndex.diary:
         provider.setNavigationIndex(navigationIndex.diary);
         break;
+
       case navigationIndex.day:
-        Navigation.navigateTo(
-            context: context,
-            screen: AndroidSettingsScreen(),
-            style: NavigationRouteStyle.material);
+        provider.setNavigationIndex(navigationIndex.setting);
+        break;
+
     }
   }
 
@@ -124,78 +127,3 @@ class _MainPageViewIosState extends State<MainPageViewIos> {
     return true;
   }
 }
-
-//
-// class _MainPageViewIosState extends State<MainPageViewIos> {
-//   var navigationProvider;
-//   var dayPageStateProvider;
-//   var yearPageStateProvider;
-//
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     navigationProvider =
-//         Provider.of<NavigationIndexProvider>(context, listen: true);
-//     dayPageStateProvider =
-//         Provider.of<DayPageStateProvider>(context, listen: false);
-//     yearPageStateProvider =
-//         Provider.of<YearPageStateProvider>(context, listen: false);
-//     return Scaffold(
-//       body: PageTransitionSwitcher(
-//         duration: const Duration(milliseconds: 1000),
-//         transitionBuilder: (child, primaryAnimation, secondaryAnimation) =>
-//             FadeThroughTransition(
-//               animation: primaryAnimation,
-//               secondaryAnimation: secondaryAnimation,
-//               child: child,
-//             ),
-//         child:
-//         widget._widgetOptions[navigationProvider.currentNavigationIndex.index],
-//       ),
-//       backgroundColor: global.kBackGroundColor,
-//       bottomNavigationBar: Container(
-//         height: global.kBottomNavigationBarHeight,
-//         // width : 200,
-//         color: Colors.red,
-//         child: Offstage(
-//           offstage: !navigationProvider.isBottomNavigationBarShown,
-//           child: BottomNavigationBar(
-//             selectedFontSize: 0,
-//             type: BottomNavigationBarType.fixed,
-//             items: const <BottomNavigationBarItem>[
-//               BottomNavigationBarItem(
-//                   icon: Icon(Icons.photo_camera_back_outlined),
-//                   label: "Photo"),
-//               BottomNavigationBarItem(
-//                   icon: Icon(Icons.bookmark), label: "Diary"),
-//               BottomNavigationBarItem(
-//                   icon: Icon(Icons.settings), label: "Settings"),
-//             ],
-//             currentIndex: navigationProvider.currentNavigationIndex.index,
-//             onTap: (index) {
-//               onTap(context, navigationIndex.values[index]);
-//             },
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-//   void onTap(BuildContext context, navigationIndex item) {
-//     debugPrint(item.toString());
-//     var provider = Provider.of<NavigationIndexProvider>(context, listen: false);
-//     switch (item) {
-//       case navigationIndex.year:
-//         provider.setNavigationIndex(navigationIndex.year);
-//         provider.setBottomNavigationBarShown(true);
-//         break;
-//       case navigationIndex.diary:
-//         provider.setNavigationIndex(navigationIndex.diary);
-//         break;
-//       case navigationIndex.day:
-//         Navigation.navigateTo(
-//             context: context,
-//             screen: AndroidSettingsScreen(),
-//             style: NavigationRouteStyle.material);
-//     }
-//   }
-// }

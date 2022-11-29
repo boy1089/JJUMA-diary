@@ -35,6 +35,10 @@ class NavigationIndexProvider with ChangeNotifier {
     if (index == navigationIndex.day) {
       setBottomNavigationBarShown(false);
     }
+
+    if (index == navigationIndex.setting) {
+      setBottomNavigationBarShown(true);
+    }
   }
 
   void setDate(DateTime date, {bool notify : false}) {

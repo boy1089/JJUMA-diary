@@ -141,10 +141,13 @@ class YearPageView extends StatelessWidget {
             // print(asset);
           // }
           var dataManager =DataManager();
-          // dataManager.executeSlowProcesses();
-          print(dataManager.filesNotUpdated!.length);
+          dataManager.executeSlowProcesses();
+          // var a = dataManager.infoFromFiles;
+          // for(int i = 0; i< a.length; i++){
+          //   print("${a.keys.elementAt(i)}, ${a.values.elementAt(i)}");
+          // }
+
           // print(dataManager.files.length);
-          print(dataManager.summaryOfPhotoData);
           // AssetEntity(id: 747014DF-742B-49B2-B6B2-AAE172038B2D/L0/001 , type: AssetType.image
           // print(a);
           // var a = await compute(DataManager.updateDatesFromInfo,[dataManager.infoFromFiles, dataManager.filesNotUpdated] );

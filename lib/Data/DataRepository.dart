@@ -41,7 +41,7 @@ class DataRepository {
       final List<AssetPathEntity> paths = await PhotoManager.getAssetPathList();
       for (var path in paths) {
         if (path.name != "Recents") continue;
-        var assets = await path.getAssetListRange(start: 0, end: 500);
+        var assets = await path.getAssetListRange(start: 0, end: 1000);
         files.addAll([for (var asset in assets) asset]);
       }
       return files;

@@ -361,7 +361,9 @@ Future getExifInfoOfFile(String file) async {
 
 Future getExifInfoOfFile_ios(AssetEntity assetEntity) async {
   String? dateInExif = null;
-  dateInExif = formatDate(DateTime.fromMicrosecondsSinceEpoch(assetEntity.createDateSecond!*1000000));
+
+
+  dateInExif = formatDatetime(assetEntity.createDateTime);
   Coordinate? coordinate = Coordinate(
       assetEntity.longitude,
       assetEntity.latitude);

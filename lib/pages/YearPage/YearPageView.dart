@@ -123,40 +123,40 @@ class YearPageView extends StatelessWidget {
                 bottom: global.kMarginOfBottomOnDayPage,
                 child: NoteListView(product, noteManager).build(context)),
           ]),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          // final List<AssetPathEntity> paths = await PhotoManager.getAssetPathList();
-          // var assets = [];
-          // for(var path in paths){
-          //   var asset = await path.getAssetListRange(start: 0, end: 100000);
-          // assets.addAll(asset);
-          // print("$path, $asset");
-          // }
-
-          // for(var asset in assets){
-          //   AssetEntity
-          //   print(await asset.file);
-          // print(asset);
-          // }
-          print("floating action button clicked");
-          var dataManager = DataManager();
-          // await dataManager.init();
-          dataManager.executeSlowProcesses();
-          // var a = dataManager.infoFromFiles;
-          // for (int i = 0; i < a.length; i++) {
-          //   // var filename = await a.keys.elementAt(i).titleAsync;
-          //   // print("${a.keys.elementAt(i)}, ${a.values.elementAt(i)}, ${filename}");
-          //   print("${a.keys.elementAt(i)}, ${a.values.elementAt(i)}");
-          // }
-          // var dataRepo = DataRepository();
-          print('c');
-          // await dataRepo.getAllFiles();
-          // var b = await dataRepo.readInfoFromJson();
-          // print(b.entries.elementAt(0));
-          // print(dataRepo.infoFromFiles);
-          // print(dataRepo.files);
-        },
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () async {
+      //     // final List<AssetPathEntity> paths = await PhotoManager.getAssetPathList();
+      //     // var assets = [];
+      //     // for(var path in paths){
+      //     //   var asset = await path.getAssetListRange(start: 0, end: 100000);
+      //     // assets.addAll(asset);
+      //     // print("$path, $asset");
+      //     // }
+      //
+      //     // for(var asset in assets){
+      //     //   AssetEntity
+      //     //   print(await asset.file);
+      //     // print(asset);
+      //     // }
+      //     print("floating action button clicked");
+      //     var dataManager = DataManager();
+      //     // await dataManager.init();
+      //     dataManager.executeSlowProcesses();
+      //     // var a = dataManager.infoFromFiles;
+      //     // for (int i = 0; i < a.length; i++) {
+      //     //   // var filename = await a.keys.elementAt(i).titleAsync;
+      //     //   // print("${a.keys.elementAt(i)}, ${a.values.elementAt(i)}, ${filename}");
+      //     //   print("${a.keys.elementAt(i)}, ${a.values.elementAt(i)}");
+      //     // }
+      //     // var dataRepo = DataRepository();
+      //     print('c');
+      //     // await dataRepo.getAllFiles();
+      //     // var b = await dataRepo.readInfoFromJson();
+      //     // print(b.entries.elementAt(0));
+      //     // print(dataRepo.infoFromFiles);
+      //     // print(dataRepo.files);
+      //   },
+      // ),
     );
   }
 }

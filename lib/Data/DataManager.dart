@@ -71,27 +71,26 @@ class DataManager extends ChangeNotifier {
     summaryOfPhotoData = await compute(
         updateSummaryOfPhotoFromInfo, [setOfDates, summaryOfPhotoData]);
     print("updateSummaryOfPhoto done, time elapsed : ${stopwatch.elapsed}");
-
-    print("DataManager initialization done");
     notifyListeners();
   }
 
-  static Future<Map<dynamic, InfoFromFile>> updateDatesOnInfo_ios(List input) async {
+  static Future<Map<dynamic, InfoFromFile>> updateDatesOnInfo_ios(
+      List input) async {
     List assetEntities = input[0];
     Map<dynamic, InfoFromFile> infoFromFiles = input[1];
 
-    for (int i = 0; i<assetEntities.length; i++){
+    for (int i = 0; i < assetEntities.length; i++) {
       var assetEntity = assetEntities.elementAt(i);
       var filename = await assetEntity.titleAsync;
       String? inferredDatetime = inferDatetimeFromFilename(filename);
-        if (inferredDatetime != null) {
-          infoFromFiles[assetEntity]?.datetime =
-              DateTime.parse(inferredDatetime);
-          infoFromFiles[assetEntity]?.date = inferredDatetime.substring(0, 8);
-        }
+      if (inferredDatetime != null) {
+        infoFromFiles[assetEntity]?.datetime = DateTime.parse(inferredDatetime);
+        infoFromFiles[assetEntity]?.date = inferredDatetime.substring(0, 8);
+      }
     }
     return infoFromFiles;
   }
+
   void executeSlowProcesses() async {
     if (filesNotUpdated!.isEmpty) return;
     print("executing slow process..");
@@ -100,9 +99,10 @@ class DataManager extends ChangeNotifier {
       List partOfFilesNotupdated = filesNotUpdated!.sublist(i * 100,
           lengthOfFiles < (i + 1) * 100 ? lengthOfFiles : (i + 1) * 100);
 
-      if(global.kOs=="ios")
+      if (global.kOs == "ios")
         // infoFromFiles = await compute(updateDatesOnInfo_ios, [partOfFilesNotupdated, infoFromFiles]);
-        infoFromFiles = await updateDatesOnInfo_ios([partOfFilesNotupdated, infoFromFiles]);
+        infoFromFiles =
+            await updateDatesOnInfo_ios([partOfFilesNotupdated, infoFromFiles]);
 
       infoFromFiles = await compute(
           updateExifOnInfo_compute, [partOfFilesNotupdated, infoFromFiles]);
@@ -213,7 +213,6 @@ class DataManager extends ChangeNotifier {
     List setOfDatetimes = [];
 
     List<InfoFromFile> values = infoFromFiles.values.toList();
-
 
     for (int i = 0; i < values.length; i++) {
       dates.add(values.elementAt(i).date);

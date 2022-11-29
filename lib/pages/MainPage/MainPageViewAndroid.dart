@@ -89,7 +89,6 @@ class _MainPageViewAndroidState extends State<MainPageViewAndroid> {
         bottomNavigationBar: Container(
           height: global.kBottomNavigationBarHeight,
           // width : 200,
-          color: Colors.red,
           child: Offstage(
             offstage: !navigationProvider.isBottomNavigationBarShown,
             child: BottomNavigationBar(

@@ -35,7 +35,6 @@ class _AppState extends State<App> {
     Stopwatch stopwatch = new Stopwatch()..start();
     global.isInitializationDone = false;
     await permissionManager.init();
-    print('ccc');
     if (!permissionManager.isStoragePermissionGranted |
         !permissionManager.isLocationPermissionGranted) {
       // FlutterNativeSplash.remove();
@@ -50,16 +49,16 @@ class _AppState extends State<App> {
       await Directories.init(Directories.directories);
       await Settings.init();
     }
-    print('bbb');
+
     await noteManager.init();
     print("init process, time elapsed : ${stopwatch.elapsed}");
-    FlutterNativeSplash.remove();
     await dataManager.init();
+    FlutterNativeSplash.remove();
     print("init process, time elapsed : ${stopwatch.elapsed}");
     global.isInitializationDone = true;
     await Future.delayed(Duration(seconds: 1));
     print("init done,executed in ${stopwatch.elapsed}");
-    // dataManager.executeSlowProcesses();
+    dataManager.executeSlowProcesses();
     return 0;
   }
 

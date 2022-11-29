@@ -54,7 +54,7 @@ class polarPhotoImageContainers {
 
 class polarPhotoImageContainer {
   var photoDataForPlot;
-  double imageLocationFactor = 1.4;  // 1.4 * graphsize outward
+  double imageLocationFactor = 1.4; // 1.4 * graphsize outward
   double imageSize = kImageSize;
   double xLocation = 0;
   double yLocation = 0;
@@ -145,38 +145,58 @@ class polarPhotoImageContainer {
                       })
                     },
                     child: Card(
-                      elevation: 3,
-                      // shape: CircleBorder(),
-                      clipBehavior: isZoomInImage
-                          ? Clip.none
-                          : Clip.antiAliasWithSaveLayer,
-
-                      child: photoDataForPlot[1].runtimeType==String?
-                      ExtendedImage.file(
-                        File(photoDataForPlot[1])):
-                          AssetEntityImage(photoDataForPlot[1])
-                      //
-                      // ExtendedImage.file(
-                      //   File(photoDataForPlot[1]),
-                      //   loadStateChanged: (ExtendedImageState state) {
-                      //     switch (state.extendedImageLoadState) {
-                      //       case LoadState.loading:
-                      //         break;
-                      //       case LoadState.completed:
-                      //         return ExtendedRawImage(
-                      //           image: state.extendedImageInfo?.image,
-                      //           // fit: BoxFit.,
-                      //           // imageCacheName: photoDataForPlot[1],
-                      //         );
-                      //     }
-                      //   },
-                      //   // imageCacheName: photoDataForPlot[1],
-                      //   enableLoadState: false,
-                      //   enableMemoryCache: true,
-                      //   compressionRatio: isZoomInImage ? 0.3 : 0.01,
-                      // )
-                      // ,
-                    )
+                        elevation: 3,
+                        // shape: CircleBorder(),
+                        clipBehavior: isZoomInImage
+                            ? Clip.none
+                            : Clip.antiAliasWithSaveLayer,
+                        child: photoDataForPlot[1].runtimeType == String
+                            ? ExtendedImage.file(
+                                File(photoDataForPlot[1]),
+                                loadStateChanged: (ExtendedImageState state) {
+                                  switch (state.extendedImageLoadState) {
+                                    case LoadState.loading:
+                                      break;
+                                    case LoadState.completed:
+                                      return ExtendedRawImage(
+                                        image: state.extendedImageInfo?.image,
+                                        // fit: BoxFit.,
+                                        // imageCacheName: photoDataForPlot[1],
+                                      );
+                                  }
+                                },
+                                // imageCacheName: photoDataForPlot[1],
+                                enableLoadState: false,
+                                enableMemoryCache: true,
+                                compressionRatio: isZoomInImage ? 0.3 : 0.01,
+                              )
+                            : AssetEntityImage(
+                                photoDataForPlot[1],
+                                isOriginal: isZoomInImage,
+                          fit : BoxFit.cover,
+                              )
+                        //
+                        // ExtendedImage.file(
+                        //   File(photoDataForPlot[1]),
+                        //   loadStateChanged: (ExtendedImageState state) {
+                        //     switch (state.extendedImageLoadState) {
+                        //       case LoadState.loading:
+                        //         break;
+                        //       case LoadState.completed:
+                        //         return ExtendedRawImage(
+                        //           image: state.extendedImageInfo?.image,
+                        //           // fit: BoxFit.,
+                        //           // imageCacheName: photoDataForPlot[1],
+                        //         );
+                        //     }
+                        //   },
+                        //   // imageCacheName: photoDataForPlot[1],
+                        //   enableLoadState: false,
+                        //   enableMemoryCache: true,
+                        //   compressionRatio: isZoomInImage ? 0.3 : 0.01,
+                        // )
+                        // ,
+                        )
                     // child : Container(
                     //
                     //     child: ExtendedImage.file(

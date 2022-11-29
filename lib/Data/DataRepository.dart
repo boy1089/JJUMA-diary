@@ -79,18 +79,16 @@ class DataRepository {
     Map<dynamic, InfoFromFile> test = {};
     List filenames = mapFromJson.keys.toList();
     var keys = files;
-    var ids = [for( var a in keys) a.id];
+    var ids = [for (var a in keys) a.id];
     print(ids);
     for (int i = 0; i < mapFromJson.length; i++) {
-      if(global.kOs=="ios"){
-
+      if (global.kOs == "ios") {
         String id = filenames.elementAt(i);
         int index = ids.indexOf(id);
-        if(i%100==0) {
+        if (i % 100 == 0) {
           print("$i / ${mapFromJson.length}, ${index}");
         }
-        if(index !=-1)
-          test[keys[index]] = InfoFromFile(map: mapFromJson[id]);
+        if (index != -1) test[keys[index]] = InfoFromFile(map: mapFromJson[id]);
         continue;
       }
       String filename = filenames.elementAt(i);
@@ -146,9 +144,13 @@ class DataRepository {
     for (int i = 0; i < filenames.length; i++) {
       dynamic filename = filenames.elementAt(i);
       Map mapOfInfo = infoFromFiles[filename]!.toMap();
-      test[filename.id] = mapOfInfo;
+
+      if (global.kOs == "ios") {
+        test[filename.id] = mapOfInfo;
+        continue;
+      }
+      test[filename] = mapOfInfo;
     }
-    print(test);
     file.writeAsString(jsonEncode(test));
   }
 

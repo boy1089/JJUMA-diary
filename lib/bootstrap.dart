@@ -18,8 +18,10 @@ void bootstrap(int i) {
     log(details.exceptionAsString(), stackTrace: details.stack);
   };
 
-  YearPageStateProvider yearPageStateProvider = YearPageStateProvider(DataManagerInterface(global.kOs));
-  DayPageStateProvider dayPageStateProvider = DayPageStateProvider(DataManagerInterface(global.kOs));
+  YearPageStateProvider yearPageStateProvider =
+      YearPageStateProvider(DataManagerInterface(global.kOs));
+  DayPageStateProvider dayPageStateProvider =
+      DayPageStateProvider(DataManagerInterface(global.kOs));
 
   runZonedGuarded(
     () => runApp(
@@ -37,15 +39,16 @@ void bootstrap(int i) {
           ),
           ChangeNotifierProxyProvider<DataManagerInterface,
               YearPageStateProvider>(
-            update: (context, dataManager, a) =>
-                yearPageStateProvider,
-            create: (context) =>
-                yearPageStateProvider,
+            update: (context, dataManager, a) {
+              print("on update, $a");
+              return yearPageStateProvider
+                ..update(DataManagerInterface(global.kOs));
+            },
+            create: (context) => yearPageStateProvider,
           ),
           ChangeNotifierProxyProvider<DataManagerInterface,
               DayPageStateProvider>(
-            update: (context, dataManager, a) =>
-                dayPageStateProvider,
+            update: (context, dataManager, a) => dayPageStateProvider,
             create: (context) {
               return dayPageStateProvider;
             },

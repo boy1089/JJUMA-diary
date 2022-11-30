@@ -376,8 +376,4 @@ class IosDataManager extends ChangeNotifier implements DataManagerInterface {
   }
 
 
-  @override
-  notifyListeners() {
-      super.notifyListeners();
-  }
 }

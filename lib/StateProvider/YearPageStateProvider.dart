@@ -25,6 +25,11 @@ class YearPageStateProvider with ChangeNotifier {
   List<String> availableDates = [];
   int maxOfSummary = 0;
 
+  void update(dataManager){
+    this.dataManager = dataManager;
+    updateData();
+    notifyListeners();
+  }
   void setAvailableDates(int year) {
     availableDates = dataManager.summaryOfPhotoData.keys.where((element) {
       return element.substring(0, 4) == year.toString();

@@ -12,9 +12,11 @@ import 'infoFromFile.dart';
 import 'package:lateDiary/Data/Directories.dart';
 import 'DataRepository.dart';
 
-class AndroidDataManager extends ChangeNotifier implements DataManagerInterface {
+class AndroidDataManager extends ChangeNotifier
+    implements DataManagerInterface {
   AndroidDataManager._privateConstructor();
-  static final AndroidDataManager _instance = AndroidDataManager._privateConstructor();
+  static final AndroidDataManager _instance =
+      AndroidDataManager._privateConstructor();
   factory AndroidDataManager() {
     return _instance;
   }
@@ -58,7 +60,7 @@ class AndroidDataManager extends ChangeNotifier implements DataManagerInterface 
     print("updateDateOnInfo done, time elapsed : ${stopwatch.elapsed}");
 
     var result =
-    await compute(updateDatesFromInfo, [infoFromFiles, filesNotUpdated]);
+        await compute(updateDatesFromInfo, [infoFromFiles, filesNotUpdated]);
     print("updateDatesFromInfo done, time elapsed : ${stopwatch.elapsed}");
     print(result);
     setOfDates = result[0];
@@ -99,7 +101,6 @@ class AndroidDataManager extends ChangeNotifier implements DataManagerInterface 
     for (int i = 0; i < lengthOfFiles / 100.floor(); i++) {
       List partOfFilesNotupdated = filesNotUpdated!.sublist(i * 100,
           lengthOfFiles < (i + 1) * 100 ? lengthOfFiles : (i + 1) * 100);
-
 
       await Future.delayed(Duration(seconds: 1));
       infoFromFiles = await compute(
@@ -165,7 +166,7 @@ class AndroidDataManager extends ChangeNotifier implements DataManagerInterface 
           ? j + 100
           : filenamesFromInfo.length;
       bool isContained =
-      filenamesFromInfo.sublist(j, sublistIndex).contains(filename);
+          filenamesFromInfo.sublist(j, sublistIndex).contains(filename);
 
       if (!isContained) {
         filesNotUpdated.add(filename);
@@ -229,7 +230,6 @@ class AndroidDataManager extends ChangeNotifier implements DataManagerInterface 
   Future<void> updateDateOnInfo(List? input) async {
     if (input == null || input.isEmpty) input = infoFromFiles.keys.toList();
 
-
     //case for android
     for (int i = 0; i < input.length; i++) {
       String filename = input.elementAt(i);
@@ -251,7 +251,6 @@ class AndroidDataManager extends ChangeNotifier implements DataManagerInterface 
       List exifData = [];
       exifData = await getExifInfoOfFile(filename);
 
-
       if (i % 100 == 0)
         print(
             "updateExifOnInfo : $i / ${filenames.length}, $filename, ${exifData[0]}, ${exifData[1]}");
@@ -265,8 +264,8 @@ class AndroidDataManager extends ChangeNotifier implements DataManagerInterface 
       if (infoFromFiles[filename]?.datetime != null) continue;
       //update the datetime of EXif if there is datetime is null from filename
       if ((exifData[0] != null) &
-      (exifData[0] != "") &
-      (exifData[0] != "null")) {
+          (exifData[0] != "") &
+          (exifData[0] != "null")) {
         infoFromFiles[filename]?.datetime = DateTime.parse(exifData[0]);
         infoFromFiles[filename]?.date = exifData[0].substring(0, 8);
         continue;
@@ -274,7 +273,7 @@ class AndroidDataManager extends ChangeNotifier implements DataManagerInterface 
 
       //if there is no info from filename and exif, then use changed datetime.
       DateTime datetime =
-      DateTime.parse(formatDatetime(FileStat.statSync(filename).changed));
+          DateTime.parse(formatDatetime(FileStat.statSync(filename).changed));
       infoFromFiles[filename]?.datetime = datetime;
       infoFromFiles[filename]?.date = formatDate(datetime);
     }
@@ -300,7 +299,7 @@ class AndroidDataManager extends ChangeNotifier implements DataManagerInterface 
   }
 
   static Future<Map<String, double>>
-  updateSummaryOfLocationDataFromInfo2_compute(List input) async {
+      updateSummaryOfLocationDataFromInfo2_compute(List input) async {
     Map<dynamic, InfoFromFile> infoFromFiles = input[0];
     var infoFromFiles2 = [...infoFromFiles.values];
     Map<String, double> distances = {};
@@ -330,7 +329,7 @@ class AndroidDataManager extends ChangeNotifier implements DataManagerInterface 
 
   //input : [global.dates, global.summaryOfPhotoData, infoFromFiles]
   static Future<Map<String, double>>
-  updateSummaryOfLocationDataFromInfo_compute(List input) async {
+      updateSummaryOfLocationDataFromInfo_compute(List input) async {
     List listOfDates = input[0].toList();
     global.setOfDates = input[0];
 

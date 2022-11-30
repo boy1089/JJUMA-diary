@@ -132,10 +132,9 @@ class YearPageView extends StatelessWidget {
             // var b  =
             // await IosDataManager.updateSummaryOfLocationDataFromInfo2_compute([a.infoFromFiles]);
             // await IosDataManager.updateExifOnInfo_compute([a.infoFromFiles.keys.toList().sublist(0, 500), a.infoFromFiles]);
-.
-            var c = DataRepository();
+            // var c = DataRepository();
             // c.infoFromFiles = {};
-            c.writeInfoAsJson({}, true);
+            // c.writeInfoAsJson({}, true);
 
             },
       ),

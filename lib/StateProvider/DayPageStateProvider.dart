@@ -168,7 +168,7 @@ class DayPageStateProvider with ChangeNotifier {
   @override
   void dispose() {
     super.dispose();
-    print("provider disposed");
+    print("dayPageStateProvider disposed");
   }
 
 // Future<void> updateSensorData() async {

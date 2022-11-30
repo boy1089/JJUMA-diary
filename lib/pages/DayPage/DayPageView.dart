@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lateDiary/Data/DataManagerInterface.dart';
 import 'package:lateDiary/Util/Util.dart';
 import 'package:provider/provider.dart';
 import 'package:lateDiary/pages/DayPage/polarPhotoImageContainer.dart';
@@ -113,8 +114,10 @@ class _DayPageViewState extends State<DayPageView> {
             borderRadius: BorderRadius.all(Radius.circular(15.0)),
           ),
           onPressed: () async {
-            await product.updatePhotoData();
-            print(product.photoData);
+            // await product.updatePhotoData();
+            // print(product.photoData);
+            var a = DataManagerInterface(global.kOs);
+            a.notifyListeners();
             // if (focusNode.hasFocus) {
             //   dismissKeyboard(product);
             // } else {

@@ -1,7 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:lateDiary/Util/Util.dart';
-import 'package:lateDiary/StateProvider/StateProvider.dart';
 import 'package:provider/provider.dart';
 import 'package:lateDiary/Util/global.dart' as global;
 import 'package:intl/intl.dart';

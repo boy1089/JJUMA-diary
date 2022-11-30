@@ -164,7 +164,7 @@ class _DayPageViewState extends State<DayPageView> {
 
   @override
   void dispose() {
-    print("dispose..");
+    print("DayPageView disposed..");
     focusNode.dispose();
     super.dispose();
   }

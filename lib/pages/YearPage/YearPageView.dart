@@ -140,6 +140,11 @@ class YearPageView extends StatelessWidget {
       ),
     );
   }
+
+  @override
+  void dispose(){
+    print("yearPageView disposed");
+  }
 }
 
 class YearPageChart {

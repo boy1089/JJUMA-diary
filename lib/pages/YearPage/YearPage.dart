@@ -28,4 +28,8 @@ class YearPage extends StatelessWidget {
           }),
     ));
   }
+  @override
+  void dispose(){
+    print("year page disposed");
+  }
 }

@@ -100,15 +100,10 @@ class AndroidDataManager extends ChangeNotifier implements DataManagerInterface 
       List partOfFilesNotupdated = filesNotUpdated!.sublist(i * 100,
           lengthOfFiles < (i + 1) * 100 ? lengthOfFiles : (i + 1) * 100);
 
-      if (global.kOs == "ios")
-        // infoFromFiles = await compute(updateDatesOnInfo_ios, [partOfFilesNotupdated, infoFromFiles]);
-        infoFromFiles =
-        await updateDatesOnInfo_ios([partOfFilesNotupdated, infoFromFiles]);
+
       await Future.delayed(Duration(seconds: 1));
-      print('a');
       infoFromFiles = await compute(
           updateExifOnInfo_compute, [partOfFilesNotupdated, infoFromFiles]);
-      print('b');
       if (i % 5 == 0) {
         var result = await compute(
             updateDatesFromInfo, [infoFromFiles, filesNotUpdated]);
@@ -234,21 +229,6 @@ class AndroidDataManager extends ChangeNotifier implements DataManagerInterface 
   Future<void> updateDateOnInfo(List? input) async {
     if (input == null || input.isEmpty) input = infoFromFiles.keys.toList();
 
-    //case for IOS
-    if (input.elementAt(0).runtimeType != String) {
-      // for (int i = 0; i < input.length; i++) {
-      //   if (i % 100 == 0) print("$i / ${input.length}");
-      //   var assetEntity = input.elementAt(i);
-      //   String filename = await assetEntity.titleAsync;
-      //   String? inferredDatetime = inferDatetimeFromFilename(filename);
-      //   if (inferredDatetime != null) {
-      //     infoFromFiles[assetEntity]?.datetime =
-      //         DateTime.parse(inferredDatetime);
-      //     infoFromFiles[assetEntity]?.date = inferredDatetime.substring(0, 8);
-      //   }
-      // }
-      return;
-    }
 
     //case for android
     for (int i = 0; i < input.length; i++) {
@@ -269,12 +249,8 @@ class AndroidDataManager extends ChangeNotifier implements DataManagerInterface 
     for (int i = 0; i < filenames.length; i++) {
       var filename = filenames.elementAt(i);
       List exifData = [];
-      if (global.kOs == "android") {
-        exifData = await getExifInfoOfFile(filename);
-      }
-      if (global.kOs == "ios") {
-        exifData = await getExifInfoOfFile_ios(filename);
-      }
+      exifData = await getExifInfoOfFile(filename);
+
 
       if (i % 100 == 0)
         print(

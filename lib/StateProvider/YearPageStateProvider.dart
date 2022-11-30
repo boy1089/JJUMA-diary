@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 import '../Data/DataManagerInterface.dart';
 
 class YearPageStateProvider with ChangeNotifier {
+
   String date = formatDate(DateTime.now());
   double zoomInAngle = 0.0;
   bool isZoomIn = false;
@@ -23,7 +24,6 @@ class YearPageStateProvider with ChangeNotifier {
   dynamic data;
   List<String> availableDates = [];
   int maxOfSummary = 0;
-
 
   void setAvailableDates(int year) {
     availableDates = dataManager.summaryOfPhotoData.keys.where((element) {
@@ -56,8 +56,9 @@ class YearPageStateProvider with ChangeNotifier {
       int days = int.parse(DateFormat("D").format(DateTime.parse(date))) +
           weekdayOfJan01 +
           offsetToMakeWeekendOutward;
-      int value =
-      dataManager.summaryOfPhotoData[date]! > 200 ? 200 : dataManager.summaryOfPhotoData[date]!;
+      int value = dataManager.summaryOfPhotoData[date]! > 200
+          ? 200
+          : dataManager.summaryOfPhotoData[date]!;
       double distance = 4;
       if (dataManager.summaryOfLocationData.containsKey(date))
         distance = floorDistance(dataManager.summaryOfLocationData[date]!);
@@ -101,7 +102,6 @@ class YearPageStateProvider with ChangeNotifier {
     this.date = formatDate(date);
     print("date : ${this.date}");
   }
-
 
   void setZoomInRotationAngle(angle) {
     // print("provider set zoomInAngle to $angle");

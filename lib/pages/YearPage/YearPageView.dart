@@ -128,6 +128,7 @@ class YearPageView extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
             var a = DataManagerInterface(global.kOs);
+            a.notifyListeners();
             // await a.init();
             // var b  =
             // await IosDataManager.updateSummaryOfLocationDataFromInfo2_compute([a.infoFromFiles]);

@@ -13,6 +13,7 @@ import 'package:lateDiary/Data/DataManager.dart';
 import '../Data/DataManagerInterface.dart';
 
 class DayPageStateProvider with ChangeNotifier {
+
   PhotoDataManager photoDataManager = PhotoDataManager();
   NoteManager noteManager = NoteManager();
 
@@ -31,7 +32,9 @@ class DayPageStateProvider with ChangeNotifier {
 
   double keyboardSize = 300;
   DataManagerInterface dataManager;
-  DayPageStateProvider(this.dataManager);
+  DayPageStateProvider(this.dataManager){
+    print("DayPageStateProvider created");
+  }
 
   Future<void> updateDataForUi() async {
     photoForPlot = [];
@@ -40,6 +43,7 @@ class DayPageStateProvider with ChangeNotifier {
 
     photoData = await updatePhotoData();
     photoForPlot = selectPhotoForPlot(photoData, true);
+
     // //convert data type..
     photoDataForPlot = List<List>.generate(
         photoForPlot.length, (index) => photoForPlot.elementAt(index));
@@ -48,6 +52,7 @@ class DayPageStateProvider with ChangeNotifier {
 
     note = await noteManager.readNote(date);
     print("updateUi done");
+    notifyListeners();
   }
 
   Future updatePhotoData() async {
@@ -170,6 +175,7 @@ class DayPageStateProvider with ChangeNotifier {
     super.dispose();
     print("dayPageStateProvider disposed");
   }
+
 
 // Future<void> updateSensorData() async {
 //   var sensorData = await this.sensorDataManager.openFile(date);

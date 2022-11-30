@@ -69,5 +69,11 @@ abstract class DataManagerInterface extends ChangeNotifier {
     return {};
   }
 
+  @override
+  dispose(){
+    print("DataManager disposed");
+    super.dispose();
+  }
+
 
 }

@@ -18,6 +18,9 @@ void bootstrap(int i) {
     log(details.exceptionAsString(), stackTrace: details.stack);
   };
 
+  YearPageStateProvider yearPageStateProvider = YearPageStateProvider(DataManagerInterface(global.kOs));
+  DayPageStateProvider dayPageStateProvider = DayPageStateProvider(DataManagerInterface(global.kOs));
+
   runZonedGuarded(
     () => runApp(
       MultiProvider(
@@ -32,17 +35,19 @@ void bootstrap(int i) {
               return NavigationIndexProvider();
             },
           ),
-          ChangeNotifierProxyProvider<DataManagerInterface, YearPageStateProvider>(
+          ChangeNotifierProxyProvider<DataManagerInterface,
+              YearPageStateProvider>(
             update: (context, dataManager, a) =>
-                YearPageStateProvider(dataManager),
-            create: (context) => YearPageStateProvider(DataManagerInterface(global.kOs)),
+                yearPageStateProvider,
+            create: (context) =>
+                yearPageStateProvider,
           ),
-
-          ChangeNotifierProxyProvider<DataManagerInterface, DayPageStateProvider>(
-            update : (context, dataManager, a)=>
-            DayPageStateProvider(dataManager),
+          ChangeNotifierProxyProvider<DataManagerInterface,
+              DayPageStateProvider>(
+            update: (context, dataManager, a) =>
+                dayPageStateProvider,
             create: (context) {
-              return DayPageStateProvider(DataManagerInterface(global.kOs));
+              return dayPageStateProvider;
             },
           ),
         ],

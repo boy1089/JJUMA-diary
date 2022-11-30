@@ -374,4 +374,10 @@ class IosDataManager extends ChangeNotifier implements DataManagerInterface {
     infoFromFiles.addAll({for (var v in files) v: InfoFromFile()});
     return files;
   }
+
+
+  @override
+  notifyListeners() {
+      super.notifyListeners();
+  }
 }

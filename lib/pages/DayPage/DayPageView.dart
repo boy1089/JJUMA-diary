@@ -31,7 +31,6 @@ class DayPageView extends StatefulWidget {
 class _DayPageViewState extends State<DayPageView> {
   String date = formatDate(DateTime.now());
   Future readData = Future.delayed(const Duration(seconds: 1));
-
   FocusNode focusNode = FocusNode();
   final myTextController = TextEditingController();
 

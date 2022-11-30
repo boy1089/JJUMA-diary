@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lateDiary/Permissions/PermissionManager.dart';
 import 'package:lateDiary/Note/NoteManager.dart';
-import 'package:lateDiary/Data/DataManager.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:lateDiary/navigation.dart';
 import 'pages/PermissionPage.dart';
@@ -46,7 +45,7 @@ class _AppState extends State<App> {
       setState(() {});
     }
 
-    if(global.kOs=="android") {
+    if (global.kOs == "android") {
       await Directories.init(Directories.directories);
       await Settings.init();
     }

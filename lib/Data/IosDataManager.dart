@@ -54,11 +54,7 @@ class IosDataManager extends ChangeNotifier implements DataManagerInterface {
     await addFilesToInfo(filesNotUpdated);
     print("addFilesToinfo done, time elapsed : ${stopwatch.elapsed}");
 
-    await updateDateOnInfo(filesNotUpdated);
-    print("updateDateOnInfo done, time elapsed : ${stopwatch.elapsed}");
-
-    var result =
-    await compute(updateDatesFromInfo, [infoFromFiles, filesNotUpdated]);
+    var result = await updateDatesFromInfo([infoFromFiles, filesNotUpdated]);
     print("updateDatesFromInfo done, time elapsed : ${stopwatch.elapsed}");
     setOfDates = result[0];
     setOfDatetimes = result[1];
@@ -102,23 +98,21 @@ class IosDataManager extends ChangeNotifier implements DataManagerInterface {
       if (global.kOs == "ios")
         // infoFromFiles = await compute(updateDatesOnInfo_ios, [partOfFilesNotupdated, infoFromFiles]);
         infoFromFiles =
-        await updateDatesOnInfo_ios([partOfFilesNotupdated, infoFromFiles]);
+            await updateDatesOnInfo_ios([partOfFilesNotupdated, infoFromFiles]);
       await Future.delayed(Duration(seconds: 1));
-      print('a');
-      infoFromFiles = await compute(
-          updateExifOnInfo_compute, [partOfFilesNotupdated, infoFromFiles]);
-      print('b');
+      infoFromFiles = await updateExifOnInfo_compute(
+          [partOfFilesNotupdated, infoFromFiles]);
       if (i % 5 == 0) {
-        var result = await compute(
-            updateDatesFromInfo, [infoFromFiles, filesNotUpdated]);
+        var result =
+            await updateDatesFromInfo([infoFromFiles, filesNotUpdated]);
         setOfDates = result[0];
         setOfDatetimes = result[1];
         dates = result[2];
         datetimes = result[3];
 
         //update the summaryOflocation only on the specific date.
-        summaryOfPhotoData = await compute(
-            updateSummaryOfPhotoFromInfo, [setOfDates, summaryOfPhotoData]);
+        summaryOfPhotoData = await updateSummaryOfPhotoFromInfo(
+            [setOfDates, summaryOfPhotoData]);
 
         await dataRepository.writeInfoAsJson(infoFromFiles, true);
         await dataRepository.writeSummaryOfPhoto2(
@@ -127,18 +121,17 @@ class IosDataManager extends ChangeNotifier implements DataManagerInterface {
       }
 
       if (i % 10 == 0) {
-        summaryOfLocationData = await compute(
-            updateSummaryOfLocationDataFromInfo2_compute, [infoFromFiles]);
+        summaryOfLocationData =
+            await updateSummaryOfLocationDataFromInfo2_compute([infoFromFiles]);
         await dataRepository.writeSummaryOfLocation2(
             summaryOfLocationData, true, setOfDates);
       }
     }
     print("executing slow process..2");
-    summaryOfPhotoData = await compute(
-        updateSummaryOfPhotoFromInfo, [setOfDates, summaryOfPhotoData]);
+    summaryOfPhotoData =
+        await updateSummaryOfPhotoFromInfo([setOfDates, summaryOfPhotoData]);
     print("executing slow process..3");
-    summaryOfLocationData = await compute(
-        updateSummaryOfLocationDataFromInfo_compute,
+    summaryOfLocationData = await updateSummaryOfLocationDataFromInfo_compute(
         [setOfDates, summaryOfLocationData, infoFromFiles]);
     print("executing slow process..4");
     await dataRepository.writeInfoAsJson(infoFromFiles, true);
@@ -169,7 +162,7 @@ class IosDataManager extends ChangeNotifier implements DataManagerInterface {
           ? j + 100
           : filenamesFromInfo.length;
       bool isContained =
-      filenamesFromInfo.sublist(j, sublistIndex).contains(filename);
+          filenamesFromInfo.sublist(j, sublistIndex).contains(filename);
 
       if (!isContained) {
         filesNotUpdated.add(filename);
@@ -248,16 +241,6 @@ class IosDataManager extends ChangeNotifier implements DataManagerInterface {
       // }
       return;
     }
-
-    //case for android
-    for (int i = 0; i < input.length; i++) {
-      String filename = input.elementAt(i);
-      String? inferredDatetime = inferDatetimeFromFilename(filename);
-      if (inferredDatetime != null) {
-        infoFromFiles[filename]?.datetime = DateTime.parse(inferredDatetime);
-        infoFromFiles[filename]?.date = inferredDatetime.substring(0, 8);
-      }
-    }
   }
 
   static Future<Map<dynamic, InfoFromFile>> updateExifOnInfo_compute(
@@ -288,8 +271,8 @@ class IosDataManager extends ChangeNotifier implements DataManagerInterface {
       if (infoFromFiles[filename]?.datetime != null) continue;
       //update the datetime of EXif if there is datetime is null from filename
       if ((exifData[0] != null) &
-      (exifData[0] != "") &
-      (exifData[0] != "null")) {
+          (exifData[0] != "") &
+          (exifData[0] != "null")) {
         infoFromFiles[filename]?.datetime = DateTime.parse(exifData[0]);
         infoFromFiles[filename]?.date = exifData[0].substring(0, 8);
         continue;
@@ -297,7 +280,7 @@ class IosDataManager extends ChangeNotifier implements DataManagerInterface {
 
       //if there is no info from filename and exif, then use changed datetime.
       DateTime datetime =
-      DateTime.parse(formatDatetime(FileStat.statSync(filename).changed));
+          DateTime.parse(formatDatetime(FileStat.statSync(filename).changed));
       infoFromFiles[filename]?.datetime = datetime;
       infoFromFiles[filename]?.date = formatDate(datetime);
     }
@@ -323,7 +306,7 @@ class IosDataManager extends ChangeNotifier implements DataManagerInterface {
   }
 
   static Future<Map<String, double>>
-  updateSummaryOfLocationDataFromInfo2_compute(List input) async {
+      updateSummaryOfLocationDataFromInfo2_compute(List input) async {
     Map<dynamic, InfoFromFile> infoFromFiles = input[0];
     var infoFromFiles2 = [...infoFromFiles.values];
     Map<String, double> distances = {};
@@ -353,7 +336,7 @@ class IosDataManager extends ChangeNotifier implements DataManagerInterface {
 
   //input : [global.dates, global.summaryOfPhotoData, infoFromFiles]
   static Future<Map<String, double>>
-  updateSummaryOfLocationDataFromInfo_compute(List input) async {
+      updateSummaryOfLocationDataFromInfo_compute(List input) async {
     List listOfDates = input[0].toList();
     global.setOfDates = input[0];
 

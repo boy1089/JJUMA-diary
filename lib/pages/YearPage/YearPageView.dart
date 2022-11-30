@@ -127,40 +127,16 @@ class YearPageView extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
             var a = DataManagerInterface(global.kOs);
-            await a.init();
-            print(a.infoFromFiles);
-            print(a.dates);
+            // await a.init();
+            print(a.infoFromFiles.length);
 
-          // dataManager.files = [];
-          // dataManager.infoFromFiles = {};
-          // // await dataManager.init();
-          // dataManager.filesNotUpdated = dataManager.infoFromFiles.keys.toList();
-          // dataManager.executeSlowProcesses();
-          // // var b = await DataManager.updateExifOnInfo_compute([
-          // //   dataManager.infoFromFiles.keys.toList(),
-          // //   dataManager.infoFromFiles
-          // // ]);
 
-          // // print(global.referenceCoordinate);
 
-          // dataManager.infoFromFiles = {};
-          // dataManager.files = [];
-          // await dataManager.init();
-          // dataManager.executeSlowProcesses();
-          // print(dataManager.infoFromFiles.entries.elementAt(0));
-          // var a = dataManager.infoFromFiles;
-          // for (int i = 0; i < a.length; i++) {
-          //   // print("${a.keys.elementAt(i)}, ${a.values.elementAt(i)}, ${filename}");
-          //   print("${a.keys.elementAt(i)}, ${a.values.elementAt(i)}");
-          // }
-          //     var dataRepo = DataRepository();
-          //     dataRepo.writeInfoAsJson({}, true);
-          //     print('c');
-          //     // await dataRepo.getAllFiles();
-          //     // var b = await dataRepo.readInfoFromJson();
-          //     // print(b.entries.elementAt(0));
-          //     // print(dataRepo.infoFromFiles);
-          //     // print(dataRepo.files);
+            // var b = DataRepository();
+            // b.writeInfoAsJson({}, true);
+            // await b.getAllFiles();
+            // print(b.infoFromFiles.length);
+
         },
       ),
     );

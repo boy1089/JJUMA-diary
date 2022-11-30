@@ -24,6 +24,7 @@ import 'dart:io';
 
 import '../../Data/DataManager.dart';
 import '../../Data/DataManagerInterface.dart';
+import '../../Data/IosDataManager.dart';
 
 class YearPageView extends StatelessWidget {
   static String id = 'year';
@@ -128,16 +129,15 @@ class YearPageView extends StatelessWidget {
         onPressed: () async {
             var a = DataManagerInterface(global.kOs);
             // await a.init();
-            print(a.infoFromFiles.length);
+            // var b  =
+            // await IosDataManager.updateSummaryOfLocationDataFromInfo2_compute([a.infoFromFiles]);
+            // await IosDataManager.updateExifOnInfo_compute([a.infoFromFiles.keys.toList().sublist(0, 500), a.infoFromFiles]);
+.
+            var c = DataRepository();
+            // c.infoFromFiles = {};
+            c.writeInfoAsJson({}, true);
 
-
-
-            // var b = DataRepository();
-            // b.writeInfoAsJson({}, true);
-            // await b.getAllFiles();
-            // print(b.infoFromFiles.length);
-
-        },
+            },
       ),
     );
   }

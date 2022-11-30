@@ -35,6 +35,7 @@ class IosDataManager extends ChangeNotifier implements DataManagerInterface {
 
   DataRepository dataRepository = DataRepository();
 
+  @override
   Future<void> init() async {
     Stopwatch stopwatch = Stopwatch()..start();
 
@@ -87,6 +88,7 @@ class IosDataManager extends ChangeNotifier implements DataManagerInterface {
     return infoFromFiles;
   }
 
+  @override
   void executeSlowProcesses() async {
     if (filesNotUpdated!.isEmpty) return;
     print("executing slow process..");
@@ -147,6 +149,7 @@ class IosDataManager extends ChangeNotifier implements DataManagerInterface {
 
   // i) check whether this file is contained in Info
   // ii) check whether this file is saved previously.
+  @override
   Future<List?> matchFilesAndInfo2() async {
     List? filesNotUpdated = [];
     List filenamesFromInfo = infoFromFiles.keys.toList();
@@ -181,6 +184,7 @@ class IosDataManager extends ChangeNotifier implements DataManagerInterface {
     return filesNotUpdated;
   }
 
+  @override
   Future<void> addFilesToInfo(List? filenames) async {
     if (filenames!.isEmpty) filenames = files;
     print("filenames : $filenames");
@@ -223,6 +227,7 @@ class IosDataManager extends ChangeNotifier implements DataManagerInterface {
     return [setOfDates, setOfDatetimes, dates, datetimes];
   }
 
+  @override
   Future<void> updateDateOnInfo(List? input) async {
     if (input == null || input.isEmpty) input = infoFromFiles.keys.toList();
 
@@ -251,12 +256,8 @@ class IosDataManager extends ChangeNotifier implements DataManagerInterface {
     for (int i = 0; i < filenames.length; i++) {
       var filename = filenames.elementAt(i);
       List exifData = [];
-      if (global.kOs == "android") {
-        exifData = await getExifInfoOfFile(filename);
-      }
-      if (global.kOs == "ios") {
-        exifData = await getExifInfoOfFile_ios(filename);
-      }
+
+      exifData = await getExifInfoOfFile_ios(filename);
 
       if (i % 100 == 0)
         print(
@@ -265,6 +266,7 @@ class IosDataManager extends ChangeNotifier implements DataManagerInterface {
       if (exifData[1] != null) {
         infoFromFiles[filename]?.distance = calculateDistanceToRef(exifData[1]);
       }
+      print("${infoFromFiles[filename]?.coordinate}, ${infoFromFiles[filename]?.distance}");
 
       infoFromFiles[filename]?.isUpdated = true;
       //if datetime is updated from filename, then does not overwrite with exif
@@ -322,7 +324,7 @@ class IosDataManager extends ChangeNotifier implements DataManagerInterface {
       if (isNull) {
         continue;
       }
-
+      print("$date, ${distances[date]}, ${infoFromFile.distance!}");
       if (isContained) {
         distances[date] = (distances[date]! > infoFromFile.distance!
             ? distances[date]
@@ -350,6 +352,7 @@ class IosDataManager extends ChangeNotifier implements DataManagerInterface {
     return input[1];
   }
 
+  @override
   Future<List<String>> resetInfoFromFiles() async {
     List<String> files = [];
     List newFiles = [];

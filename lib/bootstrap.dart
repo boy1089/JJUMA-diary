@@ -10,6 +10,8 @@ import 'package:lateDiary/StateProvider/DayPageStateProvider.dart';
 import 'package:lateDiary/StateProvider/NavigationIndexStateProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:lateDiary/Data/DataManager.dart';
+import 'package:lateDiary/Data/DataManagerInterface.dart';
+import 'package:lateDiary/Util/global.dart' as global;
 
 void bootstrap(int i) {
   FlutterError.onError = (details) {
@@ -20,9 +22,9 @@ void bootstrap(int i) {
     () => runApp(
       MultiProvider(
         providers: [
-          ChangeNotifierProvider<DataManager>(
+          ChangeNotifierProvider<DataManagerInterface>(
             create: (context) {
-              return DataManager();
+              return DataManagerInterface(global.kOs);
             },
           ),
           ChangeNotifierProvider<NavigationIndexProvider>(
@@ -30,17 +32,17 @@ void bootstrap(int i) {
               return NavigationIndexProvider();
             },
           ),
-          ChangeNotifierProxyProvider<DataManager, YearPageStateProvider>(
+          ChangeNotifierProxyProvider<DataManagerInterface, YearPageStateProvider>(
             update: (context, dataManager, a) =>
                 YearPageStateProvider(dataManager),
-            create: (context) => YearPageStateProvider(DataManager()),
+            create: (context) => YearPageStateProvider(DataManagerInterface(global.kOs)),
           ),
 
-          ChangeNotifierProxyProvider<DataManager, DayPageStateProvider>(
+          ChangeNotifierProxyProvider<DataManagerInterface, DayPageStateProvider>(
             update : (context, dataManager, a)=>
             DayPageStateProvider(dataManager),
             create: (context) {
-              return DayPageStateProvider(DataManager());
+              return DayPageStateProvider(DataManagerInterface(global.kOs));
             },
           ),
         ],

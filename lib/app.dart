@@ -11,6 +11,7 @@ import 'pages/MainPage/MainPage.dart';
 import 'pages/SettingPage.dart';
 import 'package:lateDiary/Util/global.dart' as global;
 import 'package:lateDiary/theme/theme.dart';
+import 'package:lateDiary/Data/DataManagerInterface.dart';
 
 class App extends StatefulWidget {
   const App({Key? key}) : super(key: key);
@@ -26,7 +27,7 @@ class _AppState extends State<App> {
   bool isPermissionOk = false;
   Future initApp = Future.delayed(const Duration(seconds: 5));
   _AppState() {
-    dataManager = DataManager();
+    dataManager = DataManagerInterface(global.kOs);
     super.initState();
     initApp = init();
   }

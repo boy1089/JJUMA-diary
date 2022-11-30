@@ -112,13 +112,15 @@ class _DayPageViewState extends State<DayPageView> {
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(15.0)),
           ),
-          onPressed: () {
-            if (focusNode.hasFocus) {
-              dismissKeyboard(product);
-            } else {
-              showKeyboard();
-            }
-            setState(() {});
+          onPressed: () async {
+            await product.updatePhotoData();
+            print(product.photoData);
+            // if (focusNode.hasFocus) {
+            //   dismissKeyboard(product);
+            // } else {
+            //   showKeyboard();
+            // }
+            // setState(() {});
           },
           child:
               focusNode.hasFocus ? const Text("save") : const Icon(Icons.add),

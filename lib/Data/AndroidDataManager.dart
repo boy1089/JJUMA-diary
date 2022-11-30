@@ -12,10 +12,10 @@ import 'infoFromFile.dart';
 import 'package:lateDiary/Data/Directories.dart';
 import 'DataRepository.dart';
 
-class DataManager extends ChangeNotifier implements DataManagerInterface {
-  DataManager._privateConstructor();
-  static final DataManager _instance = DataManager._privateConstructor();
-  factory DataManager() {
+class AndroidDataManager extends ChangeNotifier implements DataManagerInterface {
+  AndroidDataManager._privateConstructor();
+  static final AndroidDataManager _instance = AndroidDataManager._privateConstructor();
+  factory AndroidDataManager() {
     return _instance;
   }
 
@@ -58,7 +58,7 @@ class DataManager extends ChangeNotifier implements DataManagerInterface {
     print("updateDateOnInfo done, time elapsed : ${stopwatch.elapsed}");
 
     var result =
-        await compute(updateDatesFromInfo, [infoFromFiles, filesNotUpdated]);
+    await compute(updateDatesFromInfo, [infoFromFiles, filesNotUpdated]);
     print("updateDatesFromInfo done, time elapsed : ${stopwatch.elapsed}");
     print(result);
     setOfDates = result[0];
@@ -103,7 +103,7 @@ class DataManager extends ChangeNotifier implements DataManagerInterface {
       if (global.kOs == "ios")
         // infoFromFiles = await compute(updateDatesOnInfo_ios, [partOfFilesNotupdated, infoFromFiles]);
         infoFromFiles =
-            await updateDatesOnInfo_ios([partOfFilesNotupdated, infoFromFiles]);
+        await updateDatesOnInfo_ios([partOfFilesNotupdated, infoFromFiles]);
       await Future.delayed(Duration(seconds: 1));
       print('a');
       infoFromFiles = await compute(
@@ -170,7 +170,7 @@ class DataManager extends ChangeNotifier implements DataManagerInterface {
           ? j + 100
           : filenamesFromInfo.length;
       bool isContained =
-          filenamesFromInfo.sublist(j, sublistIndex).contains(filename);
+      filenamesFromInfo.sublist(j, sublistIndex).contains(filename);
 
       if (!isContained) {
         filesNotUpdated.add(filename);
@@ -289,8 +289,8 @@ class DataManager extends ChangeNotifier implements DataManagerInterface {
       if (infoFromFiles[filename]?.datetime != null) continue;
       //update the datetime of EXif if there is datetime is null from filename
       if ((exifData[0] != null) &
-          (exifData[0] != "") &
-          (exifData[0] != "null")) {
+      (exifData[0] != "") &
+      (exifData[0] != "null")) {
         infoFromFiles[filename]?.datetime = DateTime.parse(exifData[0]);
         infoFromFiles[filename]?.date = exifData[0].substring(0, 8);
         continue;
@@ -298,7 +298,7 @@ class DataManager extends ChangeNotifier implements DataManagerInterface {
 
       //if there is no info from filename and exif, then use changed datetime.
       DateTime datetime =
-          DateTime.parse(formatDatetime(FileStat.statSync(filename).changed));
+      DateTime.parse(formatDatetime(FileStat.statSync(filename).changed));
       infoFromFiles[filename]?.datetime = datetime;
       infoFromFiles[filename]?.date = formatDate(datetime);
     }
@@ -324,7 +324,7 @@ class DataManager extends ChangeNotifier implements DataManagerInterface {
   }
 
   static Future<Map<String, double>>
-      updateSummaryOfLocationDataFromInfo2_compute(List input) async {
+  updateSummaryOfLocationDataFromInfo2_compute(List input) async {
     Map<dynamic, InfoFromFile> infoFromFiles = input[0];
     var infoFromFiles2 = [...infoFromFiles.values];
     Map<String, double> distances = {};
@@ -354,7 +354,7 @@ class DataManager extends ChangeNotifier implements DataManagerInterface {
 
   //input : [global.dates, global.summaryOfPhotoData, infoFromFiles]
   static Future<Map<String, double>>
-      updateSummaryOfLocationDataFromInfo_compute(List input) async {
+  updateSummaryOfLocationDataFromInfo_compute(List input) async {
     List listOfDates = input[0].toList();
     global.setOfDates = input[0];
 

@@ -23,6 +23,7 @@ import 'dart:io' show Platform;
 import 'dart:io';
 
 import '../../Data/DataManager.dart';
+import '../../Data/DataManagerInterface.dart';
 
 class YearPageView extends StatelessWidget {
   static String id = 'year';
@@ -125,8 +126,11 @@ class YearPageView extends StatelessWidget {
           ]),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
+            var a = DataManagerInterface(global.kOs);
+            await a.init();
+            print(a.infoFromFiles);
+            print(a.dates);
 
-          var dataManager = DataManager();
           // dataManager.files = [];
           // dataManager.infoFromFiles = {};
           // // await dataManager.init();
@@ -136,12 +140,12 @@ class YearPageView extends StatelessWidget {
           // //   dataManager.infoFromFiles.keys.toList(),
           // //   dataManager.infoFromFiles
           // // ]);
-          // print(dataManager.infoFromFiles);
+
           // // print(global.referenceCoordinate);
 
           // dataManager.infoFromFiles = {};
           // dataManager.files = [];
-          await dataManager.init();
+          // await dataManager.init();
           // dataManager.executeSlowProcesses();
           // print(dataManager.infoFromFiles.entries.elementAt(0));
           // var a = dataManager.infoFromFiles;

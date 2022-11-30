@@ -6,6 +6,8 @@ import 'package:intl/intl.dart';
 import 'package:lateDiary/Data/DataManager.dart';
 import 'package:provider/provider.dart';
 
+import '../Data/DataManagerInterface.dart';
+
 class YearPageStateProvider with ChangeNotifier {
   String date = formatDate(DateTime.now());
   double zoomInAngle = 0.0;
@@ -15,7 +17,7 @@ class YearPageStateProvider with ChangeNotifier {
   int year = DateTime.now().year;
   int index = 0;
 
-  DataManager dataManager;
+  DataManagerInterface dataManager;
   YearPageStateProvider(this.dataManager);
 
   dynamic data;

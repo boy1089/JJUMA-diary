@@ -7,6 +7,8 @@ import 'package:lateDiary/Location/AddressFinder.dart';
 import 'package:lateDiary/Location/Coordinate.dart';
 import 'package:lateDiary/StateProvider/DayPageStateProvider.dart';
 import 'package:lateDiary/Data/DataManager.dart';
+import 'package:lateDiary/Data/DataManagerInterface.dart';
+import 'package:lateDiary/Util/global.dart' as global;
 
 class PolarTimeIndicators extends StatelessWidget {
   var photoDataForPlot;
@@ -15,7 +17,7 @@ class PolarTimeIndicators extends StatelessWidget {
   Map<int, int> selectedIndex = {};
   Map<int, String?> addresses = {};
   List<Placemark?> addressOfFiles = [];
-  DataManager dataManager = DataManager();
+  DataManagerInterface dataManager = DataManagerInterface(global.kOs);
   PolarTimeIndicators(this.photoDataForPlot, this.addresses, {super.key});
 
   void init() async {

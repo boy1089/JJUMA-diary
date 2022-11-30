@@ -1,10 +1,12 @@
 import 'package:lateDiary/Util/DateHandler.dart';
 import 'package:lateDiary/Util/Util.dart';
 import 'package:lateDiary/Data/DataManager.dart';
+import 'package:lateDiary/Data/DataManagerInterface.dart';
+import 'package:lateDiary/Util/global.dart' as global;
 
 class PhotoDataManager {
 
-  DataManager dataManager = DataManager();
+  DataManagerInterface dataManager = DataManagerInterface(global.kOs);
 
 
   Future getPhotoOfDate(String date) async {

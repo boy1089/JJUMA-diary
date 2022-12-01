@@ -315,7 +315,6 @@ Offset calculateTapPositionRefCenter(details, reference, layout) {
 
 Future<List> openFile(filePath) async {
   File f = File(filePath);
-  debugPrint("CSV to List");
   final input = f.openRead();
   final fields = await input
       .transform(utf8.decoder)

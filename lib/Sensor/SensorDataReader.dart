@@ -79,7 +79,6 @@ class SensorDataReader {
 
   Future<List> openFile(filepath) async {
     File f = File(filepath);
-    debugPrint("CSV to List");
     final input = f.openRead();
     final fields = await input
         .transform(utf8.decoder)

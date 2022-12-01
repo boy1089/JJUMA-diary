@@ -19,7 +19,6 @@ class SensorDataManager {
       return [[]];
     }
 
-    print("CSV to List");
     final input = f.openRead();
     final fields = await input
         .transform(utf8.decoder)

@@ -3,7 +3,6 @@ import 'package:lateDiary/Util/DateHandler.dart';
 import 'package:lateDiary/Util/Util.dart';
 import 'dart:math';
 import 'package:intl/intl.dart';
-import 'package:lateDiary/Data/DataManager.dart';
 import 'package:provider/provider.dart';
 
 import '../Data/DataManagerInterface.dart';

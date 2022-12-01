@@ -7,7 +7,6 @@ import 'package:intl/intl.dart';
 import 'dart:io';
 import 'package:csv/csv.dart';
 import 'dart:convert';
-import 'package:lateDiary/Data/DataManager.dart';
 import 'package:glob/glob.dart';
 
 //TODO : move getPhoto and updatePhoto of dayPage to googlePhotoDataManager

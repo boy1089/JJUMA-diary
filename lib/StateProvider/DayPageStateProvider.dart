@@ -8,7 +8,6 @@ import 'package:lateDiary/Util/global.dart' as global;
 import 'package:lateDiary/Location/AddressFinder.dart';
 import 'package:lateDiary/Location/Coordinate.dart';
 import 'package:geocoding/geocoding.dart';
-import 'package:lateDiary/Data/DataManager.dart';
 
 import '../Data/DataManagerInterface.dart';
 

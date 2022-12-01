@@ -101,35 +101,47 @@ class DataRepository {
 
   Future<Map<String, int>> readSummaryOfPhoto() async {
     final Directory directory = await getApplicationDocumentsDirectory();
-    final File file = File('${directory.path}/summaryOfPhoto.csv');
+    final File file = File('${directory.path}/summaryOfPhoto.json');
 
     bool isFileExist = await file.exists();
     if (!isFileExist) return {};
 
-    var data = await openFile(file.path);
-    for (int i = 1; i < data.length; i++) {
-      if (data[i].length < 2) return {};
-      summaryOfPhotoData[data[i][0].toString()] = data[i][1];
-    }
+    // var data = await openFile(file.path);
+    // for (int i = 1; i < data.length; i++) {
+    //   if (data[i].length < 2) return {};
+    //   summaryOfPhotoData[data[i][0].toString()] = data[i][1];
+    // }
+
+    var data = await file.readAsString();
+    if(data == "{}") return {};
+    Map<String, int> mapFromJson = jsonDecode(data);
+    summaryOfPhotoData = mapFromJson;
     return summaryOfPhotoData;
   }
 
   Future<Map<String, double>> readSummaryOfLocation() async {
     final Directory directory = await getApplicationDocumentsDirectory();
-    final File file = File('${directory.path}/summaryOfLocation.csv');
+    final File file = File('${directory.path}/summaryOfLocation.json');
 
     bool isFileExist = await file.exists();
     if (!isFileExist) return {};
 
-    var data = await openFile(file.path);
-    for (int i = 1; i < data.length; i++) {
-      if (data[i].length < 2) return {};
-      if ([null, "null"].contains(data[i][1])) {
-        summaryOfLocationData[data[i][0].toString()] = 0.0;
-        continue;
-      }
-      summaryOfLocationData[data[i][0].toString()] = data[i][1];
-    }
+    // var data = await openFile(file.path);
+    // for (int i = 1; i < data.length; i++) {
+    //   if (data[i].length < 2) return {};
+    //   if ([null, "null"].contains(data[i][1])) {
+    //     summaryOfLocationData[data[i][0].toString()] = 0.0;
+    //     continue;
+    //   }
+    //   summaryOfLocationData[data[i][0].toString()] = data[i][1];
+    // }
+
+    var data = await file.readAsString();
+    print("data : $data");
+    if(data == "{}") return {};
+    Map<String, double> mapFromJson = jsonDecode(data);
+    summaryOfLocationData = mapFromJson;
+
     return summaryOfLocationData;
   }
 
@@ -158,12 +170,12 @@ class DataRepository {
   Future<void> writeSummaryOfPhoto(
       Map<dynamic, int> summaryOfPhotoData, bool overwrite, setOfDates) async {
     final Directory directory = await getApplicationDocumentsDirectory();
-    final File file = File('${directory.path}/summaryOfPhoto.csv');
-
-    if (!((await file.exists())) || overwrite) {
-      print("overwritting");
-      await file.writeAsString('date,numberOfPhoto\n', mode: FileMode.write);
-    }
+    final File file = File('${directory.path}/summaryOfPhoto.json');
+    //
+    // if (!((await file.exists())) || overwrite) {
+    //   print("overwritting");
+    //   await file.writeAsString('date,numberOfPhoto\n', mode: FileMode.write);
+    // }
 
     // String stringToWrite = "";
     //
@@ -175,7 +187,7 @@ class DataRepository {
 
     String stringToWrite = jsonEncode(summaryOfPhotoData);
 
-    await file.writeAsString(stringToWrite, mode: FileMode.append);
+    await file.writeAsString(stringToWrite, mode: FileMode.write);
   }
 
   Future<void> writeSummaryOfLocation(
@@ -183,11 +195,11 @@ class DataRepository {
       bool overwrite,
       setOfDates) async {
     final Directory directory = await getApplicationDocumentsDirectory();
-    final File file = File('${directory.path}/summaryOfLocation.csv');
+    final File file = File('${directory.path}/summaryOfLocation.json');
 
-    if (!((await file.exists())) || overwrite) {
-      await file.writeAsString('date,distance\n', mode: FileMode.write);
-    }
+    // if (!((await file.exists())) || overwrite) {
+    //   await file.writeAsString('date,distance\n', mode: FileMode.write);
+    // }
 
     // String stringToWrite = "";
     // for (int i = 0; i < setOfDates.length; i++) {
@@ -198,6 +210,6 @@ class DataRepository {
     //   stringToWrite += '$date,${summaryOfLocationData[date]}\n';
     // }
     String stringToWrite = jsonEncode(summaryOfLocationData);
-    await file.writeAsString(stringToWrite, mode: FileMode.append);
+    await file.writeAsString(stringToWrite, mode: FileMode.write);
   }
 }

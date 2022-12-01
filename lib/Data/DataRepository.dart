@@ -114,8 +114,8 @@ class DataRepository {
 
     var data = await file.readAsString();
     if(data == "{}") return {};
-    Map<String, int> mapFromJson = jsonDecode(data);
-    summaryOfPhotoData = mapFromJson;
+    Map<String, dynamic> mapFromJson = jsonDecode(data);
+    summaryOfPhotoData = Map<String, int>.from(mapFromJson);
     return summaryOfPhotoData;
   }
 
@@ -125,23 +125,10 @@ class DataRepository {
 
     bool isFileExist = await file.exists();
     if (!isFileExist) return {};
-
-    // var data = await openFile(file.path);
-    // for (int i = 1; i < data.length; i++) {
-    //   if (data[i].length < 2) return {};
-    //   if ([null, "null"].contains(data[i][1])) {
-    //     summaryOfLocationData[data[i][0].toString()] = 0.0;
-    //     continue;
-    //   }
-    //   summaryOfLocationData[data[i][0].toString()] = data[i][1];
-    // }
-
     var data = await file.readAsString();
-    print("data : $data");
     if(data == "{}") return {};
-    Map<String, double> mapFromJson = jsonDecode(data);
-    summaryOfLocationData = mapFromJson;
-
+    Map<String, dynamic> mapFromJson = jsonDecode(data);
+    summaryOfLocationData = Map<String, double>.from(mapFromJson);
     return summaryOfLocationData;
   }
 

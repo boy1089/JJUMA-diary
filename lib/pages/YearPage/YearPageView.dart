@@ -116,17 +116,17 @@ class YearPageView extends StatelessWidget {
           ]),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          var c = DataRepository();
-          c.writeInfoAsJson({}, true);
+          // var c = DataRepository();
+          // c.writeInfoAsJson({}, true);
           // await c.writeSummaryOfLocation(
           //     {}, true, []);
           // var summaryOfPhoto = await c.readSummaryOfPhoto();
           // print(summaryOfPhoto);
           // var summaryOfLocation = await c.readSummaryOfLocation();
           //
-          // var a = DataManagerInterface(global.kOs);
-          // await a.init();
-          // await c.writeInfoAsJson(a.infoFromFiles, true);
+          var a = DataManagerInterface(global.kOs);
+          await a.init();
+          // await c.writseInfoAsJson(a.infoFromFiles, true);
           // a.filesNotUpdated = a.infoFromFiles.keys.toList();
           // a.executeSlowProcesses();
 

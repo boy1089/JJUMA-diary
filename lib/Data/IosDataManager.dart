@@ -117,7 +117,7 @@ class IosDataManager extends ChangeNotifier implements DataManagerInterface {
             [setOfDates, summaryOfPhotoData]);
 
         await dataRepository.writeInfoAsJson(infoFromFiles, true);
-        await dataRepository.writeSummaryOfPhoto2(
+        await dataRepository.writeSummaryOfPhoto(
             summaryOfPhotoData, true, setOfDates);
         notifyListeners();
       }
@@ -125,7 +125,7 @@ class IosDataManager extends ChangeNotifier implements DataManagerInterface {
       if (i % 10 == 0) {
         summaryOfLocationData =
             await updateSummaryOfLocationDataFromInfo2_compute([infoFromFiles]);
-        await dataRepository.writeSummaryOfLocation2(
+        await dataRepository.writeSummaryOfLocation(
             summaryOfLocationData, true, setOfDates);
       }
     }
@@ -138,10 +138,10 @@ class IosDataManager extends ChangeNotifier implements DataManagerInterface {
     print("executing slow process..4");
     await dataRepository.writeInfoAsJson(infoFromFiles, true);
     print("executing slow process..5");
-    await dataRepository.writeSummaryOfLocation2(
+    await dataRepository.writeSummaryOfLocation(
         summaryOfLocationData, true, setOfDates);
     print("executing slow process..6");
-    await dataRepository.writeSummaryOfPhoto2(
+    await dataRepository.writeSummaryOfPhoto(
         summaryOfPhotoData, true, setOfDates);
 
     notifyListeners();

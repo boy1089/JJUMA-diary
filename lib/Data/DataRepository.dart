@@ -150,11 +150,12 @@ class DataRepository {
         continue;
       }
       test[filename] = mapOfInfo;
+      if(i%1000==0) print("$i / ${filenames.length}");
     }
     file.writeAsString(jsonEncode(test));
   }
 
-  Future<void> writeSummaryOfPhoto2(
+  Future<void> writeSummaryOfPhoto(
       Map<dynamic, int> summaryOfPhotoData, bool overwrite, setOfDates) async {
     final Directory directory = await getApplicationDocumentsDirectory();
     final File file = File('${directory.path}/summaryOfPhoto.csv');
@@ -164,16 +165,20 @@ class DataRepository {
       await file.writeAsString('date,numberOfPhoto\n', mode: FileMode.write);
     }
 
-    String stringToWrite = "";
-    for (int i = 0; i < setOfDates.length; i++) {
-      if (i % 100 == 0) print("writingInfo.. $i/${setOfDates.length}");
-      String date = setOfDates.elementAt(i);
-      stringToWrite += '${date},${summaryOfPhotoData[date]}\n';
-    }
+    // String stringToWrite = "";
+    //
+    // for (int i = 0; i < setOfDates.length; i++) {
+    //   if (i % 100 == 0) print("writingSummaryOfPHoto.. $i/${setOfDates.length}");
+    //   String date = setOfDates.elementAt(i);
+    //   stringToWrite += '${date},${summaryOfPhotoData[date]}\n';
+    // }
+
+    String stringToWrite = jsonEncode(summaryOfPhotoData);
+
     await file.writeAsString(stringToWrite, mode: FileMode.append);
   }
 
-  Future<void> writeSummaryOfLocation2(
+  Future<void> writeSummaryOfLocation(
       Map<String, double> summaryOfLocationData,
       bool overwrite,
       setOfDates) async {
@@ -184,14 +189,15 @@ class DataRepository {
       await file.writeAsString('date,distance\n', mode: FileMode.write);
     }
 
-    String stringToWrite = "";
-    for (int i = 0; i < setOfDates.length; i++) {
-      if (i % 100 == 0)
-        print("writingSummaryOfLocation.. $i/${setOfDates.length}");
-
-      String date = setOfDates.elementAt(i);
-      stringToWrite += '$date,${summaryOfLocationData[date]}\n';
-    }
+    // String stringToWrite = "";
+    // for (int i = 0; i < setOfDates.length; i++) {
+    //   if (i % 100 == 0)
+    //     print("writingSummaryOfLocation.. $i/${setOfDates.length}");
+    //
+    //   String date = setOfDates.elementAt(i);
+    //   stringToWrite += '$date,${summaryOfLocationData[date]}\n';
+    // }
+    String stringToWrite = jsonEncode(summaryOfLocationData);
     await file.writeAsString(stringToWrite, mode: FileMode.append);
   }
 }

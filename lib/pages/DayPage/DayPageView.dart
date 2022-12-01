@@ -1,29 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:lateDiary/Data/DataManagerInterface.dart';
+import 'package:lateDiary/StateProvider/DayPageStateProvider.dart';
 import 'package:lateDiary/Util/Util.dart';
-import 'package:provider/provider.dart';
 import 'package:lateDiary/pages/DayPage/polarPhotoImageContainer.dart';
 import 'package:lateDiary/pages/DayPage/PolarPhotoDataPlot.dart';
 import 'package:lateDiary/Util/global.dart' as global;
 import 'package:intl/intl.dart';
 import 'package:lateDiary/pages/DayPage/PolarTimeIndicators.dart';
 import 'package:lateDiary/Util/DateHandler.dart';
-
 import 'package:lateDiary/CustomWidget/ZoomableWidgets.dart';
-import 'package:flutter_keyboard_size/flutter_keyboard_size.dart';
-
-import 'package:lateDiary/StateProvider/DayPageStateProvider.dart';
-import 'package:lateDiary/StateProvider/NavigationIndexStateProvider.dart';
-
 import 'package:lateDiary/CustomWidget/NoteEditor.dart';
 import 'package:lateDiary/Util/layouts.dart';
 
 class DayPageView extends StatefulWidget {
   static String id = '/daily';
   String date = formatDate(DateTime.now());
-  var product;
+  DayPageStateProvider product;
   @override
-  State<DayPageView> createState() => _DayPageViewState();
+  State<DayPageView> createState() => _DayPageViewState(product);
 
   DayPageView(this.date, this.product, {Key? key}) : super(key: key);
 }
@@ -33,14 +26,14 @@ class _DayPageViewState extends State<DayPageView> {
   Future readData = Future.delayed(const Duration(seconds: 1));
   FocusNode focusNode = FocusNode();
   final myTextController = TextEditingController();
-  var product;
-  // late var context;
+  DayPageStateProvider product;
+
+  _DayPageViewState(this.product);
 
   @override
   void initState() {
     super.initState();
     date = widget.date;
-    product = widget.product;
     product.setDate(date);
     readData = _fetchData();
   }

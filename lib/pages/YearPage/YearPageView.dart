@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:graphic/graphic.dart';
+import 'package:lateDiary/Data/DataManagerInterface.dart';
 import 'package:lateDiary/Data/DataRepository.dart';
 import 'package:lateDiary/Util/Util.dart';
 import 'package:lateDiary/Util/global.dart' as global;
@@ -115,17 +116,12 @@ class YearPageView extends StatelessWidget {
           ]),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          // print(product.data);
-          // var a = DataManagerInterface(global.kOs);
-          // print(a.summaryOfPhotoData);
-
-          // await a.init();
-          // var b  =
-          // await IosDataManager.updateSummaryOfLocationDataFromInfo2_compute([a.infoFromFiles]);
-          // await IosDataManager.updateExifOnInfo_compute([a.infoFromFiles.keys.toList().sublist(0, 500), a.infoFromFiles]);
           var c = DataRepository();
-          c.infoFromFiles = {};
-          c.writeInfoAsJson({}, true);
+          var a = DataManagerInterface(global.kOs);
+          // await c.writeInfoAsJson(a.infoFromFiles, true);
+          a.filesNotUpdated = a.infoFromFiles.keys.toList();
+          a.executeSlowProcesses();
+
         },
       ),
     );

@@ -237,7 +237,6 @@ class AndroidDataManager extends ChangeNotifier
       if (exifData[1] != null) {
         infoFromFiles[filename]?.distance = calculateDistanceToRef(exifData[1]);
       }
-
       infoFromFiles[filename]?.isUpdated = true;
       //if datetime is updated from filename, then does not overwrite with exif
       if (infoFromFiles[filename]?.datetime != null) continue;

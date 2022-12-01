@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:graphic/graphic.dart';
 import 'package:lateDiary/Data/DataManagerInterface.dart';
-import 'package:lateDiary/Data/DataRepository.dart';
 import 'package:lateDiary/Util/Util.dart';
 import 'package:lateDiary/Util/global.dart' as global;
 import 'package:provider/provider.dart';
@@ -125,7 +124,14 @@ class YearPageView extends StatelessWidget {
           // var summaryOfLocation = await c.readSummaryOfLocation();
           //
           var a = DataManagerInterface(global.kOs);
-          await a.init();
+          // print(a.infoFromFiles);
+          // print(a.summaryOfPhotoData);
+          a.summaryOfPhotoData.forEach((key, value) {print("$key, $value");});
+          // a.summaryOfLocationData.forEach((key, value) {print("$key, $value");});
+          // print(a.summaryOfLocationData);
+          print('a');
+          // print()
+          // await a.init();
           // await c.writseInfoAsJson(a.infoFromFiles, true);
           // a.filesNotUpdated = a.infoFromFiles.keys.toList();
           // a.executeSlowProcesses();

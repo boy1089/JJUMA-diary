@@ -46,7 +46,6 @@ class YearPageView extends StatelessWidget {
       (value) async {
 
 
-        print("clicked, $value");
         if (value == null) return;
         if (!product.isZoomIn) return;
         var provider =
@@ -58,16 +57,12 @@ class YearPageView extends StatelessWidget {
           case 'tapUp':
             DateTime date = DateTime.parse(product.availableDates
                 .elementAt(int.parse(value.values.first.first.toString())));
-            print("clicked b");
             if (!product.isZoomIn) return;
             provider.setNavigationIndex(navigationIndex.day);
-            print("clicke c");
 
             provider.setDate(date);
-            print("clicked d");
             Provider.of<DayPageStateProvider>(context, listen: false)
                 .setAvailableDates(product.availableDates);
-            print("clicked e");
 
             break;
         }
@@ -193,7 +188,9 @@ class YearPageChart {
                 .kColorForYearPage[tuple['distance'].toInt()]
                 .withAlpha((50 + tuple['value']).toInt()),
             updaters: {
-              'tapDown': {true: (color) => color.withAlpha(150)}
+              'tapDown': {true: (color) => color.withAlpha(150)},
+              'tapUp': {true: (color) => color.withAlpha(150)}
+
             },
           ),
           selectionChannel: heatmapChannel,

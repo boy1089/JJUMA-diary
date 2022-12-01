@@ -21,11 +21,11 @@ import 'package:lateDiary/Util/layouts.dart';
 class DayPageView extends StatefulWidget {
   static String id = '/daily';
   String date = formatDate(DateTime.now());
-
+  var product;
   @override
   State<DayPageView> createState() => _DayPageViewState();
 
-  DayPageView(this.date, {Key? key}) : super(key: key);
+  DayPageView(this.date, this.product, {Key? key}) : super(key: key);
 }
 
 class _DayPageViewState extends State<DayPageView> {
@@ -33,103 +33,100 @@ class _DayPageViewState extends State<DayPageView> {
   Future readData = Future.delayed(const Duration(seconds: 1));
   FocusNode focusNode = FocusNode();
   final myTextController = TextEditingController();
+  var product;
+  // late var context;
 
   @override
   void initState() {
     super.initState();
     date = widget.date;
-    Provider.of<DayPageStateProvider>(context, listen: false).setDate(date);
-    Provider.of<NavigationIndexProvider>(context, listen: false)
-        .setDate(formatDateString(date));
+    product = widget.product;
+    product.setDate(date);
     readData = _fetchData();
   }
 
   Future<List<dynamic>> _fetchData() async {
-    var provider = Provider.of<DayPageStateProvider>(context, listen: false);
-    await provider.updateDataForUi();
-    myTextController.text = provider.note;
-    return provider.photoForPlot;
+    await product.updateDataForUi();
+    myTextController.text = product.note;
+    return product.photoForPlot;
   }
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<DayPageStateProvider>(builder: (context, product, child) {
-      return Scaffold(
-        body: Stack(
-            alignment:
-                product.isZoomIn ? Alignment.center : Alignment.bottomCenter,
-            children: [
-              FutureBuilder(
-                  future: readData,
-                  builder: (BuildContext context, AsyncSnapshot snapshot) {
-                    return ZoomableWidgets(
-                        layout: layout_dayPage,
-                        isZoomIn: product.isZoomIn,
-                        provider: product,
-                        gestures: {
-                          AllowMultipleGestureRecognizer:
-                              GestureRecognizerFactoryWithHandlers<
-                                      AllowMultipleGestureRecognizer>(
-                                  () => AllowMultipleGestureRecognizer(),
-                                  (AllowMultipleGestureRecognizer instance) {
-                            instance.onTapUp =
-                                (details) => onTap(details, context, product);
-                          }),
-                          AllowMultipleGestureRecognizer2:
-                              GestureRecognizerFactoryWithHandlers<
-                                  AllowMultipleGestureRecognizer2>(
-                            () => AllowMultipleGestureRecognizer2(),
-                            (AllowMultipleGestureRecognizer2 instance) {
-                              instance.onUpdate =
-                                  (details) => onPan(details, context, product);
-                            },
-                          )
-                        },
-                        widgets: [
-                          PolarTimeIndicators(
-                                  product.photoForPlot, product.addresses)
-                              .build(context),
-                          PolarPhotoDataPlot(product.photoDataForPlot)
-                              .build(context),
-                          polarPhotoImageContainers(product.photoForPlot)
-                              .build(context),
-                        ]).build(context);
-                  }),
-              NoteEditor(layout_dayPage, focusNode, product, myTextController)
-                  .build(context),
-              Positioned(
-                  top: 30,
-                  child: Text(
-                      "${DateFormat('EEEE').format(DateTime.parse(date))}/"
-                      "${DateFormat('MMM').format(DateTime.parse(date))} "
-                      "${DateFormat('dd').format(DateTime.parse(date))}/"
-                      "${DateFormat('yyyy').format(DateTime.parse(date))}",
-                      style: Theme.of(context).textTheme.headline3)),
-            ]),
-        floatingActionButton: FloatingActionButton(
-          mini: true,
-          backgroundColor: global.kMainColor_warm,
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(15.0)),
-          ),
-          onPressed: () async {
-            // await product.updatePhotoData();
-            // print(product.photoData);
-            var a = DataManagerInterface(global.kOs);
-            a.notifyListeners();
-            // if (focusNode.hasFocus) {
-            //   dismissKeyboard(product);
-            // } else {
-            //   showKeyboard();
-            // }
-            // setState(() {});
-          },
-          child:
-              focusNode.hasFocus ? const Text("save") : const Icon(Icons.add),
+    return Scaffold(
+      body: Stack(
+          alignment:
+              product.isZoomIn ? Alignment.center : Alignment.bottomCenter,
+          children: [
+            FutureBuilder(
+                future: readData,
+                builder: (BuildContext context, AsyncSnapshot snapshot) {
+                  return ZoomableWidgets(
+                      layout: layout_dayPage,
+                      isZoomIn: product.isZoomIn,
+                      provider: product,
+                      gestures: {
+                        AllowMultipleGestureRecognizer:
+                            GestureRecognizerFactoryWithHandlers<
+                                    AllowMultipleGestureRecognizer>(
+                                () => AllowMultipleGestureRecognizer(),
+                                (AllowMultipleGestureRecognizer instance) {
+                          instance.onTapUp =
+                              (details) => onTap(details, context, product);
+                        }),
+                        AllowMultipleGestureRecognizer2:
+                            GestureRecognizerFactoryWithHandlers<
+                                AllowMultipleGestureRecognizer2>(
+                          () => AllowMultipleGestureRecognizer2(),
+                          (AllowMultipleGestureRecognizer2 instance) {
+                            instance.onUpdate =
+                                (details) => onPan(details, context, product);
+                          },
+                        )
+                      },
+                      widgets: [
+                        PolarTimeIndicators(
+                                product.photoForPlot, product.addresses)
+                            .build(context),
+                        PolarPhotoDataPlot(product.photoDataForPlot)
+                            .build(context),
+                        polarPhotoImageContainers(product.photoForPlot)
+                            .build(context),
+                      ]).build(context);
+                }),
+            NoteEditor(layout_dayPage, focusNode, product, myTextController)
+                .build(context),
+            Positioned(
+                top: 30,
+                child: Text(
+                    "${DateFormat('EEEE').format(DateTime.parse(date))}/"
+                    "${DateFormat('MMM').format(DateTime.parse(date))} "
+                    "${DateFormat('dd').format(DateTime.parse(date))}/"
+                    "${DateFormat('yyyy').format(DateTime.parse(date))}",
+                    style: Theme.of(context).textTheme.headline3)),
+          ]),
+      floatingActionButton: FloatingActionButton(
+        mini: true,
+        backgroundColor: global.kMainColor_warm,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(15.0)),
         ),
-        resizeToAvoidBottomInset: false,
-      );
-    });
+        onPressed: () async {
+          // await product.updatePhotoData();
+          // print(product.photoData);
+          // var a = DataManagerInterface(global.kOs);
+          // a.notifyListeners();
+          if (focusNode.hasFocus) {
+            dismissKeyboard(product);
+          } else {
+            showKeyboard();
+          }
+          setState(() {});
+        },
+        child: focusNode.hasFocus ? const Text("save") : const Icon(Icons.add),
+      ),
+      resizeToAvoidBottomInset: false,
+    );
   }
 
   void onTap(details, context, product) {

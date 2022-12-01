@@ -15,22 +15,24 @@ class DayPage extends StatelessWidget {
     var navigation =
         Provider.of<NavigationIndexProvider>(context, listen: false);
     return Scaffold(
-        body: PageView.builder(
-            dragStartBehavior: DragStartBehavior.down,
-            physics: dayPageStateProvider.isZoomIn
-                ? NeverScrollableScrollPhysics()
-                : BouncingScrollPhysics(),
-            controller: PageController(
-                initialPage: dayPageStateProvider.availableDates
-                    .indexOf(navigation.date)),
-            itemCount: dayPageStateProvider.availableDates.length,
-            reverse: false,
-            itemBuilder: (BuildContext context, int index) {
-              String date = dayPageStateProvider.availableDates[index];
-              // return DayPageViewStateless(date, context);
-              return DayPageView(date);
+        body: Consumer<DayPageStateProvider>(
+          builder : (context, product, chile) => PageView.builder(
+              dragStartBehavior: DragStartBehavior.down,
+              physics: product.isZoomIn
+                  ? NeverScrollableScrollPhysics()
+                  : BouncingScrollPhysics(),
+              controller: PageController(
+                  initialPage: product.availableDates
+                      .indexOf(navigation.date)),
+              itemCount: product.availableDates.length,
+              reverse: false,
+              itemBuilder: (BuildContext context, int index) {
+                String date = product.availableDates[index];
+                // return DayPageViewStateless(date, context);
+                return DayPageView(date, product);
 
-            }));
+              }),
+        ));
   }
 
 

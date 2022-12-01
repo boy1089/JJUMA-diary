@@ -52,7 +52,7 @@ class DayPageStateProvider with ChangeNotifier {
 
     note = await noteManager.readNote(date);
     print("updateUi done");
-    notifyListeners();
+    // notifyListeners();
   }
 
   Future updatePhotoData() async {

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lateDiary/Util/global.dart' as global;
 import 'package:lateDiary/Util/Util.dart';
 
-class ZoomableWidgets {
+class ZoomableWidgets extends StatelessWidget{
   bool isZoomIn = false;
   List<Widget> widgets = [];
   Map layout = {};
@@ -20,6 +20,7 @@ class ZoomableWidgets {
     this.gestures = gestures;
   }
   late double graphSize = physicalWidth - 2 * global.kMarginForYearPage;
+
   @override
   Widget build(BuildContext context) {
     return AnimatedPositioned(

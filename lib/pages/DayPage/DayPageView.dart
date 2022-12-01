@@ -109,12 +109,14 @@ class _DayPageViewState extends State<DayPageView> {
           // print(product.photoData);
           // var a = DataManagerInterface(global.kOs);
           // a.notifyListeners();
-          if (focusNode.hasFocus) {
-            dismissKeyboard(product);
-          } else {
-            showKeyboard();
-          }
-          setState(() {});
+          print(product.photoDataForPlot);
+          // print(product.photoData);
+          // if (focusNode.hasFocus) {
+          //   dismissKeyboard(product);
+          // } else {
+          //   showKeyboard();
+          // }
+          // setState(() {});
         },
         child: focusNode.hasFocus ? const Text("save") : const Icon(Icons.add),
       ),

@@ -4,9 +4,7 @@ import 'package:lateDiary/Data/DataManagerInterface.dart';
 import 'package:lateDiary/Util/global.dart' as global;
 
 class PhotoDataManager {
-
   DataManagerInterface dataManager = DataManagerInterface(global.kOs);
-
 
   Future getPhotoOfDate(String date) async {
     List<int?> indexOfDate = List<int?>.generate(dataManager.dates.length, (i) {
@@ -24,11 +22,14 @@ class PhotoDataManager {
         (i) => formatDatetime(
             dataManager.datetimes.elementAt(indexOfDate.elementAt(i)!)));
 
+    List distanceOfDate = List.generate(filesOfDate.length,
+        (i) => floorDistance(dataManager.infoFromFiles[filesOfDate[i]]!.distance));
 
-    List list = transpose([dateOfDate, filesOfDate]);
+    List list = transpose([dateOfDate, filesOfDate, distanceOfDate]);
+    // List list = transpose([dateOfDate, filesOfDate]);
+
     list.sort((a, b) => int.parse(a[0].substring(9, 13))
         .compareTo(int.parse(b[0].substring(9, 13))));
-
     print("getPhotoOfDate, $list");
 
     return transpose(list);

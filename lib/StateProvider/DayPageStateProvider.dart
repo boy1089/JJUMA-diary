@@ -60,11 +60,12 @@ class DayPageStateProvider with ChangeNotifier {
     return photoData;
   }
 
+
   List selectPhotoForPlot(List input, bool sampleImages) {
     if (input[0] == null) return photoForPlot;
     if (input[0].length == 0) return photoForPlot;
 
-    photoForPlot.add([input.first[0], input.first[1], input.first[2], true]);
+    photoForPlot.add([input.first[0], input.first[1], input.first[2], input.first[3], true]);
     int j = 0;
     int k = 0;
 
@@ -87,7 +88,7 @@ class DayPageStateProvider with ChangeNotifier {
         bool isGoodForZoomOut =
             timeDifferenceBetweenImagesForZoomOut > timeDiffForZoomOut;
         photoForPlot
-            .add([input[i][0], input[i][1], input[i][2], isGoodForZoomOut]);
+            .add([input[i][0], input[i][1], input[i][2], input[i][3], isGoodForZoomOut]);
         j += 1;
 
         if (isGoodForZoomOut) {
@@ -96,7 +97,7 @@ class DayPageStateProvider with ChangeNotifier {
       }
     }
 
-    photoForPlot.add([input.last[0], input.last[1], input.last[2], true]);
+    photoForPlot.add([input.last[0], input.last[1], input.last[2], input.last[3], true]);
     return photoForPlot;
   }
 

@@ -53,18 +53,29 @@ class PolarPhotoDataPlot {
         data: dataForPlot,
         elements: [
           PointElement(
-              size: SizeAttr(
-                  variable: 'dummy',
-                  values: isDataValid
-                      ? [
-                          global.kSize_polarPlotPhotoScatter,
-                          global.kSize_polarPlotPhotoScatter + 1
-                        ]
-                      : [0, 1]),
-              color: ColorAttr(variable: 'time', values: [
-                global.kColor_polarPlotPhotoScatter,
-                global.kColor_polarPlotPhotoScatter,
-              ])),
+            size: SizeAttr(
+                variable: 'dummy',
+                values: isDataValid
+                    ? [
+                        global.kSize_polarPlotPhotoScatter,
+                        global.kSize_polarPlotPhotoScatter + 1
+                      ]
+                    : [0, 1]),
+            // color: ColorAttr(variable: 'time', values: [
+            //   global.kColor_polarPlotPhotoScatter,
+            //   global.kColor_polarPlotPhotoScatter,
+            // ])
+            color: ColorAttr(
+                // variable: 'time',
+                encoder: (tuple) =>
+                    global.kColorForYearPage[tuple['distance'].toInt()],
+                // values: [
+                //   global.kColor_polarPlotPhotoScatter,
+                //   global.kColor_polarPlotPhotoScatter,
+                // ]
+            )
+            ,
+          ),
         ],
         variables: {
           'time': Variable(
@@ -72,8 +83,11 @@ class PolarPhotoDataPlot {
             scale: LinearScale(min: 0, max: 24, tickCount: 5),
           ),
           'dummy': Variable(
-            accessor: (List datum) => datum[2] as num,
+            accessor: (List datum) => datum[3] as num,
           ),
+          'distance': Variable(
+            accessor: (List datum) => datum[2] as double,
+          )
         },
         coord: PolarCoord()..radiusRange = [0.0, 1.5],
         axes: [

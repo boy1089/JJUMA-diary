@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:graphic/graphic.dart';
 import 'package:lateDiary/Data/DataManagerInterface.dart';
 import 'package:lateDiary/Util/Util.dart';
@@ -135,19 +136,7 @@ class YearPageView extends StatelessWidget {
           // var summaryOfLocation = await c.readSummaryOfLocation();
           //
           var a = DataManagerInterface(global.kOs);
-          // print(a.infoFromFiles);
-          // print(a.summaryOfPhotoData);
-          a.summaryOfPhotoData.forEach((key, value) {
-            print("$key, $value");
-          });
-          // a.summaryOfLocationData.forEach((key, value) {print("$key, $value");});
-          // print(a.summaryOfLocationData);
-          print('a');
-          // print()
-          // await a.init();
-          // await c.writseInfoAsJson(a.infoFromFiles, true);
-          // a.filesNotUpdated = a.infoFromFiles.keys.toList();
-          // a.executeSlowProcesses();
+          print(product.data);
         },
       ),
     );
@@ -191,51 +180,51 @@ class YearPageChart {
               'tapDown': {true: (color) => color.withAlpha(150)},
               'tapUp': {true: (color) => color.withAlpha(150)}
 
-            },
+              },
+            ),
+            selectionChannel: heatmapChannel,
           ),
-          selectionChannel: heatmapChannel,
-        ),
-      ],
-      variables: {
-        'week': Variable(
-          accessor: (List datum) => datum[0] + 0.5
-              as num, // 0.5 is added to match the tap area and dot
-          scale: LinearScale(min: 0, max: 52, tickCount: 12),
-        ),
-        'day': Variable(
-          accessor: (List datum) => datum[1] as num,
-        ),
-        'value': Variable(
-          accessor: (List datum) => datum[2] as num,
-        ),
-        'distance': Variable(
-          accessor: (List datum) =>
-              // math.log(datum[3]) + 0.1 as num,
-              datum[3] as num,
-        ),
-      },
-      selections: {
-        'tapDown': PointSelection(
-          on: {GestureType.tapDown},
-          toggle: true,
-          nearest: false,
-          testRadius: product.isZoomIn ? 10 : 0,),
+        ],
+        variables: {
+          'week': Variable(
+            accessor: (List datum) => datum[0] + 0.5
+                as num, // 0.5 is added to match the tap area and dot
+            scale: LinearScale(min: 0, max: 52, tickCount: 12),
+          ),
+          'day': Variable(
+            accessor: (List datum) => datum[1] as num,
+          ),
+          'value': Variable(
+            accessor: (List datum) => datum[2] as num,
+          ),
+          'distance': Variable(
+            accessor: (List datum) =>
+                // math.log(datum[3]) + 0.1 as num,
+                datum[3] as num,
+          ),
+        },
+        selections: {
+          'tapDown': PointSelection(
+            on: {GestureType.tapDown},
+            toggle: true,
+            nearest: false,
+            testRadius: product.isZoomIn ? 10 : 0,),
 
-        'tapUp': PointSelection(
-        on: {GestureType.tapUp},
-          toggle: true,
-          nearest: false,
-          testRadius: product.isZoomIn ? 10 : 0,
-        )
-      },
-      coord: PolarCoord()
-        ..radiusRange = [1 - global.kRatioOfScatterInYearPage, 1],
-      axes: [
-        Defaults.circularAxis
-          ..grid = null
-          ..label = null
-      ],
-    );
+          'tapUp': PointSelection(
+          on: {GestureType.tapUp},
+            toggle: true,
+            nearest: false,
+            testRadius: product.isZoomIn ? 10 : 0,
+          )
+        },
+        coord: PolarCoord()
+          ..radiusRange = [1 - global.kRatioOfScatterInYearPage, 1],
+        axes: [
+          Defaults.circularAxis
+            ..grid = null
+            ..label = null
+        ],
+      );
   }
 }
 

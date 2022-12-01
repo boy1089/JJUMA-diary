@@ -123,7 +123,7 @@ class polarPhotoImageContainer {
               // duration: Duration(milliseconds: 100),
               angle: isZoomIn ? angle : 0,
               child: Offstage(
-                offstage: isZoomIn ? false : !photoDataForPlot[3],
+                offstage: isZoomIn ? false : !photoDataForPlot[4],
                 child: RawGestureDetector(
                     gestures: {
                       AllowMultipleGestureRecognizer:
@@ -173,7 +173,7 @@ class polarPhotoImageContainer {
                             : AssetEntityImage(
                                 photoDataForPlot[1],
                                 isOriginal: isZoomInImage,
-                          fit : BoxFit.cover,
+                          fit : BoxFit.fitHeight,
                               )
                         )
                     ),

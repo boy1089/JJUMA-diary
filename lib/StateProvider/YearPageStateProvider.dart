@@ -64,8 +64,10 @@ class YearPageStateProvider with ChangeNotifier {
           ? 200
           : dataManager.summaryOfPhotoData[date]!;
       double distance = 4;
+
       if (dataManager.summaryOfLocationData.containsKey(date))
         distance = floorDistance(dataManager.summaryOfLocationData[date]!);
+
       return [
         (days / 7).floor(),
         days % 7,
@@ -73,6 +75,21 @@ class YearPageStateProvider with ChangeNotifier {
         distance,
       ];
     });
+
+    //code to filter the data with small amount of images.
+    // List<List<dynamic>> temp = [];
+    // for(int i = 0; i < data.length; i++){
+    //   if(data[i][2]>10) temp.add(data[i]);
+    // }
+    // data = temp;
+
+    // List<List<dynamic>> temp = [];
+    // for(int i = 0; i < data.length; i++){
+    //   if(data[i][3]==0) temp.add(data[i]);
+    // }
+    // data = temp;
+
+
 
     List<int> dummy3 = List<int>.generate(transpose(data)[0].length,
         (index) => int.parse(transpose(data)[2][index].toString()));

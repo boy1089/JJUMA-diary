@@ -25,7 +25,7 @@ class YearPageView extends StatelessWidget {
   final myTextController = TextEditingController();
 
   var heatmapChannel = StreamController<Selected?>.broadcast();
-
+  bool isHeatMapChannelListening = false;
   YearPageView(int year, product, context) {
     this.year = year;
     this.product = product;
@@ -34,28 +34,44 @@ class YearPageView extends StatelessWidget {
   }
 
   void initState() {
-    addListenerToChart();
+    if(!isHeatMapChannelListening)
+      addListenerToChart();
     product.setYear(year, notify: false);
     noteManager.setNotesOfYear(year);
   }
 
   void addListenerToChart() {
+    isHeatMapChannelListening = true;
     heatmapChannel.stream.listen(
-      (value) {
-        var provider =
-            Provider.of<NavigationIndexProvider>(context, listen: false);
+      (value) async {
 
+
+        print("clicked, $value");
         if (value == null) return;
         if (!product.isZoomIn) return;
+        var provider =
+        Provider.of<NavigationIndexProvider>(context, listen: false);
 
-        DateTime date = DateTime.parse(product.availableDates
-            .elementAt(int.parse(value.values.first.first.toString())));
+        switch (value.keys.elementAt(0)){
+          case "tapDown":
+            break;
+          case 'tapUp':
+            DateTime date = DateTime.parse(product.availableDates
+                .elementAt(int.parse(value.values.first.first.toString())));
+            print("clicked b");
+            if (!product.isZoomIn) return;
+            provider.setNavigationIndex(navigationIndex.day);
+            print("clicke c");
 
-        if (!product.isZoomIn) return;
-        provider.setNavigationIndex(navigationIndex.day);
-        provider.setDate(date);
-        Provider.of<DayPageStateProvider>(context, listen: false)
-            .setAvailableDates(product.availableDates);
+            provider.setDate(date);
+            print("clicked d");
+            Provider.of<DayPageStateProvider>(context, listen: false)
+                .setAvailableDates(product.availableDates);
+            print("clicked e");
+
+            break;
+        }
+
       },
     );
   }
@@ -126,7 +142,9 @@ class YearPageView extends StatelessWidget {
           var a = DataManagerInterface(global.kOs);
           // print(a.infoFromFiles);
           // print(a.summaryOfPhotoData);
-          a.summaryOfPhotoData.forEach((key, value) {print("$key, $value");});
+          a.summaryOfPhotoData.forEach((key, value) {
+            print("$key, $value");
+          });
           // a.summaryOfLocationData.forEach((key, value) {print("$key, $value");});
           // print(a.summaryOfLocationData);
           print('a');
@@ -135,7 +153,6 @@ class YearPageView extends StatelessWidget {
           // await c.writseInfoAsJson(a.infoFromFiles, true);
           // a.filesNotUpdated = a.infoFromFiles.keys.toList();
           // a.executeSlowProcesses();
-
         },
       ),
     );
@@ -175,6 +192,9 @@ class YearPageChart {
             encoder: (tuple) => global
                 .kColorForYearPage[tuple['distance'].toInt()]
                 .withAlpha((50 + tuple['value']).toInt()),
+            updaters: {
+              'tapDown': {true: (color) => color.withAlpha(150)}
+            },
           ),
           selectionChannel: heatmapChannel,
         ),
@@ -198,8 +218,14 @@ class YearPageChart {
         ),
       },
       selections: {
-        'choose': PointSelection(
-          on: {GestureType.tapUp},
+        'tapDown': PointSelection(
+          on: {GestureType.tapDown},
+          toggle: true,
+          nearest: false,
+          testRadius: product.isZoomIn ? 10 : 0,),
+
+        'tapUp': PointSelection(
+        on: {GestureType.tapUp},
           toggle: true,
           nearest: false,
           testRadius: product.isZoomIn ? 10 : 0,

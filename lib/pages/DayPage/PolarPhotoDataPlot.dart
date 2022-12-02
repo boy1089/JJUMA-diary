@@ -66,15 +66,14 @@ class PolarPhotoDataPlot {
             //   global.kColor_polarPlotPhotoScatter,
             // ])
             color: ColorAttr(
-                // variable: 'time',
-                encoder: (tuple) =>
-                    global.kColorForYearPage[tuple['distance'].toInt()],
-                // values: [
-                //   global.kColor_polarPlotPhotoScatter,
-                //   global.kColor_polarPlotPhotoScatter,
-                // ]
-            )
-            ,
+              // variable: 'time',
+              encoder: (tuple) =>
+                  global.kColorForYearPage[tuple['distance'].toInt()],
+              // values: [
+              //   global.kColor_polarPlotPhotoScatter,
+              //   global.kColor_polarPlotPhotoScatter,
+              // ]
+            ),
           ),
         ],
         variables: {

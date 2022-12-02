@@ -51,6 +51,8 @@ class _DayPageViewState extends State<DayPageView> {
           alignment:
               product.isZoomIn ? Alignment.center : Alignment.bottomCenter,
           children: [
+            NoteEditor(layout_dayPage, focusNode, product, myTextController)
+                .build(context),
             FutureBuilder(
                 future: readData,
                 builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -87,8 +89,6 @@ class _DayPageViewState extends State<DayPageView> {
                             .build(context),
                       ]).build(context);
                 }),
-            NoteEditor(layout_dayPage, focusNode, product, myTextController)
-                .build(context),
             Positioned(
                 top: 30,
                 child: Text(
@@ -109,16 +109,16 @@ class _DayPageViewState extends State<DayPageView> {
           // print(product.photoData);
           // var a = DataManagerInterface(global.kOs);
           // a.notifyListeners();
-          print(product.photoDataForPlot);
+          // print(product.photoDataForPlot);
           // print(product.photoData);
-          // if (focusNode.hasFocus) {
-          //   dismissKeyboard(product);
-          // } else {
-          //   showKeyboard();
-          // }
-          // setState(() {});
+          if (focusNode.hasFocus) {
+            dismissKeyboard(product);
+          } else {
+            showKeyboard();
+          }
+          setState(() {});
         },
-        child: focusNode.hasFocus ? const Text("save") : const Icon(Icons.add),
+        child: focusNode.hasFocus ? const Text("save") : const Icon(Icons.edit),
       ),
       resizeToAvoidBottomInset: false,
     );

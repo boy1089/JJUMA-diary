@@ -3,7 +3,6 @@ import 'package:lateDiary/Util/DateHandler.dart';
 import 'package:lateDiary/Util/Util.dart';
 import 'dart:math';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 
 import '../Data/DataManagerInterface.dart';
 
@@ -76,7 +75,7 @@ class YearPageStateProvider with ChangeNotifier {
       ];
     });
 
-    //code to filter the data with small amount of images.
+    // code to filter the data with small amount of images.
     // List<List<dynamic>> temp = [];
     // for(int i = 0; i < data.length; i++){
     //   if(data[i][2]>10) temp.add(data[i]);
@@ -97,16 +96,6 @@ class YearPageStateProvider with ChangeNotifier {
     print("year page, dummy3 : $maxOfSummary");
 
     // notifyListeners();
-  }
-
-  double floorDistance(double? distance) {
-    if (distance == null) return 4;
-
-    if (distance > 50) return 0;
-    if (distance > 20) return 1;
-    if (distance > 5) return 2;
-    if (distance > 1) return 3;
-    return 4;
   }
 
   void setBottomNavigationBarShown(bool isBottomNavigationBarShown) {

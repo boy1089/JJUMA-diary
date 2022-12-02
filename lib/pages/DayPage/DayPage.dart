@@ -10,8 +10,6 @@ class DayPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var dayPageStateProvider =
-        Provider.of<DayPageStateProvider>(context, listen: true);
     var navigation =
         Provider.of<NavigationIndexProvider>(context, listen: false);
     return Scaffold(

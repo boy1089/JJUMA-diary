@@ -145,11 +145,10 @@ List<List<double>> dummyPhotoData = [
 
 double floorDistance(double? distance) {
   if (distance == null) return 4;
-
   if (distance > 50) return 0;
   if (distance > 20) return 1;
   if (distance > 5) return 2;
-  if (distance > 1) return 3;
+  if (distance > 2) return 3;
   return 4;
 }
 

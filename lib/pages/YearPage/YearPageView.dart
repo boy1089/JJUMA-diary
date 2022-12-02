@@ -35,8 +35,7 @@ class YearPageView extends StatelessWidget {
   }
 
   void initState() {
-    if(!isHeatMapChannelListening)
-      addListenerToChart();
+    if (!isHeatMapChannelListening) addListenerToChart();
     product.setYear(year, notify: false);
     noteManager.setNotesOfYear(year);
   }
@@ -45,14 +44,12 @@ class YearPageView extends StatelessWidget {
     isHeatMapChannelListening = true;
     heatmapChannel.stream.listen(
       (value) async {
-
-
         if (value == null) return;
         if (!product.isZoomIn) return;
         var provider =
-        Provider.of<NavigationIndexProvider>(context, listen: false);
+            Provider.of<NavigationIndexProvider>(context, listen: false);
 
-        switch (value.keys.elementAt(0)){
+        switch (value.keys.elementAt(0)) {
           case "tapDown":
             break;
           case 'tapUp':
@@ -67,7 +64,6 @@ class YearPageView extends StatelessWidget {
 
             break;
         }
-
       },
     );
   }
@@ -179,52 +175,51 @@ class YearPageChart {
             updaters: {
               'tapDown': {true: (color) => color.withAlpha(150)},
               'tapUp': {true: (color) => color.withAlpha(150)}
-
-              },
-            ),
-            selectionChannel: heatmapChannel,
+            },
           ),
-        ],
-        variables: {
-          'week': Variable(
-            accessor: (List datum) => datum[0] + 0.5
-                as num, // 0.5 is added to match the tap area and dot
-            scale: LinearScale(min: 0, max: 52, tickCount: 12),
-          ),
-          'day': Variable(
-            accessor: (List datum) => datum[1] as num,
-          ),
-          'value': Variable(
-            accessor: (List datum) => datum[2] as num,
-          ),
-          'distance': Variable(
-            accessor: (List datum) =>
-                // math.log(datum[3]) + 0.1 as num,
-                datum[3] as num,
-          ),
-        },
-        selections: {
-          'tapDown': PointSelection(
-            on: {GestureType.tapDown},
-            toggle: true,
-            nearest: false,
-            testRadius: product.isZoomIn ? 10 : 0,),
-
-          'tapUp': PointSelection(
+          selectionChannel: heatmapChannel,
+        ),
+      ],
+      variables: {
+        'week': Variable(
+          accessor: (List datum) => datum[0] + 0.5
+              as num, // 0.5 is added to match the tap area and dot
+          scale: LinearScale(min: 0, max: 52, tickCount: 12),
+        ),
+        'day': Variable(
+          accessor: (List datum) => datum[1] as num,
+        ),
+        'value': Variable(
+          accessor: (List datum) => datum[2] as num,
+        ),
+        'distance': Variable(
+          accessor: (List datum) =>
+              // math.log(datum[3]) + 0.1 as num,
+              datum[3] as num,
+        ),
+      },
+      selections: {
+        'tapDown': PointSelection(
+          on: {GestureType.tapDown},
+          toggle: true,
+          nearest: false,
+          testRadius: product.isZoomIn ? 10 : 0,
+        ),
+        'tapUp': PointSelection(
           on: {GestureType.tapUp},
-            toggle: true,
-            nearest: false,
-            testRadius: product.isZoomIn ? 10 : 0,
-          )
-        },
-        coord: PolarCoord()
-          ..radiusRange = [1 - global.kRatioOfScatterInYearPage, 1],
-        axes: [
-          Defaults.circularAxis
-            ..grid = null
-            ..label = null
-        ],
-      );
+          toggle: true,
+          nearest: false,
+          testRadius: product.isZoomIn ? 10 : 0,
+        )
+      },
+      coord: PolarCoord()
+        ..radiusRange = [1 - global.kRatioOfScatterInYearPage, 1],
+      axes: [
+        Defaults.circularAxis
+          ..grid = null
+          ..label = null
+      ],
+    );
   }
 }
 

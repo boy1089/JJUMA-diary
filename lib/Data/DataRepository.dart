@@ -7,7 +7,6 @@ import 'Directories.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:convert';
 import 'dart:io';
-import 'package:lateDiary/Util/Util.dart';
 import 'package:lateDiary/Util/global.dart' as global;
 
 class DataRepository {
@@ -69,12 +68,11 @@ class DataRepository {
   Future<Map<dynamic, InfoFromFile>> readInfoFromJson() async {
     final Directory directory = await getApplicationDocumentsDirectory();
     final File file = File('${directory.path}/InfoOfFiles.json');
-
     bool isFileExist = await file.exists();
     if (!isFileExist) return {};
 
     var data = await file.readAsString();
-    Map mapFromJson = jsonDecode(data);
+    Map<String, dynamic> mapFromJson = jsonDecode(data);
 
     Map<dynamic, InfoFromFile> test = {};
     List filenames = mapFromJson.keys.toList();
@@ -106,14 +104,8 @@ class DataRepository {
     bool isFileExist = await file.exists();
     if (!isFileExist) return {};
 
-    // var data = await openFile(file.path);
-    // for (int i = 1; i < data.length; i++) {
-    //   if (data[i].length < 2) return {};
-    //   summaryOfPhotoData[data[i][0].toString()] = data[i][1];
-    // }
-
     var data = await file.readAsString();
-    if(data == "{}") return {};
+    if (data == "{}") return {};
     Map<String, dynamic> mapFromJson = jsonDecode(data);
     summaryOfPhotoData = Map<String, int>.from(mapFromJson);
     return summaryOfPhotoData;
@@ -126,7 +118,7 @@ class DataRepository {
     bool isFileExist = await file.exists();
     if (!isFileExist) return {};
     var data = await file.readAsString();
-    if(data == "{}") return {};
+    if (data == "{}") return {};
     Map<String, dynamic> mapFromJson = jsonDecode(data);
     summaryOfLocationData = Map<String, double>.from(mapFromJson);
     return summaryOfLocationData;
@@ -149,7 +141,7 @@ class DataRepository {
         continue;
       }
       test[filename] = mapOfInfo;
-      if(i%1000==0) print("$i / ${filenames.length}");
+      if (i % 1000 == 0) print("$i / ${filenames.length}");
     }
     file.writeAsString(jsonEncode(test));
   }
@@ -177,10 +169,8 @@ class DataRepository {
     await file.writeAsString(stringToWrite, mode: FileMode.write);
   }
 
-  Future<void> writeSummaryOfLocation(
-      Map<String, double> summaryOfLocationData,
-      bool overwrite,
-      setOfDates) async {
+  Future<void> writeSummaryOfLocation(Map<String, double> summaryOfLocationData,
+      bool overwrite, setOfDates) async {
     final Directory directory = await getApplicationDocumentsDirectory();
     final File file = File('${directory.path}/summaryOfLocation.json');
 

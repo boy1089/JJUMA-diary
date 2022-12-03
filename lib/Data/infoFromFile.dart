@@ -3,7 +3,6 @@ import 'package:lateDiary/Location/Coordinate.dart';
 
 class InfoFromFiles {
 
-
 }
 
 class InfoFromFile{
@@ -26,6 +25,18 @@ class InfoFromFile{
     if(map !=null){
       parseFromMap(map);
     }
+  }
+  factory InfoFromFile.fromJson({
+    required Map<String, dynamic> json
+}){
+    return InfoFromFile(
+      file : json['file'],
+      datetime : json['datetime'],
+      date : json['date'],
+      coordinate : Coordinate(json['latitude'], json['longitude']),
+      distance : json['distance'],
+      isUpdated : json['isUpdated'],
+    );
   }
 
   void parseFromMap(map){

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:lateDiary/Data/DataManagerInterface.dart';
+import 'package:lateDiary/Data/DataRepository.dart';
 import 'package:lateDiary/Util/global.dart' as global;
 import 'package:lateDiary/pages/SettingPage.dart';
 import 'package:lateDiary/Note/NoteManager.dart';
@@ -37,7 +39,7 @@ class MainPageState extends State<MainPage> {
       androidSettingsScreen,
     ];
   }
-
+  //
   @override
   Widget build(BuildContext context) {
     if (global.kOs == "android")
@@ -45,4 +47,20 @@ class MainPageState extends State<MainPage> {
     else
       return MainPageViewIos(context, _widgetOptions);
   }
+
+  // @override
+  // Widget build(BuildContext context){
+  //   return Scaffold(body : Center(child: Text("AA")),
+  //   floatingActionButton: FloatingActionButton(
+  //     onPressed: () async {
+  //       var b = DataRepository();
+  //       // var infoFromfiles = b.infoFromFiles;
+  //       // print(infoFromfiles.entries.elementAt(0));
+  //       var infoFromFiles = await b.readInfoFromJson();
+  //
+  //     },
+  //   ),
+  //   );
+  // }
+
 }

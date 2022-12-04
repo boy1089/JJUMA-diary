@@ -25,6 +25,7 @@ class _AppState extends State<App> {
 
   bool isPermissionOk = false;
   Future initApp = Future.delayed(const Duration(seconds: 5));
+
   _AppState() {
     dataManager = DataManagerInterface(global.kOs);
     super.initState();

@@ -1,4 +1,5 @@
 import 'package:lateDiary/Location/Coordinate.dart';
+import 'package:lateDiary/Util/DateHandler.dart';
 
 
 class InfoFromFiles {
@@ -26,16 +27,18 @@ class InfoFromFile{
       parseFromMap(map);
     }
   }
+
   factory InfoFromFile.fromJson({
     required Map<String, dynamic> json
 }){
     return InfoFromFile(
       file : json['file'],
-      datetime : json['datetime'],
+      datetime : formatDateString(json['datetime']),
       date : json['date'],
       coordinate : Coordinate(json['latitude'], json['longitude']),
       distance : json['distance'],
       isUpdated : json['isUpdated'],
+      map : null,
     );
   }
 

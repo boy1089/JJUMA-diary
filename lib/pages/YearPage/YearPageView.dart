@@ -15,6 +15,8 @@ import 'package:lateDiary/Util/DateHandler.dart';
 import 'dart:ui';
 import 'package:lateDiary/Util/layouts.dart';
 
+import '../../Data/DataRepository.dart';
+
 class YearPageView extends StatelessWidget {
   static String id = 'year';
 
@@ -123,7 +125,9 @@ class YearPageView extends StatelessWidget {
           ]),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          // var c = DataRepository();
+          var c = DataRepository();
+          await c.readInfoFromJson();
+
           // c.writeInfoAsJson({}, true);
           // await c.writeSummaryOfLocation(
           //     {}, true, []);

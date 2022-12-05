@@ -1,14 +1,13 @@
 import 'package:glob/list_local_fs.dart';
 import 'package:lateDiary/Location/Coordinate.dart';
-import 'package:lateDiary/Data/file_info_model.dart';
+import 'package:lateDiary/Data/infoFromFile.dart';
 import 'package:glob/glob.dart';
 import 'package:photo_manager/photo_manager.dart';
-import 'directories.dart';
+import 'Directories.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:convert';
 import 'dart:io';
 import 'package:lateDiary/Util/global.dart' as global;
-import 'package:ml_dataframe/ml_dataframe.dart';
 
 class DataRepository {
   DataRepository._privateConstructor();
@@ -23,8 +22,7 @@ class DataRepository {
 
   List files = [];
 
-  Map<dynamic, FileInfoModel> fileInfoMap = {};
-  FilesInfoModel fileInfos = FilesInfoModel(data: DataFrame([[]]));
+  Map<dynamic, InfoFromFile> infoFromFiles = {};
 
   Future<void> init() async {
     print("DataRepository instance is initializing..");
@@ -62,11 +60,11 @@ class DataRepository {
 
     files = files.where((element) => !element.contains('thumbnail')).toList();
     files.sort((a, b) => a.compareTo(b));
+    print(files);
     return files;
   }
 
-
-    Future<Map<dynamic, FileInfoModel>> readInfoFromJson() async {
+  Future<Map<dynamic, InfoFromFile>> readInfoFromJson() async {
     final Directory directory = await getApplicationDocumentsDirectory();
     final File file = File('${directory.path}/InfoOfFiles.json');
     bool isFileExist = await file.exists();
@@ -75,32 +73,32 @@ class DataRepository {
     var data = await file.readAsString();
     Map<String, dynamic> mapFromJson = jsonDecode(data);
 
-    Map<dynamic, FileInfoModel> test = {};
+    Map<dynamic, InfoFromFile> test = {};
     List filenames = mapFromJson.keys.toList();
 
     var keys = files;
     var ids = [for (var a in keys) a.id];
-    Stopwatch stopwatch = Stopwatch()..start();
+
     for (int i = 0; i < mapFromJson.length; i++) {
-      if (i % 100 == 0) {
-        print("$i / ${mapFromJson.length}");
-      }
       if (global.kOs == "ios") {
         String id = filenames.elementAt(i);
         int index = ids.indexOf(id);
-
-        if (index != -1) test[keys[index]] = FileInfoModel.fromJson(json: mapFromJson[id]);
+        if (i % 100 == 0) {
+          print("$i / ${mapFromJson.length}, ${index}");
+        }
+        if (index != -1) test[keys[index]] = InfoFromFile.fromJson(json: mapFromJson[id]);
         continue;
       }
 
       String filename = filenames.elementAt(i);
+      print(mapFromJson[filename]);
       // test[filename] = InfoFromFile(map: mapFromJson[filename]);
-      test[filename] = FileInfoModel.fromJson(json : mapFromJson[filename]);
+      test[filename] = InfoFromFile.fromJson(json : mapFromJson[filename]);
+
     }
 
-    fileInfoMap = test;
-    fileInfos = FilesInfoModel.fromMapOfInfo(map: fileInfoMap);
-    return fileInfoMap;
+    infoFromFiles = test;
+    return infoFromFiles;
   }
 
   Future<Map<String, int>> readSummaryOfPhoto() async {
@@ -131,7 +129,7 @@ class DataRepository {
   }
 
   Future<void> writeInfoAsJson(
-      Map<dynamic, FileInfoModel> infoFromFiles, bool overwrite) async {
+      Map<dynamic, InfoFromFile> infoFromFiles, bool overwrite) async {
     List filenames = infoFromFiles.keys.toList();
 
     final Directory directory = await getApplicationDocumentsDirectory();

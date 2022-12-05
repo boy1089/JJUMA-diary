@@ -4,10 +4,10 @@ import 'package:lateDiary/Util/Util.dart';
 import 'dart:math';
 import 'package:intl/intl.dart';
 
-import '../Data/data_manager_interface.dart';
-import 'package:lateDiary/Data/summary_model.dart';
+import '../Data/DataManagerInterface.dart';
 
 class YearPageStateProvider with ChangeNotifier {
+
   String date = formatDate(DateTime.now());
   double zoomInAngle = 0.0;
   bool isZoomIn = false;
@@ -23,21 +23,15 @@ class YearPageStateProvider with ChangeNotifier {
   List<String> availableDates = [];
   int maxOfSummary = 0;
 
-  void update(dataManager) {
+  void update(dataManager){
     this.dataManager = dataManager;
     updateData();
     notifyListeners();
   }
-
   void setAvailableDates(int year) {
-    // availableDates = dataManager.summaryOfPhotoData.keys.where((element) {
-    //   return element.substring(0, 4) == year.toString();
-    // }).toList();
-
-    availableDates = dataManager.summaryModel.dates.where((element) {
+    availableDates = dataManager.summaryOfPhotoData.keys.where((element) {
       return element.substring(0, 4) == year.toString();
     }).toList();
-    print(availableDates);
     availableDates.sort();
   }
 
@@ -65,22 +59,18 @@ class YearPageStateProvider with ChangeNotifier {
       int days = int.parse(DateFormat("D").format(DateTime.parse(date))) +
           weekdayOfJan01 +
           offsetToMakeWeekendOutward;
-      // int value = dataManager.summaryOfPhotoData[date]! > 200
-      int count = dataManager.summaryModel.counts![date].data
-          .elementAt(imagesColumn.count.index - 1);
-      count = count > 200 ? 200 : count;
-
+      int value = dataManager.summaryOfPhotoData[date]! > 200
+          ? 200
+          : dataManager.summaryOfPhotoData[date]!;
       double distance = 4;
 
-      double distance_temp = dataManager.summaryModel.locations![date].data
-          .elementAt(locationsColumn.location.index - 1);
-
-      if (distance_temp != null) distance = floorDistance(distance_temp);
+      if (dataManager.summaryOfLocationData.containsKey(date))
+        distance = floorDistance(dataManager.summaryOfLocationData[date]!);
 
       return [
         (days / 7).floor(),
         days % 7,
-        count,
+        value,
         distance,
       ];
     });
@@ -97,6 +87,8 @@ class YearPageStateProvider with ChangeNotifier {
     //   if(data[i][3]==0) temp.add(data[i]);
     // }
     // data = temp;
+
+
 
     List<int> dummy3 = List<int>.generate(transpose(data)[0].length,
         (index) => int.parse(transpose(data)[2][index].toString()));

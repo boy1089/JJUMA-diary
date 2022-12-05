@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:lateDiary/Data/data_manager_interface.dart';
-import 'package:lateDiary/Data/data_repository.dart';
+import 'package:lateDiary/Data/DataManagerInterface.dart';
+import 'package:lateDiary/Data/DataRepository.dart';
 import 'package:lateDiary/Util/global.dart' as global;
 import 'package:lateDiary/pages/SettingPage.dart';
 import 'package:lateDiary/Note/NoteManager.dart';

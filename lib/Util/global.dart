@@ -1,7 +1,7 @@
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import "package:lateDiary/Location/Coordinate.dart";
-import 'package:lateDiary/Data/file_info_model.dart';
+import 'package:lateDiary/Data/infoFromFile.dart';
 import 'package:lateDiary/Util/Util.dart';
 import 'dart:io' show Platform;
 
@@ -11,7 +11,7 @@ bool isInitializationDone = false;
 
 List setOfDates = [];
 String kOs = Platform.operatingSystem;
-Map<String, FileInfoModel> infoFromFiles = {};
+Map<String, InfoFromFile> infoFromFiles = {};
 
 Coordinate referenceCoordinate = Coordinate(37.364, 126.718);
 

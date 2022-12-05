@@ -1,12 +1,10 @@
 import 'package:flutter/foundation.dart';
-import 'package:lateDiary/Data/summary_model.dart';
 import 'package:lateDiary/Location/Coordinate.dart';
-import 'package:lateDiary/Data/file_info_model.dart';
-import 'package:lateDiary/Data/data_repository.dart';
-import 'package:ml_dataframe/ml_dataframe.dart';
+import 'package:lateDiary/Data/infoFromFile.dart';
+import 'package:lateDiary/Data/DataRepository.dart';
 
-import 'android_data_manager.dart';
-import 'ios_data_manager.dart';
+import 'AndroidDataManager.dart';
+import 'IosDataManager.dart';
 
 abstract class DataManagerInterface extends ChangeNotifier {
   factory DataManagerInterface(String type) {
@@ -28,14 +26,13 @@ abstract class DataManagerInterface extends ChangeNotifier {
   List files = [];
   List? filesNotUpdated = [];
   List<String>? datesOutOfDate = [];
-  SummaryModel summaryModel = SummaryModel();
-  Map<dynamic, FileInfoModel> infoFromFiles = {};
-  FilesInfoModel filesInfo = FilesInfoModel(data: DataFrame([[]]));
+
+  Map<dynamic, InfoFromFile> infoFromFiles = {};
 
   DataRepository dataRepository = DataRepository();
 
   Future<void> init() async {}
-  static Future<Map<dynamic, FileInfoModel>> updateDatesOnInfo_ios(
+  static Future<Map<dynamic, InfoFromFile>> updateDatesOnInfo_ios(
       List input) async {
     return {};
   }
@@ -52,7 +49,7 @@ abstract class DataManagerInterface extends ChangeNotifier {
     return [];
   }
 
-  static Future<Map<dynamic, FileInfoModel>> updateExifOnInfo_compute(
+  static Future<Map<dynamic, InfoFromFile>> updateExifOnInfo_compute(
       List input) async {
     return {};
   }

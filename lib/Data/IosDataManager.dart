@@ -2,17 +2,15 @@ import 'dart:io';
 import 'package:glob/list_local_fs.dart';
 import 'package:flutter/foundation.dart';
 import 'package:glob/glob.dart';
-import 'package:lateDiary/Data/data_manager_interface.dart';
-import 'package:lateDiary/Data/summary_model.dart';
+import 'package:lateDiary/Data/DataManagerInterface.dart';
 import 'package:lateDiary/Util/DateHandler.dart';
 import 'package:lateDiary/Util/Util.dart';
 import 'package:lateDiary/Util/global.dart' as global;
 import 'package:lateDiary/Location/LocationDataManager.dart';
 import "package:lateDiary/Location/Coordinate.dart";
-import 'package:ml_dataframe/ml_dataframe.dart';
-import 'file_info_model.dart';
-import 'package:lateDiary/Data/directories.dart';
-import 'data_repository.dart';
+import 'infoFromFile.dart';
+import 'package:lateDiary/Data/Directories.dart';
+import 'DataRepository.dart';
 
 class IosDataManager extends ChangeNotifier implements DataManagerInterface {
   IosDataManager._privateConstructor();
@@ -32,9 +30,9 @@ class IosDataManager extends ChangeNotifier implements DataManagerInterface {
   List files = [];
   List? filesNotUpdated = [];
   List<String>? datesOutOfDate = [];
-  SummaryModel summaryModel = SummaryModel();
-  Map<dynamic, FileInfoModel> infoFromFiles = {};
-  FilesInfoModel filesInfo = FilesInfoModel(data: DataFrame([[]]));
+
+  Map<dynamic, InfoFromFile> infoFromFiles = {};
+
   DataRepository dataRepository = DataRepository();
 
   @override
@@ -73,10 +71,10 @@ class IosDataManager extends ChangeNotifier implements DataManagerInterface {
     notifyListeners();
   }
 
-  static Future<Map<dynamic, FileInfoModel>> updateDatesOnInfo_ios(
+  static Future<Map<dynamic, InfoFromFile>> updateDatesOnInfo_ios(
       List input) async {
     List assetEntities = input[0];
-    Map<dynamic, FileInfoModel> infoFromFiles = input[1];
+    Map<dynamic, InfoFromFile> infoFromFiles = input[1];
 
     for (int i = 0; i < assetEntities.length; i++) {
       var assetEntity = assetEntities.elementAt(i);
@@ -193,7 +191,7 @@ class IosDataManager extends ChangeNotifier implements DataManagerInterface {
     for (int i = 0; i < filenames.length; i++) {
       var filename = filenames.elementAt(i);
       if (infoFromFiles[filename] == null) {
-        infoFromFiles[filename] = FileInfoModel(isUpdated: false);
+        infoFromFiles[filename] = InfoFromFile(isUpdated: false);
       }
     }
   }
@@ -201,7 +199,7 @@ class IosDataManager extends ChangeNotifier implements DataManagerInterface {
   static Future<List> updateDatesFromInfo(List input) async {
     print("input : $input");
     List filesNotUpdated = [];
-    Map<dynamic, FileInfoModel> infoFromFiles = {};
+    Map<dynamic, InfoFromFile> infoFromFiles = {};
     if (input.isNotEmpty) {
       infoFromFiles = input[0];
       filesNotUpdated = input[1];
@@ -212,7 +210,7 @@ class IosDataManager extends ChangeNotifier implements DataManagerInterface {
     List setOfDates = [];
     List setOfDatetimes = [];
 
-    List<FileInfoModel> values = infoFromFiles.values.toList();
+    List<InfoFromFile> values = infoFromFiles.values.toList();
 
     for (int i = 0; i < values.length; i++) {
       dates.add(values.elementAt(i).date);
@@ -250,10 +248,10 @@ class IosDataManager extends ChangeNotifier implements DataManagerInterface {
     }
   }
 
-  static Future<Map<dynamic, FileInfoModel>> updateExifOnInfo_compute(
+  static Future<Map<dynamic, InfoFromFile>> updateExifOnInfo_compute(
       List input) async {
     List filenames = input[0];
-    Map<dynamic, FileInfoModel> infoFromFiles = input[1];
+    Map<dynamic, InfoFromFile> infoFromFiles = input[1];
 
     for (int i = 0; i < filenames.length; i++) {
       var filename = filenames.elementAt(i);
@@ -311,12 +309,12 @@ class IosDataManager extends ChangeNotifier implements DataManagerInterface {
 
   static Future<Map<String, double>>
       updateSummaryOfLocationDataFromInfo2_compute(List input) async {
-    Map<dynamic, FileInfoModel> infoFromFiles = input[0];
+    Map<dynamic, InfoFromFile> infoFromFiles = input[0];
     var infoFromFiles2 = [...infoFromFiles.values];
     Map<String, double> distances = {};
 
     for (int i = 0; i < infoFromFiles2.length; i++) {
-      FileInfoModel infoFromFile = infoFromFiles2.elementAt(i);
+      InfoFromFile infoFromFile = infoFromFiles2.elementAt(i);
       String? date = infoFromFile.date;
       if (date == null) continue;
 
@@ -373,7 +371,7 @@ class IosDataManager extends ChangeNotifier implements DataManagerInterface {
     files = files.where((element) => !element.contains('thumbnail')).toList();
 
     infoFromFiles = {};
-    infoFromFiles.addAll({for (var v in files) v: FileInfoModel()});
+    infoFromFiles.addAll({for (var v in files) v: InfoFromFile()});
     return files;
   }
 

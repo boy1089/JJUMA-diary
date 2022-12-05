@@ -1,15 +1,9 @@
-import 'dart:convert';
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:graphic/graphic.dart';
-import 'package:lateDiary/Data/data_manager_interface.dart';
+import 'package:lateDiary/Data/DataManagerInterface.dart';
 import 'package:lateDiary/Util/Util.dart';
 import 'package:lateDiary/Util/global.dart' as global;
-import 'package:matrix2d/matrix2d.dart';
-import 'package:ml_dataframe/ml_dataframe.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'dart:async';
 import 'package:lateDiary/pages/YearPage/PolarMonthIndicator.dart';
@@ -21,8 +15,7 @@ import 'package:lateDiary/Util/DateHandler.dart';
 import 'dart:ui';
 import 'package:lateDiary/Util/layouts.dart';
 
-import '../../Data/data_repository.dart';
-import 'package:lateDiary/Data/file_info_model.dart';
+import '../../Data/DataRepository.dart';
 
 class YearPageView extends StatelessWidget {
   static String id = 'year';
@@ -132,26 +125,18 @@ class YearPageView extends StatelessWidget {
           ]),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          //
-          // var b  = DataRepository();
-          // b.fileInfoMap = {};
-          // b.writeInfoAsJson({}, true);
+          var c = DataRepository();
+          await c.readInfoFromJson();
 
+          // c.writeInfoAsJson({}, true);
+          // await c.writeSummaryOfLocation(
+          //     {}, true, []);
+          // var summaryOfPhoto = await c.readSummaryOfPhoto();
+          // print(summaryOfPhoto);
+          // var summaryOfLocation = await c.readSummaryOfLocation();
+          //
           var a = DataManagerInterface(global.kOs);
-          // await a.init();
-
-          final Directory directory = await getApplicationDocumentsDirectory();
-          final File file = File('${directory.path}/InfoOfFiles.json');
-
-          var data = await file.readAsString();
-          Map<String, dynamic> mapFromJson = jsonDecode(data);
-          print(mapFromJson.keys);
-          var b = DataFrame.fromJson(mapFromJson);
-
-          //
-          // List<List<dynamic>> b = [a.filesInfo.data.toJson()['H']];
-          //     b.addAll(a.filesInfo.data.toJson()['R']);
-
+          print(product.data);
         },
       ),
     );

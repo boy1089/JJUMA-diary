@@ -9,7 +9,7 @@ import 'package:settings_ui/settings_ui.dart';
 import 'package:lateDiary/Util/global.dart' as global;
 import 'package:lateDiary/Util/Util.dart';
 
-import 'package:lateDiary/Data/directories.dart';
+import 'package:lateDiary/Data/Directories.dart';
 import 'package:lateDiary/Settings.dart';
 import 'dart:io';
 import 'package:url_launcher/url_launcher.dart';

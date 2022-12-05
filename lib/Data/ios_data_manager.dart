@@ -3,6 +3,7 @@ import 'package:glob/list_local_fs.dart';
 import 'package:flutter/foundation.dart';
 import 'package:glob/glob.dart';
 import 'package:lateDiary/Data/data_manager_interface.dart';
+import 'package:lateDiary/Data/summary_model.dart';
 import 'package:lateDiary/Util/DateHandler.dart';
 import 'package:lateDiary/Util/Util.dart';
 import 'package:lateDiary/Util/global.dart' as global;
@@ -31,7 +32,7 @@ class IosDataManager extends ChangeNotifier implements DataManagerInterface {
   List files = [];
   List? filesNotUpdated = [];
   List<String>? datesOutOfDate = [];
-
+  SummaryModel summaryModel = SummaryModel();
   Map<dynamic, FileInfoModel> infoFromFiles = {};
   FilesInfoModel filesInfo = FilesInfoModel(data: DataFrame([[]]));
   DataRepository dataRepository = DataRepository();

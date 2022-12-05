@@ -16,7 +16,6 @@ import 'package:lateDiary/Data/directories.dart';
 import 'data_repository.dart';
 import 'package:lateDiary/Location/Coordinate.dart';
 
-
 class AndroidDataManager extends ChangeNotifier
     implements DataManagerInterface {
   AndroidDataManager._privateConstructor();
@@ -60,13 +59,16 @@ class AndroidDataManager extends ChangeNotifier
 
     filesInfo = await updateFileInfo(filesInfo);
     filesInfo.updateAll();
-    // print(filesInfo.distances);
+
     summaryModel = SummaryModel.fromFilesInfo(filesInfoModel: filesInfo);
-    print(summaryModel.locations);
+    // print(summaryModel.counts!.rows.elementAt(imagesColumn.date.index).toList().sublist(1));
+    // print(summaryModel.counts.sampleFromSeries(names : []))
+
+    print(summaryModel.locations!);
     notifyListeners();
   }
 
-  Future<List> getFileInfo(String path) async{
+  Future<List> getFileInfo(String path) async {
     String filename = path.split('/').last;
     String? inferredDatetime = null;
     DateTime? datetime = null;
@@ -85,51 +87,37 @@ class AndroidDataManager extends ChangeNotifier
     List exifData = [];
     exifData = await getExifInfoOfFile(path);
     coordinate = exifData[1];
-    if(exifData[1] != null){
+    if (exifData[1] != null) {
       distance = calculateDistanceToRef(exifData[1]);
     }
     isUpdated = true;
 
-
-    if(datetime != null) return [filename, datetime, date, coordinate, distance, isUpdated];
-    if ((exifData[0] != null) &
-    (exifData[0] != "") &
-    (exifData[0] != "null")){
+    if (datetime != null)
+      return [filename, datetime, date, coordinate, distance, isUpdated];
+    if ((exifData[0] != null) & (exifData[0] != "") & (exifData[0] != "null")) {
       datetime = DateTime.parse(exifData[0]);
       date = exifData[0].substring(0, 8);
       return [filename, datetime, date, coordinate, distance, isUpdated];
     }
 
-    datetime =
-        DateTime.parse(formatDatetime(FileStat.statSync(path).changed));
+    datetime = DateTime.parse(formatDatetime(FileStat.statSync(path).changed));
     date = formatDate(datetime);
     return [filename, datetime, date, coordinate, distance, isUpdated];
   }
 
   Future<FilesInfoModel> updateFileInfo(FilesInfoModel fileInfos) async {
-
-    for(var column in fileInfos.data.series.toList().sublist(1)){
-      if(!column.data.elementAt(columns.isUpdated.index)){
+    for (var column in fileInfos.data.series.toList().sublist(1)) {
+      if (!column.data.elementAt(columns.isUpdated.index)) {
         String path = column.name;
-        String? inferredDatetime = null;
-        DateTime? datetime = null;
-        String? date = null;
-        Coordinate? coordinate = null;
-        double? distance = null;
-        bool isUpdated = false;
-
         List fileInfo = await getFileInfo(path);
-        fileInfos.updateData(fileInfos.data.dropSeries(names : [path]));
+        fileInfos.updateData(fileInfos.data.dropSeries(names: [path]));
         fileInfos.updateData(fileInfos.data.addSeries(Series(path, fileInfo)));
-
       }
     }
     return fileInfos;
-
   }
 
   void executeSlowProcesses() async {
-
     notifyListeners();
   }
 
@@ -158,8 +146,8 @@ class AndroidDataManager extends ChangeNotifier
       bool isContained =
           filenamesFromInfo.sublist(j, sublistIndex).contains(filename);
       if (!isContained) {
-        fileInfos.data = fileInfos.data.addSeries(
-            Series(filename, [null, null, null, null, null, false]));
+        fileInfos.data = fileInfos.data
+            .addSeries(Series(filename, [null, null, null, null, null, false]));
         continue;
       }
     }

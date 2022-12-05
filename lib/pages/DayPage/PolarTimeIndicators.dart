@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:lateDiary/Data/file_info_model.dart';
 import 'package:lateDiary/Util/Util.dart';
 import 'package:provider/provider.dart';
 import 'package:lateDiary/Location/AddressFinder.dart';
@@ -33,8 +34,12 @@ class PolarTimeIndicators extends StatelessWidget {
 
   Map<int, int> selectIndexForLocation(files) {
     Map<int, int> indexForSelectedFile = {};
-    List<DateTime?> datetimes = List<DateTime?>.generate(files.length,
-        (i) => dataManager.infoFromFiles[files.elementAt(i)]?.datetime);
+    List<DateTime?> datetimes = List<DateTime?>.generate(
+        files.length,
+        // (i) => dataManager.infoFromFiles[files.elementAt(i)]?.datetime);
+        (i) => dataManager.filesInfo.data[files.elementAt(i)]?.data
+            .elementAt(columns.datetime.index));
+
     List<int> times =
         List<int>.generate(datetimes.length, (i) => datetimes[i]!.hour);
     Set<int> setOfTimes = times.toSet();

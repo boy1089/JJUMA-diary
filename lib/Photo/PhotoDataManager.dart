@@ -1,3 +1,4 @@
+import 'package:lateDiary/Data/file_info_model.dart';
 import 'package:lateDiary/Util/DateHandler.dart';
 import 'package:lateDiary/Util/Util.dart';
 import 'package:lateDiary/Data/data_manager_interface.dart';
@@ -7,23 +8,28 @@ class PhotoDataManager {
   DataManagerInterface dataManager = DataManagerInterface(global.kOs);
 
   Future getPhotoOfDate(String date) async {
-    List<int?> indexOfDate = List<int?>.generate(dataManager.dates.length, (i) {
-      if (dataManager.dates.elementAt(i) == date) return i;
+    List<int?> indexOfDate =
+        List<int?>.generate(dataManager.filesInfo.dates.length, (i) {
+      if (dataManager.filesInfo.dates.elementAt(i) == date) return i;
       return null;
     });
 
     indexOfDate = indexOfDate.whereType<int>().toList();
-    List files = dataManager.infoFromFiles.keys.toList();
+    // List files = dataManager.infoFromFiles.keys.toList();
+    List files = dataManager.filesInfo.data.header.toList().sublist(1);
+
     List filesOfDate = List.generate(
         indexOfDate.length, (i) => files.elementAt(indexOfDate.elementAt(i)!));
 
     List dateOfDate = List.generate(
         indexOfDate.length,
-        (i) => formatDatetime(
-            dataManager.datetimes.elementAt(indexOfDate.elementAt(i)!)));
+        (i) => formatDatetime(dataManager.filesInfo.datetimes
+            .elementAt(indexOfDate.elementAt(i)!)!));
 
-    List distanceOfDate = List.generate(filesOfDate.length,
-        (i) => floorDistance(dataManager.infoFromFiles[filesOfDate[i]]!.distance));
+    List distanceOfDate = List.generate(
+        filesOfDate.length,
+        (i) => floorDistance(dataManager.filesInfo.data[filesOfDate[i]].data
+            .elementAt(columns.distance.index)));
 
     List list = transpose([dateOfDate, filesOfDate, distanceOfDate]);
     // List list = transpose([dateOfDate, filesOfDate]);

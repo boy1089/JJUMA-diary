@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:lateDiary/Data/summary_model.dart';
 import 'package:lateDiary/Location/Coordinate.dart';
 import 'package:lateDiary/Data/file_info_model.dart';
 import 'package:lateDiary/Data/data_repository.dart';
@@ -27,7 +28,7 @@ abstract class DataManagerInterface extends ChangeNotifier {
   List files = [];
   List? filesNotUpdated = [];
   List<String>? datesOutOfDate = [];
-
+  SummaryModel summaryModel = SummaryModel();
   Map<dynamic, FileInfoModel> infoFromFiles = {};
   FilesInfoModel filesInfo = FilesInfoModel(data: DataFrame([[]]));
 

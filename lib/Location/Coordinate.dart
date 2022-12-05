@@ -18,7 +18,7 @@ class Coordinate {
 
 double calculateDistance(Coordinate coordinate1, Coordinate coordinate2){
   var earthRadiusKm = 6371;
-
+  print("$coordinate1, $coordinate2");
   var dLat = degreesToRadians(coordinate1.latitude! - coordinate2.latitude!);
   var dLon = degreesToRadians(coordinate1.longitude! - coordinate2.longitude!);
 

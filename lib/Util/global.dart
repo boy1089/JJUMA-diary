@@ -11,7 +11,7 @@ bool isInitializationDone = false;
 
 List setOfDates = [];
 String kOs = Platform.operatingSystem;
-Map<String, FileInfo> infoFromFiles = {};
+Map<String, FileInfoModel> infoFromFiles = {};
 
 Coordinate referenceCoordinate = Coordinate(37.364, 126.718);
 

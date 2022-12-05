@@ -8,6 +8,7 @@ import 'package:lateDiary/Util/Util.dart';
 import 'package:lateDiary/Util/global.dart' as global;
 import 'package:lateDiary/Location/LocationDataManager.dart';
 import "package:lateDiary/Location/Coordinate.dart";
+import 'package:ml_dataframe/ml_dataframe.dart';
 import 'file_info_model.dart';
 import 'package:lateDiary/Data/directories.dart';
 import 'data_repository.dart';
@@ -31,8 +32,8 @@ class IosDataManager extends ChangeNotifier implements DataManagerInterface {
   List? filesNotUpdated = [];
   List<String>? datesOutOfDate = [];
 
-  Map<dynamic, FileInfo> infoFromFiles = {};
-
+  Map<dynamic, FileInfoModel> infoFromFiles = {};
+  FilesInfoModel filesInfo = FilesInfoModel(data: DataFrame([[]]));
   DataRepository dataRepository = DataRepository();
 
   @override
@@ -71,10 +72,10 @@ class IosDataManager extends ChangeNotifier implements DataManagerInterface {
     notifyListeners();
   }
 
-  static Future<Map<dynamic, FileInfo>> updateDatesOnInfo_ios(
+  static Future<Map<dynamic, FileInfoModel>> updateDatesOnInfo_ios(
       List input) async {
     List assetEntities = input[0];
-    Map<dynamic, FileInfo> infoFromFiles = input[1];
+    Map<dynamic, FileInfoModel> infoFromFiles = input[1];
 
     for (int i = 0; i < assetEntities.length; i++) {
       var assetEntity = assetEntities.elementAt(i);
@@ -191,7 +192,7 @@ class IosDataManager extends ChangeNotifier implements DataManagerInterface {
     for (int i = 0; i < filenames.length; i++) {
       var filename = filenames.elementAt(i);
       if (infoFromFiles[filename] == null) {
-        infoFromFiles[filename] = FileInfo(isUpdated: false);
+        infoFromFiles[filename] = FileInfoModel(isUpdated: false);
       }
     }
   }
@@ -199,7 +200,7 @@ class IosDataManager extends ChangeNotifier implements DataManagerInterface {
   static Future<List> updateDatesFromInfo(List input) async {
     print("input : $input");
     List filesNotUpdated = [];
-    Map<dynamic, FileInfo> infoFromFiles = {};
+    Map<dynamic, FileInfoModel> infoFromFiles = {};
     if (input.isNotEmpty) {
       infoFromFiles = input[0];
       filesNotUpdated = input[1];
@@ -210,7 +211,7 @@ class IosDataManager extends ChangeNotifier implements DataManagerInterface {
     List setOfDates = [];
     List setOfDatetimes = [];
 
-    List<FileInfo> values = infoFromFiles.values.toList();
+    List<FileInfoModel> values = infoFromFiles.values.toList();
 
     for (int i = 0; i < values.length; i++) {
       dates.add(values.elementAt(i).date);
@@ -248,10 +249,10 @@ class IosDataManager extends ChangeNotifier implements DataManagerInterface {
     }
   }
 
-  static Future<Map<dynamic, FileInfo>> updateExifOnInfo_compute(
+  static Future<Map<dynamic, FileInfoModel>> updateExifOnInfo_compute(
       List input) async {
     List filenames = input[0];
-    Map<dynamic, FileInfo> infoFromFiles = input[1];
+    Map<dynamic, FileInfoModel> infoFromFiles = input[1];
 
     for (int i = 0; i < filenames.length; i++) {
       var filename = filenames.elementAt(i);
@@ -309,12 +310,12 @@ class IosDataManager extends ChangeNotifier implements DataManagerInterface {
 
   static Future<Map<String, double>>
       updateSummaryOfLocationDataFromInfo2_compute(List input) async {
-    Map<dynamic, FileInfo> infoFromFiles = input[0];
+    Map<dynamic, FileInfoModel> infoFromFiles = input[0];
     var infoFromFiles2 = [...infoFromFiles.values];
     Map<String, double> distances = {};
 
     for (int i = 0; i < infoFromFiles2.length; i++) {
-      FileInfo infoFromFile = infoFromFiles2.elementAt(i);
+      FileInfoModel infoFromFile = infoFromFiles2.elementAt(i);
       String? date = infoFromFile.date;
       if (date == null) continue;
 
@@ -371,7 +372,7 @@ class IosDataManager extends ChangeNotifier implements DataManagerInterface {
     files = files.where((element) => !element.contains('thumbnail')).toList();
 
     infoFromFiles = {};
-    infoFromFiles.addAll({for (var v in files) v: FileInfo()});
+    infoFromFiles.addAll({for (var v in files) v: FileInfoModel()});
     return files;
   }
 

@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/widgets.dart';
 import 'package:glob/list_local_fs.dart';
 import 'package:flutter/foundation.dart';
 import 'package:glob/glob.dart';
@@ -8,9 +9,12 @@ import 'package:lateDiary/Util/Util.dart';
 import 'package:lateDiary/Util/global.dart' as global;
 import 'package:lateDiary/Location/LocationDataManager.dart';
 import "package:lateDiary/Location/Coordinate.dart";
+import 'package:ml_dataframe/ml_dataframe.dart';
 import 'file_info_model.dart';
 import 'package:lateDiary/Data/directories.dart';
 import 'data_repository.dart';
+import 'package:lateDiary/Location/Coordinate.dart';
+
 
 class AndroidDataManager extends ChangeNotifier
     implements DataManagerInterface {
@@ -33,7 +37,8 @@ class AndroidDataManager extends ChangeNotifier
   List? filesNotUpdated = [];
   List<String>? datesOutOfDate = [];
 
-  Map<dynamic, FileInfo> infoFromFiles = {};
+  Map<dynamic, FileInfoModel> infoFromFiles = {};
+  FilesInfoModel filesInfo = FilesInfoModel(data: DataFrame([[]]));
 
   DataRepository dataRepository = DataRepository();
 
@@ -44,86 +49,82 @@ class AndroidDataManager extends ChangeNotifier
     //get list of image files from local. --> update new images
     files = await dataRepository.getAllFiles();
     infoFromFiles = await dataRepository.readInfoFromJson();
+    filesInfo = dataRepository.fileInfos;
     summaryOfPhotoData = await dataRepository.readSummaryOfPhoto();
     summaryOfLocationData = await dataRepository.readSummaryOfLocation();
     notifyListeners();
-    print("DataManager init, $files");
 
-    // find the files which are in local but not in Info
-    filesNotUpdated = await matchFilesAndInfo2();
+    await matchFilesAndInfo3(filesInfo);
 
-    // update info which are not updated
-    await addFilesToInfo(filesNotUpdated);
-    print("addFilesToinfo done, time elapsed : ${stopwatch.elapsed}");
+    filesInfo = await updateFileInfo(filesInfo);
+    filesInfo.updateAll();
 
-    await updateDateOnInfo(filesNotUpdated);
-    print("updateDateOnInfo done, time elapsed : ${stopwatch.elapsed}");
-
-    var result =
-        await compute(updateDatesFromInfo, [infoFromFiles, filesNotUpdated]);
-    print("updateDatesFromInfo done, time elapsed : ${stopwatch.elapsed}");
-    print(result);
-    setOfDates = result[0];
-    setOfDatetimes = result[1];
-    dates = result[2];
-    datetimes = result[3];
-
-    print("date during init, ${dates.length}");
-
-    //find the dates which are out of date based on the number of photo.
-    summaryOfPhotoData = await compute(
-        updateSummaryOfPhotoFromInfo, [setOfDates, summaryOfPhotoData]);
-    print("updateSummaryOfPhoto done, time elapsed : ${stopwatch.elapsed}");
     notifyListeners();
   }
 
-  void executeSlowProcesses() async {
-    if (filesNotUpdated!.isEmpty) return;
-    print("executing slow process..");
-    int lengthOfFiles = filesNotUpdated!.length;
-    for (int i = 0; i < lengthOfFiles / 100.floor(); i++) {
-      List partOfFilesNotupdated = filesNotUpdated!.sublist(i * 100,
-          lengthOfFiles < (i + 1) * 100 ? lengthOfFiles : (i + 1) * 100);
+  Future<List> getFileInfo(String path) async{
+    String filename = path.split('/').last;
+    String? inferredDatetime = null;
+    DateTime? datetime = null;
+    String? date = null;
+    Coordinate? coordinate = null;
+    double? distance = null;
+    bool isUpdated = false;
 
-      await Future.delayed(Duration(seconds: 1));
-      infoFromFiles = await compute(
-          updateExifOnInfo_compute, [partOfFilesNotupdated, infoFromFiles]);
-      if (i % 5 == 0) {
-        var result = await compute(
-            updateDatesFromInfo, [infoFromFiles, filesNotUpdated]);
-        setOfDates = result[0];
-        setOfDatetimes = result[1];
-        dates = result[2];
-        datetimes = result[3];
+    inferredDatetime = inferDatetimeFromFilename(path);
+    if (inferredDatetime != null) {
+      datetime = DateTime.parse(inferredDatetime);
+      date = inferredDatetime.substring(0, 8);
+    }
 
-        //update the summaryOflocation only on the specific date.
-        summaryOfPhotoData = await compute(
-            updateSummaryOfPhotoFromInfo, [setOfDates, summaryOfPhotoData]);
+    //update coordinate
+    List exifData = [];
+    exifData = await getExifInfoOfFile(path);
+    coordinate = exifData[1];
+    if(exifData[1] != null){
+      distance = calculateDistanceToRef(exifData[1]);
+    }
+    isUpdated = true;
 
-        await dataRepository.writeInfoAsJson(infoFromFiles, true);
-        await dataRepository.writeSummaryOfPhoto(
-            summaryOfPhotoData, true, setOfDates);
-        notifyListeners();
-      }
 
-      if (i % 10 == 0) {
-        summaryOfLocationData = await compute(
-            updateSummaryOfLocationDataFromInfo2_compute, [infoFromFiles]);
-        await dataRepository.writeSummaryOfLocation(
-            summaryOfLocationData, true, setOfDates);
+    if(datetime != null) return [filename, datetime, date, coordinate, distance, isUpdated];
+    if ((exifData[0] != null) &
+    (exifData[0] != "") &
+    (exifData[0] != "null")){
+      datetime = DateTime.parse(exifData[0]);
+      date = exifData[0].substring(0, 8);
+      return [filename, datetime, date, coordinate, distance, isUpdated];
+    }
+
+    datetime =
+        DateTime.parse(formatDatetime(FileStat.statSync(path).changed));
+    date = formatDate(datetime);
+    return [filename, datetime, date, coordinate, distance, isUpdated];
+  }
+
+  Future<FilesInfoModel> updateFileInfo(FilesInfoModel fileInfos) async {
+
+    for(var column in fileInfos.data.series.toList().sublist(1)){
+      if(!column.data.elementAt(columns.isUpdated.index)){
+        String path = column.name;
+        String? inferredDatetime = null;
+        DateTime? datetime = null;
+        String? date = null;
+        Coordinate? coordinate = null;
+        double? distance = null;
+        bool isUpdated = false;
+
+        List fileInfo = await getFileInfo(path);
+        fileInfos.updateData(fileInfos.data.dropSeries(names : [path]));
+        fileInfos.updateData(fileInfos.data.addSeries(Series(path, fileInfo)));
+
       }
     }
-    summaryOfPhotoData = await compute(
-        updateSummaryOfPhotoFromInfo, [setOfDates, summaryOfPhotoData]);
-    summaryOfLocationData = await compute(
-        updateSummaryOfLocationDataFromInfo_compute,
-        [setOfDates, summaryOfLocationData, infoFromFiles]);
+    return fileInfos;
 
-    await dataRepository.writeInfoAsJson(infoFromFiles, true);
-    await dataRepository.writeSummaryOfLocation(
-        summaryOfLocationData, true, setOfDates);
-    await dataRepository.writeSummaryOfPhoto(
-        summaryOfPhotoData, true, setOfDates);
+  }
+
+  void executeSlowProcesses() async {
 
     notifyListeners();
   }
@@ -131,46 +132,58 @@ class AndroidDataManager extends ChangeNotifier
   // i) check whether this file is contained in Info
   // ii) check whether this file is saved previously.
   Future<List?> matchFilesAndInfo2() async {
+    return [];
+  }
+
+  Future<FilesInfoModel> matchFilesAndInfo3(FilesInfoModel fileInfos) async {
     List? filesNotUpdated = [];
-    List filenamesFromInfo = infoFromFiles.keys.toList();
+    List filenamesFromInfo = fileInfos.data.header.toList().sublist(1);
     if (filenamesFromInfo
         .isNotEmpty) if (filenamesFromInfo.elementAt(0).runtimeType == String)
       filenamesFromInfo.sort((a, b) => a.compareTo(b));
 
     Map info = {...infoFromFiles};
     int j = 0;
+
     for (int i = 0; i < files.length; i++) {
       var filename = files.elementAt(i);
+
       int sublistIndex = j + 100 < filenamesFromInfo.length
           ? j + 100
           : filenamesFromInfo.length;
       bool isContained =
           filenamesFromInfo.sublist(j, sublistIndex).contains(filename);
-
       if (!isContained) {
-        filesNotUpdated.add(filename);
-        continue;
-      }
-      j += 1;
-
-      bool? isUpdated = info[filename]?.isUpdated;
-
-      if (!isUpdated!) {
-        filesNotUpdated.add(filename);
+        fileInfos.data = fileInfos.data.addSeries(
+            Series(filename, [null, null, null, null, null, false]));
         continue;
       }
     }
-    if (filesNotUpdated == []) return null;
-    return filesNotUpdated;
+    return fileInfos;
   }
 
   Future<void> addFilesToInfo(List? filenames) async {
     if (filenames!.isEmpty) filenames = files;
-    print("filenames : $filenames");
+    print("Files Not updated : $filenames");
     for (int i = 0; i < filenames.length; i++) {
       var filename = filenames.elementAt(i);
       if (infoFromFiles[filename] == null) {
-        infoFromFiles[filename] = FileInfo(isUpdated: false);
+        infoFromFiles[filename] = FileInfoModel(isUpdated: false);
+      }
+    }
+  }
+
+  Future<void> addFilesToInfo2(List? filenames) async {
+    if (filenames!.isEmpty) filenames = files;
+    print("Files Not updated : $filenames");
+    for (int i = 0; i < filenames.length; i++) {
+      var filename = filenames.elementAt(i);
+      if (infoFromFiles[filename] == null) {
+        infoFromFiles[filename] = FileInfoModel(isUpdated: false);
+      }
+      if (!filesInfo.data.header.contains(filename)) {
+        filesInfo.data.addSeries(Series(
+            filename, [List.generate(columns.values.length, (index) => null)]));
       }
     }
   }
@@ -178,7 +191,7 @@ class AndroidDataManager extends ChangeNotifier
   static Future<List> updateDatesFromInfo(List input) async {
     print("input : $input");
     List filesNotUpdated = [];
-    Map<dynamic, FileInfo> infoFromFiles = {};
+    Map<dynamic, FileInfoModel> infoFromFiles = {};
     if (input.isNotEmpty) {
       infoFromFiles = input[0];
       filesNotUpdated = input[1];
@@ -189,7 +202,7 @@ class AndroidDataManager extends ChangeNotifier
     List setOfDates = [];
     List setOfDatetimes = [];
 
-    List<FileInfo> values = infoFromFiles.values.toList();
+    List<FileInfoModel> values = infoFromFiles.values.toList();
 
     for (int i = 0; i < values.length; i++) {
       dates.add(values.elementAt(i).date);
@@ -209,6 +222,20 @@ class AndroidDataManager extends ChangeNotifier
   Future<void> updateDateOnInfo(List? input) async {
     if (input == null || input.isEmpty) input = infoFromFiles.keys.toList();
 
+    for (int i = 0; i < input.length; i++) {
+      String filename = input.elementAt(i);
+      String? inferredDatetime = inferDatetimeFromFilename(filename);
+      if (inferredDatetime != null) {
+        infoFromFiles[filename]?.datetime = DateTime.parse(inferredDatetime);
+        infoFromFiles[filename]?.date = inferredDatetime.substring(0, 8);
+      }
+    }
+  }
+
+  Future<void> updateDateOnInfo2(List? input) async {
+    if (input == null || input.isEmpty)
+      input = filesInfo.data.header.toList().sublist(1);
+
     //case for android
     for (int i = 0; i < input.length; i++) {
       String filename = input.elementAt(i);
@@ -220,10 +247,10 @@ class AndroidDataManager extends ChangeNotifier
     }
   }
 
-  static Future<Map<dynamic, FileInfo>> updateExifOnInfo_compute(
+  static Future<Map<dynamic, FileInfoModel>> updateExifOnInfo_compute(
       List input) async {
     List filenames = input[0];
-    Map<dynamic, FileInfo> infoFromFiles = input[1];
+    Map<dynamic, FileInfoModel> infoFromFiles = input[1];
 
     for (int i = 0; i < filenames.length; i++) {
       var filename = filenames.elementAt(i);
@@ -278,12 +305,12 @@ class AndroidDataManager extends ChangeNotifier
 
   static Future<Map<String, double>>
       updateSummaryOfLocationDataFromInfo2_compute(List input) async {
-    Map<dynamic, FileInfo> infoFromFiles = input[0];
+    Map<dynamic, FileInfoModel> infoFromFiles = input[0];
     var infoFromFiles2 = [...infoFromFiles.values];
     Map<String, double> distances = {};
 
     for (int i = 0; i < infoFromFiles2.length; i++) {
-      FileInfo infoFromFile = infoFromFiles2.elementAt(i);
+      FileInfoModel infoFromFile = infoFromFiles2.elementAt(i);
       String? date = infoFromFile.date;
       if (date == null) continue;
 
@@ -339,7 +366,7 @@ class AndroidDataManager extends ChangeNotifier
     files = files.where((element) => !element.contains('thumbnail')).toList();
 
     infoFromFiles = {};
-    infoFromFiles.addAll({for (var v in files) v: FileInfo()});
+    infoFromFiles.addAll({for (var v in files) v: FileInfoModel()});
     return files;
   }
 }

@@ -1,9 +1,13 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:graphic/graphic.dart';
 import 'package:lateDiary/Data/data_manager_interface.dart';
 import 'package:lateDiary/Util/Util.dart';
 import 'package:lateDiary/Util/global.dart' as global;
+import 'package:ml_dataframe/ml_dataframe.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'dart:async';
 import 'package:lateDiary/pages/YearPage/PolarMonthIndicator.dart';
@@ -16,6 +20,7 @@ import 'dart:ui';
 import 'package:lateDiary/Util/layouts.dart';
 
 import '../../Data/data_repository.dart';
+import 'package:lateDiary/Data/file_info_model.dart';
 
 class YearPageView extends StatelessWidget {
   static String id = 'year';
@@ -125,18 +130,18 @@ class YearPageView extends StatelessWidget {
           ]),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          var c = DataRepository();
-          await c.readInfoFromJson();
 
-          // c.writeInfoAsJson({}, true);
-          // await c.writeSummaryOfLocation(
-          //     {}, true, []);
-          // var summaryOfPhoto = await c.readSummaryOfPhoto();
-          // print(summaryOfPhoto);
-          // var summaryOfLocation = await c.readSummaryOfLocation();
-          //
+          var b  = DataRepository();
+          b.fileInfoMap = {};
+          b.writeInfoAsJson({}, true);
+
           var a = DataManagerInterface(global.kOs);
-          print(product.data);
+          await a.init();
+          // print(a.fileInfos.data.header);
+
+
+
+
         },
       ),
     );

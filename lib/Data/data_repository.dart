@@ -8,6 +8,7 @@ import 'package:path_provider/path_provider.dart';
 import 'dart:convert';
 import 'dart:io';
 import 'package:lateDiary/Util/global.dart' as global;
+import 'package:ml_dataframe/ml_dataframe.dart';
 
 class DataRepository {
   DataRepository._privateConstructor();
@@ -22,7 +23,8 @@ class DataRepository {
 
   List files = [];
 
-  Map<dynamic, FileInfo> infoFromFiles = {};
+  Map<dynamic, FileInfoModel> fileInfoMap = {};
+  FilesInfoModel fileInfos = FilesInfoModel(data: DataFrame([[]]));
 
   Future<void> init() async {
     print("DataRepository instance is initializing..");
@@ -60,11 +62,11 @@ class DataRepository {
 
     files = files.where((element) => !element.contains('thumbnail')).toList();
     files.sort((a, b) => a.compareTo(b));
-    print(files);
     return files;
   }
 
-  Future<Map<dynamic, FileInfo>> readInfoFromJson() async {
+
+    Future<Map<dynamic, FileInfoModel>> readInfoFromJson() async {
     final Directory directory = await getApplicationDocumentsDirectory();
     final File file = File('${directory.path}/InfoOfFiles.json');
     bool isFileExist = await file.exists();
@@ -73,7 +75,7 @@ class DataRepository {
     var data = await file.readAsString();
     Map<String, dynamic> mapFromJson = jsonDecode(data);
 
-    Map<dynamic, FileInfo> test = {};
+    Map<dynamic, FileInfoModel> test = {};
     List filenames = mapFromJson.keys.toList();
 
     var keys = files;
@@ -86,19 +88,18 @@ class DataRepository {
         if (i % 100 == 0) {
           print("$i / ${mapFromJson.length}, ${index}");
         }
-        if (index != -1) test[keys[index]] = FileInfo.fromJson(json: mapFromJson[id]);
+        if (index != -1) test[keys[index]] = FileInfoModel.fromJson(json: mapFromJson[id]);
         continue;
       }
 
       String filename = filenames.elementAt(i);
-      print(mapFromJson[filename]);
       // test[filename] = InfoFromFile(map: mapFromJson[filename]);
-      test[filename] = FileInfo.fromJson(json : mapFromJson[filename]);
-
+      test[filename] = FileInfoModel.fromJson(json : mapFromJson[filename]);
     }
 
-    infoFromFiles = test;
-    return infoFromFiles;
+    fileInfoMap = test;
+    fileInfos = FilesInfoModel.fromMapOfInfo(map: fileInfoMap);
+    return fileInfoMap;
   }
 
   Future<Map<String, int>> readSummaryOfPhoto() async {
@@ -129,7 +130,7 @@ class DataRepository {
   }
 
   Future<void> writeInfoAsJson(
-      Map<dynamic, FileInfo> infoFromFiles, bool overwrite) async {
+      Map<dynamic, FileInfoModel> infoFromFiles, bool overwrite) async {
     List filenames = infoFromFiles.keys.toList();
 
     final Directory directory = await getApplicationDocumentsDirectory();

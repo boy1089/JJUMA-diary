@@ -9,7 +9,7 @@ import 'package:lateDiary/Location/AddressFinder.dart';
 import 'package:lateDiary/Location/Coordinate.dart';
 import 'package:geocoding/geocoding.dart';
 
-import '../Data/DataManagerInterface.dart';
+import '../Data/data_manager_interface.dart';
 
 class DayPageStateProvider with ChangeNotifier {
 

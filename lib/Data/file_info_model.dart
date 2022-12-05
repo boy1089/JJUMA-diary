@@ -1,12 +1,18 @@
 import 'package:lateDiary/Location/Coordinate.dart';
 import 'package:lateDiary/Util/DateHandler.dart';
+import 'package:ml_dataframe/ml_dataframe.dart';
 
+class FileInfos {
 
-class InfoFromFiles {
+  DataFrame data;
+  FileInfos({required this.data});
+  // factory FileInfos.fromList(List<infoFromFiles>){
+  //   return
+  // }
 
 }
 
-class InfoFromFile{
+class FileInfo{
   dynamic? file;
   DateTime? datetime;
   String? date;
@@ -15,7 +21,7 @@ class InfoFromFile{
   bool? isUpdated = false;
   Map? map = {};
 
-  InfoFromFile(
+  FileInfo(
       {this.file,
       this.datetime,
       this.date,
@@ -28,10 +34,10 @@ class InfoFromFile{
     }
   }
 
-  factory InfoFromFile.fromJson({
+  factory FileInfo.fromJson({
     required Map<String, dynamic> json
 }){
-    return InfoFromFile(
+    return FileInfo(
       file : json['file'],
       datetime : formatDateString(json['datetime']),
       date : json['date'],

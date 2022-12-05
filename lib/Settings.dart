@@ -1,5 +1,5 @@
 import 'package:path_provider/path_provider.dart';
-import 'package:lateDiary/Data/Directories.dart';
+import 'package:lateDiary/Data/directories.dart';
 import 'package:lateDiary/Location/Coordinate.dart';
 import 'dart:io';
 import 'dart:convert';

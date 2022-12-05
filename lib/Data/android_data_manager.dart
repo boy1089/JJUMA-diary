@@ -2,20 +2,22 @@ import 'dart:io';
 import 'package:glob/list_local_fs.dart';
 import 'package:flutter/foundation.dart';
 import 'package:glob/glob.dart';
-import 'package:lateDiary/Data/DataManagerInterface.dart';
+import 'package:lateDiary/Data/data_manager_interface.dart';
 import 'package:lateDiary/Util/DateHandler.dart';
 import 'package:lateDiary/Util/Util.dart';
 import 'package:lateDiary/Util/global.dart' as global;
 import 'package:lateDiary/Location/LocationDataManager.dart';
 import "package:lateDiary/Location/Coordinate.dart";
-import 'infoFromFile.dart';
-import 'package:lateDiary/Data/Directories.dart';
-import 'DataRepository.dart';
+import 'file_info_model.dart';
+import 'package:lateDiary/Data/directories.dart';
+import 'data_repository.dart';
 
-class IosDataManager extends ChangeNotifier implements DataManagerInterface {
-  IosDataManager._privateConstructor();
-  static final IosDataManager _instance = IosDataManager._privateConstructor();
-  factory IosDataManager() {
+class AndroidDataManager extends ChangeNotifier
+    implements DataManagerInterface {
+  AndroidDataManager._privateConstructor();
+  static final AndroidDataManager _instance =
+      AndroidDataManager._privateConstructor();
+  factory AndroidDataManager() {
     return _instance;
   }
 
@@ -31,11 +33,10 @@ class IosDataManager extends ChangeNotifier implements DataManagerInterface {
   List? filesNotUpdated = [];
   List<String>? datesOutOfDate = [];
 
-  Map<dynamic, InfoFromFile> infoFromFiles = {};
+  Map<dynamic, FileInfo> infoFromFiles = {};
 
   DataRepository dataRepository = DataRepository();
 
-  @override
   Future<void> init() async {
     Stopwatch stopwatch = Stopwatch()..start();
 
@@ -55,8 +56,13 @@ class IosDataManager extends ChangeNotifier implements DataManagerInterface {
     await addFilesToInfo(filesNotUpdated);
     print("addFilesToinfo done, time elapsed : ${stopwatch.elapsed}");
 
-    var result = await updateDatesFromInfo([infoFromFiles, filesNotUpdated]);
+    await updateDateOnInfo(filesNotUpdated);
+    print("updateDateOnInfo done, time elapsed : ${stopwatch.elapsed}");
+
+    var result =
+        await compute(updateDatesFromInfo, [infoFromFiles, filesNotUpdated]);
     print("updateDatesFromInfo done, time elapsed : ${stopwatch.elapsed}");
+    print(result);
     setOfDates = result[0];
     setOfDatetimes = result[1];
     dates = result[2];
@@ -71,24 +77,6 @@ class IosDataManager extends ChangeNotifier implements DataManagerInterface {
     notifyListeners();
   }
 
-  static Future<Map<dynamic, InfoFromFile>> updateDatesOnInfo_ios(
-      List input) async {
-    List assetEntities = input[0];
-    Map<dynamic, InfoFromFile> infoFromFiles = input[1];
-
-    for (int i = 0; i < assetEntities.length; i++) {
-      var assetEntity = assetEntities.elementAt(i);
-      var filename = await assetEntity.titleAsync;
-      String? inferredDatetime = inferDatetimeFromFilename(filename);
-      if (inferredDatetime != null) {
-        infoFromFiles[assetEntity]?.datetime = DateTime.parse(inferredDatetime);
-        infoFromFiles[assetEntity]?.date = inferredDatetime.substring(0, 8);
-      }
-    }
-    return infoFromFiles;
-  }
-
-  @override
   void executeSlowProcesses() async {
     if (filesNotUpdated!.isEmpty) return;
     print("executing slow process..");
@@ -97,24 +85,20 @@ class IosDataManager extends ChangeNotifier implements DataManagerInterface {
       List partOfFilesNotupdated = filesNotUpdated!.sublist(i * 100,
           lengthOfFiles < (i + 1) * 100 ? lengthOfFiles : (i + 1) * 100);
 
-      if (global.kOs == "ios")
-        // infoFromFiles = await compute(updateDatesOnInfo_ios, [partOfFilesNotupdated, infoFromFiles]);
-        infoFromFiles =
-            await updateDatesOnInfo_ios([partOfFilesNotupdated, infoFromFiles]);
       await Future.delayed(Duration(seconds: 1));
-      infoFromFiles = await updateExifOnInfo_compute(
-          [partOfFilesNotupdated, infoFromFiles]);
+      infoFromFiles = await compute(
+          updateExifOnInfo_compute, [partOfFilesNotupdated, infoFromFiles]);
       if (i % 5 == 0) {
-        var result =
-            await updateDatesFromInfo([infoFromFiles, filesNotUpdated]);
+        var result = await compute(
+            updateDatesFromInfo, [infoFromFiles, filesNotUpdated]);
         setOfDates = result[0];
         setOfDatetimes = result[1];
         dates = result[2];
         datetimes = result[3];
 
         //update the summaryOflocation only on the specific date.
-        summaryOfPhotoData = await updateSummaryOfPhotoFromInfo(
-            [setOfDates, summaryOfPhotoData]);
+        summaryOfPhotoData = await compute(
+            updateSummaryOfPhotoFromInfo, [setOfDates, summaryOfPhotoData]);
 
         await dataRepository.writeInfoAsJson(infoFromFiles, true);
         await dataRepository.writeSummaryOfPhoto(
@@ -123,24 +107,21 @@ class IosDataManager extends ChangeNotifier implements DataManagerInterface {
       }
 
       if (i % 10 == 0) {
-        summaryOfLocationData =
-            await updateSummaryOfLocationDataFromInfo2_compute([infoFromFiles]);
+        summaryOfLocationData = await compute(
+            updateSummaryOfLocationDataFromInfo2_compute, [infoFromFiles]);
         await dataRepository.writeSummaryOfLocation(
             summaryOfLocationData, true, setOfDates);
       }
     }
-    print("executing slow process..2");
-    summaryOfPhotoData =
-        await updateSummaryOfPhotoFromInfo([setOfDates, summaryOfPhotoData]);
-    print("executing slow process..3");
-    summaryOfLocationData = await updateSummaryOfLocationDataFromInfo_compute(
+    summaryOfPhotoData = await compute(
+        updateSummaryOfPhotoFromInfo, [setOfDates, summaryOfPhotoData]);
+    summaryOfLocationData = await compute(
+        updateSummaryOfLocationDataFromInfo_compute,
         [setOfDates, summaryOfLocationData, infoFromFiles]);
-    print("executing slow process..4");
+
     await dataRepository.writeInfoAsJson(infoFromFiles, true);
-    print("executing slow process..5");
     await dataRepository.writeSummaryOfLocation(
         summaryOfLocationData, true, setOfDates);
-    print("executing slow process..6");
     await dataRepository.writeSummaryOfPhoto(
         summaryOfPhotoData, true, setOfDates);
 
@@ -149,7 +130,6 @@ class IosDataManager extends ChangeNotifier implements DataManagerInterface {
 
   // i) check whether this file is contained in Info
   // ii) check whether this file is saved previously.
-  @override
   Future<List?> matchFilesAndInfo2() async {
     List? filesNotUpdated = [];
     List filenamesFromInfo = infoFromFiles.keys.toList();
@@ -184,14 +164,13 @@ class IosDataManager extends ChangeNotifier implements DataManagerInterface {
     return filesNotUpdated;
   }
 
-  @override
   Future<void> addFilesToInfo(List? filenames) async {
     if (filenames!.isEmpty) filenames = files;
     print("filenames : $filenames");
     for (int i = 0; i < filenames.length; i++) {
       var filename = filenames.elementAt(i);
       if (infoFromFiles[filename] == null) {
-        infoFromFiles[filename] = InfoFromFile(isUpdated: false);
+        infoFromFiles[filename] = FileInfo(isUpdated: false);
       }
     }
   }
@@ -199,7 +178,7 @@ class IosDataManager extends ChangeNotifier implements DataManagerInterface {
   static Future<List> updateDatesFromInfo(List input) async {
     print("input : $input");
     List filesNotUpdated = [];
-    Map<dynamic, InfoFromFile> infoFromFiles = {};
+    Map<dynamic, FileInfo> infoFromFiles = {};
     if (input.isNotEmpty) {
       infoFromFiles = input[0];
       filesNotUpdated = input[1];
@@ -210,7 +189,7 @@ class IosDataManager extends ChangeNotifier implements DataManagerInterface {
     List setOfDates = [];
     List setOfDatetimes = [];
 
-    List<InfoFromFile> values = infoFromFiles.values.toList();
+    List<FileInfo> values = infoFromFiles.values.toList();
 
     for (int i = 0; i < values.length; i++) {
       dates.add(values.elementAt(i).date);
@@ -227,37 +206,29 @@ class IosDataManager extends ChangeNotifier implements DataManagerInterface {
     return [setOfDates, setOfDatetimes, dates, datetimes];
   }
 
-  @override
   Future<void> updateDateOnInfo(List? input) async {
     if (input == null || input.isEmpty) input = infoFromFiles.keys.toList();
 
-    //case for IOS
-    if (input.elementAt(0).runtimeType != String) {
-      // for (int i = 0; i < input.length; i++) {
-      //   if (i % 100 == 0) print("$i / ${input.length}");
-      //   var assetEntity = input.elementAt(i);
-      //   String filename = await assetEntity.titleAsync;
-      //   String? inferredDatetime = inferDatetimeFromFilename(filename);
-      //   if (inferredDatetime != null) {
-      //     infoFromFiles[assetEntity]?.datetime =
-      //         DateTime.parse(inferredDatetime);
-      //     infoFromFiles[assetEntity]?.date = inferredDatetime.substring(0, 8);
-      //   }
-      // }
-      return;
+    //case for android
+    for (int i = 0; i < input.length; i++) {
+      String filename = input.elementAt(i);
+      String? inferredDatetime = inferDatetimeFromFilename(filename);
+      if (inferredDatetime != null) {
+        infoFromFiles[filename]?.datetime = DateTime.parse(inferredDatetime);
+        infoFromFiles[filename]?.date = inferredDatetime.substring(0, 8);
+      }
     }
   }
 
-  static Future<Map<dynamic, InfoFromFile>> updateExifOnInfo_compute(
+  static Future<Map<dynamic, FileInfo>> updateExifOnInfo_compute(
       List input) async {
     List filenames = input[0];
-    Map<dynamic, InfoFromFile> infoFromFiles = input[1];
+    Map<dynamic, FileInfo> infoFromFiles = input[1];
 
     for (int i = 0; i < filenames.length; i++) {
       var filename = filenames.elementAt(i);
       List exifData = [];
-
-      exifData = await getExifInfoOfFile_ios(filename);
+      exifData = await getExifInfoOfFile(filename);
 
       if (i % 100 == 0)
         print(
@@ -266,8 +237,6 @@ class IosDataManager extends ChangeNotifier implements DataManagerInterface {
       if (exifData[1] != null) {
         infoFromFiles[filename]?.distance = calculateDistanceToRef(exifData[1]);
       }
-      print("${infoFromFiles[filename]?.coordinate}, ${infoFromFiles[filename]?.distance}");
-
       infoFromFiles[filename]?.isUpdated = true;
       //if datetime is updated from filename, then does not overwrite with exif
       if (infoFromFiles[filename]?.datetime != null) continue;
@@ -309,12 +278,12 @@ class IosDataManager extends ChangeNotifier implements DataManagerInterface {
 
   static Future<Map<String, double>>
       updateSummaryOfLocationDataFromInfo2_compute(List input) async {
-    Map<dynamic, InfoFromFile> infoFromFiles = input[0];
+    Map<dynamic, FileInfo> infoFromFiles = input[0];
     var infoFromFiles2 = [...infoFromFiles.values];
     Map<String, double> distances = {};
 
     for (int i = 0; i < infoFromFiles2.length; i++) {
-      InfoFromFile infoFromFile = infoFromFiles2.elementAt(i);
+      FileInfo infoFromFile = infoFromFiles2.elementAt(i);
       String? date = infoFromFile.date;
       if (date == null) continue;
 
@@ -324,7 +293,7 @@ class IosDataManager extends ChangeNotifier implements DataManagerInterface {
       if (isNull) {
         continue;
       }
-      print("$date, ${distances[date]}, ${infoFromFile.distance!}");
+
       if (isContained) {
         distances[date] = (distances[date]! > infoFromFile.distance!
             ? distances[date]
@@ -352,7 +321,6 @@ class IosDataManager extends ChangeNotifier implements DataManagerInterface {
     return input[1];
   }
 
-  @override
   Future<List<String>> resetInfoFromFiles() async {
     List<String> files = [];
     List newFiles = [];
@@ -371,9 +339,7 @@ class IosDataManager extends ChangeNotifier implements DataManagerInterface {
     files = files.where((element) => !element.contains('thumbnail')).toList();
 
     infoFromFiles = {};
-    infoFromFiles.addAll({for (var v in files) v: InfoFromFile()});
+    infoFromFiles.addAll({for (var v in files) v: FileInfo()});
     return files;
   }
-
-
 }

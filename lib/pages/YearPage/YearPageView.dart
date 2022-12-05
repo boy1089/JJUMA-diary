@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:graphic/graphic.dart';
-import 'package:lateDiary/Data/DataManagerInterface.dart';
+import 'package:lateDiary/Data/data_manager_interface.dart';
 import 'package:lateDiary/Util/Util.dart';
 import 'package:lateDiary/Util/global.dart' as global;
 import 'package:provider/provider.dart';
@@ -15,7 +15,7 @@ import 'package:lateDiary/Util/DateHandler.dart';
 import 'dart:ui';
 import 'package:lateDiary/Util/layouts.dart';
 
-import '../../Data/DataRepository.dart';
+import '../../Data/data_repository.dart';
 
 class YearPageView extends StatelessWidget {
   static String id = 'year';

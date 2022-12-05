@@ -1,9 +1,9 @@
-import 'package:lateDiary/Data/infoFromFile.dart';
+import 'package:lateDiary/Data/file_info_model.dart';
 import 'package:lateDiary/Util/global.dart' as global;
 import 'dart:math';
 
 class LocationDataManager {
-  Map<dynamic, InfoFromFile> infoFromFiles = {};
+  Map<dynamic, FileInfo> infoFromFiles = {};
 
   LocationDataManager(this.infoFromFiles);
 
@@ -27,7 +27,7 @@ class LocationDataManager {
     List<double?> distancesOfDate = [];
     List values = infoFromFiles.values.toList();
     for (var element in indexOfDate) {
-      InfoFromFile data = values.elementAt(element);
+      FileInfo data = values.elementAt(element);
       distancesOfDate.add(data.distance);
     }
     return distancesOfDate;

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'YearPageView.dart';
+import 'year_page_view.dart';
 import 'package:provider/provider.dart';
 
 import 'package:lateDiary/StateProvider/YearPageStateProvider.dart';
@@ -24,7 +24,7 @@ class YearPage extends StatelessWidget {
           reverse: true,
           itemBuilder: (BuildContext context, int index) {
             year = DateTime.now().year - index;
-            return YearPageView(year, product, context);
+            return YearPageView(year : year, isZoomIn : product.isZoomIn, angle : product.zoomInAngle, dataForChart: product.data, context : context);
           }),
     ));
   }

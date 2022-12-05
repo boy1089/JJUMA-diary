@@ -8,7 +8,7 @@ import 'package:lateDiary/Util/global.dart' as global;
 
 class NoteManager {
   Map notes = {};
-  Map notesOfYear = {};
+  Map<String, String> notesOfYear = {};
   List files = [];
   Map summaryOfNotes = {};
 

@@ -5,7 +5,7 @@ import 'package:lateDiary/Util/global.dart' as global;
 import 'package:lateDiary/pages/SettingPage.dart';
 import 'package:lateDiary/Note/NoteManager.dart';
 import '../DiaryPage.dart';
-import '../YearPage/YearPage.dart';
+import '../YearPage/year_page.dart';
 import '../DayPage/DayPage.dart';
 import 'MainPageViewAndroid.dart';
 import 'MainPageViewIos.dart';

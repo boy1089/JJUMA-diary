@@ -36,9 +36,9 @@ class PolarTimeIndicators extends StatelessWidget {
     Map<int, int> indexForSelectedFile = {};
     List<DateTime?> datetimes = List<DateTime?>.generate(
         files.length,
-        // (i) => dataManager.infoFromFiles[files.elementAt(i)]?.datetime);
-        (i) => dataManager.filesInfo.data[files.elementAt(i)]?.data
-            .elementAt(columns.datetime.index));
+        (i) => dataManager.infoFromFiles[files.elementAt(i)]?.datetime);
+        // (i) => dataManager.infoFromFiles[files.elementAt(i)]?
+        //     .elementAt(columns.datetime.index));
 
     List<int> times =
         List<int>.generate(datetimes.length, (i) => datetimes[i]!.hour);

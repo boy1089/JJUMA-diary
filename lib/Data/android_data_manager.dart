@@ -4,6 +4,7 @@ import 'package:glob/list_local_fs.dart';
 import 'package:flutter/foundation.dart';
 import 'package:glob/glob.dart';
 import 'package:lateDiary/Data/data_manager_interface.dart';
+import 'package:lateDiary/Data/summary_model.dart';
 import 'package:lateDiary/Util/DateHandler.dart';
 import 'package:lateDiary/Util/Util.dart';
 import 'package:lateDiary/Util/global.dart' as global;
@@ -33,6 +34,7 @@ class AndroidDataManager extends ChangeNotifier
   List dates = [];
   List datetimes = [];
   List setOfDatetimes = [];
+  SummaryModel summaryModel = SummaryModel();
   List files = [];
   List? filesNotUpdated = [];
   List<String>? datesOutOfDate = [];
@@ -58,7 +60,9 @@ class AndroidDataManager extends ChangeNotifier
 
     filesInfo = await updateFileInfo(filesInfo);
     filesInfo.updateAll();
-
+    // print(filesInfo.distances);
+    summaryModel = SummaryModel.fromFilesInfo(filesInfoModel: filesInfo);
+    print(summaryModel.locations);
     notifyListeners();
   }
 

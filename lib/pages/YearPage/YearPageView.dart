@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -6,6 +7,7 @@ import 'package:graphic/graphic.dart';
 import 'package:lateDiary/Data/data_manager_interface.dart';
 import 'package:lateDiary/Util/Util.dart';
 import 'package:lateDiary/Util/global.dart' as global;
+import 'package:matrix2d/matrix2d.dart';
 import 'package:ml_dataframe/ml_dataframe.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
@@ -130,17 +132,25 @@ class YearPageView extends StatelessWidget {
           ]),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-
-          var b  = DataRepository();
-          b.fileInfoMap = {};
-          b.writeInfoAsJson({}, true);
+          //
+          // var b  = DataRepository();
+          // b.fileInfoMap = {};
+          // b.writeInfoAsJson({}, true);
 
           var a = DataManagerInterface(global.kOs);
-          await a.init();
-          // print(a.fileInfos.data.header);
+          // await a.init();
 
+          final Directory directory = await getApplicationDocumentsDirectory();
+          final File file = File('${directory.path}/InfoOfFiles.json');
 
+          var data = await file.readAsString();
+          Map<String, dynamic> mapFromJson = jsonDecode(data);
+          print(mapFromJson.keys);
+          var b = DataFrame.fromJson(mapFromJson);
 
+          //
+          // List<List<dynamic>> b = [a.filesInfo.data.toJson()['H']];
+          //     b.addAll(a.filesInfo.data.toJson()['R']);
 
         },
       ),

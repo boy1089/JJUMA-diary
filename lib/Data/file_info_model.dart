@@ -13,6 +13,11 @@ class FilesInfoModel {
   List<double?> distances = [];
   List<Coordinate?> coordinates = [];
 
+  // factor FilesInfoModel.fromJson({required Map<String, dynamic>json}){
+  //
+  // }
+
+
   factory FilesInfoModel.fromMapOfInfo({required Map map}) {
     DataFrame data = DataFrame([
       ['path'],

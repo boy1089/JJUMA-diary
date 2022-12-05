@@ -44,27 +44,36 @@ class AndroidDataManager extends ChangeNotifier
   DataRepository dataRepository = DataRepository();
 
   Future<void> init() async {
-    Stopwatch stopwatch = Stopwatch()..start();
 
     print("DataManager instance is initializing..");
     //get list of image files from local. --> update new images
+    Stopwatch stopwatch = Stopwatch()..start();
     files = await dataRepository.getAllFiles();
+    print("data manager is initializing.. getAllFiles ${stopwatch.elapsed}");
     infoFromFiles = await dataRepository.readInfoFromJson();
-    filesInfo = dataRepository.fileInfos;
-    summaryOfPhotoData = await dataRepository.readSummaryOfPhoto();
-    summaryOfLocationData = await dataRepository.readSummaryOfLocation();
-    notifyListeners();
 
-    await matchFilesAndInfo3(filesInfo);
-
-    filesInfo = await updateFileInfo(filesInfo);
-    filesInfo.updateAll();
-
-    summaryModel = SummaryModel.fromFilesInfo(filesInfoModel: filesInfo);
+    // print("data manager is initializing..readInfo ${stopwatch.elapsed}");
+    // filesInfo = dataRepository.fileInfos;
+    // summaryOfPhotoData = await dataRepository.readSummaryOfPhoto();
+    // summaryOfLocationData = await dataRepository.readSummaryOfLocation();
+    // notifyListeners();
+    // print("data manager is initializing..readSUmmary ${stopwatch.elapsed}");
+    //
+    // await matchFilesAndInfo3(filesInfo);
+    //
+    // print("data manager is initializing..matchFiles ${stopwatch.elapsed}");
+    // filesInfo = await updateFileInfo(filesInfo);
+    //
+    // print("data manager is initializing..updateFileInfo ${stopwatch.elapsed}");
+    // filesInfo.updateAll();
+    //
+    // print("data manager is initializing..updateAll ${stopwatch.elapsed}");
+    // summaryModel = SummaryModel.fromFilesInfo(filesInfoModel: filesInfo);
+    //
+    // print("data manager is initializing..updateSummary ${stopwatch.elapsed}");
     // print(summaryModel.counts!.rows.elementAt(imagesColumn.date.index).toList().sublist(1));
     // print(summaryModel.counts.sampleFromSeries(names : []))
 
-    print(summaryModel.locations!);
     notifyListeners();
   }
 
@@ -106,7 +115,11 @@ class AndroidDataManager extends ChangeNotifier
   }
 
   Future<FilesInfoModel> updateFileInfo(FilesInfoModel fileInfos) async {
-    for (var column in fileInfos.data.series.toList().sublist(1)) {
+    var data = fileInfos.data.series.toList().sublist(1);
+    for (var i = 0; i < data.length; i++) {
+      // for (var column in fileInfos.data.series.toList().sublist(1)) {
+      var column = data.elementAt(i);
+      if (i % 100 == 0) print("$i / ${data.length}");
       if (!column.data.elementAt(columns.isUpdated.index)) {
         String path = column.name;
         List fileInfo = await getFileInfo(path);
@@ -128,29 +141,39 @@ class AndroidDataManager extends ChangeNotifier
   }
 
   Future<FilesInfoModel> matchFilesAndInfo3(FilesInfoModel fileInfos) async {
-    List? filesNotUpdated = [];
     List filenamesFromInfo = fileInfos.data.header.toList().sublist(1);
     if (filenamesFromInfo
         .isNotEmpty) if (filenamesFromInfo.elementAt(0).runtimeType == String)
       filenamesFromInfo.sort((a, b) => a.compareTo(b));
 
-    Map info = {...infoFromFiles};
     int j = 0;
-
+    List series = [];
     for (int i = 0; i < files.length; i++) {
+      Stopwatch stopwatch = Stopwatch()..start();
       var filename = files.elementAt(i);
-
+      // print("stopwatch1, ${stopwatch.elapsed}");
+      if (i % 100 == 0) print("$i, ${files.length}");
+      // print("stopwatch2, ${stopwatch.elapsed}");
       int sublistIndex = j + 100 < filenamesFromInfo.length
           ? j + 100
           : filenamesFromInfo.length;
+      // print("stopwatch3 ${stopwatch.elapsed}");
       bool isContained =
           filenamesFromInfo.sublist(j, sublistIndex).contains(filename);
+
+      // print("stopwatch4, ${stopwatch.elapsed}");
       if (!isContained) {
+        // series.add([filename, null, null, null, null, null, false]);
         fileInfos.data = fileInfos.data
             .addSeries(Series(filename, [null, null, null, null, null, false]));
+        // print("stopwatch5, ${stopwatch.elapsed}");
         continue;
       }
     }
+
+    // fileInfos.data.addSeries(series);
+    // fileInfos.data = DataFrame(fileInfos.data.toMatrix());
+
     return fileInfos;
   }
 

@@ -80,14 +80,15 @@ class DataRepository {
 
     var keys = files;
     var ids = [for (var a in keys) a.id];
-
+    Stopwatch stopwatch = Stopwatch()..start();
     for (int i = 0; i < mapFromJson.length; i++) {
+      if (i % 100 == 0) {
+        print("$i / ${mapFromJson.length}");
+      }
       if (global.kOs == "ios") {
         String id = filenames.elementAt(i);
         int index = ids.indexOf(id);
-        if (i % 100 == 0) {
-          print("$i / ${mapFromJson.length}, ${index}");
-        }
+
         if (index != -1) test[keys[index]] = FileInfoModel.fromJson(json: mapFromJson[id]);
         continue;
       }

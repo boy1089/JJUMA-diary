@@ -46,11 +46,13 @@ class DayPageStateProvider with ChangeNotifier {
     Map<dynamic, InfoFromFile> data = dataManager.infoFromFiles;
     Map<dynamic, InfoFromFile> filteredDataAll = Map.fromEntries(data.entries
         .where((k) => k.value.date!.contains(date.substring(0, 6))));
-    filteredDataAll.forEach((key, value) {print("$key, $value");});
+    filteredDataAll.forEach((key, value) {
+      print("$key, $value");
+    });
     List<String> dates = List.generate(filteredDataAll.length,
         (index) => filteredDataAll.entries.elementAt(index).value.date!);
     Set<String> setOfDates = dates.toSet();
-     indexOfDate = setOfDates.toList().indexWhere((element) => element==date);
+    indexOfDate = setOfDates.toList().indexWhere((element) => element == date);
     listOfEventsInDay = {};
     for (int i = 0; i < setOfDates.length; i++) {
       String date = setOfDates.elementAt(i);
@@ -59,7 +61,6 @@ class DayPageStateProvider with ChangeNotifier {
           filteredDataAll.entries.where((k) => k.value.date!.contains(date))));
       listOfEventsInDay[date] = updateEvents();
     }
-
   }
 
   List<Map<dynamic, InfoFromFile>> updateEvents() {

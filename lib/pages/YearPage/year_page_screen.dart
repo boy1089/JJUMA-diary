@@ -24,7 +24,7 @@ class YearPageScreen extends StatelessWidget {
             int year = DateTime.now().year - index;
             return YearPageView(
                 year: year,
-                dataForChart: product.dataList[index],
+                dataForChart: product.dataForChartList[index],
                 isZoomIn: product.isZoomIn,
                 angle : product.zoomInAngle,
                 context: context);

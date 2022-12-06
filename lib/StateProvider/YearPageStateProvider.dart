@@ -7,23 +7,18 @@ import 'package:intl/intl.dart';
 import '../Data/DataManagerInterface.dart';
 
 class YearPageStateProvider with ChangeNotifier {
-  String date = formatDate(DateTime.now());
+  int index = 0;
   double zoomInAngle = 0.0;
   bool isZoomIn = false;
-  bool isBottomNavigationBarShown = true;
-  int lastNavigationIndex = 0;
-  int year = DateTime.now().year;
-  int index = 0;
+  List<dynamic> dataForChartList = [];
+  //TODO remove availableDates
+  List<String> availableDates = [];
+
 
   DataManagerInterface dataManager;
   YearPageStateProvider(this.dataManager) {
     update(dataManager);
   }
-
-  dynamic data;
-  List<dynamic> dataList = [];
-  List<String> availableDates = [];
-  int maxOfSummary = 0;
 
   void update(dataManager) {
     this.dataManager = dataManager;
@@ -31,12 +26,6 @@ class YearPageStateProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void setAvailableDates(int year) {
-    availableDates = dataManager.summaryOfPhotoData.keys.where((element) {
-      return element.substring(0, 4) == year.toString();
-    }).toList();
-    availableDates.sort();
-  }
 
   void updateDataList() {
     List<int> years =
@@ -53,7 +42,7 @@ class YearPageStateProvider with ChangeNotifier {
     for (int i = 0; i < 20; i++) {
       dataList.add(modifyDataFormat(availableDateList.elementAt(i)));
     }
-    this.dataList = dataList;
+    this.dataForChartList = dataList;
     print("dataList : $dataList");
     print("dateList : $availableDateList");
     print("years : $years");
@@ -97,20 +86,14 @@ class YearPageStateProvider with ChangeNotifier {
     return dataTemp;
   }
 
-  void setBottomNavigationBarShown(bool isBottomNavigationBarShown) {
-    this.isBottomNavigationBarShown = isBottomNavigationBarShown;
-    print("isBottomNavigationBarShown : $isBottomNavigationBarShown");
-    notifyListeners();
+
+  void setAvailableDates(int year) {
+    availableDates = dataManager.summaryOfPhotoData.keys.where((element) {
+      return element.substring(0, 4) == year.toString();
+    }).toList();
+    availableDates.sort();
   }
 
-  void setLastNavigationIndex(int index) {
-    lastNavigationIndex = index;
-  }
-
-  void setDate(DateTime date) {
-    this.date = formatDate(date);
-    print("date : ${this.date}");
-  }
 
   void setZoomInRotationAngle(angle) {
     // print("provider set zoomInAngle to $angle");
@@ -122,10 +105,6 @@ class YearPageStateProvider with ChangeNotifier {
     print("provider set isZoomIn to $isZoomIn");
     this.isZoomIn = isZoomIn;
     notifyListeners();
-  }
-
-  void setIndex(int index) {
-    this.index = index;
   }
 
   @override

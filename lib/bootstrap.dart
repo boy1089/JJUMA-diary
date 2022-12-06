@@ -44,13 +44,14 @@ void bootstrap(int i) {
             },
             create: (context) => yearPageStateProvider,
           ),
-          ChangeNotifierProxyProvider<DataManagerInterface, DayPageStateProvider>(
-            update: (context, dataManager, a) => dayPageStateProvider,
-            // update : (context, dataManager, a) =>DayPageStateProvider(dataManager),
-            create: (context) {
-              return dayPageStateProvider;
-            }
-          )   ],
+          ChangeNotifierProxyProvider<DataManagerInterface,
+                  DayPageStateProvider>(
+              update: (context, dataManager, a) => dayPageStateProvider,
+              // update : (context, dataManager, a) =>DayPageStateProvider(dataManager),
+              create: (context) {
+                return dayPageStateProvider;
+              })
+        ],
         child: App(),
       ),
     ),

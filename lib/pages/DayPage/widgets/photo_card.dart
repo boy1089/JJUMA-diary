@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:lateDiary/Data/infoFromFile.dart';
 import 'package:lateDiary/Util/Util.dart';
 import 'dart:io';
 import 'package:extended_image/extended_image.dart';
 import 'dart:math';
+
+import '../../../Util/DateHandler.dart';
 
 class PhotoCard extends StatefulWidget {
   Map<dynamic, InfoFromFile> event;
@@ -14,8 +17,7 @@ class PhotoCard extends StatefulWidget {
     this.isMagnified = false,
     this.height = 100,
     required this.event,
-  }) {}
-
+  });
   @override
   State<PhotoCard> createState() => _PhotoCardState();
 }
@@ -24,9 +26,11 @@ class _PhotoCardState extends State<PhotoCard> {
   String note = "";
   int index = 0;
   FocusNode focusNode = FocusNode();
+  DateTime dateTime = DateTime.now();
 
   _PhotoCardState() {
-    controller.text = "date, time, address\nLeave your note here!";
+    // dateTime = widget.event.entries.first.value.datetime;
+    // controller.
   }
 
   TextEditingController controller = TextEditingController();
@@ -36,7 +40,9 @@ class _PhotoCardState extends State<PhotoCard> {
     FixedExtentScrollController scrollController1 =
         FixedExtentScrollController();
     FixedExtentScrollController scrollController2 =
-    FixedExtentScrollController();
+        FixedExtentScrollController();
+
+    dateTime = widget.event.entries.first.value.datetime!;
 
     return Column(
       children: [
@@ -51,7 +57,7 @@ class _PhotoCardState extends State<PhotoCard> {
                   quarterTurns: -1,
                   child: ListWheelScrollView(
                       onSelectedItemChanged: (index) {
-                        if(this.index == index) return;
+                        if (this.index == index) return;
                         scrollController2.animateToItem(index,
                             duration: Duration(milliseconds: 100),
                             curve: Curves.easeIn);
@@ -81,7 +87,8 @@ class _PhotoCardState extends State<PhotoCard> {
                                         File(widget.event.entries
                                             .elementAt(index)
                                             .key),
-                                        compressionRatio: 0.01,
+                                        cacheRawData: true,
+                                        compressionRatio: 0.1,
                                         fit: BoxFit.cover,
                                       ),
                                     )),
@@ -100,7 +107,7 @@ class _PhotoCardState extends State<PhotoCard> {
                       onSelectedItemChanged: (index) {
                         print("$index, ${this.index}");
 
-                        if(this.index == index) return;
+                        if (this.index == index) return;
                         this.index = index;
                         setState(() {});
                         scrollController1.jumpToItem(index);
@@ -121,18 +128,30 @@ class _PhotoCardState extends State<PhotoCard> {
                               ))),
                 )),
           ),
+        //
+        if (widget.isMagnified)
+          Container(
+            width : physicalWidth,
+              height : 18,
+              child: Padding(
+                  padding : EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Row(
+                    children: [
+                      DateText(dateTime: dateTime),
+                    ],
+                  ))),
         if (widget.isMagnified)
           Container(
             height: 200,
             child: Padding(
-              padding: EdgeInsets.all(8.0),
+              padding: EdgeInsets.symmetric(horizontal: 8.0),
               child: EditableText(
                   controller: controller,
                   focusNode: focusNode,
                   style: TextStyle(
                     color: Colors.black,
-                    fontSize: 16,
                   ),
+                  // onChanged: (value){controller.text = value;},
                   cursorColor: Colors.black,
                   backgroundCursorColor: Colors.grey),
             ),
@@ -141,3 +160,23 @@ class _PhotoCardState extends State<PhotoCard> {
     );
   }
 }
+
+class DateText extends StatelessWidget {
+  DateTime dateTime;
+  DateText({required this.dateTime});
+
+  factory DateText.fromString({required date}) {
+    return DateText(dateTime: formatDateString(date));
+  }
+  @override
+  Widget build(BuildContext context) {
+    return Text("${DateFormat('EEEE').format(dateTime)}/"
+        "${DateFormat('MMM').format(dateTime)} "
+        "${DateFormat('dd').format(dateTime)}/"
+        "${DateFormat('yyyy').format(dateTime)} "
+        "${DateFormat('h:mm a').format(dateTime)}",
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+    );
+  }
+}
+

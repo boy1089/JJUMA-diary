@@ -44,17 +44,15 @@ class YearPageChart extends StatelessWidget {
           case "tapDown":
             break;
           case 'tapUp':
-            print("value : $value");
-
-            // DateTime date = DateTime.parse(product.availableDates
-            //     .elementAt(int.parse(value.values.first.first.toString())));
-            DateTime date = formatDateString(dataForChart.elementAt(value.values.first.first)[4].toString());
+            DateTime date = formatDateString(
+                dataForChart.elementAt(value.values.first.first)[4].toString());
             if (!product.isZoomIn) return;
-            provider.setNavigationIndex(navigationIndex.day);
-            provider.setDate(date);
-
             Provider.of<DayPageStateProvider>(context, listen: false)
                 .setDate(formatDate(date));
+            provider.setNavigationIndex(navigationIndex.day);
+            provider.setDate(date);
+            print("date : $date");
+
             // Navigator.pushNamed(DayPageView.id)
 
             break;

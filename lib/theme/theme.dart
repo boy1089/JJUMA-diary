@@ -12,7 +12,7 @@ class LateDiaryTheme {
 
           //theme for day page title
           headline3: TextStyle(
-              color: Colors.black45, fontWeight: FontWeight.w300, fontSize: 25),
+          color: Colors.black45, fontWeight: FontWeight.w300, fontSize: 25),
 
           //theme for background texts
           headline2:

@@ -4,6 +4,7 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:intl/intl.dart';
 import 'package:lateDiary/Data/DataManagerInterface.dart';
 import 'package:lateDiary/Data/infoFromFile.dart';
 import 'package:lateDiary/Util/Util.dart';
@@ -34,14 +35,6 @@ class _DayPageState extends State<DayPage> {
 
     return Scaffold(
       extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-        title: Text(
-          navigation.date,
-          style: TextStyle(color: Colors.black),
-        ),
-      ),
       body: Stack(
         children: [
           CustomScrollView(
@@ -49,9 +42,27 @@ class _DayPageState extends State<DayPage> {
               SliverFixedExtentList(
                   itemExtent: physicalWidth,
                   delegate: SliverChildBuilderDelegate(
-                    childCount: 1,
+                    childCount: provider.listOfEventsInDay.entries.length,
                     (BuildContext context, int index) {
-                      return CardContainer(listOfEvents: provider.listOfEvents);
+
+                      String date = provider.listOfEventsInDay.entries
+                          .elementAt(index).key;
+                      return Stack(
+                        children: [
+
+                          CardContainer(
+                            listOfEvents: provider.listOfEventsInDay.entries
+                                .elementAt(index)
+                                .value),
+                      Text(
+                      "${DateFormat('EEEE').format(DateTime.parse(date))}/"
+                      "${DateFormat('MMM').format(DateTime.parse(date))} "
+                      "${DateFormat('dd').format(DateTime.parse(date))}",
+                      style: TextStyle(
+                      color: Colors.white, fontWeight: FontWeight.w300, fontSize: 25))]
+                      );
+
+                          // style : TextStyle(color: Colors.white, fontSize : 16)),]
                     },
                   )),
             ],
@@ -146,42 +157,50 @@ class CardContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
         width: physicalWidth,
-        height: physicalWidth,
+        // height: physicalWidth,
         color: Colors.black,
         child: Column(children: [
-          Row(crossAxisAlignment: CrossAxisAlignment.start,
+          Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               // mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Column(
-                  children: [
-                    ClickablePhotoCard(
-                      photoCard: PhotoCard(
-                          event: listOfEvents[0],
-                          isMagnified: false,
-                          height: physicalWidth / 4),
-                    ),
-                    ClickablePhotoCard(
-                      photoCard: PhotoCard(
-                          event: listOfEvents[1],
-                          isMagnified: false,
-                          height: physicalWidth / 4),
-                    ),
-                    ClickablePhotoCard(
-                      photoCard: PhotoCard(
-                          event: listOfEvents[2],
-                          isMagnified: false,
-                          height: physicalWidth / 4),
-                    ),
-                  ],
-                ),
-                //
-                ClickablePhotoCard(
-                  photoCard: PhotoCard(
-                      event: listOfEvents[3],
-                      isMagnified: false,
-                      height: physicalWidth / 4 * 3),
-                ),
-              ]),
+              children: (listOfEvents.length < 4)
+                  ? List.generate(
+                      listOfEvents.length,
+                      (index) => ClickablePhotoCard(
+                          photoCard: PhotoCard(
+                              event: listOfEvents.elementAt(index),
+                              isMagnified: false,
+                              height: physicalWidth / listOfEvents.length)))
+                  : [
+                      Column(
+                        children: [
+                          ClickablePhotoCard(
+                            photoCard: PhotoCard(
+                                event: listOfEvents[0],
+                                isMagnified: false,
+                                height: physicalWidth / 4),
+                          ),
+                          ClickablePhotoCard(
+                            photoCard: PhotoCard(
+                                event: listOfEvents[1],
+                                isMagnified: false,
+                                height: physicalWidth / 4),
+                          ),
+                          ClickablePhotoCard(
+                            photoCard: PhotoCard(
+                                event: listOfEvents[2],
+                                isMagnified: false,
+                                height: physicalWidth / 4),
+                          ),
+                        ],
+                      ),
+                      ClickablePhotoCard(
+                        photoCard: PhotoCard(
+                            event: listOfEvents[3],
+                            isMagnified: false,
+                            height: physicalWidth / 4 * 3),
+                      ),
+                    ]),
           if (listOfEvents.length > 4)
             Row(
                 children: List.generate(

@@ -27,6 +27,8 @@ class DayPageStateProvider with ChangeNotifier {
   String note = "";
   Map<dynamic, InfoFromFile> listOfImages = {};
   List<Map<dynamic, InfoFromFile>> listOfEvents = [];
+  Map<String, List<Map<dynamic, InfoFromFile>>> listOfEventsInDay = {};
+
   double keyboardSize = 300;
   DataManagerInterface dataManager;
 
@@ -37,20 +39,28 @@ class DayPageStateProvider with ChangeNotifier {
 
   void updateData() {
     Map<dynamic, InfoFromFile> data = dataManager.infoFromFiles;
-    Map<dynamic, InfoFromFile> filteredData =
-        Map.fromEntries(data.entries.where((k) => k.value.date == date));
-    listOfImages = {};
-    listOfImages.addAll(filteredData);
-    print("listOfImages : $listOfImages");
-    updateEvents();
+    Map<dynamic, InfoFromFile> filteredDataAll = Map.fromEntries(data.entries
+        .where((k) => k.value.date!.contains(date.substring(0, 6))));
+    filteredDataAll.forEach((key, value) {print("$key, $value");});
+    List<String> dates = List.generate(filteredDataAll.length,
+        (index) => filteredDataAll.entries.elementAt(index).value.date!);
+    Set<String> setOfDates = dates.toSet();
+    listOfEventsInDay = {};
+    for (int i = 0; i < setOfDates.length; i++) {
+      String date = setOfDates.elementAt(i);
+      listOfImages = {};
+      listOfImages.addAll(Map.fromEntries(
+          filteredDataAll.entries.where((k) => k.value.date!.contains(date))));
+      listOfEventsInDay[date] = updateEvents();
+    }
   }
 
-  void updateEvents() {
+  List<Map<dynamic, InfoFromFile>> updateEvents() {
     List<Map<dynamic, InfoFromFile>> events = [];
 
     global.kMinimumTimeDifferenceBetweenImages_ZoomOut;
     var listOfImages2 = {...listOfImages};
-    if (listOfImages2.isEmpty) return;
+    if (listOfImages2.isEmpty) return [];
     Map<dynamic, InfoFromFile> event = {}
       ..addEntries({listOfImages2.entries.elementAt(0)});
 
@@ -69,8 +79,10 @@ class DayPageStateProvider with ChangeNotifier {
         event = {}..addEntries({listOfImages2.entries.elementAt(i + 1)});
       }
     }
+    if (event.isNotEmpty) events.add(event);
     listOfEvents = events;
     print("listEvents : $listOfEvents");
+    return events;
   }
 
   void writeNote() {

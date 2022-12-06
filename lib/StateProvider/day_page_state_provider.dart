@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lateDiary/Data/infoFromFile.dart';
 import 'package:lateDiary/Note/NoteManager.dart';
 import 'package:lateDiary/Util/DateHandler.dart';
 import 'package:lateDiary/Util/Util.dart';
@@ -12,7 +13,6 @@ import 'package:geocoding/geocoding.dart';
 import '../Data/DataManagerInterface.dart';
 
 class DayPageStateProvider with ChangeNotifier {
-
   PhotoDataManager photoDataManager = PhotoDataManager();
   NoteManager noteManager = NoteManager();
 
@@ -23,82 +23,54 @@ class DayPageStateProvider with ChangeNotifier {
   String date = formatDate(DateTime.now());
 
   List<String> availableDates = [];
-  List photoForPlot = [];
-  dynamic photoData = [[]];
-  List<List<dynamic>> photoDataForPlot = [[]];
   Map<int, String?> addresses = {};
   String note = "";
-
+  Map<dynamic, InfoFromFile> listOfImages = {};
+  List<Map<dynamic, InfoFromFile>> listOfEvents = [];
   double keyboardSize = 300;
   DataManagerInterface dataManager;
-  DayPageStateProvider(this.dataManager){
+
+  DayPageStateProvider(this.dataManager) {
     print("DayPageStateProvider created");
+    updateData();
   }
 
-  Future<void> updateDataForUi() async {
-    photoForPlot = [];
-    photoDataForPlot = [];
-    photoData = [[]];
-
-    photoData = await updatePhotoData();
-    photoForPlot = selectPhotoForPlot(photoData, true);
-
-    // //convert data type..
-    photoDataForPlot = List<List>.generate(
-        photoForPlot.length, (index) => photoForPlot.elementAt(index));
-
-    // addresses = await updateAddress();
-
-    note = await noteManager.readNote(date);
-    print("updateUi done");
-    // notifyListeners();
+  void updateData() {
+    Map<dynamic, InfoFromFile> data = dataManager.infoFromFiles;
+    Map<dynamic, InfoFromFile> filteredData =
+        Map.fromEntries(data.entries.where((k) => k.value.date == date));
+    listOfImages = {};
+    listOfImages.addAll(filteredData);
+    print("listOfImages : $listOfImages");
+    updateEvents();
   }
 
-  Future updatePhotoData() async {
-    List<List<dynamic>> data = await photoDataManager.getPhotoOfDate(date);
-    photoData = modifyListForPlot(data, executeTranspose: true);
-    return photoData;
-  }
+  void updateEvents() {
+    List<Map<dynamic, InfoFromFile>> events = [];
 
+    global.kMinimumTimeDifferenceBetweenImages_ZoomOut;
+    var listOfImages2 = {...listOfImages};
+    if (listOfImages2.isEmpty) return;
+    Map<dynamic, InfoFromFile> event = {}
+      ..addEntries({listOfImages2.entries.elementAt(0)});
 
-  List selectPhotoForPlot(List input, bool sampleImages) {
-    if (input[0] == null) return photoForPlot;
-    if (input[0].length == 0) return photoForPlot;
-
-    photoForPlot.add([input.first[0], input.first[1], input.first[2], input.first[3], true]);
-    int j = 0;
-    int k = 0;
-
-    double timeDiffForZoomIn = 0.000;
-    double timeDiffForZoomOut =
-        global.kMinimumTimeDifferenceBetweenImages_ZoomOut;
-    if (sampleImages)
-      // timeDiffForZoomIn = global.kMinimumTimeDifferenceBetweenImages_ZoomIn;
-      timeDiffForZoomIn = 0.005;
-
-    for (int i = 1; i < input.length - 2; i++) {
-      double timeDifferenceBetweenImagesForZoomOut =
-          (input[i][0] - photoForPlot[k][0]).abs();
-      double timeDifferenceBetweenImagesForZoomIn =
-          (input[i][0] - photoForPlot[j][0]).abs();
-
-      if (timeDifferenceBetweenImagesForZoomIn > timeDiffForZoomIn) {
-        print(
-            "$i/ ${input.length}, $j, $k, $timeDifferenceBetweenImagesForZoomIn");
-        bool isGoodForZoomOut =
-            timeDifferenceBetweenImagesForZoomOut > timeDiffForZoomOut;
-        photoForPlot
-            .add([input[i][0], input[i][1], input[i][2], input[i][3], isGoodForZoomOut]);
-        j += 1;
-
-        if (isGoodForZoomOut) {
-          k = j;
-        }
+    for (int i = 0; i < listOfImages2.length - 1; i++) {
+      // print(listOfImages2.entries.elementAt(i).value.datetime!.difference(
+      //     listOfImages2.entries.elementAt(i + 1).value.datetime!));
+      if ((listOfImages2.entries
+              .elementAt(i + 1)
+              .value
+              .datetime!
+              .difference(listOfImages2.entries.elementAt(i).value.datetime!)) <
+          Duration(minutes: 60)) {
+        event.addEntries({listOfImages2.entries.elementAt(i + 1)});
+      } else {
+        events.add(event);
+        event = {}..addEntries({listOfImages2.entries.elementAt(i + 1)});
       }
     }
-
-    photoForPlot.add([input.last[0], input.last[1], input.last[2], input.last[3], true]);
-    return photoForPlot;
+    listOfEvents = events;
+    print("listEvents : $listOfEvents");
   }
 
   void writeNote() {
@@ -134,6 +106,8 @@ class DayPageStateProvider with ChangeNotifier {
   void setDate(String date) {
     this.date = date;
     print("date : ${this.date}");
+    updateData();
+    notifyListeners();
   }
 
   void setIsZoomInImageVisible(bool isZoomInImageVisible) {
@@ -175,7 +149,6 @@ class DayPageStateProvider with ChangeNotifier {
     super.dispose();
     print("dayPageStateProvider disposed");
   }
-
 
 // Future<void> updateSensorData() async {
 //   var sensorData = await this.sensorDataManager.openFile(date);

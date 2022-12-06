@@ -52,8 +52,9 @@ class YearPageChart extends StatelessWidget {
             if (!product.isZoomIn) return;
             provider.setNavigationIndex(navigationIndex.day);
             provider.setDate(date);
+
             Provider.of<DayPageStateProvider>(context, listen: false)
-                .setAvailableDates(product.availableDates);
+                .setDate(formatDate(date));
             // Navigator.pushNamed(DayPageView.id)
 
             break;

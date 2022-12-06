@@ -43,9 +43,6 @@ class YearPageStateProvider with ChangeNotifier {
       dataList.add(modifyDataFormat(availableDateList.elementAt(i)));
     }
     this.dataForChartList = dataList;
-    print("dataList : $dataList");
-    print("dateList : $availableDateList");
-    print("years : $years");
     notifyListeners();
   }
 
@@ -56,6 +53,7 @@ class YearPageStateProvider with ChangeNotifier {
         1,
         10,
         0.01,
+        0
       ];
     });
 
@@ -81,6 +79,7 @@ class YearPageStateProvider with ChangeNotifier {
         days % 7,
         value,
         distance,
+        int.parse(date)
       ];
     });
     return dataTemp;

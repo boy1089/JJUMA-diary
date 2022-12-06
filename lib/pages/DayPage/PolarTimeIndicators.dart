@@ -6,7 +6,7 @@ import 'package:lateDiary/Util/Util.dart';
 import 'package:provider/provider.dart';
 import 'package:lateDiary/Location/AddressFinder.dart';
 import 'package:lateDiary/Location/Coordinate.dart';
-import 'package:lateDiary/StateProvider/DayPageStateProvider.dart';
+import 'package:lateDiary/StateProvider/day_page_state_provider.dart';
 import 'package:lateDiary/Data/DataManagerInterface.dart';
 import 'package:lateDiary/Util/global.dart' as global;
 

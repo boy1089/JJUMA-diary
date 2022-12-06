@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'year_page_view.dart';
 import 'package:provider/provider.dart';
 
-import 'package:lateDiary/StateProvider/YearPageStateProvider.dart';
+import 'package:lateDiary/StateProvider/year_page_state_provider.dart';
 
 class YearPageScreen extends StatelessWidget {
 

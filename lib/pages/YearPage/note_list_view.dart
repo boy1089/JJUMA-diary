@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:lateDiary/Util/global.dart' as global;
 import 'package:lateDiary/Util/layouts.dart';
 import 'package:provider/provider.dart';
-import 'package:lateDiary/StateProvider/NavigationIndexStateProvider.dart';
+import 'package:lateDiary/StateProvider/navigation_index_state_provider.dart';
 import 'package:lateDiary/Util/DateHandler.dart';
 import 'package:lateDiary/Util/Util.dart';
-import 'package:lateDiary/StateProvider/DayPageStateProvider.dart';
+import 'package:lateDiary/StateProvider/day_page_state_provider.dart';
 
-import '../../StateProvider/YearPageStateProvider.dart';
+import '../../StateProvider/year_page_state_provider.dart';
 
 class NoteListView extends StatelessWidget {
   bool isZoomIn;

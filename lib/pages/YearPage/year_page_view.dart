@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lateDiary/Data/DataManagerInterface.dart';
-import 'package:lateDiary/StateProvider/YearPageStateProvider.dart';
+import 'package:lateDiary/StateProvider/year_page_state_provider.dart';
 import 'package:lateDiary/Util/Util.dart';
 import 'package:lateDiary/Util/global.dart' as global;
 import 'package:lateDiary/pages/YearPage/year_page_chart.dart';

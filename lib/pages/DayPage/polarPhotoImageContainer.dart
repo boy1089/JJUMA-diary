@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 import 'dart:io';
 import 'package:lateDiary/Util/global.dart';
 
-import 'package:lateDiary/StateProvider/DayPageStateProvider.dart';
+import 'package:lateDiary/StateProvider/day_page_state_provider.dart';
 
 class polarPhotoImageContainers {
   var photoDataForPlot;

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:lateDiary/pages/YearPage/year_page_view2.dart';
 import 'year_page_view.dart';
 import 'package:provider/provider.dart';
 

@@ -6,7 +6,7 @@ import 'package:lateDiary/Util/global.dart' as global;
 import 'package:lateDiary/pages/YearPage/year_page_chart.dart';
 import 'package:provider/provider.dart';
 import 'package:lateDiary/pages/YearPage/PolarMonthIndicator.dart';
-import 'package:lateDiary/CustomWidget/ZoomableWidgets.dart';
+import 'package:lateDiary/CustomWidget/zoomable_widget.dart';
 import 'package:lateDiary/Note/NoteManager.dart';
 import 'dart:ui';
 import 'package:lateDiary/Util/layouts.dart';
@@ -61,7 +61,7 @@ class YearPageView extends StatelessWidget {
                     ],
                     isZoomIn: isZoomIn,
                     layout: layout_yearPage,
-                    provider: product)
+                    angle : angle)
                 .build(context),
             Positioned(
                 width: physicalWidth,

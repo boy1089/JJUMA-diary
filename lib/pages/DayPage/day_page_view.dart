@@ -7,7 +7,7 @@ import 'package:lateDiary/Util/global.dart' as global;
 import 'package:intl/intl.dart';
 import 'package:lateDiary/pages/DayPage/PolarTimeIndicators.dart';
 import 'package:lateDiary/Util/DateHandler.dart';
-import 'package:lateDiary/CustomWidget/ZoomableWidgets.dart';
+import 'package:lateDiary/CustomWidget/zoomable_widget.dart';
 import 'package:lateDiary/CustomWidget/NoteEditor.dart';
 import 'package:lateDiary/Util/layouts.dart';
 import 'package:provider/provider.dart';
@@ -62,7 +62,7 @@ class _DayPageViewState extends State<DayPageView> {
                   return ZoomableWidgets(
                       layout: layout_dayPage,
                       isZoomIn: product.isZoomIn,
-                      provider: product,
+                      angle : product.angle,
                       gestures: gestures(),
                       widgets: [
                         PolarTimeIndicators(

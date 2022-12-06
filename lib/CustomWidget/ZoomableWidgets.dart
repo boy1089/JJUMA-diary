@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lateDiary/Util/global.dart' as global;
 import 'package:lateDiary/Util/Util.dart';
 
+//TODO REMOVE provider
 class ZoomableWidgets extends StatelessWidget{
   bool isZoomIn = false;
   List<Widget> widgets = [];

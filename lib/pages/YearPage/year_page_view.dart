@@ -1,34 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
-import 'package:graphic/graphic.dart';
 import 'package:lateDiary/Data/DataManagerInterface.dart';
 import 'package:lateDiary/StateProvider/YearPageStateProvider.dart';
 import 'package:lateDiary/Util/Util.dart';
 import 'package:lateDiary/Util/global.dart' as global;
 import 'package:lateDiary/pages/YearPage/year_page_chart.dart';
 import 'package:provider/provider.dart';
-import 'dart:async';
 import 'package:lateDiary/pages/YearPage/PolarMonthIndicator.dart';
 import 'package:lateDiary/CustomWidget/ZoomableWidgets.dart';
-import 'package:lateDiary/StateProvider/DayPageStateProvider.dart';
-import 'package:lateDiary/StateProvider/NavigationIndexStateProvider.dart';
 import 'package:lateDiary/Note/NoteManager.dart';
-import 'package:lateDiary/Util/DateHandler.dart';
 import 'dart:ui';
 import 'package:lateDiary/Util/layouts.dart';
-
-import '../../Data/DataRepository.dart';
 import 'note_list_view.dart';
 
 class YearPageView extends StatelessWidget {
   static String id = 'year';
 
   int year;
+  dynamic dataForChart;
+  double angle = 0.0;
+  bool isZoomIn = false;
   BuildContext context;
   Map<String, String> notes = {};
-  dynamic dataForChart;
-  bool isZoomIn = false;
-  double angle = 0.0;
 
   YearPageView(
       {required this.year,
@@ -40,10 +32,6 @@ class YearPageView extends StatelessWidget {
   }
 
   void initState() {
-    YearPageStateProvider product =
-        Provider.of<YearPageStateProvider>(context, listen: false);
-    product.setYear(year, notify: false);
-
     NoteManager noteManager = NoteManager();
     noteManager.setNotesOfYear(year);
     notes = noteManager.notesOfYear;

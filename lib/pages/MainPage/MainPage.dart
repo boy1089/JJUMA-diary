@@ -5,8 +5,8 @@ import 'package:lateDiary/Util/global.dart' as global;
 import 'package:lateDiary/pages/SettingPage.dart';
 import 'package:lateDiary/Note/NoteManager.dart';
 import '../DiaryPage.dart';
-import '../YearPage/year_page.dart';
-import '../DayPage/DayPage.dart';
+import '../YearPage/year_page_screen.dart';
+import '../DayPage/day_page.dart';
 import 'MainPageViewAndroid.dart';
 import 'MainPageViewIos.dart';
 
@@ -27,7 +27,7 @@ class MainPageState extends State<MainPage> {
   void initState() {
     super.initState();
 
-    YearPage yearPageView = YearPage();
+    YearPageScreen yearPageView = YearPageScreen();
     DayPage dayPageView = DayPage();
     DiaryPage diaryPage = DiaryPage(noteManager);
     AndroidSettingsScreen androidSettingsScreen = AndroidSettingsScreen();

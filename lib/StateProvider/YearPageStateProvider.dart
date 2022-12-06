@@ -7,7 +7,6 @@ import 'package:intl/intl.dart';
 import '../Data/DataManagerInterface.dart';
 
 class YearPageStateProvider with ChangeNotifier {
-
   String date = formatDate(DateTime.now());
   double zoomInAngle = 0.0;
   bool isZoomIn = false;
@@ -17,17 +16,21 @@ class YearPageStateProvider with ChangeNotifier {
   int index = 0;
 
   DataManagerInterface dataManager;
-  YearPageStateProvider(this.dataManager);
+  YearPageStateProvider(this.dataManager) {
+    update(dataManager);
+  }
 
   dynamic data;
+  List<dynamic> dataList = [];
   List<String> availableDates = [];
   int maxOfSummary = 0;
 
-  void update(dataManager){
+  void update(dataManager) {
     this.dataManager = dataManager;
-    updateData();
+    updateDataList();
     notifyListeners();
   }
+
   void setAvailableDates(int year) {
     availableDates = dataManager.summaryOfPhotoData.keys.where((element) {
       return element.substring(0, 4) == year.toString();
@@ -35,10 +38,30 @@ class YearPageStateProvider with ChangeNotifier {
     availableDates.sort();
   }
 
-  void updateData() {
-    setAvailableDates(year);
+  void updateDataList() {
+    List<int> years =
+        List<int>.generate(20, (index) => DateTime.now().year - index);
+    List<List<String>> availableDateList =
+        List<List<String>>.generate(20, (index) {
+      return dataManager.summaryOfPhotoData.keys
+          .where(
+              (element) => element.substring(0, 4) == years[index].toString())
+          .toList();
+    });
+    List<dynamic> dataList = [];
 
-    data = List.generate(1, (index) {
+    for (int i = 0; i < 20; i++) {
+      dataList.add(modifyDataFormat(availableDateList.elementAt(i)));
+    }
+    this.dataList = dataList;
+    print("dataList : $dataList");
+    print("dateList : $availableDateList");
+    print("years : $years");
+    notifyListeners();
+  }
+
+  dynamic modifyDataFormat(List<String> availableDates) {
+    var dataTemp = List.generate(1, (index) {
       return [
         0,
         1,
@@ -47,15 +70,14 @@ class YearPageStateProvider with ChangeNotifier {
       ];
     });
 
-    if (availableDates.length == 0) return data;
+    if (availableDates.length == 0) return dataTemp;
 
-    int weekdayOfJan01 = DateTime(year).weekday;
+    int weekdayOfJan01 = formatDateString(availableDates.elementAt(0)).weekday;
     int offsetToMakeWeekendOutward = -2;
 
     //generate data for graph plot
-    data = List.generate(availableDates.length, (index) {
+    dataTemp = List.generate(availableDates.length, (index) {
       String date = availableDates[index];
-
       int days = int.parse(DateFormat("D").format(DateTime.parse(date))) +
           weekdayOfJan01 +
           offsetToMakeWeekendOutward;
@@ -63,10 +85,8 @@ class YearPageStateProvider with ChangeNotifier {
           ? 200
           : dataManager.summaryOfPhotoData[date]!;
       double distance = 4;
-
       if (dataManager.summaryOfLocationData.containsKey(date))
         distance = floorDistance(dataManager.summaryOfLocationData[date]!);
-
       return [
         (days / 7).floor(),
         days % 7,
@@ -74,28 +94,7 @@ class YearPageStateProvider with ChangeNotifier {
         distance,
       ];
     });
-
-    // code to filter the data with small amount of images.
-    // List<List<dynamic>> temp = [];
-    // for(int i = 0; i < data.length; i++){
-    //   if(data[i][2]>10) temp.add(data[i]);
-    // }
-    // data = temp;
-
-    // List<List<dynamic>> temp = [];
-    // for(int i = 0; i < data.length; i++){
-    //   if(data[i][3]==0) temp.add(data[i]);
-    // }
-    // data = temp;
-
-
-
-    List<int> dummy3 = List<int>.generate(transpose(data)[0].length,
-        (index) => int.parse(transpose(data)[2][index].toString()));
-    maxOfSummary = dummy3.reduce(max);
-    print("year page, dummy3 : $maxOfSummary");
-
-    // notifyListeners();
+    return dataTemp;
   }
 
   void setBottomNavigationBarShown(bool isBottomNavigationBarShown) {
@@ -123,15 +122,6 @@ class YearPageStateProvider with ChangeNotifier {
     print("provider set isZoomIn to $isZoomIn");
     this.isZoomIn = isZoomIn;
     notifyListeners();
-  }
-
-  void setYear(int year, {bool notify: false}) {
-    print("provider set year to $year");
-    this.year = year;
-    setIndex(DateTime.now().year - year);
-    updateData();
-
-    if (notify) notifyListeners();
   }
 
   void setIndex(int index) {

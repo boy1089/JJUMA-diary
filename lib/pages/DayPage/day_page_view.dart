@@ -10,30 +10,32 @@ import 'package:lateDiary/Util/DateHandler.dart';
 import 'package:lateDiary/CustomWidget/ZoomableWidgets.dart';
 import 'package:lateDiary/CustomWidget/NoteEditor.dart';
 import 'package:lateDiary/Util/layouts.dart';
+import 'package:provider/provider.dart';
 
 class DayPageView extends StatefulWidget {
   static String id = '/daily';
-  String date = formatDate(DateTime.now());
-  DayPageStateProvider product;
+  String date;
   @override
-  State<DayPageView> createState() => _DayPageViewState(product);
+  State<DayPageView> createState() => _DayPageViewState(date: date);
 
-  DayPageView(this.date, this.product, {Key? key}) : super(key: key);
+  DayPageView(this.date, {Key? key}) : super(key: key);
 }
 
 class _DayPageViewState extends State<DayPageView> {
-  String date = formatDate(DateTime.now());
+  String date;
+  bool isZoomIn = false;
   Future readData = Future.delayed(const Duration(seconds: 1));
   FocusNode focusNode = FocusNode();
   final myTextController = TextEditingController();
-  DayPageStateProvider product;
+  var product;
 
-  _DayPageViewState(this.product);
+  _DayPageViewState({required this.date});
 
   @override
   void initState() {
     super.initState();
     date = widget.date;
+    product = Provider.of<DayPageStateProvider>(context, listen: false);
     product.setDate(date);
     readData = _fetchData();
   }
@@ -41,6 +43,7 @@ class _DayPageViewState extends State<DayPageView> {
   Future<List<dynamic>> _fetchData() async {
     await product.updateDataForUi();
     myTextController.text = product.note;
+    //implement class day_page_view_model
     return product.photoForPlot;
   }
 
@@ -60,25 +63,7 @@ class _DayPageViewState extends State<DayPageView> {
                       layout: layout_dayPage,
                       isZoomIn: product.isZoomIn,
                       provider: product,
-                      gestures: {
-                        AllowMultipleGestureRecognizer:
-                            GestureRecognizerFactoryWithHandlers<
-                                    AllowMultipleGestureRecognizer>(
-                                () => AllowMultipleGestureRecognizer(),
-                                (AllowMultipleGestureRecognizer instance) {
-                          instance.onTapUp =
-                              (details) => onTap(details, context, product);
-                        }),
-                        AllowMultipleGestureRecognizer2:
-                            GestureRecognizerFactoryWithHandlers<
-                                AllowMultipleGestureRecognizer2>(
-                          () => AllowMultipleGestureRecognizer2(),
-                          (AllowMultipleGestureRecognizer2 instance) {
-                            instance.onUpdate =
-                                (details) => onPan(details, context, product);
-                          },
-                        )
-                      },
+                      gestures: gestures(),
                       widgets: [
                         PolarTimeIndicators(
                                 product.photoForPlot, product.addresses)
@@ -105,12 +90,6 @@ class _DayPageViewState extends State<DayPageView> {
           borderRadius: BorderRadius.all(Radius.circular(15.0)),
         ),
         onPressed: () async {
-          // await product.updatePhotoData();
-          // print(product.photoData);
-          // var a = DataManagerInterface(global.kOs);
-          // a.notifyListeners();
-          // print(product.photoDataForPlot);
-          // print(product.photoData);
           if (focusNode.hasFocus) {
             dismissKeyboard(product);
           } else {
@@ -122,6 +101,24 @@ class _DayPageViewState extends State<DayPageView> {
       ),
       resizeToAvoidBottomInset: false,
     );
+  }
+
+  gestures() {
+    return {
+      AllowMultipleGestureRecognizer:
+          GestureRecognizerFactoryWithHandlers<AllowMultipleGestureRecognizer>(
+              () => AllowMultipleGestureRecognizer(),
+              (AllowMultipleGestureRecognizer instance) {
+        instance.onTapUp = (details) => onTap(details, context, product);
+      }),
+      AllowMultipleGestureRecognizer2:
+          GestureRecognizerFactoryWithHandlers<AllowMultipleGestureRecognizer2>(
+        () => AllowMultipleGestureRecognizer2(),
+        (AllowMultipleGestureRecognizer2 instance) {
+          instance.onUpdate = (details) => onPan(details, context, product);
+        },
+      )
+    };
   }
 
   void onTap(details, context, product) {

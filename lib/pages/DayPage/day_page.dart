@@ -1,6 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'DayPageView.dart';
+import 'day_page_view.dart';
 import 'package:provider/provider.dart';
 import 'package:lateDiary/StateProvider/DayPageStateProvider.dart';
 import 'package:lateDiary/StateProvider/NavigationIndexStateProvider.dart';
@@ -26,7 +26,7 @@ class DayPage extends StatelessWidget {
               reverse: false,
               itemBuilder: (BuildContext context, int index) {
                 String date = product.availableDates[index];
-                return DayPageView(date, product);
+                return DayPageView(date);
 
               }),
         ));

@@ -39,32 +39,60 @@ class _DayPageState extends State<DayPage> {
         children: [
           CustomScrollView(
             slivers: [
-              SliverFixedExtentList(
-                  itemExtent: physicalWidth,
+              // SliverFixedExtentList(
+              //     itemExtent: physicalWidth,
+              //     delegate: SliverChildBuilderDelegate(
+              //       childCount: provider.listOfEventsInDay.entries.length,
+              //       (BuildContext context, int index) {
+              //         String date = provider.listOfEventsInDay.entries
+              //             .elementAt(index)
+              //             .key;
+              //         return Stack(children: [
+              //           CardContainer(
+              //               listOfEvents: provider.listOfEventsInDay.entries
+              //                   .elementAt(index)
+              //                   .value),
+              //           Text(
+              //               "${DateFormat('EEEE').format(DateTime.parse(date))}/"
+              //               "${DateFormat('MMM').format(DateTime.parse(date))} "
+              //               "${DateFormat('dd').format(DateTime.parse(date))}",
+              //               style: TextStyle(
+              //                   color: Colors.white,
+              //                   fontWeight: FontWeight.w300,
+              //                   fontSize: 25))
+              //         ]);
+              //
+              //         // style : TextStyle(color: Colors.white, fontSize : 16)),]
+              //       },
+              //     )),
+              SliverList(
+                  // itemExtent: physicalWidth,
                   delegate: SliverChildBuilderDelegate(
                     childCount: provider.listOfEventsInDay.entries.length,
-                    (BuildContext context, int index) {
-
+                        (BuildContext context, int index) {
                       String date = provider.listOfEventsInDay.entries
-                          .elementAt(index).key;
-                      return Stack(
-                        children: [
-
-                          CardContainer(
+                          .elementAt(index)
+                          .key;
+                      return Stack(children: [
+                        CardContainer(
                             listOfEvents: provider.listOfEventsInDay.entries
                                 .elementAt(index)
                                 .value),
-                      Text(
-                      "${DateFormat('EEEE').format(DateTime.parse(date))}/"
-                      "${DateFormat('MMM').format(DateTime.parse(date))} "
-                      "${DateFormat('dd').format(DateTime.parse(date))}",
-                      style: TextStyle(
-                      color: Colors.white, fontWeight: FontWeight.w300, fontSize: 25))]
-                      );
+                        Text(
+                            "${DateFormat('EEEE').format(DateTime.parse(date))}/"
+                                "${DateFormat('MMM').format(DateTime.parse(date))} "
+                                "${DateFormat('dd').format(DateTime.parse(date))}",
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w300,
+                                fontSize: 25))
+                      ]);
 
-                          // style : TextStyle(color: Colors.white, fontSize : 16)),]
+                      // style : TextStyle(color: Colors.white, fontSize : 16)),]
                     },
                   )),
+
+
             ],
           ),
         ],

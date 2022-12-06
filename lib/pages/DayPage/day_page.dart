@@ -28,76 +28,71 @@ class _DayPageState extends State<DayPage> {
 
   @override
   Widget build(BuildContext context) {
-    var navigation =
-        Provider.of<NavigationIndexProvider>(context, listen: false);
     DayPageStateProvider provider =
         Provider.of<DayPageStateProvider>(context, listen: true);
+    final keyList = List.generate(
+        provider.listOfEventsInDay.entries.length, (index) => GlobalKey());
+    // print(keyList);
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await Future.delayed(Duration(milliseconds: 1000));
+      // provider.scrollController.animateTo(1000,
+      //     duration: Duration(milliseconds: 500), curve: Curves.bounceInOut);
+      Scrollable.ensureVisible(keyList[provider.indexOfDate].currentContext!,
+        duration : Duration(milliseconds: 600),
+        curve : Curves.easeInOut,
+      );
+    });
 
     return Scaffold(
-      extendBodyBehindAppBar: true,
-      body: Stack(
-        children: [
-          CustomScrollView(
-            slivers: [
-              // SliverFixedExtentList(
-              //     itemExtent: physicalWidth,
-              //     delegate: SliverChildBuilderDelegate(
-              //       childCount: provider.listOfEventsInDay.entries.length,
-              //       (BuildContext context, int index) {
-              //         String date = provider.listOfEventsInDay.entries
-              //             .elementAt(index)
-              //             .key;
-              //         return Stack(children: [
-              //           CardContainer(
-              //               listOfEvents: provider.listOfEventsInDay.entries
-              //                   .elementAt(index)
-              //                   .value),
-              //           Text(
-              //               "${DateFormat('EEEE').format(DateTime.parse(date))}/"
-              //               "${DateFormat('MMM').format(DateTime.parse(date))} "
-              //               "${DateFormat('dd').format(DateTime.parse(date))}",
-              //               style: TextStyle(
-              //                   color: Colors.white,
-              //                   fontWeight: FontWeight.w300,
-              //                   fontSize: 25))
-              //         ]);
-              //
-              //         // style : TextStyle(color: Colors.white, fontSize : 16)),]
-              //       },
-              //     )),
-              SliverList(
-                  // itemExtent: physicalWidth,
-                  delegate: SliverChildBuilderDelegate(
-                    childCount: provider.listOfEventsInDay.entries.length,
-                        (BuildContext context, int index) {
-                      String date = provider.listOfEventsInDay.entries
-                          .elementAt(index)
-                          .key;
-                      return Stack(children: [
-                        CardContainer(
-                            listOfEvents: provider.listOfEventsInDay.entries
-                                .elementAt(index)
-                                .value),
-                        Text(
-                            "${DateFormat('EEEE').format(DateTime.parse(date))}/"
-                                "${DateFormat('MMM').format(DateTime.parse(date))} "
-                                "${DateFormat('dd').format(DateTime.parse(date))}",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w300,
-                                fontSize: 25))
-                      ]);
+        extendBodyBehindAppBar: true,
+        body: SingleChildScrollView(
+            controller: provider.scrollController,
+            child: Column(
+                children: List.generate(
+                    provider.listOfEventsInDay.entries.length, (index) {
+              String date =
+                  provider.listOfEventsInDay.entries.elementAt(index).key;
+              return Stack(key: keyList[index], children: [
+                CardContainer(
+                    listOfEvents: provider.listOfEventsInDay.entries
+                        .elementAt(index)
+                        .value),
+                Text(
+                    "${DateFormat('EEEE').format(DateTime.parse(date))}/"
+                    "${DateFormat('MMM').format(DateTime.parse(date))} "
+                    "${DateFormat('dd').format(DateTime.parse(date))}",
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w300,
+                        fontSize: 25))
+              ]);
+            }))));
 
-                      // style : TextStyle(color: Colors.white, fontSize : 16)),]
-                    },
-                  )),
-
-
-            ],
-          ),
-        ],
-      ),
-    );
+    // body: CustomScrollView(
+    //   controller: provider.scrollController,
+    //   slivers: [
+    //     SliverList(
+    //         delegate: SliverChildBuilderDelegate(
+    //       childCount: provider.listOfEventsInDay.entries.length,
+    //       (BuildContext context, int index) {
+    //         String date =
+    //             provider.listOfEventsInDay.entries.elementAt(index).key;
+    //         return Stack(
+    //             key : keyList[index],
+    //             children: [
+    //           CardContainer(
+    //               listOfEvents: provider.listOfEventsInDay.entries
+    //                   .elementAt(index)
+    //                   .value),
+    //           Text(
+    //               "${DateFormat('EEEE').format(DateTime.parse(date))}/"
+    //               "${DateFormat('MMM').format(DateTime.parse(date))} "
+    //               "${DateFormat('dd').format(DateTime.parse(date))}",
+    //               style: TextStyle(
+    //                   color: Colors.white,
+    //                   fontWeight: FontWeight.w300,
+    //                   fontSize: 25))
+    //         ]);
   }
 }
 
@@ -150,6 +145,16 @@ class PhotoCard extends StatelessWidget {
                   return ExtendedImage.file(
                     File(event.entries.elementAt(index).key),
                     compressionRatio: 0.01,
+                    loadStateChanged: (ExtendedImageState state) {
+                      switch (state.extendedImageLoadState) {
+                        case LoadState.loading:
+                          break;
+                        case LoadState.completed:
+                          return ExtendedRawImage(
+                            image: state.extendedImageInfo?.image,
+                          );
+                      }
+                    },
                   );
                 }),
                 // itemExtent: 3.0,

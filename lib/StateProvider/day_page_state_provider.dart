@@ -11,6 +11,7 @@ import 'package:lateDiary/Location/Coordinate.dart';
 import 'package:geocoding/geocoding.dart';
 
 import '../Data/DataManagerInterface.dart';
+import 'package:flutter/material.dart';
 
 class DayPageStateProvider with ChangeNotifier {
   PhotoDataManager photoDataManager = PhotoDataManager();
@@ -21,7 +22,7 @@ class DayPageStateProvider with ChangeNotifier {
   bool isBottomNavigationBarShown = true;
   bool isZoomInImageVisible = false;
   String date = formatDate(DateTime.now());
-
+  int indexOfDate = 0;
   List<String> availableDates = [];
   Map<int, String?> addresses = {};
   String note = "";
@@ -31,10 +32,14 @@ class DayPageStateProvider with ChangeNotifier {
 
   double keyboardSize = 300;
   DataManagerInterface dataManager;
+  ScrollController scrollController = ScrollController();
 
   DayPageStateProvider(this.dataManager) {
     print("DayPageStateProvider created");
     updateData();
+    scrollController.animateTo(1000,
+        duration: Duration(milliseconds: 500), curve: Curves.bounceInOut);
+    notifyListeners();
   }
 
   void updateData() {
@@ -45,6 +50,7 @@ class DayPageStateProvider with ChangeNotifier {
     List<String> dates = List.generate(filteredDataAll.length,
         (index) => filteredDataAll.entries.elementAt(index).value.date!);
     Set<String> setOfDates = dates.toSet();
+     indexOfDate = setOfDates.toList().indexWhere((element) => element==date);
     listOfEventsInDay = {};
     for (int i = 0; i < setOfDates.length; i++) {
       String date = setOfDates.elementAt(i);
@@ -53,6 +59,7 @@ class DayPageStateProvider with ChangeNotifier {
           filteredDataAll.entries.where((k) => k.value.date!.contains(date))));
       listOfEventsInDay[date] = updateEvents();
     }
+
   }
 
   List<Map<dynamic, InfoFromFile>> updateEvents() {

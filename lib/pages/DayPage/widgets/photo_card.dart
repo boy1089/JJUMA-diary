@@ -14,8 +14,7 @@ class PhotoCard extends StatefulWidget {
     this.isMagnified = false,
     this.height = 100,
     required this.event,
-  }) {
-  }
+  }) {}
 
   @override
   State<PhotoCard> createState() => _PhotoCardState();
@@ -26,7 +25,7 @@ class _PhotoCardState extends State<PhotoCard> {
   int index = 0;
   FocusNode focusNode = FocusNode();
 
-  _PhotoCardState(){
+  _PhotoCardState() {
     controller.text = "date, time, address\nLeave your note here!";
   }
 
@@ -34,23 +33,60 @@ class _PhotoCardState extends State<PhotoCard> {
 
   @override
   Widget build(BuildContext context) {
+    FixedExtentScrollController scrollController1 =
+        FixedExtentScrollController();
+    FixedExtentScrollController scrollController2 =
+    FixedExtentScrollController();
+
     return Column(
       children: [
         SizedBox(
-          height: widget.isMagnified ? physicalWidth : widget.height,
-          width: widget.isMagnified ? physicalWidth : widget.height,
-          child: Padding(
-            padding: widget.isMagnified ? EdgeInsets.all(8.0) : EdgeInsets.all(1.0),
-            child: ExtendedImage.file(
-              // File(filteredData.keys.toList().elementAt(index)),
-              File(widget.event.entries.elementAt(index).key),
-              compressionRatio: 0.5,
-              fit: BoxFit.cover,
-              clipBehavior: Clip.antiAliasWithSaveLayer,
-              width: widget.isMagnified ? physicalWidth / 2 : physicalWidth,
-            ),
-          ),
-        ),
+            height: widget.isMagnified ? physicalWidth : widget.height,
+            width: widget.isMagnified ? physicalWidth : widget.height,
+            child: Padding(
+                padding: widget.isMagnified
+                    ? EdgeInsets.all(0)
+                    : EdgeInsets.all(1.0),
+                child: RotatedBox(
+                  quarterTurns: -1,
+                  child: ListWheelScrollView(
+                      onSelectedItemChanged: (index) {
+                        if(this.index == index) return;
+                        scrollController2.animateToItem(index,
+                            duration: Duration(milliseconds: 100),
+                            curve: Curves.easeIn);
+                        this.index = index;
+                        setState(() {});
+                        // scrollController2.jumpToItem(index);
+                      },
+                      controller: scrollController1,
+                      physics: PageScrollPhysics(),
+                      diameterRatio: 200,
+                      itemExtent: widget.isMagnified
+                          ? physicalWidth
+                          : widget.height - 2,
+                      children: List.generate(
+                          widget.event.entries.length,
+                          (index) => Center(
+                                child: RotatedBox(
+                                    quarterTurns: 1,
+                                    child: SizedBox(
+                                      height: widget.isMagnified
+                                          ? physicalWidth
+                                          : widget.height - 2,
+                                      width: widget.isMagnified
+                                          ? physicalWidth
+                                          : widget.height - 2,
+                                      child: ExtendedImage.file(
+                                        File(widget.event.entries
+                                            .elementAt(index)
+                                            .key),
+                                        compressionRatio: 0.01,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    )),
+                              ))),
+                ))),
         if (widget.isMagnified)
           Container(
             height: 50,
@@ -60,54 +96,30 @@ class _PhotoCardState extends State<PhotoCard> {
                 child: RotatedBox(
                   quarterTurns: -1,
                   child: ListWheelScrollView(
-                      onSelectedItemChanged: (index){
-                        this.index = index;
-                        setState((){});
-                        },
-                      diameterRatio: 200,
-                      itemExtent: 50,
-                      children: List.generate(
-                          10,
-                          (index) => Center(
-                            child: RotatedBox(
-                                quarterTurns: 1,
-                                child: ExtendedImage.file(
-                                  File(widget.event.entries.elementAt(index).key),
-                                  compressionRatio: 0.01,
-                                  // loadStateChanged: (ExtendedImageState state) {
-                                  //   switch (state.extendedImageLoadState) {
-                                  //     case LoadState.loading:
-                                  //       break;
-                                  //     case LoadState.completed:
-                                  //       return ExtendedRawImage(
-                                  //         image: state.extendedImageInfo?.image,
-                                  //       );
-                                  //   }
-                                  // },
-                                )),
-                          ))),
-                )
+                      controller: scrollController2,
+                      onSelectedItemChanged: (index) {
+                        print("$index, ${this.index}");
 
-                // child: ListView(
-                //   scrollDirection: Axis.horizontal,
-                //   children: List<Widget>.generate(event.length, (index) {
-                //     return ExtendedImage.file(
-                //       File(event.entries.elementAt(index).key),
-                //       compressionRatio: 0.01,
-                //       loadStateChanged: (ExtendedImageState state) {
-                //         switch (state.extendedImageLoadState) {
-                //           case LoadState.loading:
-                //             break;
-                //           case LoadState.completed:
-                //             return ExtendedRawImage(
-                //               image: state.extendedImageInfo?.image,
-                //             );
-                //         }
-                //       },
-                //     );
-                //   }),
-                // ),
-                ),
+                        if(this.index == index) return;
+                        this.index = index;
+                        setState(() {});
+                        scrollController1.jumpToItem(index);
+                      },
+                      diameterRatio: 200,
+                      itemExtent: 40,
+                      children: List.generate(
+                          widget.event.entries.length,
+                          (index) => Center(
+                                child: RotatedBox(
+                                    quarterTurns: 1,
+                                    child: ExtendedImage.file(
+                                      File(widget.event.entries
+                                          .elementAt(index)
+                                          .key),
+                                      compressionRatio: 0.01,
+                                    )),
+                              ))),
+                )),
           ),
         if (widget.isMagnified)
           Container(

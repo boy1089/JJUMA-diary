@@ -42,7 +42,7 @@ class DayPageStateProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void updateData() {
+  void updateData() async {
     Map<dynamic, InfoFromFile> data = dataManager.infoFromFiles;
     Map<dynamic, InfoFromFile> filteredDataAll = Map.fromEntries(data.entries
         .where((k) => k.value.date!.contains(date.substring(0, 6))));

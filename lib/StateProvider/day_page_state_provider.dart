@@ -46,7 +46,10 @@ class DayPageStateProvider with ChangeNotifier {
     Map<dynamic, InfoFromFile> data = dataManager.infoFromFiles;
 
     Map<dynamic, InfoFromFile> filteredDataAll = Map.fromEntries(data.entries
-        .where((k) => k.value.date!.contains(date.substring(0, 6))));
+        .where((k) {
+          if(k.value.date == null) return false;
+      return k.value.date!.contains(date.substring(0, 6));
+    }));
     filteredDataAll = removeEventFromMap(filteredDataAll);
 
     List<String> dates = List.generate(filteredDataAll.length,

@@ -9,6 +9,7 @@ class Event {
   factory Event.fromImages({required images}) {
     return Event(images: images, note: "");
   }
+
   factory Event.fromJson({required json}) {
     var images = Map.fromIterables(
         json['images'].keys.toList(),
@@ -19,6 +20,7 @@ class Event {
     var note = json['note'];
     return Event(images: images, note: note);
   }
+
   void setNote(String note) {
     this.note = note;
   }

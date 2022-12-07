@@ -43,7 +43,7 @@ class NoteListView extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text("${formateDate2(formatDateString(date))}",
+                      Text("${formatDate2(formatDateString(date))}",
                           style: Theme.of(context).textTheme.subtitle1),
                       Text("${notes[date]}",
                           style: Theme.of(context).textTheme.bodyText1)

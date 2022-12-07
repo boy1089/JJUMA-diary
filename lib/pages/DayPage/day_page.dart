@@ -66,6 +66,13 @@ class _DayPageState extends State<DayPage> {
                         fontWeight: FontWeight.w300,
                         fontSize: 25))
               ]);
-            }))));
+            }))),
+    floatingActionButton: FloatingActionButton(
+        onPressed: (){
+          var a = DataManagerInterface(global.kOs);
+          print(a.eventList);
+        },
+    ),
+    );
   }
 }

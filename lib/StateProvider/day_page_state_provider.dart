@@ -44,8 +44,10 @@ class DayPageStateProvider with ChangeNotifier {
 
   void updateData() async {
     Map<dynamic, InfoFromFile> data = dataManager.infoFromFiles;
+
     Map<dynamic, InfoFromFile> filteredDataAll = Map.fromEntries(data.entries
         .where((k) => k.value.date!.contains(date.substring(0, 6))));
+    filteredDataAll = removeEventFromMap(filteredDataAll);
 
     List<String> dates = List.generate(filteredDataAll.length,
         (index) => filteredDataAll.entries.elementAt(index).value.date!);
@@ -60,7 +62,22 @@ class DayPageStateProvider with ChangeNotifier {
       listOfImages.addAll(Map.fromEntries(
           filteredDataAll.entries.where((k) => k.value.date!.contains(date))));
       listOfEventsInDay[date] = updateEvents();
+      dataManager.eventList.forEach((key, value) {
+        if(key.contains(date)) listOfEventsInDay[date]!.add(value);
+      });
     }
+  }
+
+  Map<dynamic, InfoFromFile> removeEventFromMap(Map<dynamic, InfoFromFile> map){
+    Map<dynamic, InfoFromFile> imagesInEvents = {};
+    for(int i = 0; i< dataManager.eventList.length; i++){
+      imagesInEvents.addAll(dataManager.eventList.values.elementAt(i).images);
+    }
+    print("imagesInEvetns : $imagesInEvents");
+    print("map : $map");
+
+    map.removeWhere((key, value) => imagesInEvents.containsKey(key));
+    return map;
   }
 
   List<Event> updateEvents() {

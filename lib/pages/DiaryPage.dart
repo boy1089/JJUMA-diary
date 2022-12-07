@@ -60,7 +60,7 @@ class _DiaryPageState extends State<DiaryPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "${formateDate2(formatDateString(date))}",
+                        "${formatDate2(formatDateString(date))}",
                         style: Theme.of(context).textTheme.subtitle1),
                       Text(
                         "${noteManager.notes[date]}",

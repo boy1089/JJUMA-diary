@@ -378,7 +378,7 @@ class IosDataManager extends ChangeNotifier implements DataManagerInterface {
 
   @override
   void addEvent(Event event) {
-    this.eventList.addAll({formateDate2(event.images.values.first.datetime!):event});
+    this.eventList.addAll({formatDate2(event.images.values.first.datetime!):event});
   }
 
 

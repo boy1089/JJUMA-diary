@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:lateDiary/Data/infoFromFile.dart';
 import 'package:lateDiary/Util/Util.dart';
+import '../model/event.dart';
 import 'clickable_photo_card.dart';
 import 'photo_card.dart';
 
 class CardContainer extends StatelessWidget {
-  List<Map<dynamic, InfoFromFile>> listOfEvents;
+  List<Event> listOfEvents;
   CardContainer({required this.listOfEvents});
 
   @override

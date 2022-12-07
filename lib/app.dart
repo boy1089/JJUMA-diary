@@ -66,7 +66,7 @@ class _AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: LateDiaryTheme.light,
+      theme: LateDiaryTheme.dark,
       initialRoute: MainPage.id,
       routes: {
         PermissionPage.id: (context) => PermissionPage(permissionManager),

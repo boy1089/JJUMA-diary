@@ -10,9 +10,10 @@ import 'package:path_provider/path_provider.dart';
 import 'dart:math';
 
 import '../../../Util/DateHandler.dart';
+import '../model/event.dart';
 
 class PhotoCard extends StatefulWidget {
-  Map<dynamic, InfoFromFile> event;
+  Event event;
   bool isMagnified = false;
   double height = 100;
   int scrollIndex = 0;
@@ -46,7 +47,7 @@ class _PhotoCardState extends State<PhotoCard> {
     FixedExtentScrollController scrollController2 =
         FixedExtentScrollController();
 
-    dateTime = widget.event.entries.first.value.datetime!;
+    dateTime = widget.event.images.entries.first.value.datetime!;
 
     return Column(
       children: [
@@ -74,7 +75,7 @@ class _PhotoCardState extends State<PhotoCard> {
                       itemExtent:
                           widget.isMagnified ? physicalWidth : widget.height,
                       children: List.generate(
-                          widget.event.entries.length,
+                          widget.event.images.entries.length,
                           (index) => Center(
                                 child: RotatedBox(
                                     quarterTurns: 1,
@@ -86,7 +87,7 @@ class _PhotoCardState extends State<PhotoCard> {
                                           ? physicalWidth
                                           : widget.height - 2,
                                       child: ExtendedImage.file(
-                                        File(widget.event.entries
+                                        File(widget.event.images.entries
                                             .elementAt(index)
                                             .key),
                                         cacheRawData: true,
@@ -119,12 +120,12 @@ class _PhotoCardState extends State<PhotoCard> {
                       diameterRatio: 200,
                       itemExtent: 40,
                       children: List.generate(
-                          widget.event.entries.length,
+                          widget.event.images.entries.length,
                           (index) => Center(
                                 child: RotatedBox(
                                     quarterTurns: 1,
                                     child: ExtendedImage.file(
-                                      File(widget.event.entries
+                                      File(widget.event.images.entries
                                           .elementAt(index)
                                           .key),
                                       compressionRatio: 0.01,
@@ -183,9 +184,9 @@ class _PhotoCardState extends State<PhotoCard> {
     if (!await file.exists()) await file.create(recursive: true);
 
     var a = Map.fromIterables(
-        widget.event.keys,
-        List.generate(widget.event.values.length,
-            (index) => widget.event.values.elementAt(index).toString()));
+        widget.event.images.keys,
+        List.generate(widget.event.images.values.length,
+            (index) => widget.event.images.values.elementAt(index).toString()));
     Map b = {
       '$dateTime': {'infoFromFile': a, 'note': controller.text}
     };

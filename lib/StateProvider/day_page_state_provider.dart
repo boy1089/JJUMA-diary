@@ -13,6 +13,8 @@ import 'package:geocoding/geocoding.dart';
 import '../Data/DataManagerInterface.dart';
 import 'package:flutter/material.dart';
 
+import '../pages/DayPage/model/event.dart';
+
 class DayPageStateProvider with ChangeNotifier {
   PhotoDataManager photoDataManager = PhotoDataManager();
   NoteManager noteManager = NoteManager();
@@ -27,8 +29,8 @@ class DayPageStateProvider with ChangeNotifier {
   Map<int, String?> addresses = {};
   String note = "";
   Map<dynamic, InfoFromFile> listOfImages = {};
-  List<Map<dynamic, InfoFromFile>> listOfEvents = [];
-  Map<String, List<Map<dynamic, InfoFromFile>>> listOfEventsInDay = {};
+  List<Event> listOfEvents = [];
+  Map<String, List<Event>> listOfEventsInDay = {};
 
   double keyboardSize = 300;
   DataManagerInterface dataManager;
@@ -44,12 +46,12 @@ class DayPageStateProvider with ChangeNotifier {
     Map<dynamic, InfoFromFile> data = dataManager.infoFromFiles;
     Map<dynamic, InfoFromFile> filteredDataAll = Map.fromEntries(data.entries
         .where((k) => k.value.date!.contains(date.substring(0, 6))));
-    filteredDataAll.forEach((key, value) {
-      print("$key, $value");
-    });
+
     List<String> dates = List.generate(filteredDataAll.length,
         (index) => filteredDataAll.entries.elementAt(index).value.date!);
+
     Set<String> setOfDates = dates.toSet();
+
     indexOfDate = setOfDates.toList().indexWhere((element) => element == date);
     listOfEventsInDay = {};
     for (int i = 0; i < setOfDates.length; i++) {
@@ -61,31 +63,30 @@ class DayPageStateProvider with ChangeNotifier {
     }
   }
 
-  List<Map<dynamic, InfoFromFile>> updateEvents() {
-    List<Map<dynamic, InfoFromFile>> events = [];
+  List<Event> updateEvents() {
+    List<Event> events = [];
 
-    global.kMinimumTimeDifferenceBetweenImages_ZoomOut;
     var listOfImages2 = {...listOfImages};
+
     if (listOfImages2.isEmpty) return [];
-    Map<dynamic, InfoFromFile> event = {}
+    Map<dynamic, InfoFromFile> dataForEvent = {}
       ..addEntries({listOfImages2.entries.elementAt(0)});
 
     for (int i = 0; i < listOfImages2.length - 1; i++) {
-      // print(listOfImages2.entries.elementAt(i).value.datetime!.difference(
-      //     listOfImages2.entries.elementAt(i + 1).value.datetime!));
       if ((listOfImages2.entries
               .elementAt(i + 1)
               .value
               .datetime!
               .difference(listOfImages2.entries.elementAt(i).value.datetime!)) <
           Duration(minutes: 60)) {
-        event.addEntries({listOfImages2.entries.elementAt(i + 1)});
+        dataForEvent.addEntries({listOfImages2.entries.elementAt(i + 1)});
       } else {
-        events.add(event);
-        event = {}..addEntries({listOfImages2.entries.elementAt(i + 1)});
+
+        events.add(Event.fromImages(images : dataForEvent));
+        dataForEvent = {}..addEntries({listOfImages2.entries.elementAt(i + 1)});
       }
     }
-    if (event.isNotEmpty) events.add(event);
+    if (dataForEvent.isNotEmpty) events.add(Event.fromImages(images : dataForEvent));
     listOfEvents = events;
     print("listEvents : $listOfEvents");
     return events;

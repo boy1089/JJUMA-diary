@@ -6,6 +6,7 @@ class Event{
   String? id = null;
   DateTime? dateTime = null;
   Map<dynamic, InfoFromFile> images;
+  String note = '';
 
   Event({required this.images, this.id});
 
@@ -18,6 +19,10 @@ class Event{
 
   factory Event.fromImages({required images}){
     return Event(images : images);
+  }
+
+  void setNote(String note){
+    this.note = note;
   }
 
 

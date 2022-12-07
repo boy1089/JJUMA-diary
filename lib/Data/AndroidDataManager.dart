@@ -8,6 +8,7 @@ import 'package:lateDiary/Util/Util.dart';
 import 'package:lateDiary/Util/global.dart' as global;
 import 'package:lateDiary/Location/LocationDataManager.dart';
 import "package:lateDiary/Location/Coordinate.dart";
+import '../pages/DayPage/model/event.dart';
 import 'infoFromFile.dart';
 import 'package:lateDiary/Data/Directories.dart';
 import 'DataRepository.dart';
@@ -34,6 +35,7 @@ class AndroidDataManager extends ChangeNotifier
   List<String>? datesOutOfDate = [];
 
   Map<dynamic, InfoFromFile> infoFromFiles = {};
+  Map<String, Event> eventList = {};
 
   DataRepository dataRepository = DataRepository();
 
@@ -342,4 +344,11 @@ class AndroidDataManager extends ChangeNotifier
     infoFromFiles.addAll({for (var v in files) v: InfoFromFile()});
     return files;
   }
+
+  @override
+  void addEvent(Event event) {
+    this.eventList.addAll({formateDate2(event.images.values.first.datetime!):event});
+    notifyListeners();
+  }
+
 }

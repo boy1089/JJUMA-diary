@@ -3,6 +3,7 @@ import 'package:lateDiary/Location/Coordinate.dart';
 import 'package:lateDiary/Data/infoFromFile.dart';
 import 'package:lateDiary/Data/DataRepository.dart';
 
+import '../pages/DayPage/model/event.dart';
 import 'AndroidDataManager.dart';
 import 'IosDataManager.dart';
 
@@ -25,6 +26,7 @@ abstract class DataManagerInterface extends ChangeNotifier {
   List setOfDatetimes = [];
   List files = [];
   List? filesNotUpdated = [];
+  Map<String, Event> eventList = {};
   List<String>? datesOutOfDate = [];
 
   Map<dynamic, InfoFromFile> infoFromFiles = {};
@@ -67,6 +69,9 @@ abstract class DataManagerInterface extends ChangeNotifier {
   static Future<Map<String, double>>
       updateSummaryOfLocationDataFromInfo_compute(List input) async {
     return {};
+  }
+
+  void addEvent(Event event){
   }
 
   @override

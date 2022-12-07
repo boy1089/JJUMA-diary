@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:lateDiary/Data/DataManagerInterface.dart';
 import 'package:lateDiary/Data/infoFromFile.dart';
 import 'package:lateDiary/Util/Util.dart';
 import 'dart:io';
@@ -11,6 +12,7 @@ import 'dart:math';
 
 import '../../../Util/DateHandler.dart';
 import '../model/event.dart';
+import 'package:lateDiary/Util/global.dart' as global;
 
 class PhotoCard extends StatefulWidget {
   Event event;
@@ -174,6 +176,11 @@ class _PhotoCardState extends State<PhotoCard> {
       return;
     }
     super.dispose();
+    widget.event.setNote(controller.text);
+
+    DataManagerInterface dataManager = DataManagerInterface(global.kOs);
+    // dataManager.eventList.addAll({formateDate2(dateTime): widget.event});
+    dataManager.addEvent(widget.event);
 
     Directory directory = await getApplicationDocumentsDirectory();
     String path = "${directory.path}/event/event.json";

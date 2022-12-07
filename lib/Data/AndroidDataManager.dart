@@ -48,6 +48,7 @@ class AndroidDataManager extends ChangeNotifier
     infoFromFiles = await dataRepository.readInfoFromJson();
     summaryOfPhotoData = await dataRepository.readSummaryOfPhoto();
     summaryOfLocationData = await dataRepository.readSummaryOfLocation();
+    eventList = await dataRepository.readEventList();
     notifyListeners();
     print("DataManager init, $files");
 

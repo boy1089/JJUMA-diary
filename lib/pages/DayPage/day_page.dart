@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:intl/intl.dart';
 import 'package:lateDiary/Data/DataManagerInterface.dart';
+import 'package:lateDiary/Data/DataRepository.dart';
 import 'package:lateDiary/Data/infoFromFile.dart';
 import 'package:lateDiary/Util/Util.dart';
 import 'package:lateDiary/app.dart';
@@ -68,9 +69,11 @@ class _DayPageState extends State<DayPage> {
               ]);
             }))),
     floatingActionButton: FloatingActionButton(
-        onPressed: (){
-          var a = DataManagerInterface(global.kOs);
-          print(a.eventList);
+        onPressed: () async {
+
+          var b= DataRepository();
+          var c =await b.readEventList();
+          // print(c.for);
         },
     ),
     );

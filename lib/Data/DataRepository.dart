@@ -3,6 +3,7 @@ import 'package:lateDiary/Location/Coordinate.dart';
 import 'package:lateDiary/Data/infoFromFile.dart';
 import 'package:glob/glob.dart';
 import 'package:photo_manager/photo_manager.dart';
+import '../pages/DayPage/model/event.dart';
 import 'Directories.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:convert';
@@ -86,15 +87,15 @@ class DataRepository {
         if (i % 100 == 0) {
           print("$i / ${mapFromJson.length}, ${index}");
         }
-        if (index != -1) test[keys[index]] = InfoFromFile.fromJson(json: mapFromJson[id]);
+        if (index != -1)
+          test[keys[index]] = InfoFromFile.fromJson(json: mapFromJson[id]);
         continue;
       }
 
       String filename = filenames.elementAt(i);
       print(mapFromJson[filename]);
       // test[filename] = InfoFromFile(map: mapFromJson[filename]);
-      test[filename] = InfoFromFile.fromJson(json : mapFromJson[filename]);
-
+      test[filename] = InfoFromFile.fromJson(json: mapFromJson[filename]);
     }
 
     infoFromFiles = test;
@@ -147,7 +148,7 @@ class DataRepository {
       test[filename] = mapOfInfo;
       if (i % 1000 == 0) print("$i / ${filenames.length}");
     }
-    file.writeAsString(jsonEncode(test));
+    await file.writeAsString(jsonEncode(test));
   }
 
   Future<void> writeSummaryOfPhoto(
@@ -192,5 +193,19 @@ class DataRepository {
     // }
     String stringToWrite = jsonEncode(summaryOfLocationData);
     await file.writeAsString(stringToWrite, mode: FileMode.write);
+  }
+
+  Future<void> writeEventList(Map<String, Event> eventList) async {
+    final Directory directory = await getApplicationDocumentsDirectory();
+    final File file = File('${directory.path}/eventList.json');
+
+    List keys = eventList.keys.toList();
+    var test = {};
+    for (int i = 0; i < keys.length; i++) {
+      dynamic key = keys.elementAt(i);
+      Map mapOfInfo = eventList[key]!.toMap();
+      test[key] = mapOfInfo;
+    }
+    await file.writeAsString(jsonEncode(test), mode : FileMode.write);
   }
 }

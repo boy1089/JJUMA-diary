@@ -346,9 +346,10 @@ class AndroidDataManager extends ChangeNotifier
   }
 
   @override
-  void addEvent(Event event) {
+  void addEvent(Event event) async {
     this.eventList.addAll({formateDate2(event.images.values.first.datetime!):event});
-    notifyListeners();
+    await dataRepository.writeEventList(this.eventList);
+    // notifyListeners();
   }
 
 }

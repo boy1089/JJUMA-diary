@@ -1,29 +1,26 @@
 import 'package:lateDiary/Data/infoFromFile.dart';
 
-
-class Event{
-
-  String? id = null;
-  DateTime? dateTime = null;
+class Event {
   Map<dynamic, InfoFromFile> images;
   String note = '';
 
-  Event({required this.images, this.id});
+  Event({required this.images, required this.note});
 
-  factory Event.fromId({required id}){
-    //read file
-    //parse, return
-    Map<dynamic, InfoFromFile> images = {};
-    return Event(images : images);
+  factory Event.fromImages({required images}) {
+    return Event(images: images, note: "");
   }
 
-  factory Event.fromImages({required images}){
-    return Event(images : images);
-  }
-
-  void setNote(String note){
+  void setNote(String note) {
     this.note = note;
   }
 
-
+  Map toMap() {
+    return {
+      "images": Map.fromIterables(
+          images.keys,
+          List.generate(images.values.length,
+              (index) => images.values.elementAt(index).toMap())),
+      "note": note
+    };
+  }
 }

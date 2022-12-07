@@ -31,14 +31,15 @@ class PhotoCard extends StatefulWidget {
 }
 
 class _PhotoCardState extends State<PhotoCard> {
-  String note = "";
-
   int scrollIndex = 0;
   FocusNode focusNode = FocusNode();
   DateTime dateTime = DateTime.now();
   TextEditingController controller = TextEditingController();
 
   _PhotoCardState() {
+    // print("note : ${widget.event.note}");
+    // if(widget.isMagnified);
+      // controller.text = widget.event.note;
     // scrollIndex = widget.scrollIndex;
   }
 
@@ -48,6 +49,7 @@ class _PhotoCardState extends State<PhotoCard> {
         FixedExtentScrollController();
     FixedExtentScrollController scrollController2 =
         FixedExtentScrollController();
+    controller.text = widget.event.note;
 
     dateTime = widget.event.images.entries.first.value.datetime!;
 
@@ -171,33 +173,14 @@ class _PhotoCardState extends State<PhotoCard> {
 
   @override
   void dispose() async {
-    if (!widget.isMagnified) {
+    if (!widget.isMagnified | (controller.text == "")) {
       super.dispose();
       return;
     }
     super.dispose();
     widget.event.setNote(controller.text);
-
     DataManagerInterface dataManager = DataManagerInterface(global.kOs);
-    // dataManager.eventList.addAll({formateDate2(dateTime): widget.event});
     dataManager.addEvent(widget.event);
-
-    Directory directory = await getApplicationDocumentsDirectory();
-    String path = "${directory.path}/event/event.json";
-    File file = File(path);
-
-    //to write
-    // id, date, info Of files, note
-    if (!await file.exists()) await file.create(recursive: true);
-
-    var a = Map.fromIterables(
-        widget.event.images.keys,
-        List.generate(widget.event.images.values.length,
-            (index) => widget.event.images.values.elementAt(index).toString()));
-    Map b = {
-      '$dateTime': {'infoFromFile': a, 'note': controller.text}
-    };
-    await file.writeAsString(jsonEncode(b));
   }
 }
 

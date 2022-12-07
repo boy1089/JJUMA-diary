@@ -37,8 +37,6 @@ class DayPageStateProvider with ChangeNotifier {
   DayPageStateProvider(this.dataManager) {
     print("DayPageStateProvider created");
     updateData();
-    scrollController.animateTo(1000,
-        duration: Duration(milliseconds: 500), curve: Curves.bounceInOut);
     notifyListeners();
   }
 

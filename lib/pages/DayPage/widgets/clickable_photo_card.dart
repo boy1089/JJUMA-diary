@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:lateDiary/Util/Util.dart';
 import 'photo_card.dart';
 
-
 class ClickablePhotoCard extends StatelessWidget {
   PhotoCard photoCard;
   ClickablePhotoCard({required this.photoCard});
@@ -12,14 +11,17 @@ class ClickablePhotoCard extends StatelessWidget {
     return GestureDetector(
         onTap: () {
           showDialog(
-            useSafeArea: false,
+              useSafeArea: false,
               context: context,
-              builder: (context) => SimpleDialog(
-
-                insetPadding: EdgeInsets.zero,
-                children: [photoCard..isMagnified = true],
-
-              ));
+              builder: (context) => Container(
+                    width: physicalWidth - 16,
+                    child: SimpleDialog(
+                      insetPadding: EdgeInsets.all(8.0),
+                      children: [
+                        Container(child: photoCard..isMagnified = true)
+                      ],
+                    ),
+                  ));
         },
         child: photoCard);
   }

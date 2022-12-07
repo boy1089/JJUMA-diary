@@ -1,9 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lateDiary/Data/infoFromFile.dart';
 import 'package:lateDiary/Util/Util.dart';
 import 'dart:io';
 import 'package:extended_image/extended_image.dart';
+import 'package:path_provider/path_provider.dart';
 import 'dart:math';
 
 import '../../../Util/DateHandler.dart';
@@ -32,7 +35,7 @@ class _PhotoCardState extends State<PhotoCard> {
   DateTime dateTime = DateTime.now();
   TextEditingController controller = TextEditingController();
 
-  _PhotoCardState(){
+  _PhotoCardState() {
     // scrollIndex = widget.scrollIndex;
   }
 
@@ -161,6 +164,32 @@ class _PhotoCardState extends State<PhotoCard> {
           )
       ],
     );
+  }
+
+  @override
+  void dispose() async {
+    if (!widget.isMagnified) {
+      super.dispose();
+      return;
+    }
+    super.dispose();
+
+    Directory directory = await getApplicationDocumentsDirectory();
+    String path = "${directory.path}/event/event.json";
+    File file = File(path);
+
+    //to write
+    // id, date, info Of files, note
+    if (!await file.exists()) await file.create(recursive: true);
+
+    var a = Map.fromIterables(
+        widget.event.keys,
+        List.generate(widget.event.values.length,
+            (index) => widget.event.values.elementAt(index).toString()));
+    Map b = {
+      '$dateTime': {'infoFromFile': a, 'note': controller.text}
+    };
+    await file.writeAsString(jsonEncode(b));
   }
 }
 

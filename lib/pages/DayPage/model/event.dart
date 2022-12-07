@@ -4,6 +4,7 @@ import 'package:lateDiary/Data/infoFromFile.dart';
 class Event{
 
   String? id = null;
+  DateTime? dateTime = null;
   Map<dynamic, InfoFromFile> images;
 
   Event({required this.images, this.id});

@@ -2,8 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:lateDiary/Data/DataManagerInterface.dart';
-import 'package:lateDiary/Data/infoFromFile.dart';
+import 'package:lateDiary/Data/data_manager_interface.dart';
+import 'package:lateDiary/Data/info_from_file.dart';
 import 'package:lateDiary/Util/Util.dart';
 import 'dart:io';
 import 'package:extended_image/extended_image.dart';

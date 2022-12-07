@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:lateDiary/Data/DataManagerInterface.dart';
-import 'package:lateDiary/Data/DataRepository.dart';
+import 'package:lateDiary/Data/data_manager_interface.dart';
+import 'package:lateDiary/Data/data_repository.dart';
 import 'package:lateDiary/Util/global.dart' as global;
-import 'package:lateDiary/pages/SettingPage.dart';
-import 'package:lateDiary/Note/NoteManager.dart';
-import '../DiaryPage.dart';
+import 'package:lateDiary/pages/setting_page.dart';
+import 'package:lateDiary/Note/note_manager.dart';
+import '../diary_page.dart';
 import '../YearPage/year_page_screen.dart';
 import '../DayPage/day_page.dart';
-import 'MainPageViewAndroid.dart';
-import 'MainPageViewIos.dart';
+import 'main_page_view_android.dart';
+import 'main_page_view_ios.dart';
 
 class MainPage extends StatefulWidget {
   static String id = 'main';

@@ -1,11 +1,11 @@
 import 'package:flutter/foundation.dart';
 import 'package:lateDiary/Location/Coordinate.dart';
-import 'package:lateDiary/Data/infoFromFile.dart';
-import 'package:lateDiary/Data/DataRepository.dart';
+import 'package:lateDiary/Data/info_from_file.dart';
+import 'package:lateDiary/Data/data_repository.dart';
 
 import '../pages/DayPage/model/event.dart';
-import 'AndroidDataManager.dart';
-import 'IosDataManager.dart';
+import 'android_data_manager.dart';
+import 'ios_data_manager.dart';
 
 abstract class DataManagerInterface extends ChangeNotifier {
   factory DataManagerInterface(String type) {

@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:lateDiary/Util/Util.dart';
 import 'package:lateDiary/Util/DateHandler.dart';
 import 'package:lateDiary/Util/global.dart' as global;
-import 'package:lateDiary/Note/NoteManager.dart';
+import 'package:lateDiary/Note/note_manager.dart';
 import 'package:lateDiary/StateProvider/navigation_index_state_provider.dart';
 import 'package:lateDiary/StateProvider/year_page_state_provider.dart';
 import 'package:lateDiary/StateProvider/day_page_state_provider.dart';

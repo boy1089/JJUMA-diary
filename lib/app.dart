@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:lateDiary/Permissions/PermissionManager.dart';
-import 'package:lateDiary/Note/NoteManager.dart';
+import 'package:lateDiary/Note/note_manager.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:lateDiary/navigation.dart';
-import 'pages/PermissionPage.dart';
+import 'pages/permission_page.dart';
 import 'package:lateDiary/Settings.dart';
-import 'package:lateDiary/Data/Directories.dart';
-import 'pages/MainPage/MainPage.dart';
-import 'pages/SettingPage.dart';
+import 'package:lateDiary/Data/directories.dart';
+import 'pages/MainPage/main_page.dart';
+import 'pages/setting_page.dart';
 import 'package:lateDiary/Util/global.dart' as global;
 import 'package:lateDiary/theme/theme.dart';
-import 'package:lateDiary/Data/DataManagerInterface.dart';
+import 'package:lateDiary/Data/data_manager_interface.dart';
 
 class App extends StatefulWidget {
   const App({Key? key}) : super(key: key);

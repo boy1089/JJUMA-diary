@@ -1,4 +1,4 @@
-import 'package:lateDiary/Data/infoFromFile.dart';
+import 'package:lateDiary/Data/info_from_file.dart';
 import 'package:lateDiary/Util/global.dart' as global;
 import 'dart:math';
 

@@ -1,7 +1,7 @@
 import 'package:lateDiary/Data/file_info_model.dart';
 import 'package:lateDiary/Util/DateHandler.dart';
 import 'package:lateDiary/Util/Util.dart';
-import 'package:lateDiary/Data/DataManagerInterface.dart';
+import 'package:lateDiary/Data/data_manager_interface.dart';
 import 'package:lateDiary/Util/global.dart' as global;
 
 class PhotoDataManager {

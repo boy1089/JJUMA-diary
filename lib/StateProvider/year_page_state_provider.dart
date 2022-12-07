@@ -4,7 +4,7 @@ import 'package:lateDiary/Util/Util.dart';
 import 'dart:math';
 import 'package:intl/intl.dart';
 
-import '../Data/DataManagerInterface.dart';
+import '../Data/data_manager_interface.dart';
 
 class YearPageStateProvider with ChangeNotifier {
   int index = 0;

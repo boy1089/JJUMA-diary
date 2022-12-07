@@ -8,7 +8,7 @@ import 'package:lateDiary/StateProvider/year_page_state_provider.dart';
 import 'package:lateDiary/StateProvider/day_page_state_provider.dart';
 import 'package:lateDiary/StateProvider/navigation_index_state_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:lateDiary/Data/DataManagerInterface.dart';
+import 'package:lateDiary/Data/data_manager_interface.dart';
 import 'package:lateDiary/Util/global.dart' as global;
 
 void bootstrap(int i) {

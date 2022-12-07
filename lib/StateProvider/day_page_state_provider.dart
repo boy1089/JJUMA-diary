@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:lateDiary/Data/infoFromFile.dart';
-import 'package:lateDiary/Note/NoteManager.dart';
+import 'package:lateDiary/Data/info_from_file.dart';
+import 'package:lateDiary/Note/note_manager.dart';
 import 'package:lateDiary/Util/DateHandler.dart';
 import 'package:lateDiary/Util/Util.dart';
-import 'package:lateDiary/Photo/PhotoDataManager.dart';
+import 'package:lateDiary/Photo/photo_data_manager.dart';
 
 import 'package:lateDiary/Util/global.dart' as global;
 import 'package:lateDiary/Location/AddressFinder.dart';
 import 'package:lateDiary/Location/Coordinate.dart';
 import 'package:geocoding/geocoding.dart';
 
-import '../Data/DataManagerInterface.dart';
+import '../Data/data_manager_interface.dart';
 import 'package:flutter/material.dart';
 
 import '../pages/DayPage/model/event.dart';

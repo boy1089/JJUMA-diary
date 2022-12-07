@@ -2,16 +2,16 @@ import 'dart:io';
 import 'package:glob/list_local_fs.dart';
 import 'package:flutter/foundation.dart';
 import 'package:glob/glob.dart';
-import 'package:lateDiary/Data/DataManagerInterface.dart';
+import 'package:lateDiary/Data/data_manager_interface.dart';
 import 'package:lateDiary/Util/DateHandler.dart';
 import 'package:lateDiary/Util/Util.dart';
 import 'package:lateDiary/Util/global.dart' as global;
-import 'package:lateDiary/Location/LocationDataManager.dart';
+import 'package:lateDiary/Location/location_data_manager.dart';
 import "package:lateDiary/Location/Coordinate.dart";
 import '../pages/DayPage/model/event.dart';
-import 'infoFromFile.dart';
-import 'package:lateDiary/Data/Directories.dart';
-import 'DataRepository.dart';
+import 'info_from_file.dart';
+import 'package:lateDiary/Data/directories.dart';
+import 'data_repository.dart';
 
 class AndroidDataManager extends ChangeNotifier
     implements DataManagerInterface {

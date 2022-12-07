@@ -1,4 +1,4 @@
-import 'package:lateDiary/Data/infoFromFile.dart';
+import 'package:lateDiary/Data/info_from_file.dart';
 
 class PhotoCardModel {
   Map<dynamic, InfoFromFile> event;

@@ -1,10 +1,10 @@
 import 'package:glob/list_local_fs.dart';
 import 'package:lateDiary/Location/Coordinate.dart';
-import 'package:lateDiary/Data/infoFromFile.dart';
+import 'package:lateDiary/Data/info_from_file.dart';
 import 'package:glob/glob.dart';
 import 'package:photo_manager/photo_manager.dart';
 import '../pages/DayPage/model/event.dart';
-import 'Directories.dart';
+import 'directories.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:convert';
 import 'dart:io';

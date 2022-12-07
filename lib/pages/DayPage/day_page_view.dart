@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:lateDiary/StateProvider/day_page_state_provider.dart';
 import 'package:lateDiary/Util/Util.dart';
-import 'package:lateDiary/pages/DayPage/polarPhotoImageContainer.dart';
-import 'package:lateDiary/pages/DayPage/PolarPhotoDataPlot.dart';
+import 'package:lateDiary/pages/DayPage/polar_photo_image_container.dart';
+import 'package:lateDiary/pages/DayPage/polar_photo_data_plot.dart';
 import 'package:lateDiary/Util/global.dart' as global;
 import 'package:intl/intl.dart';
-import 'package:lateDiary/pages/DayPage/PolarTimeIndicators.dart';
+import 'package:lateDiary/pages/DayPage/polar_time_indicators.dart';
 import 'package:lateDiary/Util/DateHandler.dart';
 import 'package:lateDiary/CustomWidget/zoomable_widget.dart';
 import 'package:lateDiary/CustomWidget/NoteEditor.dart';

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:lateDiary/Data/DataManagerInterface.dart';
+import 'package:lateDiary/Data/data_manager_interface.dart';
 import 'package:lateDiary/StateProvider/year_page_state_provider.dart';
 import 'package:lateDiary/Util/Util.dart';
 import 'package:lateDiary/Util/global.dart' as global;
 import 'package:lateDiary/pages/YearPage/year_page_chart.dart';
 import 'package:provider/provider.dart';
-import 'package:lateDiary/pages/YearPage/PolarMonthIndicator.dart';
+import 'package:lateDiary/pages/YearPage/polar_month_indicator.dart';
 import 'package:lateDiary/CustomWidget/zoomable_widget.dart';
-import 'package:lateDiary/Note/NoteManager.dart';
+import 'package:lateDiary/Note/note_manager.dart';
 import 'dart:ui';
 import 'package:lateDiary/Util/layouts.dart';
 import 'note_list_view.dart';

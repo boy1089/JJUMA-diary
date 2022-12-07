@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:lateDiary/Util/global.dart' as global;
 import '../../navigation.dart';
-import 'package:lateDiary/pages/SettingPage.dart';
+import 'package:lateDiary/pages/setting_page.dart';
 import 'package:provider/provider.dart';
 import 'package:lateDiary/StateProvider/year_page_state_provider.dart';
 import 'package:lateDiary/StateProvider/day_page_state_provider.dart';

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lateDiary/Data/infoFromFile.dart';
+import 'package:lateDiary/Data/info_from_file.dart';
 import 'package:lateDiary/Util/Util.dart';
 import '../model/event.dart';
 import 'clickable_photo_card.dart';

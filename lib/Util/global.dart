@@ -86,6 +86,11 @@ double kMarginForDayPage = physicalWidth / 10;
 double kMagnificationOnDayPage = 7.5;
 double kRatioOfScatterInDayPage = 0.9;
 
+
+//padding for dialog
+double kDialogPadding =8.0;
+double kContainerPadding  = 1.0;
+
 //5 images when it's zoomed in
 double kImageSize = physicalWidth / 5;
 double kZoomInImageSize = physicalWidth - kMarginForDayPage;

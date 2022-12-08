@@ -1,8 +1,11 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:lateDiary/Data/data_manager_interface.dart';
 import 'package:lateDiary/StateProvider/year_page_state_provider.dart';
 import 'package:lateDiary/Util/Util.dart';
 import 'package:lateDiary/Util/global.dart' as global;
+import 'package:lateDiary/pages/DayPage/widgets/photo_card.dart';
 import 'package:lateDiary/pages/YearPage/year_page_chart.dart';
 import 'package:provider/provider.dart';
 import 'package:lateDiary/pages/YearPage/polar_month_indicator.dart';
@@ -57,11 +60,17 @@ class YearPageView extends StatelessWidget {
                         dataForChart: dataForChart,
                         isZoomIn: isZoomIn,
                         context: context,
-                      ).build(context)
+                      ).build(context),
+                      // PhotoCard(
+                      //     event: DataManagerInterface(global.kOs)
+                      //         .eventList
+                      //         .entries
+                      //         .elementAt(0)
+                      //         .value),
                     ],
                     isZoomIn: isZoomIn,
                     layout: layout_yearPage,
-                    angle : angle)
+                    angle: angle)
                 .build(context),
             // Positioned(
             //     width: physicalWidth,
@@ -69,6 +78,14 @@ class YearPageView extends StatelessWidget {
             //     child: NoteListView(isZoomIn: isZoomIn, notes: notes)
             //         .build(context)),
           ]),
+      // floatingActionButton: FloatingActionButton(onPressed: () {
+      //   print(DataManagerInterface(global.kOs)
+      //       .eventList
+      //       .entries
+      //       .elementAt(0)
+      //       .value.images);
+      // }
+      // ),
     );
   }
 

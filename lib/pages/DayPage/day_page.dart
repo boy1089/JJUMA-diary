@@ -38,7 +38,8 @@ class _DayPageState extends State<DayPage> {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await Future.delayed(Duration(milliseconds: 1000));
       Scrollable.ensureVisible(
-        keyList[provider.indexOfDate].currentContext!,
+
+        keyList[provider.indexOfDate>1? provider.indexOfDate-1:0].currentContext!,
         duration: Duration(milliseconds: 300),
         curve: Curves.bounceInOut,
       );
@@ -68,13 +69,13 @@ class _DayPageState extends State<DayPage> {
                       fontSize: 25))
             ]);
           }))),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          var b = DataRepository();
-          var c = await b.readEventList();
-          // print(c.for);
-        },
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () async {
+      //     var b = DataRepository();
+      //     var c = await b.readEventList();
+      //     // print(c.for);
+      //   },
+      // ),
     );
   }
 }

@@ -36,13 +36,6 @@ class _PhotoCardState extends State<PhotoCard> {
   DateTime dateTime = DateTime.now();
   TextEditingController controller = TextEditingController();
 
-  _PhotoCardState() {
-    // print("note : ${widget.event.note}");
-    // if(widget.isMagnified);
-      // controller.text = widget.event.note;
-    // scrollIndex = widget.scrollIndex;
-  }
-
   @override
   Widget build(BuildContext context) {
     FixedExtentScrollController scrollController1 =
@@ -60,7 +53,7 @@ class _PhotoCardState extends State<PhotoCard> {
             width: widget.isMagnified ? physicalWidth : widget.height,
             child: Padding(
                 padding:
-                    widget.isMagnified ? EdgeInsets.zero : EdgeInsets.all(1.0),
+                    widget.isMagnified ? EdgeInsets.zero : EdgeInsets.all(global.kContainerPadding),
                 child: RotatedBox(
                   quarterTurns: -1,
                   child: ListWheelScrollView(
@@ -76,8 +69,9 @@ class _PhotoCardState extends State<PhotoCard> {
                       controller: scrollController1,
                       physics: PageScrollPhysics(),
                       diameterRatio: 200,
-                      itemExtent:
-                          widget.isMagnified ? physicalWidth : widget.height,
+                      itemExtent: widget.isMagnified
+                          ? physicalWidth - global.kDialogPadding*2
+                          : widget.height - global.kContainerPadding*2,
                       children: List.generate(
                           widget.event.images.entries.length,
                           (index) => Center(
@@ -86,10 +80,10 @@ class _PhotoCardState extends State<PhotoCard> {
                                     child: SizedBox(
                                       height: widget.isMagnified
                                           ? physicalWidth
-                                          : widget.height - 2,
+                                          : widget.height - global.kContainerPadding*2,
                                       width: widget.isMagnified
                                           ? physicalWidth
-                                          : widget.height - 2,
+                                          : widget.height - global.kContainerPadding*2,
                                       child: ExtendedImage.file(
                                         File(widget.event.images.entries
                                             .elementAt(index)
@@ -159,7 +153,7 @@ class _PhotoCardState extends State<PhotoCard> {
                   controller: controller,
                   focusNode: focusNode,
                   style: TextStyle(
-                    color: Colors.black,
+                    // color: Colors.black,
                     fontSize: 16.0,
                   ),
                   // onChanged: (value){controller.text = value;},

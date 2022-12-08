@@ -29,7 +29,6 @@ class polarPhotoImageContainers {
 
   @override
   Widget build(BuildContext context) {
-    print(stackOrder);
     // print("imageContainers build");
     return !Provider.of<DayPageStateProvider>(context, listen: false).isZoomIn
         ? Stack(

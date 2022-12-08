@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lateDiary/Util/Util.dart';
 import 'photo_card.dart';
-
+import 'package:lateDiary/Util/global.dart' as global;
 class ClickablePhotoCard extends StatelessWidget {
   PhotoCard photoCard;
   ClickablePhotoCard({required this.photoCard});
@@ -14,9 +14,9 @@ class ClickablePhotoCard extends StatelessWidget {
               useSafeArea: false,
               context: context,
               builder: (context) => Container(
-                    width: physicalWidth - 16,
+                    width: physicalWidth - global.kDialogPadding*2,
                     child: SimpleDialog(
-                      insetPadding: EdgeInsets.all(8.0),
+                      insetPadding: EdgeInsets.all(global.kDialogPadding),
                       children: [
                         Container(child: photoCard..isMagnified = true)
                       ],

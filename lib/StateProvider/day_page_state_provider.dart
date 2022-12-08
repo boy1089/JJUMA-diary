@@ -7,7 +7,7 @@ import 'package:lateDiary/Photo/photo_data_manager.dart';
 
 import 'package:lateDiary/Util/global.dart' as global;
 import 'package:lateDiary/Location/AddressFinder.dart';
-import 'package:lateDiary/Location/Coordinate.dart';
+import 'package:lateDiary/Location/coordinate.dart';
 import 'package:geocoding/geocoding.dart';
 
 import '../Data/data_manager_interface.dart';

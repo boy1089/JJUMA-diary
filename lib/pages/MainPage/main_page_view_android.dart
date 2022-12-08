@@ -46,30 +46,30 @@ class _MainPageViewAndroidState extends State<MainPageViewAndroid> {
           case navigationIndex.diary:
             navigationProvider.setNavigationIndex(navigationIndex.year);
             break;
-          case navigationIndex.day:
-          //when zoomed in, make daypage zoom out
-            global.indexForZoomInImage = -1;
-            global.isImageClicked = false;
+          // case navigationIndex.day:
+          // //when zoomed in, make daypage zoom out
+          //   global.indexForZoomInImage = -1;
+          //   global.isImageClicked = false;
 
-            if (dayPageStateProvider.isZoomIn) {
-              setState(() {
-                dayPageStateProvider.setZoomInState(false);
-                dayPageStateProvider.setZoomInRotationAngle(0);
-              });
-            }
+            // if (dayPageStateProvider.isZoomIn) {
+              // setState(() {
+              //   dayPageStateProvider.setZoomInState(false);
+              //   dayPageStateProvider.setZoomInRotationAngle(0);
+              // });
+            // }
 
-            if (navigationProvider.lastNavigationIndex ==
-                navigationIndex.diary) {
-              navigationProvider
-                  .setNavigationIndex(navigationProvider.lastNavigationIndex);
-              break;
-            }
+            // if (navigationProvider.lastNavigationIndex ==
+            //     navigationIndex.diary) {
+            //   navigationProvider
+            //       .setNavigationIndex(navigationProvider.lastNavigationIndex);
+            //   break;
+            // }
             //when zoomed out, go to month page
-            if (!dayPageStateProvider.isZoomIn) {
-              navigationProvider.setNavigationIndex(navigationIndex.year);
-              return Navigator.canPop(context);
-            }
-            break;
+            // if (!dayPageStateProvider.isZoomIn) {
+            //   navigationProvider.setNavigationIndex(navigationIndex.year);
+            //   return Navigator.canPop(context);
+            // }
+            // break;
         }
         return Navigator.canPop(context);
       },

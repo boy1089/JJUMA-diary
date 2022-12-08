@@ -11,6 +11,7 @@ import 'package:lateDiary/StateProvider/day_page_state_provider.dart';
 import 'package:lateDiary/StateProvider/year_page_state_provider.dart';
 
 import 'package:graphic/graphic.dart';
+import 'package:go_router/go_router.dart';
 
 class YearPageChart extends StatelessWidget {
   dynamic dataForChart;
@@ -49,7 +50,8 @@ class YearPageChart extends StatelessWidget {
             if (!product.isZoomIn) return;
             Provider.of<DayPageStateProvider>(context, listen: false)
                 .setDate(formatDate(date));
-            provider.setNavigationIndex(navigationIndex.day);
+            // provider.setNavigationIndex(navigationIndex.day);
+            context.go('/year/day');
             provider.setDate(date);
             print("date : $date");
 

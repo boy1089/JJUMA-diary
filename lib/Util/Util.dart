@@ -12,7 +12,7 @@ import 'dart:io';
 import 'package:csv/csv.dart';
 import 'dart:convert';
 import 'package:exif/exif.dart';
-import "package:lateDiary/Location/Coordinate.dart";
+import "package:lateDiary/Location/coordinate.dart";
 import 'package:photo_manager/photo_manager.dart';
 
 import 'DateHandler.dart';

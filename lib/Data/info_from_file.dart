@@ -1,4 +1,4 @@
-import 'package:lateDiary/Location/Coordinate.dart';
+import 'package:lateDiary/Location/coordinate.dart';
 import 'package:lateDiary/Util/DateHandler.dart';
 
 class InfoFromFiles {}

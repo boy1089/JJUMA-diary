@@ -1,7 +1,7 @@
 import 'package:permission_handler/permission_handler.dart';
 import 'package:lateDiary/Permissions/PermissionManager.dart';
 
-import '../Location/Coordinate.dart';
+import '../Location/coordinate.dart';
 import 'android_notifications_screen.dart';
 import '../navigation.dart';
 import 'package:flutter/material.dart';

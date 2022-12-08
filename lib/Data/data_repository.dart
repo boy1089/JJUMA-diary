@@ -1,5 +1,5 @@
 import 'package:glob/list_local_fs.dart';
-import 'package:lateDiary/Location/Coordinate.dart';
+import 'package:lateDiary/Location/coordinate.dart';
 import 'package:lateDiary/Data/info_from_file.dart';
 import 'package:glob/glob.dart';
 import 'package:photo_manager/photo_manager.dart';

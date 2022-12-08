@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lateDiary/Permissions/PermissionManager.dart';
 import 'package:lateDiary/Note/note_manager.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:lateDiary/navigation.dart';
+import 'package:lateDiary/pages/DayPage/day_page.dart';
+import 'package:lateDiary/pages/YearPage/year_page_screen.dart';
+import 'package:lateDiary/pages/diary_page.dart';
 import 'pages/permission_page.dart';
 import 'package:lateDiary/Settings.dart';
 import 'package:lateDiary/Data/directories.dart';
@@ -18,7 +22,7 @@ class App extends StatefulWidget {
   State<App> createState() => _AppState();
 }
 
-class _AppState extends State<App> {
+class _AppState extends State<App> with SingleTickerProviderStateMixin {
   final permissionManager = PermissionManager();
   final noteManager = NoteManager();
   late final dataManager;
@@ -65,19 +69,47 @@ class _AppState extends State<App> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    late final AnimationController _controller = AnimationController(
+      duration: const Duration(milliseconds: 300),
+      vsync: this,
+    );
+    late final Animation<Offset> _offsetAnimation = Tween<Offset>(
+      begin: const Offset(1, 0.0),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(
+      parent: _controller,
+      curve: Curves.bounceIn,
+    ));
+
+    final _router = GoRouter(initialLocation: '/year', routes: [
+      GoRoute(
+          path: '/year',
+          builder: (context, state) => YearPageScreen(),
+          routes: [
+            GoRoute(path: 'day', builder: (context, state) => DayPage()
+                // pageBuilder: (context, state) {
+                //   return CustomTransitionPage(
+                //       key: state.pageKey,
+                //       child: DayPage(),
+                //       transitionsBuilder:
+                //           (context, animation, secondaryAnimation, child) {
+                //         return SlideTransition(
+                //           position: _offsetAnimation,
+                //           child: child,
+                //         );
+                //       });
+                // }
+                ),
+          ]),
+      GoRoute(
+          path: '/diary', builder: (context, state) => DiaryPage(noteManager))
+    ]);
+
+    return MaterialApp.router(
       theme: LateDiaryTheme.dark,
-      initialRoute: MainPage.id,
-      routes: {
-        PermissionPage.id: (context) => PermissionPage(permissionManager),
-        MainPage.id: (context) => FutureBuilder(
-            future: initApp,
-            builder: (BuildContext context, AsyncSnapshot snapshot) {
-              return MainPage();
-            }),
-        AndroidSettingsScreen.id: (context) => AndroidSettingsScreen(),
-      },
+      routerConfig: _router,
       useInheritedMediaQuery: true,
     );
+
   }
 }

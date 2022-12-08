@@ -10,6 +10,7 @@ import 'package:lateDiary/StateProvider/navigation_index_state_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:lateDiary/Data/data_manager_interface.dart';
 import 'package:lateDiary/Util/global.dart' as global;
+import 'package:go_router/go_router.dart';
 
 void bootstrap(int i) {
   FlutterError.onError = (details) {
@@ -20,6 +21,7 @@ void bootstrap(int i) {
       YearPageStateProvider(DataManagerInterface(global.kOs));
   DayPageStateProvider dayPageStateProvider =
       DayPageStateProvider(DataManagerInterface(global.kOs));
+
 
   runZonedGuarded(
     () => runApp(

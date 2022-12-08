@@ -46,6 +46,7 @@ dependencies:
   numberpicker:
   flutter_bloc:
   photo_manager:
+  go_router:
 
 dev_dependencies:
   flutter_test:

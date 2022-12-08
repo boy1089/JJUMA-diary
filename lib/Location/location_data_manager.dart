@@ -1,6 +1,7 @@
+import 'dart:math';
+
 import 'package:lateDiary/Data/info_from_file.dart';
 import 'package:lateDiary/Util/global.dart' as global;
-import 'dart:math';
 
 class LocationDataManager {
   Map<dynamic, InfoFromFile> infoFromFiles = {};

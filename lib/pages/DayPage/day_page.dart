@@ -45,37 +45,36 @@ class _DayPageState extends State<DayPage> {
     });
 
     return Scaffold(
-        extendBodyBehindAppBar: true,
-        body: SingleChildScrollView(
-            controller: provider.scrollController,
-            child: Column(
-                children: List.generate(
-                    provider.listOfEventsInDay.entries.length, (index) {
-              String date =
-                  provider.listOfEventsInDay.entries.elementAt(index).key;
-              return Stack(key: keyList[index], children: [
-                CardContainer(
-                    listOfEvents: provider.listOfEventsInDay.entries
-                        .elementAt(index)
-                        .value),
-                Text(
-                    "${DateFormat('EEEE').format(DateTime.parse(date))}/"
-                    "${DateFormat('MMM').format(DateTime.parse(date))} "
-                    "${DateFormat('dd').format(DateTime.parse(date))}",
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w300,
-                        fontSize: 25))
-              ]);
-            }))),
-    floatingActionButton: FloatingActionButton(
+      extendBodyBehindAppBar: true,
+      body: SingleChildScrollView(
+          controller: provider.scrollController,
+          child: Column(
+              children: List.generate(provider.listOfEventsInDay.entries.length,
+                  (index) {
+            String date =
+                provider.listOfEventsInDay.entries.elementAt(index).key;
+            return Stack(key: keyList[index], children: [
+              CardContainer(
+                  listOfEvents: provider.listOfEventsInDay.entries
+                      .elementAt(index)
+                      .value),
+              Text(
+                  "${DateFormat('EEEE').format(DateTime.parse(date))}/"
+                  "${DateFormat('MMM').format(DateTime.parse(date))} "
+                  "${DateFormat('dd').format(DateTime.parse(date))}",
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w300,
+                      fontSize: 25))
+            ]);
+          }))),
+      floatingActionButton: FloatingActionButton(
         onPressed: () async {
-
-          var b= DataRepository();
-          var c =await b.readEventList();
+          var b = DataRepository();
+          var c = await b.readEventList();
           // print(c.for);
         },
-    ),
+      ),
     );
   }
 }

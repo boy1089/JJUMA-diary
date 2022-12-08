@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'package:lateDiary/Location/Coordinate.dart';
+import 'package:lateDiary/Location/coordinate.dart';
 import 'package:lateDiary/Data/info_from_file.dart';
 import 'package:lateDiary/Data/data_repository.dart';
 

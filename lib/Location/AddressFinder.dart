@@ -1,12 +1,15 @@
 import 'dart:io';
+
 import 'package:exif/exif.dart';
 import 'package:geocoding/geocoding.dart';
-import 'Coordinate.dart';
+
+import 'coordinate.dart';
 
 class AddressFinder {
-  static Future getAddressFromExif(filename) async{
+  static Future getAddressFromExif(filename) async {
     Coordinate coordinate = await getCoordinateFromExif(filename);
-    Placemark? placemark = await getAddressFromCoordinate(coordinate.latitude, coordinate.longitude);
+    Placemark? placemark = await getAddressFromCoordinate(
+        coordinate.latitude, coordinate.longitude);
     print(placemark);
     return placemark;
   }
@@ -20,26 +23,25 @@ class AddressFinder {
         convertTagToValue(data['GPS GPSLatitude']),
         convertTagToValue(data['GPS GPSLongitude']));
 
-    if(coordinate.latitude==null)
-      return null;
+    if (coordinate.latitude == null) return null;
 
     return coordinate;
   }
 
-
-  static Future<Placemark?> getAddressFromCoordinate(latitude, longitude) async {
+  static Future<Placemark?> getAddressFromCoordinate(
+      latitude, longitude) async {
     //https://www.geeksforgeeks.org/how-to-get-address-from-coordinates-in-flutter/
     try {
       var address = await placemarkFromCoordinates(latitude, longitude);
       return address[0];
-    } catch(e) {
+    } catch (e) {
       print("error in getAddressFromCoordinate, $e");
       return null;
     }
   }
 
   static double? convertTagToValue(tag) {
-    if(tag==null) return null;
+    if (tag == null) return null;
 
     List values = tag.printable
         .replaceAll("[", "")
@@ -49,7 +51,7 @@ class AddressFinder {
 
     double value = double.parse(values[0]) +
         double.parse(values[1]) / 60 +
-        double.parse(values[2].split('/')[0]) / 1e6/3600;
+        double.parse(values[2].split('/')[0]) / 1e6 / 3600;
     return value;
   }
 }

@@ -63,11 +63,11 @@ class YearPageView extends StatelessWidget {
                     layout: layout_yearPage,
                     angle : angle)
                 .build(context),
-            Positioned(
-                width: physicalWidth,
-                bottom: global.kMarginOfBottomOnDayPage,
-                child: NoteListView(isZoomIn: isZoomIn, notes: notes)
-                    .build(context)),
+            // Positioned(
+            //     width: physicalWidth,
+            //     bottom: global.kMarginOfBottomOnDayPage,
+            //     child: NoteListView(isZoomIn: isZoomIn, notes: notes)
+            //         .build(context)),
           ]),
     );
   }

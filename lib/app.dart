@@ -102,7 +102,12 @@ class _AppState extends State<App> with SingleTickerProviderStateMixin {
                 ),
           ]),
       GoRoute(
-          path: '/diary', builder: (context, state) => DiaryPage(noteManager))
+          path: '/diary', builder: (context, state) => DiaryPage(noteManager)),
+      GoRoute(
+          path: '/setting', builder: (context, state) => AndroidSettingsScreen()),
+
+
+
     ]);
 
     return MaterialApp.router(

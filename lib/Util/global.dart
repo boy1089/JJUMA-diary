@@ -61,7 +61,7 @@ double kSize_polarPlotPhotoScatter = 5;
 
 double kMarginForYearPage = physicalWidth / 40;
 double kBottomNavigationBarHeight = 30;
-double kYPositionRatioOfGraph = 2 / 5;
+double kYPositionRatioOfGraph = 1/2;
 // double kMagnificationOnYearPage = 3.5;
 
 double kMagnificationOnYearPage = 20 / 8 * 40 / 38;

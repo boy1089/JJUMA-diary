@@ -85,7 +85,7 @@ class _PhotoCardState extends State<PhotoCard>
                       onSelectedItemChanged: (index) {
                         if (this.scrollIndex == index) return;
                         scrollController2.animateToItem(index,
-                            duration: Duration(milliseconds: 300),
+                            duration: Duration(milliseconds: 500),
                             curve: Curves.easeIn);
                         this.scrollIndex = index;
                         setState(() {});

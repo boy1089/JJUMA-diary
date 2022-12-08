@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -19,32 +20,55 @@ class PhotoCard extends StatefulWidget {
   bool isMagnified = false;
   double height = 100;
   int scrollIndex = 0;
-
+  bool isTickEnabled = false;
   PhotoCard({
     this.isMagnified = false,
     this.height = 100,
     this.scrollIndex = 0,
+    this.isTickEnabled = false,
     required this.event,
   });
   @override
   State<PhotoCard> createState() => _PhotoCardState();
 }
 
-class _PhotoCardState extends State<PhotoCard> {
+class _PhotoCardState extends State<PhotoCard>
+    with SingleTickerProviderStateMixin {
   int scrollIndex = 0;
   FocusNode focusNode = FocusNode();
   DateTime dateTime = DateTime.now();
   TextEditingController controller = TextEditingController();
+  FixedExtentScrollController scrollController1 =
+  FixedExtentScrollController();
+  FixedExtentScrollController scrollController2 =
+  FixedExtentScrollController();
 
   @override
-  Widget build(BuildContext context) {
-    FixedExtentScrollController scrollController1 =
-        FixedExtentScrollController();
-    FixedExtentScrollController scrollController2 =
-        FixedExtentScrollController();
-    controller.text = widget.event.note;
+  void initState(){
+    if (widget.isTickEnabled)
+      timer = Timer.periodic(Duration(seconds: 2), (timer) {
+        print('timer tick');
+        if (scrollIndex == widget.event.images.entries.length-1) {
+          scrollIndex = 0;
+          scrollController1.animateToItem(scrollIndex,
+              duration: Duration(milliseconds: 100), curve: Curves.easeIn);
+          return;
+        }
 
+        setState(() {
+          scrollIndex += 1;
+          scrollController1.animateToItem(scrollIndex,
+              duration: Duration(milliseconds: 100), curve: Curves.easeIn);
+        });
+      });}
+
+  late Timer timer;
+  @override
+  Widget build(BuildContext context) {
+
+    controller.text = widget.event.note;
     dateTime = widget.event.images.entries.first.value.datetime!;
+
 
     return Column(
       children: [
@@ -52,15 +76,16 @@ class _PhotoCardState extends State<PhotoCard> {
             height: widget.isMagnified ? physicalWidth : widget.height,
             width: widget.isMagnified ? physicalWidth : widget.height,
             child: Padding(
-                padding:
-                    widget.isMagnified ? EdgeInsets.zero : EdgeInsets.all(global.kContainerPadding),
+                padding: widget.isMagnified
+                    ? EdgeInsets.zero
+                    : EdgeInsets.all(global.kContainerPadding),
                 child: RotatedBox(
                   quarterTurns: -1,
                   child: ListWheelScrollView(
                       onSelectedItemChanged: (index) {
                         if (this.scrollIndex == index) return;
                         scrollController2.animateToItem(index,
-                            duration: Duration(milliseconds: 100),
+                            duration: Duration(milliseconds: 300),
                             curve: Curves.easeIn);
                         this.scrollIndex = index;
                         setState(() {});
@@ -70,8 +95,8 @@ class _PhotoCardState extends State<PhotoCard> {
                       physics: PageScrollPhysics(),
                       diameterRatio: 200,
                       itemExtent: widget.isMagnified
-                          ? physicalWidth - global.kDialogPadding*2
-                          : widget.height - global.kContainerPadding*2,
+                          ? physicalWidth - global.kDialogPadding * 2
+                          : widget.height - global.kContainerPadding * 2,
                       children: List.generate(
                           widget.event.images.entries.length,
                           (index) => Center(
@@ -80,10 +105,12 @@ class _PhotoCardState extends State<PhotoCard> {
                                     child: SizedBox(
                                       height: widget.isMagnified
                                           ? physicalWidth
-                                          : widget.height - global.kContainerPadding*2,
+                                          : widget.height -
+                                              global.kContainerPadding * 2,
                                       width: widget.isMagnified
                                           ? physicalWidth
-                                          : widget.height - global.kContainerPadding*2,
+                                          : widget.height -
+                                              global.kContainerPadding * 2,
                                       child: ExtendedImage.file(
                                         File(widget.event.images.entries
                                             .elementAt(index)
@@ -167,11 +194,15 @@ class _PhotoCardState extends State<PhotoCard> {
 
   @override
   void dispose() async {
+    print("dispose cards");
     if (!widget.isMagnified | (controller.text == "")) {
       super.dispose();
+      if(widget.isTickEnabled)
+      timer?.cancel();
       return;
     }
     super.dispose();
+     timer?.cancel();
     widget.event.setNote(controller.text);
     DataManagerInterface dataManager = DataManagerInterface(global.kOs);
     dataManager.addEvent(widget.event);

@@ -18,7 +18,7 @@ class ClickablePhotoCard extends StatelessWidget {
                     child: SimpleDialog(
                       insetPadding: EdgeInsets.all(global.kDialogPadding),
                       children: [
-                        Container(child: photoCard..isMagnified = true)
+                        Container(child: photoCard..isMagnified = true..isTickEnabled = false)
                       ],
                     ),
                   ));

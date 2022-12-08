@@ -7,7 +7,8 @@ import 'photo_card.dart';
 
 class CardContainer extends StatelessWidget {
   List<Event> listOfEvents;
-  CardContainer({required this.listOfEvents});
+  bool isTickEnabled = false;
+  CardContainer({required this.listOfEvents, this.isTickEnabled = false});
 
   @override
   Widget build(BuildContext context) {
@@ -40,8 +41,10 @@ class CardContainer extends StatelessWidget {
         ],
       ),
       ClickablePhotoCard(
-        photoCard:
-            PhotoCard(event: listOfEvents[3], height: physicalWidth / 4 * 3),
+        photoCard: PhotoCard(
+            event: listOfEvents[3],
+            height: physicalWidth / 4 * 3,
+            isTickEnabled: isTickEnabled),
       ),
     ]);
   }
@@ -52,7 +55,9 @@ class CardContainer extends StatelessWidget {
       listOfEvents.length - 4,
       (index) => ClickablePhotoCard(
         photoCard: PhotoCard(
-            event: listOfEvents[index + 4], height: physicalWidth / 4),
+            event: listOfEvents[index + 4],
+            height: physicalWidth / 4,
+            isTickEnabled: index == 2 ? isTickEnabled : false),
       ),
     ));
   }
@@ -64,6 +69,8 @@ class CardContainer extends StatelessWidget {
             (index) => ClickablePhotoCard(
                 photoCard: PhotoCard(
                     event: listOfEvents.elementAt(index),
-                    height: physicalWidth / listOfEvents.length))));
+                    height: physicalWidth / listOfEvents.length,
+                    isTickEnabled: index==0? isTickEnabled : false,
+                ))));
   }
 }

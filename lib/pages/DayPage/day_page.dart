@@ -58,7 +58,8 @@ class _DayPageState extends State<DayPage> {
               CardContainer(
                   listOfEvents: provider.listOfEventsInDay.entries
                       .elementAt(index)
-                      .value),
+                      .value,
+              isTickEnabled: index%5==0? true : false,),
               Text(
                   "${DateFormat('EEEE').format(DateTime.parse(date))}/"
                   "${DateFormat('MMM').format(DateTime.parse(date))} "
@@ -77,5 +78,10 @@ class _DayPageState extends State<DayPage> {
       //   },
       // ),
     );
+  }
+  @override
+  void dispose() {
+    print("Disposing second route");
+    super.dispose();
   }
 }

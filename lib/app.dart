@@ -6,6 +6,7 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:lateDiary/navigation.dart';
 import 'package:lateDiary/pages/DayPage/day_page.dart';
 import 'package:lateDiary/pages/YearPage/year_page_screen.dart';
+import 'package:lateDiary/pages/YearPage/year_pave_view3.dart';
 import 'package:lateDiary/pages/diary_page.dart';
 import 'pages/permission_page.dart';
 import 'package:lateDiary/Settings.dart';

@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
@@ -5,6 +6,7 @@ import 'package:lateDiary/Data/data_manager_interface.dart';
 import 'package:lateDiary/StateProvider/year_page_state_provider.dart';
 import 'package:lateDiary/Util/Util.dart';
 import 'package:lateDiary/Util/global.dart' as global;
+import 'package:lateDiary/pages/DayPage/widgets/clickable_photo_card.dart';
 import 'package:lateDiary/pages/DayPage/widgets/photo_card.dart';
 import 'package:lateDiary/pages/YearPage/year_page_chart.dart';
 import 'package:provider/provider.dart';
@@ -61,12 +63,48 @@ class YearPageView extends StatelessWidget {
                         isZoomIn: isZoomIn,
                         context: context,
                       ).build(context),
-                      // PhotoCard(
-                      //     event: DataManagerInterface(global.kOs)
-                      //         .eventList
-                      //         .entries
-                      //         .elementAt(0)
-                      //         .value),
+                      // Positioned(
+                      //   left : 50,
+                      //   top : 100,
+                      //   child: PhotoCard(
+                      //     height : 30,
+                      //       event: DataManagerInterface(global.kOs)
+                      //           .eventList
+                      //           .entries
+                      //           .elementAt(0)
+                      //           .value),
+                      // ),
+                      Positioned(
+                        left : isZoomIn? 55* global.kMagnificationOnYearPage:55,
+                        top : isZoomIn? 125 * global.kMagnificationOnYearPage:125,
+                        child: Transform.rotate(
+                          angle : isZoomIn? pi+pi/6:0,
+                          child: PhotoCard(
+                              height : isZoomIn? 120:50,
+                              event: DataManagerInterface(global.kOs)
+                                  .eventList
+                                  .entries
+                                  .elementAt(0)
+                                  .value),
+                        ),
+                      ),
+                      Positioned(
+                        left : isZoomIn? 85* global.kMagnificationOnYearPage:85,
+                        top : isZoomIn? 205 * global.kMagnificationOnYearPage:205,
+                        child: Transform.rotate(
+                          angle : isZoomIn? pi+pi/10:0,
+                          child: ClickablePhotoCard(
+                            photoCard: PhotoCard(
+                                height : isZoomIn? 120:50,
+                                event: DataManagerInterface(global.kOs)
+                                    .eventList
+                                    .entries
+                                    .elementAt(1)
+                                    .value),
+                          ),
+                        ),
+                      ),
+
                     ],
                     isZoomIn: isZoomIn,
                     layout: layout_yearPage,

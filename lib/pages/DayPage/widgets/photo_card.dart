@@ -38,17 +38,15 @@ class _PhotoCardState extends State<PhotoCard>
   FocusNode focusNode = FocusNode();
   DateTime dateTime = DateTime.now();
   TextEditingController controller = TextEditingController();
-  FixedExtentScrollController scrollController1 =
-  FixedExtentScrollController();
-  FixedExtentScrollController scrollController2 =
-  FixedExtentScrollController();
+  FixedExtentScrollController scrollController1 = FixedExtentScrollController();
+  FixedExtentScrollController scrollController2 = FixedExtentScrollController();
 
   @override
-  void initState(){
+  void initState() {
     if (widget.isTickEnabled)
       timer = Timer.periodic(Duration(seconds: 2), (timer) {
         print('timer tick');
-        if (scrollIndex == widget.event.images.entries.length-1) {
+        if (scrollIndex == widget.event.images.entries.length - 1) {
           scrollIndex = 0;
           scrollController1.animateToItem(scrollIndex,
               duration: Duration(milliseconds: 100), curve: Curves.easeIn);
@@ -60,15 +58,14 @@ class _PhotoCardState extends State<PhotoCard>
           scrollController1.animateToItem(scrollIndex,
               duration: Duration(milliseconds: 100), curve: Curves.easeIn);
         });
-      });}
+      });
+  }
 
   late Timer timer;
   @override
   Widget build(BuildContext context) {
-
     controller.text = widget.event.note;
     dateTime = widget.event.images.entries.first.value.datetime!;
-
 
     return Column(
       children: [
@@ -197,12 +194,11 @@ class _PhotoCardState extends State<PhotoCard>
     print("dispose cards");
     if (!widget.isMagnified | (controller.text == "")) {
       super.dispose();
-      if(widget.isTickEnabled)
-      timer?.cancel();
+      if (widget.isTickEnabled) timer?.cancel();
       return;
     }
     super.dispose();
-     timer?.cancel();
+    timer?.cancel();
     widget.event.setNote(controller.text);
     DataManagerInterface dataManager = DataManagerInterface(global.kOs);
     dataManager.addEvent(widget.event);

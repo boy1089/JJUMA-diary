@@ -127,13 +127,12 @@ class YearPageView extends StatelessWidget {
           child: AnimatedContainer(
             duration: Duration(milliseconds: 300),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(10)),
-              color:
-                  product.importanceFilterIndex == 1 ? Colors.blue : Colors.red,
-              // RoundedRectangleBorder(
-              //   borderRadius: BorderRadius.all(Radius.circular(10.0)),
-            ),
+                borderRadius: BorderRadius.all(Radius.circular(10)),
+                color: global
+                    .kColorForYearPage[product.importanceFilterIndex * 2]
+                    .withAlpha(150)),
             child: FloatingActionButton(
+                elevation: 0,
                 backgroundColor: Colors.transparent,
                 child: Text(
                     "${ImportanceFilter.values.elementAt(product.importanceFilterIndex).name}"),
@@ -147,18 +146,20 @@ class YearPageView extends StatelessWidget {
                 }),
           ),
         ),
+        SizedBox(height: 8.0),
         Container(
           width: 100,
           child: AnimatedContainer(
             duration: Duration(milliseconds: 300),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(10)),
-              color:
-                  product.locationFilterIndex == 1 ? Colors.blue : Colors.red,
-              // RoundedRectangleBorder(
-              //   borderRadius: BorderRadius.all(Radius.circular(10.0)),
-            ),
+                borderRadius: BorderRadius.all(Radius.circular(10)),
+                color: global.kColorForYearPage[product.locationFilterIndex * 2]
+                    .withAlpha(150)
+                // RoundedRectangleBorder(
+                //   borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                ),
             child: FloatingActionButton(
+                elevation: 0,
                 backgroundColor: Colors.transparent,
                 child: Text(
                     "${LocationFilter.values.elementAt(product.locationFilterIndex).name}"),
@@ -166,9 +167,8 @@ class YearPageView extends StatelessWidget {
                   YearPageStateProvider product =
                       Provider.of<YearPageStateProvider>(context,
                           listen: false);
-                  product.setLocationFilter(
-                      (product.locationFilterIndex + 1) %
-                          ImportanceFilter.values.length);
+                  product.setLocationFilter((product.locationFilterIndex + 1) %
+                      ImportanceFilter.values.length);
                 }),
           ),
         ),

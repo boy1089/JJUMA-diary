@@ -8,7 +8,7 @@ import '../Data/data_manager_interface.dart';
 
 enum ImportanceFilter { memorable, casual, none }
 
-enum LocationFilter { home, trip, none }
+enum LocationFilter {trip, none,  home,  }
 
 int yearRange = 20;
 

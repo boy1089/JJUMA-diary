@@ -97,11 +97,11 @@ class YearPageChart extends StatelessWidget {
             },
           ),
           selectionChannel: heatmapChannel,
-    label:     LabelAttr(
-    // encoder : (tuple) => Label("${tuple['week'].toString()}, ${tuple['day'].toString()}")
-    encoder : (tuple) => Label("${tuple['day'].toString()}")
-
-    )
+    // label:     LabelAttr(
+    // // encoder : (tuple) => Label("${tuple['week'].toString()}, ${tuple['day'].toString()}")
+    // encoder : (tuple) => Label("${tuple['day'].toString()}")
+    //
+    // )
     ),
       ],
       variables: {

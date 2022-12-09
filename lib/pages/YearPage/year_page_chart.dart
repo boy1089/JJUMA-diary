@@ -69,18 +69,23 @@ class YearPageChart extends StatelessWidget {
       data: dataForChart,
       elements: [
         PointElement(
-          position: Varset('week') * (Varset('day')),
+          // position: Varset('week') * (Varset('day')),
           size: SizeAttr(
-            variable: 'value',
-            values: !isZoomIn
-                ? [
-                    global.kSizeOfScatter_ZoomOutMin,
-                    global.kSizeOfScatter_ZoomOutMax
-                  ]
-                : [
-                    global.kSizeOfScatter_ZoomInMin,
-                    global.kSizeOfScatter_ZoomInMax
-                  ],
+            // variable: 'value',
+            encoder: (tuple) => isZoomIn
+                ? [50.0, 30.0, 20.0, 10.0, 1.0, 0.0]
+                    .elementAt(tuple['value'].toInt())
+                : [20.0, 15.0, 10.0, 5.0, 1.0, 0.0]
+                    .elementAt(tuple['value'].toInt()),
+            // values: !isZoomIn
+            //     ? [
+            //         global.kSizeOfScatter_ZoomOutMin,
+            //         global.kSizeOfScatter_ZoomOutMax
+            //       ]
+            //     : [
+            //         global.kSizeOfScatter_ZoomInMin,
+            //         global.kSizeOfScatter_ZoomInMax
+            //       ],
           ),
           color: ColorAttr(
             encoder: (tuple) => global
@@ -92,7 +97,12 @@ class YearPageChart extends StatelessWidget {
             },
           ),
           selectionChannel: heatmapChannel,
-        ),
+    label:     LabelAttr(
+    // encoder : (tuple) => Label("${tuple['week'].toString()}, ${tuple['day'].toString()}")
+    encoder : (tuple) => Label("${tuple['day'].toString()}")
+
+    )
+    ),
       ],
       variables: {
         'week': Variable(
@@ -101,7 +111,10 @@ class YearPageChart extends StatelessWidget {
           scale: LinearScale(min: 0, max: 52, tickCount: 12),
         ),
         'day': Variable(
-          accessor: (List datum) => datum[1] as num,
+          // accessor: (List datum) => datum[1].toString() as String,
+    accessor: (List datum) => datum[1] as num,
+          scale: LinearScale(min: -0.5, max: 6.5, tickCount: 7),
+          // scale : OrdinalScale(),
         ),
         'value': Variable(
           accessor: (List datum) => datum[2] as num,
@@ -112,6 +125,8 @@ class YearPageChart extends StatelessWidget {
               datum[3] as num,
         ),
       },
+
+
       selections: {
         'tapDown': PointSelection(
           on: {GestureType.tapDown},
@@ -126,12 +141,14 @@ class YearPageChart extends StatelessWidget {
           testRadius: isZoomIn ? 10 : 0,
         )
       },
-      coord: PolarCoord()
-        ..radiusRange = [1 - global.kRatioOfScatterInYearPage, 1],
+      coord: PolarCoord(radiusRangeUpdater: Defaults.horizontalRangeSignal)
+        ..radiusRange = [1 - global.kRatioOfScatterInYearPage, 1]
+        ..endRadius = 1,
       axes: [
         Defaults.circularAxis
           ..grid = null
-          ..label = null
+          ..label = null,
+        // Defaults.radialAxis,
       ],
     );
   }

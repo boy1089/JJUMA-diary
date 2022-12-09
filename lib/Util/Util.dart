@@ -152,6 +152,15 @@ double floorDistance(double? distance) {
   return 4;
 }
 
+int floorNumberOfImages(int numberOfImages){
+  if (numberOfImages > 50) return 0;
+  if (numberOfImages > 30) return 1;
+  if (numberOfImages > 10) return 2;
+  if (numberOfImages > 2) return 3;
+  return 4;
+
+}
+
 List modifyListForPlot(List fields,
     {bool filterTime = false, bool executeTranspose = false}) {
   //transpose data if needed

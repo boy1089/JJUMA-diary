@@ -7,8 +7,10 @@ import 'package:intl/intl.dart';
 import '../Data/data_manager_interface.dart';
 
 enum ImportanceFilter { memorable, casual, none }
-enum LocationFilter {  home,trip, none }
 
+enum LocationFilter { home, trip, none }
+
+int yearRange = 20;
 
 class YearPageStateProvider with ChangeNotifier {
   int index = 0;
@@ -45,43 +47,45 @@ class YearPageStateProvider with ChangeNotifier {
 
   void updateDataList() {
     List<int> years =
-        List<int>.generate(20, (index) => DateTime.now().year - index);
+        List<int>.generate(yearRange, (index) => DateTime.now().year - index);
+
     List<List<String>> availableDateList =
-        List<List<String>>.generate(20, (index) {
-      int distance = 0;
+        List<List<String>>.generate(yearRange, (index) {
+      List<int> distanceFilter = [0, 10];
       switch (LocationFilter.values.elementAt(locationFilterIndex)) {
         case LocationFilter.home:
-          distance = 5;
+          distanceFilter = [0, 5];
           break;
         case LocationFilter.trip:
-          distance = 20;
+          distanceFilter = [5, 100];
           break;
         case LocationFilter.none:
-          distance = 1000;
+          distanceFilter = [0, 1000];
           break;
       }
-      dataManager.summaryOfLocationData.forEach((key, value) {print("$key, $value}");});
+      // dataManager.summaryOfLocationData.forEach((key, value) {print("$key, $value}");});
       var test = Map.fromEntries(dataManager.summaryOfLocationData.entries
-          .where((element) => element.value < distance));
-
+          .where((element) => ((element.value < distanceFilter[1]) &&
+              (element.value > distanceFilter[0]))));
 
       int minimumNumberOfImages = 0;
       switch (ImportanceFilter.values.elementAt(importanceFilterIndex)) {
         case ImportanceFilter.memorable:
-          minimumNumberOfImages = 40;
+          minimumNumberOfImages = 50;
           break;
         case ImportanceFilter.casual:
-          minimumNumberOfImages = 20;
+          minimumNumberOfImages = 10;
           break;
         case ImportanceFilter.none:
           minimumNumberOfImages = 0;
           break;
       }
 
-      // var test = Map.fromEntries(dataManager.summaryOfPhotoData.entries
-      //     .where((element) => element.value > minimumNumberOfImages));
+      var test2 = Map.fromEntries(test.entries.where((element) =>
+          dataManager.summaryOfPhotoData[element.key]! >
+          minimumNumberOfImages));
 
-      return test.keys
+      return test2.keys
           .where(
               (element) => element.substring(0, 4) == years[index].toString())
           .toList();
@@ -89,9 +93,13 @@ class YearPageStateProvider with ChangeNotifier {
 
     List<dynamic> dataList = [];
 
-    for (int i = 0; i < 20; i++) {
+    for (int i = 0; i < yearRange; i++) {
       dataList.add(modifyDataFormat(availableDateList.elementAt(i)));
     }
+    print(availableDateList);
+    dataList[0].forEach((element) {
+      print("$element");
+    });
     // dataList = filterDataWithImportance(dataList);
     this.dataForChartList = dataList;
     notifyListeners();
@@ -110,14 +118,15 @@ class YearPageStateProvider with ChangeNotifier {
   //   return [data];
   // }
 
-  dynamic modifyDataFormat(List<String> availableDates) {
-    var dataTemp = List.generate(1, (index) {
-      return [0, 1, 10, 0.01, 0];
+  List<List<dynamic>> modifyDataFormat(List<String> availableDates) {
+    var dataTemp = List.generate(5, (index) {
+      return [0, 1, index, 0.01, 0];
     });
 
     if (availableDates.length == 0) return dataTemp;
 
-    int weekdayOfJan01 = formatDateString(availableDates.elementAt(0)).weekday;
+    int weekdayOfJan01 = DateTime(int.parse(availableDates.elementAt(0).substring(0, 4))).weekday;
+    print("weekday : ${DateTime(int.parse(availableDates.elementAt(0).substring(0, 4)))}");
     int offsetToMakeWeekendOutward = -2;
 
     //generate data for graph plot
@@ -126,14 +135,18 @@ class YearPageStateProvider with ChangeNotifier {
       int days = int.parse(DateFormat("D").format(DateTime.parse(date))) +
           weekdayOfJan01 +
           offsetToMakeWeekendOutward;
+      print("$days, $date, $weekdayOfJan01, ${availableDates.elementAt(0).substring(4)}");
       int value = dataManager.summaryOfPhotoData[date]! > 200
           ? 200
           : dataManager.summaryOfPhotoData[date]!;
       double distance = 4;
-      if (dataManager.summaryOfLocationData.containsKey(date))
-        distance = floorDistance(dataManager.summaryOfLocationData[date]!);
+      value = floorNumberOfImages(value);
+      // if (dataManager.summaryOfLocationData.containsKey(date)) {
+      distance = floorDistance(dataManager.summaryOfLocationData[date]!);
+      // }
       return [(days / 7).floor(), days % 7, value, distance, int.parse(date)];
     });
+    // dataTemp.addAll(List.generate(52, (index)=> [index, 7, 3, 0, 0]));
     return dataTemp;
   }
 

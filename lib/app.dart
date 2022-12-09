@@ -87,28 +87,41 @@ class _AppState extends State<App> with SingleTickerProviderStateMixin {
           path: '/year',
           builder: (context, state) => YearPageScreen(),
           routes: [
-            GoRoute(path: 'day', builder: (context, state) => DayPage()
-                // pageBuilder: (context, state) {
-                //   return CustomTransitionPage(
-                //       key: state.pageKey,
-                //       child: DayPage(),
-                //       transitionsBuilder:
-                //           (context, animation, secondaryAnimation, child) {
-                //         return SlideTransition(
-                //           position: _offsetAnimation,
-                //           child: child,
-                //         );
-                //       });
-                // }
-                ),
+            GoRoute(
+                path: 'day',
+                // builder: (context, state) => DayPage()
+                pageBuilder: (context, state) {
+
+                  return CustomTransitionPage(
+                      key: state.pageKey,
+                      child: DayPage(),
+                      transitionsBuilder:
+                          (context, animation, secondaryAnimation, child) {
+                            // return SizeTransition(
+                            //   // alignment: Alignment(context.),
+                            //     sizeFactor: CurveTween(curve: Curves.easeInOutCirc)
+                            //         .animate(animation),
+                            //     child: child);
+
+
+                            return ScaleTransition(
+                          // alignment: Alignment(context.),
+                            scale: CurveTween(curve: Curves.easeInOutCirc)
+                                .animate(animation),
+                            child: child);
+                        // // return FadeTransition(
+                        //   opacity:
+                        //   CurveTween(curve: Curves.easeInOutCirc).animate(animation),
+                        //   child: child,
+                        // );
+                      });
+                }),
           ]),
       GoRoute(
           path: '/diary', builder: (context, state) => DiaryPage(noteManager)),
       GoRoute(
-          path: '/setting', builder: (context, state) => AndroidSettingsScreen()),
-
-
-
+          path: '/setting',
+          builder: (context, state) => AndroidSettingsScreen()),
     ]);
 
     return MaterialApp.router(
@@ -116,6 +129,5 @@ class _AppState extends State<App> with SingleTickerProviderStateMixin {
       routerConfig: _router,
       useInheritedMediaQuery: true,
     );
-
   }
 }

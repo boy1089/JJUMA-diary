@@ -47,6 +47,7 @@ dependencies:
   flutter_bloc:
   photo_manager:
   go_router:
+  flutter_animated_button:
 
 dev_dependencies:
   flutter_test:

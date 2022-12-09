@@ -2,6 +2,7 @@ import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_animated_button/flutter_animated_button.dart';
 import 'package:lateDiary/Data/data_manager_interface.dart';
 import 'package:lateDiary/StateProvider/year_page_state_provider.dart';
 import 'package:lateDiary/Util/Util.dart';
@@ -46,6 +47,7 @@ class YearPageView extends StatelessWidget {
   Widget build(BuildContext context) {
     YearPageStateProvider product =
         Provider.of<YearPageStateProvider>(context, listen: false);
+
     return Scaffold(
       body: Stack(
           alignment: isZoomIn ? Alignment.center : Alignment.topCenter,
@@ -74,56 +76,103 @@ class YearPageView extends StatelessWidget {
                       //           .elementAt(0)
                       //           .value),
                       // ),
-                      Positioned(
-                        left : isZoomIn? 55* global.kMagnificationOnYearPage:55,
-                        top : isZoomIn? 125 * global.kMagnificationOnYearPage:125,
-                        child: Transform.rotate(
-                          angle : isZoomIn? pi+pi/6:0,
-                          child: PhotoCard(
-                              height : isZoomIn? 120:50,
-                              event: DataManagerInterface(global.kOs)
-                                  .eventList
-                                  .entries
-                                  .elementAt(0)
-                                  .value),
-                        ),
-                      ),
-                      Positioned(
-                        left : isZoomIn? 85* global.kMagnificationOnYearPage:85,
-                        top : isZoomIn? 205 * global.kMagnificationOnYearPage:205,
-                        child: Transform.rotate(
-                          angle : isZoomIn? pi+pi/10:0,
-                          child: ClickablePhotoCard(
-                            photoCard: PhotoCard(
-                                height : isZoomIn? 120:50,
-                                event: DataManagerInterface(global.kOs)
-                                    .eventList
-                                    .entries
-                                    .elementAt(1)
-                                    .value),
-                          ),
-                        ),
-                      ),
-
+                      // Positioned(
+                      //   left: isZoomIn
+                      //       ? 55 * global.kMagnificationOnYearPage
+                      //       : 55,
+                      //   top: isZoomIn
+                      //       ? 125 * global.kMagnificationOnYearPage
+                      //       : 125,
+                      //   child: Transform.rotate(
+                      //     angle: isZoomIn ? pi + pi / 6 : 0,
+                      //     child: PhotoCard(
+                      //         height: isZoomIn ? 120 : 50,
+                      //         event: DataManagerInterface(global.kOs)
+                      //             .eventList
+                      //             .entries
+                      //             .elementAt(0)
+                      //             .value),
+                      //   ),
+                      // ),
+                      // Positioned(
+                      //   left: isZoomIn
+                      //       ? 85 * global.kMagnificationOnYearPage
+                      //       : 85,
+                      //   top: isZoomIn
+                      //       ? 205 * global.kMagnificationOnYearPage
+                      //       : 205,
+                      //   child: Transform.rotate(
+                      //     angle: isZoomIn ? pi + pi / 10 : 0,
+                      //     child: ClickablePhotoCard(
+                      //       photoCard: PhotoCard(
+                      //           height: isZoomIn ? 120 : 50,
+                      //           event: DataManagerInterface(global.kOs)
+                      //               .eventList
+                      //               .entries
+                      //               .elementAt(1)
+                      //               .value),
+                      //     ),
+                      //   ),
+                      // ),
                     ],
                     isZoomIn: isZoomIn,
                     layout: layout_yearPage,
                     angle: angle)
                 .build(context),
-            // Positioned(
-            //     width: physicalWidth,
-            //     bottom: global.kMarginOfBottomOnDayPage,
-            //     child: NoteListView(isZoomIn: isZoomIn, notes: notes)
-            //         .build(context)),
           ]),
-      // floatingActionButton: FloatingActionButton(onPressed: () {
-      //   print(DataManagerInterface(global.kOs)
-      //       .eventList
-      //       .entries
-      //       .elementAt(0)
-      //       .value.images);
-      // }
-      // ),
+      // floatingActionButtonLocation: FloatingActionButtonLocation,
+      floatingActionButton: Column(mainAxisSize: MainAxisSize.min, children: [
+        Container(
+          width: 100,
+          child: AnimatedContainer(
+            duration: Duration(milliseconds: 300),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.all(Radius.circular(10)),
+              color:
+                  product.importanceFilterIndex == 1 ? Colors.blue : Colors.red,
+              // RoundedRectangleBorder(
+              //   borderRadius: BorderRadius.all(Radius.circular(10.0)),
+            ),
+            child: FloatingActionButton(
+                backgroundColor: Colors.transparent,
+                child: Text(
+                    "${ImportanceFilter.values.elementAt(product.importanceFilterIndex).name}"),
+                onPressed: () {
+                  YearPageStateProvider product =
+                      Provider.of<YearPageStateProvider>(context,
+                          listen: false);
+                  product.setImportanceFilter(
+                      (product.importanceFilterIndex + 1) %
+                          ImportanceFilter.values.length);
+                }),
+          ),
+        ),
+        Container(
+          width: 100,
+          child: AnimatedContainer(
+            duration: Duration(milliseconds: 300),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.all(Radius.circular(10)),
+              color:
+                  product.locationFilterIndex == 1 ? Colors.blue : Colors.red,
+              // RoundedRectangleBorder(
+              //   borderRadius: BorderRadius.all(Radius.circular(10.0)),
+            ),
+            child: FloatingActionButton(
+                backgroundColor: Colors.transparent,
+                child: Text(
+                    "${LocationFilter.values.elementAt(product.locationFilterIndex).name}"),
+                onPressed: () {
+                  YearPageStateProvider product =
+                      Provider.of<YearPageStateProvider>(context,
+                          listen: false);
+                  product.setLocationFilter(
+                      (product.locationFilterIndex + 1) %
+                          ImportanceFilter.values.length);
+                }),
+          ),
+        ),
+      ]),
     );
   }
 

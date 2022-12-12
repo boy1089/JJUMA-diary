@@ -6,6 +6,7 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:lateDiary/navigation.dart';
 import 'package:lateDiary/pages/DayPage/day_page.dart';
 import 'package:lateDiary/pages/YearPage/year_page_screen.dart';
+import 'package:lateDiary/pages/YearPage/year_page_screen2.dart';
 import 'package:lateDiary/pages/YearPage/year_pave_view3.dart';
 import 'package:lateDiary/pages/diary_page.dart';
 import 'pages/permission_page.dart';
@@ -64,7 +65,7 @@ class _AppState extends State<App> with SingleTickerProviderStateMixin {
     global.isInitializationDone = true;
     await Future.delayed(Duration(seconds: 1));
     print("init done,executed in ${stopwatch.elapsed}");
-    // dataManager.executeSlowProcesses();
+    dataManager.executeSlowProcesses();
     return 0;
   }
 
@@ -85,7 +86,7 @@ class _AppState extends State<App> with SingleTickerProviderStateMixin {
     final _router = GoRouter(initialLocation: '/year', routes: [
       GoRoute(
           path: '/year',
-          builder: (context, state) => YearPageScreen(),
+          builder: (context, state) => YearPageScreen2(),
           routes: [
             GoRoute(
                 path: 'day',

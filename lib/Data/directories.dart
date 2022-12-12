@@ -38,8 +38,4 @@ class Directories {
     }
     return selectedDirectories_path;
   }
-
-
-
-
 }

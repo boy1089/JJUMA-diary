@@ -7,8 +7,7 @@ import 'package:intl/intl.dart';
 import '../Data/data_manager_interface.dart';
 
 enum ImportanceFilter { memorable, casual, none }
-
-enum LocationFilter {trip, none,  home,  }
+enum LocationFilter { trip, none,  home,  }
 
 int yearRange = 20;
 
@@ -19,8 +18,8 @@ class YearPageStateProvider with ChangeNotifier {
   List<dynamic> dataForChartList = [];
   //TODO remove availableDates
   List<String> availableDates = [];
-  int importanceFilterIndex = ImportanceFilter.memorable.index;
-  int locationFilterIndex = LocationFilter.trip.index;
+  int importanceFilterIndex = ImportanceFilter.none.index;
+  int locationFilterIndex = LocationFilter.none.index;
 
   DataManagerInterface dataManager;
   YearPageStateProvider(this.dataManager) {
@@ -96,10 +95,12 @@ class YearPageStateProvider with ChangeNotifier {
     for (int i = 0; i < yearRange; i++) {
       dataList.add(modifyDataFormat(availableDateList.elementAt(i)));
     }
+
     print(availableDateList);
     dataList[0].forEach((element) {
       print("$element");
     });
+
     // dataList = filterDataWithImportance(dataList);
     this.dataForChartList = dataList;
     notifyListeners();

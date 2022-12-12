@@ -49,6 +49,8 @@ dependencies:
   go_router:
   flutter_animated_button:
 
+  syncfusion_flutter_treemap: ^20.3.60-beta
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

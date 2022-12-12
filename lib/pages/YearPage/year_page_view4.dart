@@ -38,37 +38,37 @@ class YearPageScreen2 extends StatelessWidget {
               width: physicalWidth,
               // height: physicalHeight,
               child: Column(
-                  // mainAxisSize: MainAxisSize.max,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                // mainAxisSize: MainAxisSize.max,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   //   crossAxisAlignment: CrossAxisAlignment.end,
 
                   children: List.generate(3, (index) {
-                int currentCount = 0;
-                int threshold = (counts / rows).floor() * (index + 1);
-                List<String> dataForRow = [];
-                print("indexA : $indexA, $threshold, $currentCount");
-                for (int j = indexA; j < data.length; j++) {
+                    int currentCount = 0;
+                    int threshold = (counts / rows).floor() * (index + 1);
+                    List<String> dataForRow = [];
+                    print("indexA : $indexA, $threshold, $currentCount");
+                    for (int j = indexA; j < data.length; j++) {
 
-                  print("indexA : $indexA, $threshold, $j");
-                  if (currentCount > threshold) {
-                    indexA = j;
-                    break;
-                  }
-                  currentCount = currentCount + data.values!.elementAt(j);
-                  dataForRow.add(data.keys.elementAt(j));
-                }
+                      print("indexA : $indexA, $threshold, $j");
+                      if (currentCount > threshold) {
+                        indexA = j;
+                        break;
+                      }
+                      currentCount = currentCount + data.values!.elementAt(j);
+                      dataForRow.add(data.keys.elementAt(j));
+                    }
 
-                return Row(
-                    mainAxisSize: MainAxisSize.max,
-                    children: List.generate(
-                        dataForRow.length,
-                        (i) => Container(
+                    return Row(
+                        mainAxisSize: MainAxisSize.max,
+                        children: List.generate(
+                            dataForRow.length,
+                                (i) => Container(
                               color: Colors.grey,
                               // width : 100,
                               height: (physicalHeight / rows).ceilToDouble(),
                               child: Text("${dataForRow[i]}"),
                             )));
-              }))),
+                  }))),
 
           floatingActionButton: FloatingActionButton(
             onPressed: () {

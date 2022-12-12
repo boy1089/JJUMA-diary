@@ -16,6 +16,7 @@ class YearPageStateProvider with ChangeNotifier {
   double zoomInAngle = 0.0;
   bool isZoomIn = false;
   List<dynamic> dataForChartList = [];
+  List<dynamic> dataForChartList2 = [];
   //TODO remove availableDates
   List<String> availableDates = [];
   int importanceFilterIndex = ImportanceFilter.none.index;
@@ -91,17 +92,14 @@ class YearPageStateProvider with ChangeNotifier {
     });
 
     List<dynamic> dataList = [];
+    this.dataForChartList2 = [];
 
     for (int i = 0; i < yearRange; i++) {
-      dataList.add(modifyDataFormat(availableDateList.elementAt(i)));
+      var a = modifyDataFormat(availableDateList.elementAt(i));
+      dataList.add(a);
+      this.dataForChartList2.addAll(modifyDataFormat(availableDateList.elementAt(i)));
     }
-
-    print(availableDateList);
-    dataList[0].forEach((element) {
-      print("$element");
-    });
-
-    // dataList = filterDataWithImportance(dataList);
+    this.dataForChartList2 = this.dataForChartList2;
     this.dataForChartList = dataList;
     notifyListeners();
   }
@@ -120,12 +118,16 @@ class YearPageStateProvider with ChangeNotifier {
   // }
 
   List<List<dynamic>> modifyDataFormat(List<String> availableDates) {
+    // var dataTemp = List.generate(5, (index) {
+    //   return [0, 1, index, 0.01, 0];
+    // });
     var dataTemp = List.generate(5, (index) {
-      return [0, 1, index, 0.01, 0];
+      return [0, 0, 0, 0.01, 0, 0];
     });
 
-    if (availableDates.length == 0) return dataTemp;
 
+    if (availableDates.length == 0) return dataTemp;
+    int year = DateTime(int.parse(availableDates.elementAt(0).substring(0, 4))).year;
     int weekdayOfJan01 = DateTime(int.parse(availableDates.elementAt(0).substring(0, 4))).weekday;
     print("weekday : ${DateTime(int.parse(availableDates.elementAt(0).substring(0, 4)))}");
     int offsetToMakeWeekendOutward = -2;
@@ -145,7 +147,7 @@ class YearPageStateProvider with ChangeNotifier {
       // if (dataManager.summaryOfLocationData.containsKey(date)) {
       distance = floorDistance(dataManager.summaryOfLocationData[date]!);
       // }
-      return [(days / 7).floor(), days % 7, value, distance, int.parse(date)];
+      return [(days / 7).floor(), days % 7, value, distance, int.parse(date), year];
     });
     // dataTemp.addAll(List.generate(52, (index)=> [index, 7, 3, 0, 0]));
     return dataTemp;

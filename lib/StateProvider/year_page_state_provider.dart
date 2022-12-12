@@ -47,10 +47,10 @@ class YearPageStateProvider with ChangeNotifier {
 
   void updateDataList() {
     List<int> years =
-        List<int>.generate(yearRange, (index) => DateTime.now().year - index);
+    List<int>.generate(yearRange, (index) => DateTime.now().year - index);
 
     List<List<String>> availableDateList =
-        List<List<String>>.generate(yearRange, (index) {
+    List<List<String>>.generate(yearRange, (index) {
       List<int> distanceFilter = [0, 10];
       switch (LocationFilter.values.elementAt(locationFilterIndex)) {
         case LocationFilter.home:
@@ -66,7 +66,7 @@ class YearPageStateProvider with ChangeNotifier {
       // dataManager.summaryOfLocationData.forEach((key, value) {print("$key, $value}");});
       var test = Map.fromEntries(dataManager.summaryOfLocationData.entries
           .where((element) => ((element.value < distanceFilter[1]) &&
-              (element.value > distanceFilter[0]))));
+          (element.value > distanceFilter[0]))));
 
       int minimumNumberOfImages = 0;
       switch (ImportanceFilter.values.elementAt(importanceFilterIndex)) {
@@ -82,7 +82,7 @@ class YearPageStateProvider with ChangeNotifier {
       }
 
       var test2 = Map.fromEntries(test.entries.where((element) =>
-          dataManager.summaryOfPhotoData[element.key]! >
+      dataManager.summaryOfPhotoData[element.key]! >
           minimumNumberOfImages));
 
       return test2.keys
@@ -97,7 +97,8 @@ class YearPageStateProvider with ChangeNotifier {
     for (int i = 0; i < yearRange; i++) {
       var a = modifyDataFormat(availableDateList.elementAt(i));
       dataList.add(a);
-      this.dataForChartList2.addAll(modifyDataFormat(availableDateList.elementAt(i)));
+      if(availableDateList.elementAt(i).isNotEmpty)
+        this.dataForChartList2.addAll(modifyDataFormat(availableDateList.elementAt(i)));
     }
     this.dataForChartList2 = this.dataForChartList2;
     this.dataForChartList = dataList;
@@ -129,7 +130,6 @@ class YearPageStateProvider with ChangeNotifier {
     if (availableDates.length == 0) return dataTemp;
     int year = DateTime(int.parse(availableDates.elementAt(0).substring(0, 4))).year;
     int weekdayOfJan01 = DateTime(int.parse(availableDates.elementAt(0).substring(0, 4))).weekday;
-    print("weekday : ${DateTime(int.parse(availableDates.elementAt(0).substring(0, 4)))}");
     int offsetToMakeWeekendOutward = -2;
 
     //generate data for graph plot
@@ -143,7 +143,7 @@ class YearPageStateProvider with ChangeNotifier {
           ? 200
           : dataManager.summaryOfPhotoData[date]!;
       double distance = 4;
-      value = floorNumberOfImages(value);
+      // value = floorNumberOfImages(value);
       // if (dataManager.summaryOfLocationData.containsKey(date)) {
       distance = floorDistance(dataManager.summaryOfLocationData[date]!);
       // }

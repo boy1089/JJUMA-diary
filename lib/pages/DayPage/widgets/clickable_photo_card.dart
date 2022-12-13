@@ -4,7 +4,9 @@ import 'photo_card.dart';
 import 'package:lateDiary/Util/global.dart' as global;
 class ClickablePhotoCard extends StatelessWidget {
   PhotoCard photoCard;
-  ClickablePhotoCard({required this.photoCard});
+  double height;
+  double width;
+  ClickablePhotoCard({required this.photoCard, this.height = 100, this.width = 100});
 
   @override
   Widget build(BuildContext context) {
@@ -23,6 +25,6 @@ class ClickablePhotoCard extends StatelessWidget {
                     ),
                   ));
         },
-        child: photoCard);
+        child: photoCard..height = this.height);
   }
 }

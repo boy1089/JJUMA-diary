@@ -18,12 +18,12 @@ import 'package:lateDiary/Util/global.dart' as global;
 class PhotoCard extends StatefulWidget {
   Event event;
   bool isMagnified = false;
-  double height = 100;
+  double height = 200;
   int scrollIndex = 0;
   bool isTickEnabled = false;
   PhotoCard({
     this.isMagnified = false,
-    this.height = 100,
+    this.height = 200,
     this.scrollIndex = 0,
     this.isTickEnabled = false,
     required this.event,
@@ -68,6 +68,7 @@ class _PhotoCardState extends State<PhotoCard>
     dateTime = widget.event.images.entries.first.value.datetime!;
 
     return Column(
+      mainAxisSize: MainAxisSize.max,
       children: [
         SizedBox(
             height: widget.isMagnified ? physicalWidth : widget.height,

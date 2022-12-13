@@ -48,7 +48,7 @@ class DayPageStateProvider with ChangeNotifier {
     Map<dynamic, InfoFromFile> filteredDataAll = Map.fromEntries(data.entries
         .where((k) {
           if(k.value.date == null) return false;
-      return k.value.date!.contains(date.substring(0, 6));
+      return k.value.date!.contains(date.substring(0, 8));
     }));
     filteredDataAll = removeEventFromMap(filteredDataAll);
 

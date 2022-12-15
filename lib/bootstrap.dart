@@ -42,7 +42,7 @@ void bootstrap(int i) {
             update: (context, dataManager, a) {
               print("on update, $a");
               return yearPageStateProvider
-                ..update(DataManagerInterface(global.kOs));
+                ..updateData();
             },
             create: (context) => yearPageStateProvider,
           ),

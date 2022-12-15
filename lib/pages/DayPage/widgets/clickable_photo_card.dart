@@ -6,6 +6,7 @@ class ClickablePhotoCard extends StatelessWidget {
   PhotoCard photoCard;
   double height;
   double width;
+
   ClickablePhotoCard({required this.photoCard, this.height = 100, this.width = 100});
 
   @override

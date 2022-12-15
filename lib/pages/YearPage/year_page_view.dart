@@ -140,9 +140,9 @@ class YearPageView extends StatelessWidget {
                   YearPageStateProvider product =
                       Provider.of<YearPageStateProvider>(context,
                           listen: false);
-                  product.setImportanceFilter(
-                      (product.importanceFilterIndex + 1) %
-                          ImportanceFilter.values.length);
+                  // product.setImportanceFilter(
+                  //     (product.importanceFilterIndex + 1) %
+                  //         ImportanceFilter.values.length);
                 }),
           ),
         ),
@@ -167,8 +167,8 @@ class YearPageView extends StatelessWidget {
                   YearPageStateProvider product =
                       Provider.of<YearPageStateProvider>(context,
                           listen: false);
-                  product.setLocationFilter((product.locationFilterIndex + 1) %
-                      ImportanceFilter.values.length);
+                  // product.setLocationFilter((product.locationFilterIndex + 1) %
+                  //     ImportanceFilter.values.length);
                 }),
           ),
         ),

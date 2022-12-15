@@ -23,6 +23,8 @@ import 'package:go_router/go_router.dart';
 import 'year_page_view_level1.dart';
 import 'package:lateDiary/Util/Util.dart';
 
+import 'dart:math';
+
 class YearPageScreen2 extends StatefulWidget {
   const YearPageScreen2({Key? key}) : super(key: key);
 
@@ -31,22 +33,21 @@ class YearPageScreen2 extends StatefulWidget {
 }
 
 class _YearPageScreen2State extends State<YearPageScreen2> {
-  double _scale = 1.0;
-  double _previousScale = 1.0;
+
 
   @override
   Widget build(BuildContext context) {
+
     return Consumer<YearPageStateProvider>(
         builder: (context, product, child) => Scaffold(
-              appBar: AppBar(),
-              body: TreeMap(product: product).build(context),
+              body: SafeArea(child: TreeMap(product: product).build(context)),
+              floatingActionButtonLocation:
+                  FloatingActionButtonLocation.centerDocked,
               floatingActionButton: FloatingActionButton(
                 onPressed: () {
-                  product.dataForChartList2.forEach((element) {
-                    if (element[4].toString().contains("202203"))
-                      print(element);
-                  });
+                  setState(() {});
                 },
+                child: Icon(Icons.refresh_outlined),
               ),
             ));
   }
@@ -57,8 +58,10 @@ class TreeMap {
   TreeMap({required this.product});
 
   Widget build(BuildContext context) {
+    DataManagerInterface dataManager = DataManagerInterface(global.kOs);
+    Map<dynamic, InfoFromFile> data = dataManager.infoFromFiles;
     return SfTreemap(
-        dataCount: product.dataForChartList2.length,
+        dataCount: dataManager.infoFromFiles.length,
         enableDrilldown: true,
         breadcrumbs: TreemapBreadcrumbs(
           builder: (BuildContext context, TreemapTile tile, bool isCurrent) {
@@ -67,114 +70,115 @@ class TreeMap {
         ),
         levels: [
           TreemapLevel(groupMapper: (int index) {
-            // print("date : ${ product.dataForChartList2[index]}");
-            // print("date : ${ product.dataForChartList2[index][4].toString()}");
-            String year =
-                product.dataForChartList2[index][4].toString().substring(0, 4);
+            String year = data.values.elementAt(index).date!.substring(0, 4);
             return year;
-          }, itemBuilder: (BuildContext context, TreemapTile tile) {
-            return FittedBox(
-                child: Center(child: Text("${tile.group}, ${tile.weight}")));
-          }),
-          TreemapLevel(groupMapper: (int index) {
-            String yearMonth =
-                product.dataForChartList2[index][4].toString().substring(0, 6);
-            return yearMonth;
-          }, itemBuilder: (BuildContext context, TreemapTile tile) {
-            return FittedBox(
-                child: Center(child: Text("${tile.group}, ${tile.weight}")));
-          }),
-          TreemapLevel(
-              padding: EdgeInsets.all(2.0),
-              // color: Colors.transparent,
-              groupMapper: (int index) {
-                String yearMonthDay = product.dataForChartList2[index][4]
-                    .toString()
-                    .substring(0, 8);
-                // String week = product.dataForChartList2[index][0].toString();
-                return yearMonthDay;
-              },
+          },
               itemBuilder: (BuildContext context, TreemapTile tile) {
-                print(
-                    "location : ${DataManagerInterface(global.kOs).summaryOfLocationData[tile.group]}");
-                double location = DataManagerInterface(global.kOs)
-                    .summaryOfLocationData[tile.group]!;
-                // return Flexible(
-                //   fit : FlexFit.tight,
-                //   child: Container(
-                //       color : Color.fromARGB(100, (location*5).ceil(), 100, 100),
-                //
-                //       child: Text("${tile.group}, ${tile.weight}")),
-                // );
-                var dayPageStateProvider = Provider.of<DayPageStateProvider>(context, listen : false);
-                print("datafor chat : ${dayPageStateProvider.listOfEvents}");
-                dayPageStateProvider.setDate(tile.group);
-                List<Event> events = [...dayPageStateProvider.listOfEvents];
-                Iterable<MapEntry<dynamic, InfoFromFile>> paths =
-                    DataManagerInterface(global.kOs)
-                        .infoFromFiles
-                        .entries
-                        .where((element) => element.value.date == tile.group);
+            String year = tile.group;
+            var imagesInYear = Map.from(data)..removeWhere((key, value) => value.date?.substring(0, 4) != year);
 
-                return LayoutBuilder(builder:
-                    (BuildContext context, BoxConstraints constraints) {
-                  double aspectRatio =
-                      constraints.maxWidth / constraints.maxHeight;
-                  print("constraints : $aspectRatio");
-                  if (aspectRatio > 1.5) {
-                    return Row(
-                        children: List.generate(
-                            aspectRatio.ceil(),
-                            (index) => Container(
-                                  width: constraints.maxHeight *
-                                      aspectRatio /
-                                      aspectRatio.ceil(),
-                                  height: constraints.maxHeight,
-                                  child: ExtendedImage.file(
-                                    File(paths.elementAt(index).key),
-                                    fit: BoxFit.cover,
-                                    compressionRatio: 0.05,
-                                  ),
-                                )));
-                  }
-                  if (aspectRatio < 0.7) {
-                    return Column(
-                        children: List.generate(
-                            (1 / aspectRatio).ceil(),
-                            (index) => Container(
-                                  width: constraints.maxWidth,
-                                  height: constraints.maxWidth *
-                                      (1 / aspectRatio) /
-                                      (1 / aspectRatio).ceil(),
-                                  child: ExtendedImage.file(
-                                    File(paths.elementAt(index).key),
-                                    fit: BoxFit.cover,
-                                    compressionRatio: 0.05,
-                                  ),
-                                )));
-                  }
-                  //
-                  // return SizedBox(
-                  //   width: 500,
-                  //   height: 500,
-                  //   child: ExtendedImage.file(
-                  //     File(paths.elementAt(0).key),
-                  //     fit: BoxFit.cover,
-                  //     compressionRatio: 0.05,
-                  //   ),
-                  // );
+            String pathOfRandomImage = imagesInYear.entries
+                .elementAt(Random().nextInt(imagesInYear.length))
+                .key;
+            return Stack(children: [
+              Container(
+                  width: 1000,
+                  height: 1000,
+                  child: ExtendedImage.file(File(pathOfRandomImage),
+                      compressionRatio: 0.1, fit: BoxFit.cover)),
+              Text(
+                "${imagesInYear[pathOfRandomImage]?.date!.substring(0, 4)}",
+                style: TextStyle(fontSize: 20.0),
+              ),
+            ]);
+          }
+          ),
 
-                  return FittedBox(
-                      fit : BoxFit.cover,
-                      clipBehavior: Clip.antiAlias,
-                      child: ClickablePhotoCard(photoCard: PhotoCard(event: events[0], height : 400)));
+
+          TreemapLevel(groupMapper: (int index) {
+            String yearMonth =data.values.elementAt(index).date!.substring(0, 6);
+            return yearMonth;
+          },
+              itemBuilder: (BuildContext context, TreemapTile tile) {
+                String yearMonth = tile.group;
+                var imagesInYear = Map.from(data)..removeWhere((key, value) => value.date?.substring(0, 6) != yearMonth);
+                String pathOfRandomImage = imagesInYear.entries
+                    .elementAt(Random().nextInt(imagesInYear.length))
+                    .key;
+                return Stack(children: [
+                  Container(
+                      width: 1000,
+                      height: 1000,
+                      child: ExtendedImage.file(File(pathOfRandomImage),
+                          compressionRatio: 0.1, fit: BoxFit.cover)),
+                  Text(
+                    "${tile.group.substring(4)}",
+                    style: TextStyle(fontSize: 20.0),
+                  ),
+                ]);
+              }
+          ),
+
+          TreemapLevel(groupMapper: (int index) {
+            String yearMonthDay =data.values.elementAt(index).date!.substring(0, 8);
+            return yearMonthDay;
+          },
+              itemBuilder: (BuildContext context, TreemapTile tile) {
+                String yearMonthDay = tile.group;
+                var filteredImages = Map.from(data)..removeWhere((key, value) => value.date?.substring(0, 8) != yearMonthDay);
+                String pathOfRandomImage = filteredImages.entries
+                    .elementAt(Random().nextInt(filteredImages.length))
+                    .key;
+                return Stack(children: [
+                  Container(
+                      width: 500,
+                      height: 500,
+                      child: ExtendedImage.file(File(pathOfRandomImage),
+                          compressionRatio: 0.1, fit: BoxFit.cover)),
+                  Text(
+                    "${tile.group.substring(6)} 일",
+                    style: TextStyle(fontSize: 20.0),
+                  ),
+                ]);
+              }
+          ),
+          TreemapLevel(groupMapper: (int index) {
+            DateTime datetime = data.values.elementAt(index)!.datetime!;
+            String yearMonthDayHour = "${datetime.year}${datetime.month}${datetime.day}${datetime.hour}";
+            return yearMonthDayHour;
+          },
+              itemBuilder: (BuildContext context, TreemapTile tile) {
+                String yearMonthDayHourOfTile = tile.group;
+                print("yearmonthdayHourOfTile : ${yearMonthDayHourOfTile}");
+
+                var filteredImages = Map.from(data)..removeWhere((key, value) {
+                  DateTime datetime = value.datetime;
+                  String yearMonthDayHour = "${datetime.year}${datetime.month}${datetime.day}${datetime.hour}";
+                  return yearMonthDayHourOfTile != yearMonthDayHour;
                 });
-              }),
+                // print("filtered images : ${filteredImages}");
+                String pathOfRandomImage = filteredImages.entries
+                    .elementAt(Random().nextInt(filteredImages.length))
+                    .key;
+                return Stack(children: [
+                  Container(
+                      width: 500,
+                      height: 500,
+                      child: ExtendedImage.file(File(pathOfRandomImage),
+                          compressionRatio: 0.1, fit: BoxFit.cover)),
+                  Text(
+                    "${tile.group.substring(8)}",
+                    style: TextStyle(fontSize: 20.0),
+                  ),
+                ]);
+              }
+          ),
         ],
         weightValueMapper: (int index) {
-          var data = product.dataForChartList2[index][2];
-          print("2 type :${product.dataForChartList2[index][2]} ");
-          return data == 0 ? 1 : data.toDouble();
+          var data = dataManager.infoFromFiles;
+
+          return 1;
         });
+
   }
 }

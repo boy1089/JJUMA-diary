@@ -32,6 +32,8 @@ class DayPageStateProvider with ChangeNotifier {
   List<Event> listOfEvents = [];
   Map<String, List<Event>> listOfEventsInDay = {};
 
+  Map<String, Map> listOfImagesInYears = {};
+
   double keyboardSize = 300;
   DataManagerInterface dataManager;
   ScrollController scrollController = ScrollController();
@@ -42,75 +44,14 @@ class DayPageStateProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void updateData() async {
-    Map<dynamic, InfoFromFile> data = dataManager.infoFromFiles;
+  void updateData(){
+    List<int> listOfYears = List<int>.generate(10, (index)=>DateTime.now().year - index);
 
-    Map<dynamic, InfoFromFile> filteredDataAll = Map.fromEntries(data.entries
-        .where((k) {
-          if(k.value.date == null) return false;
-      return k.value.date!.contains(date.substring(0, 8));
-    }));
-    filteredDataAll = removeEventFromMap(filteredDataAll);
-
-    List<String> dates = List.generate(filteredDataAll.length,
-        (index) => filteredDataAll.entries.elementAt(index).value.date!);
-
-    Set<String> setOfDates = dates.toSet();
-
-    indexOfDate = setOfDates.toList().indexWhere((element) => element == date);
-    listOfEventsInDay = {};
-    for (int i = 0; i < setOfDates.length; i++) {
-      String date = setOfDates.elementAt(i);
-      listOfImages = {};
-      listOfImages.addAll(Map.fromEntries(
-          filteredDataAll.entries.where((k) => k.value.date!.contains(date))));
-      listOfEventsInDay[date] = updateEvents();
-      dataManager.eventList.forEach((key, value) {
-        if(key.contains(date)) listOfEventsInDay[date]!.add(value);
-      });
+    for(int year in listOfYears){
+        listOfImagesInYears[year.toString()] = Map.from(dataManager.infoFromFiles)..removeWhere((k, v) => v.datetime.year != year);
     }
   }
 
-  Map<dynamic, InfoFromFile> removeEventFromMap(Map<dynamic, InfoFromFile> map){
-    Map<dynamic, InfoFromFile> imagesInEvents = {};
-    for(int i = 0; i< dataManager.eventList.length; i++){
-      imagesInEvents.addAll(dataManager.eventList.values.elementAt(i).images);
-    }
-    print("imagesInEvetns : $imagesInEvents");
-    print("map : $map");
-
-    map.removeWhere((key, value) => imagesInEvents.containsKey(key));
-    return map;
-  }
-
-  List<Event> updateEvents() {
-    List<Event> events = [];
-
-    var listOfImages2 = {...listOfImages};
-
-    if (listOfImages2.isEmpty) return [];
-    Map<dynamic, InfoFromFile> dataForEvent = {}
-      ..addEntries({listOfImages2.entries.elementAt(0)});
-
-    for (int i = 0; i < listOfImages2.length - 1; i++) {
-      if ((listOfImages2.entries
-              .elementAt(i + 1)
-              .value
-              .datetime!
-              .difference(listOfImages2.entries.elementAt(i).value.datetime!)) <
-          Duration(minutes: 60)) {
-        dataForEvent.addEntries({listOfImages2.entries.elementAt(i + 1)});
-      } else {
-
-        events.add(Event.fromImages(images : dataForEvent));
-        dataForEvent = {}..addEntries({listOfImages2.entries.elementAt(i + 1)});
-      }
-    }
-    if (dataForEvent.isNotEmpty) events.add(Event.fromImages(images : dataForEvent));
-    listOfEvents = events;
-    print("listEvents : $listOfEvents");
-    return events;
-  }
 
   void writeNote() {
     if (note != "") {

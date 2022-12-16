@@ -46,9 +46,6 @@ class AndroidDataManager extends ChangeNotifier
     //get list of image files from local. --> update new images
     files = await dataRepository.getAllFiles();
     infoFromFiles = await dataRepository.readInfoFromJson();
-    summaryOfPhotoData = await dataRepository.readSummaryOfPhoto();
-    summaryOfLocationData = await dataRepository.readSummaryOfLocation();
-    eventList = await dataRepository.readEventList();
     notifyListeners();
     print("DataManager init, $files");
 
@@ -62,20 +59,7 @@ class AndroidDataManager extends ChangeNotifier
     await updateDateOnInfo(filesNotUpdated);
     print("updateDateOnInfo done, time elapsed : ${stopwatch.elapsed}");
 
-    var result =
-        await compute(updateDatesFromInfo, [infoFromFiles, filesNotUpdated]);
-    print("updateDatesFromInfo done, time elapsed : ${stopwatch.elapsed}");
-    print(result);
-    setOfDates = result[0];
-    setOfDatetimes = result[1];
-    dates = result[2];
-    datetimes = result[3];
 
-    print("date during init, ${dates.length}");
-
-    //find the dates which are out of date based on the number of photo.
-    summaryOfPhotoData = await compute(
-        updateSummaryOfPhotoFromInfo, [setOfDates, summaryOfPhotoData]);
     print("updateSummaryOfPhoto done, time elapsed : ${stopwatch.elapsed}");
     notifyListeners();
   }
@@ -92,42 +76,12 @@ class AndroidDataManager extends ChangeNotifier
       await Future.delayed(Duration(seconds: 1));
       infoFromFiles = await compute(
           updateExifOnInfo_compute, [partOfFilesNotupdated, infoFromFiles]);
-      if (i % 5 == 0) {
-        var result = await compute(
-            updateDatesFromInfo, [infoFromFiles, filesNotUpdated]);
-        setOfDates = result[0];
-        setOfDatetimes = result[1];
-        dates = result[2];
-        datetimes = result[3];
-
-        //update the summaryOflocation only on the specific date.
-        summaryOfPhotoData = await compute(
-            updateSummaryOfPhotoFromInfo, [setOfDates, summaryOfPhotoData]);
 
         await dataRepository.writeInfoAsJson(infoFromFiles, true);
-        await dataRepository.writeSummaryOfPhoto(
-            summaryOfPhotoData, true, setOfDates);
         notifyListeners();
       }
 
-      if (i % 10 == 0) {
-        summaryOfLocationData = await compute(
-            updateSummaryOfLocationDataFromInfo2_compute, [infoFromFiles]);
-        await dataRepository.writeSummaryOfLocation(
-            summaryOfLocationData, true, setOfDates);
-      }
-    }
-    summaryOfPhotoData = await compute(
-        updateSummaryOfPhotoFromInfo, [setOfDates, summaryOfPhotoData]);
-    summaryOfLocationData = await compute(
-        updateSummaryOfLocationDataFromInfo_compute,
-        [setOfDates, summaryOfLocationData, infoFromFiles]);
-
     await dataRepository.writeInfoAsJson(infoFromFiles, true);
-    await dataRepository.writeSummaryOfLocation(
-        summaryOfLocationData, true, setOfDates);
-    await dataRepository.writeSummaryOfPhoto(
-        summaryOfPhotoData, true, setOfDates);
 
     notifyListeners();
   }

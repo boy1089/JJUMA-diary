@@ -65,7 +65,7 @@ class _AppState extends State<App> with SingleTickerProviderStateMixin {
     global.isInitializationDone = true;
     await Future.delayed(Duration(seconds: 1));
     print("init done,executed in ${stopwatch.elapsed}");
-    // dataManager.executeSlowProcesses();
+    dataManager.executeSlowProcesses();
     return 0;
   }
 

@@ -6,6 +6,7 @@ import 'dart:math';
 import 'package:intl/intl.dart';
 
 import '../Data/data_manager_interface.dart';
+import '../Location/coordinate.dart';
 
 enum ImportanceFilter { memorable, casual, none }
 
@@ -28,40 +29,57 @@ class YearPageStateProvider with ChangeNotifier {
   int importanceFilterIndex = ImportanceFilter.none.index;
   int locationFilterIndex = LocationFilter.none.index;
 
-  Map<String, Map<String, InfoFromFile>> listOfImagesInYears = {};
-  Map<String, Map<String, InfoFromFile>> listOfImagesInMonths = {};
-
   List<List<dynamic>> dataForChart = [];
-
+  Map<int, Map<String, List>> dataForChart2 = {};
   int? expandedYear = null;
+  Coordinate? averageCoordinate;
 
   DataManagerInterface dataManager;
   YearPageStateProvider(this.dataManager) {
     updateData();
   }
-  void setExpandedYear (int? year){
+  void setExpandedYear(int? year) {
     expandedYear = year;
     notifyListeners();
   }
 
   void updateData() {
     dataForChart = [];
-    List<int> listOfYears =
-        List<int>.generate(3, (index) => DateTime.now().year - index);
-    for (int year in listOfYears) {
-      for(int day = 0; day < 365; day ++){
-        if(day %100 ==0) {
-          print(year);
-              notifyListeners();
-        };
+    dataForChart2 = {};
+    List<Coordinate> coordinates = [];
 
-        DateTime currentDay = DateTime(year).add(Duration(days:day));
-        int numberOfImages = dataManager.summaryOfPhotoData[formatDate(currentDay)]?? 0;
-        Map<dynamic, InfoFromFile> images = Map.from(dataManager.infoFromFiles)..removeWhere((k, v) => v.datetime == currentDay);
-        dataForChart.add([year, day/7.ceil(), currentDay.weekday, day, numberOfImages.toDouble(), images]);
+    for (MapEntry entry in dataManager.infoFromFiles.entries) {
+      DateTime datetime = entry.value.datetime;
+      Coordinate? coordinate = entry.value.coordinate;
+      int year = datetime.year;
 
+      if (dataForChart2[year] == null) dataForChart2[year] = {};
+
+      if (dataForChart2[year]![formatDate(datetime)] == null)
+        dataForChart2[year]![formatDate(datetime)] = [[]];
+
+      dataForChart2[year]![formatDate(datetime)]![0].add(entry);
+
+      if(coordinate == null) continue;
+
+      if(dataForChart2[year]![formatDate(datetime)]!.length ==2) {
+        dataForChart2[year]![formatDate(datetime)]![1] = coordinate;
+        continue;
       }
+      dataForChart2[year]![formatDate(datetime)]!.add(coordinate);
+      coordinates.add(coordinate);
     }
+    double latitude = 0.0;
+    double longitude = 0.0;
+    for(Coordinate? coordinate in coordinates){
+      latitude += coordinate?.latitude?? 0;
+      longitude += coordinate?.longitude?? 0;
+    }
+
+    averageCoordinate = Coordinate(latitude/ coordinates.length, longitude/coordinates.length);
+
+    notifyListeners();
+
   }
 
   void setAvailableDates(int year) {

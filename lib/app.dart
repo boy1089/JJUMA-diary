@@ -65,7 +65,7 @@ class _AppState extends State<App> with SingleTickerProviderStateMixin {
     global.isInitializationDone = true;
     await Future.delayed(Duration(seconds: 1));
     print("init done,executed in ${stopwatch.elapsed}");
-    dataManager.executeSlowProcesses();
+    // dataManager.executeSlowProcesses();
     return 0;
   }
 
@@ -86,7 +86,7 @@ class _AppState extends State<App> with SingleTickerProviderStateMixin {
     final _router = GoRouter(initialLocation: '/year', routes: [
       GoRoute(
           path: '/year',
-          builder: (context, state) => YearPageScreen2(),
+          builder: (context, state) => YearPageScreen2(context: context),
           routes: [
             GoRoute(
                 path: 'day',

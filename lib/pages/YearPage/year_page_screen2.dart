@@ -29,13 +29,47 @@ import 'package:lateDiary/Util/Util.dart';
 import 'package:photo_view/photo_view.dart';
 import 'dart:math';
 
-class YearPageScreen2 extends StatelessWidget {
-  YearPageScreen2({Key? key}) : super(key: key);
+
+class YearPageScreen2 extends StatefulWidget {
+  var context;
+  YearPageScreen2({this.context});
+
+  @override
+  State<YearPageScreen2> createState() =>
+      _YearPageScreen2State(context: context);
+}
+
+class _YearPageScreen2State extends State<YearPageScreen2> {
+  int? selectedYear = null;
+  BuildContext context;
+
   final heatmapChannel = StreamController<Selected?>.broadcast();
+
+  bool isHeatMapChannelListening = false;
+  _YearPageScreen2State({Key? key, required this.context}) {
+    if (!isHeatMapChannelListening) addListenerToChart();
+  }
+  void addListenerToChart() {
+    isHeatMapChannelListening = true;
+    heatmapChannel.stream.listen(
+      (value) async {
+        print(value);
+        var provider =
+            Provider.of<YearPageStateProvider>(context, listen: false);
+        // print(value!['tapDown']!.elementAt(0));
+        // print(provider.dataForChart[value!['tapDown']!.elementAt(0)]);
+
+        setState(() {
+          selectedYear = provider.dataForChart[value!['tapDown']!.elementAt(0)]
+              .elementAt(0);
+          print("selected Year : $selectedYear");
+        });
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    int i = 0;
-
     return Scaffold(
         body: Consumer<YearPageStateProvider>(
       builder: (context, product, child) => Center(
@@ -76,10 +110,18 @@ class YearPageScreen2 extends StatelessWidget {
                         encoder: (tuple) => log(tuple['numberOfPhoto']) * 10),
                     color: ColorAttr(
                       // value: Colors.blue.withAlpha(100),
-                      encoder : (tuple)=> Color.fromARGB(100, tuple['numberOfPhoto'].ceil(), 100, 100),
+                      encoder: (tuple) {
+                        // print("updater : ${tuple['year']}, $selectedYear");
+                        return tuple['year'] == selectedYear
+                            ? Color.fromARGB(
+                                100, tuple['numberOfPhoto'].ceil(), 200, 200)
+                            : Color.fromARGB(
+                                100, tuple['numberOfPhoto'].ceil(), 100, 100);
+                      },
                       updaters: {
                         'tapDown': {
                           true: (color) {
+                            setState(() {});
                             return color.withAlpha(200);
                           }
                         },
@@ -88,8 +130,7 @@ class YearPageScreen2 extends StatelessWidget {
                         }
                       },
                     ),
-
-                    // selectionChannel: heatmapChannel,
+                    selectionChannel: heatmapChannel,
                   )
                 ],
                 selections: {

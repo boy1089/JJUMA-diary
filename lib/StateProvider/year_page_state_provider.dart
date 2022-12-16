@@ -41,15 +41,19 @@ class YearPageStateProvider with ChangeNotifier {
   void updateData() {
     dataForChart = [];
     List<int> listOfYears =
-        List<int>.generate(10, (index) => DateTime.now().year - index);
+        List<int>.generate(3, (index) => DateTime.now().year - index);
     for (int year in listOfYears) {
       for(int day = 0; day < 365; day ++){
-        if(day %100 ==0) print(year);
+        if(day %100 ==0) {
+          print(year);
+              notifyListeners();
+        };
+
         DateTime currentDay = DateTime(year).add(Duration(days:day));
         int numberOfImages = dataManager.summaryOfPhotoData[formatDate(currentDay)]?? 0;
-        // print(numberOfImages);
         Map<dynamic, InfoFromFile> images = Map.from(dataManager.infoFromFiles)..removeWhere((k, v) => v.datetime == currentDay);
         dataForChart.add([year, day/7.ceil(), currentDay.weekday, day, numberOfImages.toDouble(), images]);
+
       }
     }
   }

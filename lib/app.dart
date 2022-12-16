@@ -86,7 +86,7 @@ class _AppState extends State<App> with SingleTickerProviderStateMixin {
     final _router = GoRouter(initialLocation: '/year', routes: [
       GoRoute(
           path: '/year',
-          builder: (context, state) => YearPageScreen2(context: context),
+          builder: (context, state) => YearPageScreen2(),
           routes: [
             GoRoute(
                 path: 'day',

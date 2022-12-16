@@ -33,9 +33,15 @@ class YearPageStateProvider with ChangeNotifier {
 
   List<List<dynamic>> dataForChart = [];
 
+  int? expandedYear = null;
+
   DataManagerInterface dataManager;
   YearPageStateProvider(this.dataManager) {
     updateData();
+  }
+  void setExpandedYear (int? year){
+    expandedYear = year;
+    notifyListeners();
   }
 
   void updateData() {

@@ -31,136 +31,106 @@ import 'dart:math';
 
 
 class YearPageScreen2 extends StatefulWidget {
-  var context;
-  YearPageScreen2({this.context});
+  YearPageScreen2({Key? key}) : super(key: key);
 
   @override
-  State<YearPageScreen2> createState() =>
-      _YearPageScreen2State(context: context);
+  State<YearPageScreen2> createState() => _YearPageScreen2State();
 }
 
 class _YearPageScreen2State extends State<YearPageScreen2> {
-  int? selectedYear = null;
-  BuildContext context;
 
-  final heatmapChannel = StreamController<Selected?>.broadcast();
-
-  bool isHeatMapChannelListening = false;
-  _YearPageScreen2State({Key? key, required this.context}) {
-    if (!isHeatMapChannelListening) addListenerToChart();
-  }
-  void addListenerToChart() {
-    isHeatMapChannelListening = true;
-    heatmapChannel.stream.listen(
-      (value) async {
-        print(value);
-        var provider =
-            Provider.of<YearPageStateProvider>(context, listen: false);
-        // print(value!['tapDown']!.elementAt(0));
-        // print(provider.dataForChart[value!['tapDown']!.elementAt(0)]);
-
-        setState(() {
-          selectedYear = provider.dataForChart[value!['tapDown']!.elementAt(0)]
-              .elementAt(0);
-          print("selected Year : $selectedYear");
-        });
-      },
-    );
-  }
-
+  int? expandedYear = null;
   @override
   Widget build(BuildContext context) {
+    List<Widget> charts = [];
+
+
     return Scaffold(
-        body: Consumer<YearPageStateProvider>(
-      builder: (context, product, child) => Center(
-        child: SizedBox(
-          width: 500,
-          height: 500,
+        body: Center(
+      child: Consumer<YearPageStateProvider>(
+
+        builder : (context, product, child) => SizedBox(
+          width: physicalWidth,
+          height: physicalWidth,
           child: Stack(
-            alignment: Alignment.center,
-            children: [
-              Chart(
-                data: product.dataForChart,
-                variables: {
-                  'week': Variable(
-                    accessor: (List b) => b.elementAt(1) as num,
-                    scale: LinearScale(min: 0, max: 52, tickCount: 12),
-                  ),
+              children: List.generate(3, (index) {
+            int year = DateTime.now().year - index;
+            if (product.expandedYear == null)
+              return YearChart(year: year, radius: 1 - index * 0.1, isExpanded :false);
 
-                  'year': Variable(
-                    accessor: (List b) => b.elementAt(0) as num,
-                    scale: LinearScale(
-                        min: DateTime.now().year - 10,
-                        max: DateTime.now().year,
-                        tickCount: 12),
-                  ),
-                  'weekday': Variable(
-                    accessor: (List b) => b.elementAt(2) as num,
-                    scale: LinearScale(min: -0.5, max: 6.5, tickCount: 7),
-                  ),
-
-                  'numberOfPhoto':
-                      Variable(accessor: (List b) => b.elementAt(4) as num),
-                  // 'latitude': Variable(accessor: (List b) => b.elementAt(3) as num),
-                  // 'longitude': Variable(accessor: (List b) => b.elementAt(3) as num),
-                },
-                elements: [
-                  PointElement(
-                    size: SizeAttr(
-                        encoder: (tuple) => log(tuple['numberOfPhoto']) * 10),
-                    color: ColorAttr(
-                      // value: Colors.blue.withAlpha(100),
-                      encoder: (tuple) {
-                        // print("updater : ${tuple['year']}, $selectedYear");
-                        return tuple['year'] == selectedYear
-                            ? Color.fromARGB(
-                                100, tuple['numberOfPhoto'].ceil(), 200, 200)
-                            : Color.fromARGB(
-                                100, tuple['numberOfPhoto'].ceil(), 100, 100);
-                      },
-                      updaters: {
-                        'tapDown': {
-                          true: (color) {
-                            setState(() {});
-                            return color.withAlpha(200);
-                          }
-                        },
-                        'tapCancel': {
-                          true: (color) => color,
-                        }
-                      },
-                    ),
-                    selectionChannel: heatmapChannel,
-                  )
-                ],
-                selections: {
-                  'tapDown': PointSelection(
-                      on: {GestureType.tapDown},
-                      toggle: true,
-                      nearest: true,
-                      testRadius: 200),
-                  'tapCancel': PointSelection(
-                      on: {GestureType.tapCancel},
-                      toggle: true,
-                      nearest: true,
-                      testRadius: 200)
-                },
-                coord: PolarCoord(
-                    radiusRangeUpdater: Defaults.horizontalRangeSignal)
-                  ..radiusRange = [1 - global.kRatioOfScatterInYearPage, 1]
-                  ..endRadius = 1,
-                axes: [
-                  Defaults.circularAxis
-                    ..grid = null
-                    ..label = null,
-                  // Defaults.radialAxis,
-                ],
-              ),
-              // Container(width: 500, height: 500, child: Text("aabb"))
-            ],
-          ),
+            if (product.expandedYear == year)
+              return YearChart(year: year, radius: 1 - index * 0.1, isExpanded : true);
+            return YearChart(year: year, radius: year<product.expandedYear!?0:3, isExpanded :false);
+          })),
         ),
       ),
     ));
+  }
+}
+
+class YearChart extends StatefulWidget {
+  YearChart({
+    Key? key,
+    required this.year,
+    required this.radius,
+    required this.isExpanded,
+  }) : super(key: key);
+
+  double radius;
+  int year;
+  bool isExpanded;
+  @override
+  State<YearChart> createState() => _YearChartState();
+}
+
+class _YearChartState extends State<YearChart> {
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<YearPageStateProvider>(
+      builder: (context, product, child) => Stack(
+          alignment: Alignment.center,
+          children: List.generate(365, (index) {
+            double day = index.toDouble();
+            double week = day / 7.ceil();
+            double weekday = day % 7;
+
+            double radius = (weekday + 1) / 8 * 1.2;
+            double angle = week / 52 * 2 * pi;
+
+            if (!widget.isExpanded) {
+              radius = widget.radius;
+              angle = day / 365 * 2 * pi;
+            }
+
+            double xLocation = radius * cos(angle);
+            double yLocation = radius * sin(angle);
+
+            return AnimatedAlign(
+                duration: Duration(milliseconds: 1000),
+                curve: Curves.easeOutExpo,
+                alignment: Alignment(xLocation, yLocation),
+                child: Container(
+                    width: physicalWidth / 20,
+                    height: physicalWidth / 20,
+                    // color : Colors.blue.withAlpha(200),
+                    child: OutlinedButton(
+                      style: OutlinedButton.styleFrom(
+                          shape: CircleBorder(),
+                          backgroundColor: Colors.blue.withAlpha(100)),
+                      onPressed: () {
+                        setState(() {
+                          if(widget.isExpanded) {
+                            product.setExpandedYear(null);
+                            return;
+                          }
+                          product.setExpandedYear(widget.year);
+                        });
+                      },
+                      child:
+                          Container(width: physicalWidth / 15, child: Text("aa")),
+                    )));
+          })),
+    );
   }
 }

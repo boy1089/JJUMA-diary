@@ -92,21 +92,19 @@ class _AppState extends State<App> with SingleTickerProviderStateMixin {
                 path: 'day',
                 // builder: (context, state) => DayPage()
                 pageBuilder: (context, state) {
-
                   return CustomTransitionPage(
                       key: state.pageKey,
                       child: DayPage(),
                       transitionsBuilder:
                           (context, animation, secondaryAnimation, child) {
-                            // return SizeTransition(
-                            //   // alignment: Alignment(context.),
-                            //     sizeFactor: CurveTween(curve: Curves.easeInOutCirc)
-                            //         .animate(animation),
-                            //     child: child);
+                        // return SizeTransition(
+                        //   // alignment: Alignment(context.),
+                        //     sizeFactor: CurveTween(curve: Curves.easeInOutCirc)
+                        //         .animate(animation),
+                        //     child: child);
 
-
-                            return ScaleTransition(
-                          // alignment: Alignment(context.),
+                        return ScaleTransition(
+                            // alignment: Alignment(context.),
                             scale: CurveTween(curve: Curves.easeInOutCirc)
                                 .animate(animation),
                             child: child);

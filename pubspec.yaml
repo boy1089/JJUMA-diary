@@ -50,6 +50,7 @@ dependencies:
   flutter_animated_button:
 
   syncfusion_flutter_treemap: ^20.3.60-beta
+  photo_view:
 
 dev_dependencies:
   flutter_test:

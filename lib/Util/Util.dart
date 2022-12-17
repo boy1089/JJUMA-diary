@@ -95,9 +95,9 @@ List<String> kTimeStamps2hour_filtered = [
 
 Size standardScreenSize = Size(411.4, 707.4);
 
-var physicalScreenSize = window.physicalSize / window.devicePixelRatio;
-var physicalWidth = physicalScreenSize.width;
-var physicalHeight = physicalScreenSize.height;
+Size physicalScreenSize = window.physicalSize / window.devicePixelRatio;
+double physicalWidth = physicalScreenSize.width;
+double physicalHeight = physicalScreenSize.height;
 
 const kSensorPlotRadius = 1.0;
 const kPhotoPlotRadius = 2.0;

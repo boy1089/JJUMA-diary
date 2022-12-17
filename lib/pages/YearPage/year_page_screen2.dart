@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:ui';
 
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
@@ -38,53 +39,49 @@ class YearPageScreen2 extends StatefulWidget {
 
 class _YearPageScreen2State extends State<YearPageScreen2> {
   int? expandedYear = null;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Consumer<YearPageStateProvider>(
         builder: (context, product, child) => PhotoView.customChild(
-          // customSize: Size(physicalWidth+100, physicalHeight),
           minScale: 1.0,
           onScaleEnd: (context, value, a) {
-            product.photoViewScale = a.scale ?? 1;
+            product.setPhotoViewScale(a.scale ?? 1);
             if (product.photoViewScale! < 1) {
               product.setPhotoViewScale(1);
               product.setExpandedYear(null);
             }
-            ;
-            setState(() {});
           },
-          child: SizedBox(
+          child: Container(
             width: physicalWidth,
             height: physicalWidth,
             child: Stack(
                 alignment: Alignment.center,
-                children: List.generate(product.dataForChart2.length, (index) {
+
+                // children: List.generate(product.dataForChart2.length, (index) {
+                children: List.generate(3, (index) {
                   int year = product.dataForChart2.keys.elementAt(index);
 
-                  if (product.expandedYear == null) {
-                    return YearChart(
+                  // if (product.expandedYear == null) {
+                  return Container(
+                    child: YearChart(
                         year: year,
                         radius: 1 - index * 0.1,
-                        isExpanded: false,
-                        product: product);
-                  }
-                  if (product.expandedYear == year)
-                    return YearChart(
-                        year: year,
-                        radius: 1 - index * 0.1,
-                        isExpanded: true,
-                        product: product);
-
-                  return SizedBox();
+                        isExpanded: (product.expandedYear == null) ||
+                                (product.expandedYear == year)
+                            ? false
+                            : true,
+                        product: product),
+                  );
                 })),
           ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          var a = DataManagerInterface(global.kOs);
-          await a.init();
+          // var a = DataManagerInterface(global.kOs);
+          // await a.init();
         },
       ),
     );
@@ -127,108 +124,17 @@ class YearChart extends StatefulWidget {
   bool isExpanded;
   YearPageStateProvider product;
   @override
-  State<YearChart> createState() => _YearChartState(product, year, isExpanded, radius);
+  State<YearChart> createState() =>
+      _YearChartState(product, year, isExpanded, radius);
 }
 
 class _YearChartState extends State<YearChart> {
-  List dataForNotExpanded = [];
-  List dataForExpanded = [];
   int year;
   var data;
   bool isExpanded;
   double radius;
   _YearChartState(this.product, this.year, this.isExpanded, this.radius) {
     print("debugging.. ${year}");
-
-    // data = product.dataForChart2[year];
-    // dataForExpanded = List.generate(data.length, (index){
-    //   String date = data.keys.elementAt(index);
-    //   DateTime datetime = DateTime(year, int.parse(date.substring(4, 6)),
-    //       int.parse(date.substring(6, 8)));
-    //   int indexOfDate = datetime.difference(DateTime(year)).inDays;
-    //
-    //   double xLocation =  positionExpanded[indexOfDate][0];
-    //
-    //   double yLocation = positionExpanded[indexOfDate][1];
-    //
-    //   yLocation = yLocation + 0.5;
-    //
-    //   int numberOfImages = data[date]?[0].length ?? 1;
-    //   Coordinate? coordinate = data[date]?[1];
-    //   Color color = coordinate == null
-    //       ? Colors.grey.withAlpha(150)
-    //       : Color.fromARGB(
-    //     100,
-    //     // 0,
-    //     255 -
-    //         ((coordinate.longitude ??
-    //             127 - product.averageCoordinate!.longitude!) *
-    //             200)
-    //             .toInt(),
-    //     150,
-    //     ((coordinate.longitude ??
-    //         127 - product.averageCoordinate!.longitude!)
-    //         .abs() *
-    //         200)
-    //         .toInt(),
-    //   );
-    //   double size = 20;
-    //   size = log(numberOfImages) * 5;
-    //   List entries = data[date]![0];
-    //   double left = xLocation * (physicalWidth) / 2 +
-    //       (physicalWidth) / 2 -
-    //       size / 2;
-    //   double top = yLocation * physicalWidth / 2 +
-    //       physicalWidth / 2 -
-    //       size / 2;
-    //   // return [xLocation, yLocation, size, color, entries];
-    //   return [left, top, size, color, entries];
-    // });
-    // dataForNotExpanded = List.generate(data.length, (index) {
-    //   String date = data.keys.elementAt(index);
-    //   DateTime datetime = DateTime(year, int.parse(date.substring(4, 6)),
-    //       int.parse(date.substring(6, 8)));
-    //   int indexOfDate = datetime.difference(DateTime(year)).inDays;
-    //
-    //   double xLocation =
-    //       positionNotExpanded[indexOfDate][0].toDouble() * radius;
-    //   double yLocation =
-    //        positionNotExpanded[indexOfDate][1].toDouble() * radius;
-    //   yLocation = yLocation + 0.5;
-    //
-    //   int numberOfImages = data[date]?[0].length ?? 1;
-    //   Coordinate? coordinate = data[date]?[1];
-    //   Color color = coordinate == null
-    //       ? Colors.grey.withAlpha(150)
-    //       : Color.fromARGB(
-    //           100,
-    //           // 0,
-    //           255 -
-    //               ((coordinate.longitude ??
-    //                           127 - product.averageCoordinate!.longitude!) *
-    //                       200)
-    //                   .toInt(),
-    //           150,
-    //           ((coordinate.longitude ??
-    //                           127 - product.averageCoordinate!.longitude!)
-    //                       .abs() *
-    //                   200)
-    //               .toInt(),
-    //         );
-    //
-    //   double size = 20;
-    //   size = log(numberOfImages) * 5;
-    //   List entries = data[date]![0];
-    //   double left = xLocation * (physicalWidth) / 2 +
-    //       (physicalWidth) / 2 -
-    //       size / 2;
-    //   double top = yLocation * physicalWidth / 2 +
-    //       physicalWidth / 2 -
-    //       size / 2;
-    //   // return [xLocation, yLocation, size, color, entries];
-    //   return [left, top, size, color, entries];
-    // });
-
   }
   YearPageStateProvider product;
 
@@ -240,11 +146,21 @@ class _YearChartState extends State<YearChart> {
           children: List.generate(product.dataForChart2_modified[year].length,
               (index) {
             var data = product.dataForChart2_modified[year];
-            double left = isExpanded? data[index][0]: data[index][2];
-            double top = isExpanded? data[index][1]:data[index][3];
-            double size = data[index][4];
-            Color color = data[index][5];
-            List entries = data[index][6];
+            isExpanded = (product.expandedYear == year);
+            double left = isExpanded ? data[index][0] : data[index][2];
+            double top = isExpanded ? data[index][1] : data[index][3];
+
+            if ((product.expandedYear != null) && (!isExpanded)) {
+              left = data[index][4] * 5 * (physicalWidth) / 2 +
+                  (physicalWidth) / 2;
+              top = data[index][5] * 5 * (physicalWidth) / 2 +
+                  (physicalWidth) / 2;
+              ;
+            }
+
+            double size = data[index][6];
+            Color color = data[index][7];
+            List entries = data[index][8];
 
             return AnimatedPositioned(
                 duration: Duration(milliseconds: 1000),
@@ -252,14 +168,12 @@ class _YearChartState extends State<YearChart> {
                 left: left,
                 top: top,
                 child: Container(
-                  width: (product.expandedYear != null) &&
-                          (product.photoViewScale! < 2)
-                      ? size / product.photoViewScale!
-                      : size,
-                  height: (product.expandedYear != null) &&
-                          (product.photoViewScale! < 2)
-                      ? size / product.photoViewScale!
-                      : size,
+                  width: (product.photoViewScale! < 2)
+                      ? size
+                      : size / product.photoViewScale!,
+                  height: (product.photoViewScale! < 2)
+                      ? size
+                      : size / product.photoViewScale!,
                   decoration:
                       ShapeDecoration(shape: const Border(), color: color),
                   child: GestureDetector(
@@ -277,15 +191,15 @@ class _YearChartState extends State<YearChart> {
                           return;
                         }
                       },
-                      child :  SizedBox(width: 100, height: 100))
-                      // child: !(product.expandedYear == null) &&
-                      //         (product.photoViewScale! > 2)
-                      //     ? ExtendedImage.file(
-                      //         File(entries.elementAt(0).key),
-                      //         compressionRatio: 0.1,
-                      //         cacheRawData: true,
-                      //       )
-                      //     : SizedBox(width: 100, height: 100)),
+                      // child: SizedBox(width: 100, height: 100))
+                      child: (product.expandedYear == year) &&
+                              (product.photoViewScale! > 2)
+                          ? ExtendedImage.file(
+                              File(entries.elementAt(0).key),
+                              compressionRatio: 0.1,
+                              cacheRawData: true,
+                            )
+                          : SizedBox(width: 100, height: 100)),
                 ));
           })),
     );

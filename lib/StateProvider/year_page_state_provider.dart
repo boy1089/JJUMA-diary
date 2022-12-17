@@ -14,7 +14,7 @@ List positionExpanded = List.generate(366, (index) {
   double day = index.toDouble();
   double week = day / 7.ceil();
   double weekday = day % 7;
-  double radius = (weekday + 3) / 8 * 1.2;
+  double radius = (weekday + 3) / 11 * 1.2;
   double angle = week / 52 * 2 * pi;
 
   double xLocation = radius * cos(angle - pi / 2);
@@ -62,6 +62,8 @@ class YearPageStateProvider with ChangeNotifier {
     updateData();
     modifyData();
   }
+
+
   void setExpandedYear(int? year) {
     expandedYear = year;
     notifyListeners();
@@ -118,13 +120,14 @@ class YearPageStateProvider with ChangeNotifier {
         double xLocationExpanded =  positionExpanded[indexOfDate][0];
         double yLocationExpanded = positionExpanded[indexOfDate][1];
 
-        xLocationExpanded = (1.4-i*0.1) * xLocationExpanded;
-        yLocationExpanded = (1.4-i*0.1) * yLocationExpanded;
+        xLocationExpanded = (1.0) * xLocationExpanded;
+        yLocationExpanded = (1.0) * yLocationExpanded;
 
         yLocationExpanded = yLocationExpanded + 0.5;
 
         double xLocationNotExpanded =  positionNotExpanded[indexOfDate][0];
         double yLocationNotExpanded = positionNotExpanded[indexOfDate][1];
+
         xLocationNotExpanded = (1-i*0.1) * xLocationNotExpanded;
         yLocationNotExpanded = (1-i*0.1) * yLocationNotExpanded;
 
@@ -154,6 +157,7 @@ class YearPageStateProvider with ChangeNotifier {
         double size = 20;
         size = log(numberOfImages) * 5;
         List entries = data[date]![0];
+
         double leftExpanded = xLocationExpanded * (physicalWidth) / 2 +
             (physicalWidth) / 2 -
             size / 2;
@@ -168,7 +172,7 @@ class YearPageStateProvider with ChangeNotifier {
             size / 2;
 
         // return [xLocation, yLocation, size, color, entries];
-        return [leftExpanded, topExpanded, leftNotExpanded, topNotExpanded, size, color, entries];
+        return [leftExpanded, topExpanded, leftNotExpanded, topNotExpanded, xLocationNotExpanded, yLocationNotExpanded, size, color, entries];
       });
 
     }

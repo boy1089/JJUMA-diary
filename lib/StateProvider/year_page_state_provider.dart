@@ -10,6 +10,27 @@ import '../Location/coordinate.dart';
 
 enum ImportanceFilter { memorable, casual, none }
 
+List positionExpanded = List.generate(366, (index) {
+  double day = index.toDouble();
+  double week = day / 7.ceil();
+  double weekday = day % 7;
+  double radius = (weekday + 3) / 8 * 1.2;
+  double angle = week / 52 * 2 * pi;
+
+  double xLocation = radius * cos(angle - pi / 2);
+  double yLocation = radius * sin(angle - pi / 2);
+  return [xLocation, yLocation];
+});
+
+List positionNotExpanded = List.generate(366, (index) {
+  double day = index.toDouble();
+  double week = day / 7.ceil();
+  double weekday = day % 7;
+  double angle = day / 365 * 2 * pi;
+  double xLocation = 1 * cos(angle - pi / 2);
+  double yLocation = 1 * sin(angle - pi / 2);
+  return [xLocation, yLocation];
+});
 enum LocationFilter {
   trip,
   none,
@@ -30,13 +51,16 @@ class YearPageStateProvider with ChangeNotifier {
   int locationFilterIndex = LocationFilter.none.index;
 
   List<List<dynamic>> dataForChart = [];
+  Map dataForChart2_modified = {};
   Map<int, Map<String, List>> dataForChart2 = {};
   int? expandedYear = null;
   Coordinate? averageCoordinate;
+  double? photoViewScale = 1;
 
   DataManagerInterface dataManager;
   YearPageStateProvider(this.dataManager) {
     updateData();
+    modifyData();
   }
   void setExpandedYear(int? year) {
     expandedYear = year;
@@ -79,7 +103,80 @@ class YearPageStateProvider with ChangeNotifier {
     averageCoordinate = Coordinate(latitude/ coordinates.length, longitude/coordinates.length);
 
     notifyListeners();
+  }
 
+  void modifyData(){
+    for(int i = 0; i< dataForChart2.length; i++){
+      int year = dataForChart2.keys.elementAt(i);
+      var data = dataForChart2[year];
+     dataForChart2_modified[year] = List.generate(data!.length, (index){
+        String date = data.keys.elementAt(index);
+        DateTime datetime = DateTime(year, int.parse(date.substring(4, 6)),
+            int.parse(date.substring(6, 8)));
+        int indexOfDate = datetime.difference(DateTime(year)).inDays;
+
+        double xLocationExpanded =  positionExpanded[indexOfDate][0];
+        double yLocationExpanded = positionExpanded[indexOfDate][1];
+
+        xLocationExpanded = (1.4-i*0.1) * xLocationExpanded;
+        yLocationExpanded = (1.4-i*0.1) * yLocationExpanded;
+
+        yLocationExpanded = yLocationExpanded + 0.5;
+
+        double xLocationNotExpanded =  positionNotExpanded[indexOfDate][0];
+        double yLocationNotExpanded = positionNotExpanded[indexOfDate][1];
+        xLocationNotExpanded = (1-i*0.1) * xLocationNotExpanded;
+        yLocationNotExpanded = (1-i*0.1) * yLocationNotExpanded;
+
+        yLocationNotExpanded = yLocationNotExpanded + 0.5;
+
+
+
+        int numberOfImages = data[date]?[0].length ?? 1;
+        Coordinate? coordinate = data[date]?[1];
+        Color color = coordinate == null
+            ? Colors.grey.withAlpha(150)
+            : Color.fromARGB(
+          100,
+          // 0,
+          255 -
+              ((coordinate.longitude ??
+                  127 - averageCoordinate!.longitude!) *
+                  200)
+                  .toInt(),
+          150,
+          ((coordinate.longitude ??
+              127 - averageCoordinate!.longitude!)
+              .abs() *
+              200)
+              .toInt(),
+        );
+        double size = 20;
+        size = log(numberOfImages) * 5;
+        List entries = data[date]![0];
+        double leftExpanded = xLocationExpanded * (physicalWidth) / 2 +
+            (physicalWidth) / 2 -
+            size / 2;
+        double topExpanded = yLocationExpanded * physicalWidth / 2 +
+            physicalWidth / 2 -
+            size / 2;
+        double leftNotExpanded = xLocationNotExpanded * (physicalWidth) / 2 +
+            (physicalWidth) / 2 -
+            size / 2;
+        double topNotExpanded = yLocationNotExpanded * physicalWidth / 2 +
+            physicalWidth / 2 -
+            size / 2;
+
+        // return [xLocation, yLocation, size, color, entries];
+        return [leftExpanded, topExpanded, leftNotExpanded, topNotExpanded, size, color, entries];
+      });
+
+    }
+  }
+
+  void setPhotoViewScale(double photoViewScale){
+    this.photoViewScale = photoViewScale;
+    notifyListeners();
   }
 
   void setAvailableDates(int year) {

@@ -75,13 +75,8 @@ class _AppState extends State<App> with SingleTickerProviderStateMixin {
       duration: const Duration(milliseconds: 300),
       vsync: this,
     );
-    late final Animation<Offset> _offsetAnimation = Tween<Offset>(
-      begin: const Offset(1, 0.0),
-      end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.bounceIn,
-    ));
+
+
 
     final _router = GoRouter(initialLocation: '/year', routes: [
       GoRoute(

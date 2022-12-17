@@ -61,7 +61,7 @@ class DataRepository {
 
     files = files.where((element) => !element.contains('thumbnail')).toList();
     files.sort((a, b) => a.compareTo(b));
-    print(files);
+    // print(files);
     return files;
   }
 
@@ -84,16 +84,16 @@ class DataRepository {
       if (global.kOs == "ios") {
         String id = filenames.elementAt(i);
         int index = ids.indexOf(id);
-        if (i % 100 == 0) {
-          print("$i / ${mapFromJson.length}, ${index}");
-        }
+        // if (i % 100 == 0) {
+        //   print("$i / ${mapFromJson.length}, ${index}");
+        // }
         if (index != -1)
           test[keys[index]] = InfoFromFile.fromJson(json: mapFromJson[id]);
         continue;
       }
 
       String filename = filenames.elementAt(i);
-      print(mapFromJson[filename]);
+      // print(mapFromJson[filename]);
       // test[filename] = InfoFromFile(map: mapFromJson[filename]);
       test[filename] = InfoFromFile.fromJson(json: mapFromJson[filename]);
     }

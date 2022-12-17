@@ -43,7 +43,6 @@ class AndroidDataManager extends ChangeNotifier
     Stopwatch stopwatch = Stopwatch()..start();
 
     print("DataManager instance is initializing..");
-    //get list of image files from local. --> update new images
     files = await dataRepository.getAllFiles();
     infoFromFiles = await dataRepository.readInfoFromJson();
     notifyListeners();
@@ -59,8 +58,6 @@ class AndroidDataManager extends ChangeNotifier
     await updateDateOnInfo(filesNotUpdated);
     print("updateDateOnInfo done, time elapsed : ${stopwatch.elapsed}");
 
-
-    print("updateSummaryOfPhoto done, time elapsed : ${stopwatch.elapsed}");
     notifyListeners();
   }
 

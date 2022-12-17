@@ -41,39 +41,52 @@ class _YearPageScreen2State extends State<YearPageScreen2> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Consumer<YearPageStateProvider>(
-          builder: (context, product, child) => SizedBox(
+      body: Consumer<YearPageStateProvider>(
+        builder: (context, product, child) => PhotoView.customChild(
+          // customSize: Size(physicalWidth+100, physicalHeight),
+          minScale: 1.0,
+          onScaleEnd: (context, value, a) {
+            product.photoViewScale = a.scale ?? 1;
+            if (product.photoViewScale! < 1) {
+              product.setPhotoViewScale(1);
+              product.setExpandedYear(null);
+            }
+            ;
+            setState(() {});
+          },
+          child: SizedBox(
             width: physicalWidth,
-            height: physicalWidth * 1.4,
+            height: physicalWidth,
             child: Stack(
                 alignment: Alignment.center,
                 children: List.generate(product.dataForChart2.length, (index) {
                   int year = product.dataForChart2.keys.elementAt(index);
+
                   if (product.expandedYear == null) {
                     return YearChart(
-                        year: year, radius: 1 - index * 0.1, isExpanded: false);
+                        year: year,
+                        radius: 1 - index * 0.1,
+                        isExpanded: false,
+                        product: product);
                   }
                   if (product.expandedYear == year)
                     return YearChart(
-                        year: year, radius: 1 - index * 0.1, isExpanded: true);
-                  // return YearChart(
-                  //     year: year,
-                  //     radius: year < product.expandedYear! ? 0 : 3,
-                  //     isExpanded: false);
+                        year: year,
+                        radius: 1 - index * 0.1,
+                        isExpanded: true,
+                        product: product);
+
                   return SizedBox();
                 })),
           ),
         ),
       ),
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: () {
-      //     var a = Provider.of<YearPageStateProvider>(context, listen: false);
-      //     // a.updateData();
-      //     // print(a.dataManager.infoFromFiles);
-      //     // a.dataForChart2.forEach((key, value) {print("${value[1]}");});
-      //   },
-      // ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          var a = DataManagerInterface(global.kOs);
+          await a.init();
+        },
+      ),
     );
   }
 }
@@ -82,7 +95,7 @@ List positionExpanded = List.generate(366, (index) {
   double day = index.toDouble();
   double week = day / 7.ceil();
   double weekday = day % 7;
-  double radius = (weekday + 1) / 8 * 1.2;
+  double radius = (weekday + 3) / 8 * 1.2;
   double angle = week / 52 * 2 * pi;
 
   double xLocation = radius * cos(angle - pi / 2);
@@ -106,148 +119,175 @@ class YearChart extends StatefulWidget {
     required this.year,
     required this.radius,
     required this.isExpanded,
+    required this.product,
   }) : super(key: key);
 
   double radius;
   int year;
   bool isExpanded;
+  YearPageStateProvider product;
   @override
-  State<YearChart> createState() => _YearChartState();
+  State<YearChart> createState() => _YearChartState(product, year, isExpanded, radius);
 }
 
 class _YearChartState extends State<YearChart> {
-  double photoViewScale = 1.0;
+  List dataForNotExpanded = [];
+  List dataForExpanded = [];
+  int year;
+  var data;
+  bool isExpanded;
+  double radius;
+  _YearChartState(this.product, this.year, this.isExpanded, this.radius) {
+    print("debugging.. ${year}");
+
+    // data = product.dataForChart2[year];
+    // dataForExpanded = List.generate(data.length, (index){
+    //   String date = data.keys.elementAt(index);
+    //   DateTime datetime = DateTime(year, int.parse(date.substring(4, 6)),
+    //       int.parse(date.substring(6, 8)));
+    //   int indexOfDate = datetime.difference(DateTime(year)).inDays;
+    //
+    //   double xLocation =  positionExpanded[indexOfDate][0];
+    //
+    //   double yLocation = positionExpanded[indexOfDate][1];
+    //
+    //   yLocation = yLocation + 0.5;
+    //
+    //   int numberOfImages = data[date]?[0].length ?? 1;
+    //   Coordinate? coordinate = data[date]?[1];
+    //   Color color = coordinate == null
+    //       ? Colors.grey.withAlpha(150)
+    //       : Color.fromARGB(
+    //     100,
+    //     // 0,
+    //     255 -
+    //         ((coordinate.longitude ??
+    //             127 - product.averageCoordinate!.longitude!) *
+    //             200)
+    //             .toInt(),
+    //     150,
+    //     ((coordinate.longitude ??
+    //         127 - product.averageCoordinate!.longitude!)
+    //         .abs() *
+    //         200)
+    //         .toInt(),
+    //   );
+    //   double size = 20;
+    //   size = log(numberOfImages) * 5;
+    //   List entries = data[date]![0];
+    //   double left = xLocation * (physicalWidth) / 2 +
+    //       (physicalWidth) / 2 -
+    //       size / 2;
+    //   double top = yLocation * physicalWidth / 2 +
+    //       physicalWidth / 2 -
+    //       size / 2;
+    //   // return [xLocation, yLocation, size, color, entries];
+    //   return [left, top, size, color, entries];
+    // });
+    // dataForNotExpanded = List.generate(data.length, (index) {
+    //   String date = data.keys.elementAt(index);
+    //   DateTime datetime = DateTime(year, int.parse(date.substring(4, 6)),
+    //       int.parse(date.substring(6, 8)));
+    //   int indexOfDate = datetime.difference(DateTime(year)).inDays;
+    //
+    //   double xLocation =
+    //       positionNotExpanded[indexOfDate][0].toDouble() * radius;
+    //   double yLocation =
+    //        positionNotExpanded[indexOfDate][1].toDouble() * radius;
+    //   yLocation = yLocation + 0.5;
+    //
+    //   int numberOfImages = data[date]?[0].length ?? 1;
+    //   Coordinate? coordinate = data[date]?[1];
+    //   Color color = coordinate == null
+    //       ? Colors.grey.withAlpha(150)
+    //       : Color.fromARGB(
+    //           100,
+    //           // 0,
+    //           255 -
+    //               ((coordinate.longitude ??
+    //                           127 - product.averageCoordinate!.longitude!) *
+    //                       200)
+    //                   .toInt(),
+    //           150,
+    //           ((coordinate.longitude ??
+    //                           127 - product.averageCoordinate!.longitude!)
+    //                       .abs() *
+    //                   200)
+    //               .toInt(),
+    //         );
+    //
+    //   double size = 20;
+    //   size = log(numberOfImages) * 5;
+    //   List entries = data[date]![0];
+    //   double left = xLocation * (physicalWidth) / 2 +
+    //       (physicalWidth) / 2 -
+    //       size / 2;
+    //   double top = yLocation * physicalWidth / 2 +
+    //       physicalWidth / 2 -
+    //       size / 2;
+    //   // return [xLocation, yLocation, size, color, entries];
+    //   return [left, top, size, color, entries];
+    // });
+
+  }
+  YearPageStateProvider product;
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<YearPageStateProvider>(
-      builder: (context, product, child) => PhotoView.customChild(
-        minScale: 1.0,
-        onScaleEnd: (context, value, a) {
-          photoViewScale = a.scale ?? 1;
-          if (photoViewScale < 1) photoViewScale = 1;
-          setState(() {});
-          print("$value, $a");
-        },
-        child: Stack(
-            alignment: Alignment.center,
-            // clipBehavior: Clip.none,
-            children: List.generate(product.dataForChart2[widget.year]!.length,
-                (index) {
-              // double day = index.toDouble();
-              // String date = formatDate(
-              //     DateTime(widget.year).add(Duration(days: day.toInt())));
-              String date =
-                  product.dataForChart2[widget.year]!.keys.elementAt(index);
-              DateTime datetime = DateTime(
-                  widget.year,
-                  int.parse(date.substring(4, 6)),
-                  int.parse(date.substring(6, 8)));
-              int indexOfDate =
-                  datetime.difference(DateTime(widget.year)).inDays;
+    return Center(
+      child: Stack(
+          alignment: Alignment.center,
+          children: List.generate(product.dataForChart2_modified[year].length,
+              (index) {
+            var data = product.dataForChart2_modified[year];
+            double left = isExpanded? data[index][0]: data[index][2];
+            double top = isExpanded? data[index][1]:data[index][3];
+            double size = data[index][4];
+            Color color = data[index][5];
+            List entries = data[index][6];
 
-              double xLocation = widget.isExpanded
-                  ? positionExpanded[indexOfDate][0]
-                  : positionNotExpanded[indexOfDate][0].toDouble() *
-                      widget.radius;
-              double yLocation = widget.isExpanded
-                  ? positionExpanded[indexOfDate][1]
-                  : positionNotExpanded[indexOfDate][1].toDouble() *
-                      widget.radius;
-
-              // double xLocation = widget.isExpanded? positionExpanded[index][0] : positionNotExpanded[index][0].toDouble();
-              // double yLocation = widget.isExpanded? positionExpanded[index][1] : positionNotExpanded[index][1].toDouble();
-              int numberOfImages =
-                  product.dataForChart2[widget.year]?[date]?[0].length ?? 1;
-              Coordinate? coordinate =
-                  product.dataForChart2[widget.year]?[date]?[1];
-              // int numberOfImages = index>50? 10:1;
-              // if (numberOfImages != 1) print(numberOfImages);
-              Color color = coordinate == null
-                  ? Colors.grey.withAlpha(150)
-                  : Color.fromARGB(
-                      100,
-                      // 0,
-                      255 -
-                          ((coordinate.longitude ??
-                                      127 -
-                                          product
-                                              .averageCoordinate!.longitude!) *
-                                  200)
-                              .toInt(),
-                      150,
-                      ((coordinate.longitude ??
-                                      127 -
-                                          product.averageCoordinate!.longitude!)
-                                  .abs() *
-                              200)
-                          .toInt(),
-                    );
-              double size = 20;
-              size = log(numberOfImages) * 5 / photoViewScale;
-              List entries = product.dataForChart2[widget.year]![date]![0];
-              // return AnimatedAlign(
-              return AnimatedPositioned(
-                  duration: Duration(milliseconds: 1000),
-                  curve: Curves.easeOutExpo,
-                  left: xLocation * physicalWidth / 2 +
-                      physicalWidth / 2 -
-                      size / 2,
-                  top: yLocation * physicalWidth / 2 +
-                      physicalWidth / 2 -
-                      size / 2,
-
-                  // alignment: Alignment(xLocation, yLocation),
-                  child: Container(
-                    width: photoViewScale<2?size : size*5,
-                    height: photoViewScale<2?size: size*5,
-                    decoration:
-                        // ShapeDecoration(shape: const CircleBorder(), color: color),
-                        ShapeDecoration(shape: const Border(), color: color),
-                    child: GestureDetector(
-                        onDoubleTap: () {
-                          // showDialog(context: context, builder: (context)=>SimpleDialog(
-                          //   children: [Text("aaa")],
-                          // ));
-                          product.setExpandedYear(null);
-                          setState(() {});
-                        },
-                        onTap: () {
-                          if (!widget.isExpanded) {
-                            print("tap");
-                            setState(() {
-                              product.setExpandedYear(widget.year);
-                            });
-                            return;
-                          }
-                          showDialog(
-                              context: context,
-                              builder: (a) {
-                                return SimpleDialog(
-                                  children: [
-                                    SingleChildScrollView(
-                                        child: Column(
-                                            children: List.generate(
-                                                entries.length,
-                                                (index) => ExtendedImage.file(
-                                                      File(entries
-                                                          .elementAt(index)
-                                                          .key),
-                                                      compressionRatio: 0.02,
-                                                    ))))
-                                  ],
-                                );
-                              });
-                        },
-                        child: photoViewScale > 2
-                            ? ExtendedImage.file(
-                                File(entries.elementAt(0).key),
-                                compressionRatio: 0.1,
-                              )
-                            : SizedBox()),
-                  ));
-            })),
-      ),
+            return AnimatedPositioned(
+                duration: Duration(milliseconds: 1000),
+                curve: Curves.easeOutExpo,
+                left: left,
+                top: top,
+                child: Container(
+                  width: (product.expandedYear != null) &&
+                          (product.photoViewScale! < 2)
+                      ? size / product.photoViewScale!
+                      : size,
+                  height: (product.expandedYear != null) &&
+                          (product.photoViewScale! < 2)
+                      ? size / product.photoViewScale!
+                      : size,
+                  decoration:
+                      ShapeDecoration(shape: const Border(), color: color),
+                  child: GestureDetector(
+                      behavior: HitTestBehavior.translucent,
+                      onDoubleTap: () {
+                        product.setExpandedYear(null);
+                        setState(() {});
+                      },
+                      onTap: () {
+                        if (!widget.isExpanded) {
+                          setState(() {
+                            product.setExpandedYear(widget.year);
+                            product.setPhotoViewScale(1);
+                          });
+                          return;
+                        }
+                      },
+                      child :  SizedBox(width: 100, height: 100))
+                      // child: !(product.expandedYear == null) &&
+                      //         (product.photoViewScale! > 2)
+                      //     ? ExtendedImage.file(
+                      //         File(entries.elementAt(0).key),
+                      //         compressionRatio: 0.1,
+                      //         cacheRawData: true,
+                      //       )
+                      //     : SizedBox(width: 100, height: 100)),
+                ));
+          })),
     );
   }
 }

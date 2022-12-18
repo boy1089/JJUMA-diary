@@ -46,7 +46,7 @@ class _YearPageScreen2State extends State<YearPageScreen2> {
                         year: year,
                         radius: 1 - index * 0.1,
                         isExpanded: (product.expandedYear == null) ||
-                                (product.expandedYear == year)
+                                (product.expandedYear != year)
                             ? false
                             : true,
                         product: product);

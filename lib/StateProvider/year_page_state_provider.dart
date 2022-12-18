@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 
 import '../Data/data_manager_interface.dart';
 import '../Location/coordinate.dart';
+import '../pages/YearPage/year_page_screen2.dart';
 
 enum ImportanceFilter { memorable, casual, none }
 
@@ -159,20 +160,20 @@ class YearPageStateProvider with ChangeNotifier {
         List entries = data[date]![0];
 
         double leftExpanded = xLocationExpanded * (physicalWidth) / 2 +
-            (physicalWidth) / 2 -
+            (sizeOfChart.width) / 2 -
             size / 2;
         double topExpanded = yLocationExpanded * physicalWidth / 2 +
             physicalWidth / 2 -
             size / 2;
         double leftNotExpanded = xLocationNotExpanded * (physicalWidth) / 2 +
-            (physicalWidth) / 2 -
+            (sizeOfChart.width) / 2 -
             size / 2;
         double topNotExpanded = yLocationNotExpanded * physicalWidth / 2 +
             physicalWidth / 2 -
             size / 2;
 
         double leftExpandedExtra = positionNotExpanded[indexOfDate][0]*1.5 * (physicalWidth) / 2 +
-            (physicalWidth) / 2 -
+            (sizeOfChart.width) / 2 -
             size / 2;
         double topExpandedExtra = (positionNotExpanded[indexOfDate][1]*1.5 + 0.95) * physicalWidth / 2 +
             physicalWidth / 2 -

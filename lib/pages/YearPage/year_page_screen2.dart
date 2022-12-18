@@ -16,12 +16,15 @@ class YearPageScreen2 extends StatefulWidget {
   State<YearPageScreen2> createState() => _YearPageScreen2State();
 }
 
+Size sizeOfChart = Size(800, 800);
+
 class _YearPageScreen2State extends State<YearPageScreen2> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Consumer<YearPageStateProvider>(
         builder: (context, product, child) => PhotoView.customChild(
+          customSize: sizeOfChart,
           minScale: 1.0,
           onScaleEnd: (context, value, a) {
             product.setPhotoViewScale(a.scale ?? 1);

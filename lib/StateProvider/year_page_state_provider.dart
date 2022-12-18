@@ -123,7 +123,7 @@ class YearPageStateProvider with ChangeNotifier {
         xLocationExpanded = (1.0) * xLocationExpanded;
         yLocationExpanded = (1.0) * yLocationExpanded;
 
-        yLocationExpanded = yLocationExpanded + 0.7;
+        yLocationExpanded = yLocationExpanded + 0.95;
 
         double xLocationNotExpanded =  positionNotExpanded[indexOfDate][0];
         double yLocationNotExpanded = positionNotExpanded[indexOfDate][1];
@@ -131,7 +131,7 @@ class YearPageStateProvider with ChangeNotifier {
         xLocationNotExpanded = (1-i*0.1) * xLocationNotExpanded;
         yLocationNotExpanded = (1-i*0.1) * yLocationNotExpanded;
 
-        yLocationNotExpanded = yLocationNotExpanded + 0.7;
+        yLocationNotExpanded = yLocationNotExpanded + 0.95;
 
 
 

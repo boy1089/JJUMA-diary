@@ -37,7 +37,7 @@ class _YearPageScreen2State extends State<YearPageScreen2> {
             child: Stack(
                 alignment: Alignment.center,
 
-                children: List.generate(product.dataForChart2.length, (index) {
+                children: [CustomPaint(size : Size(0, 0),painter : OpenPainter())]..addAll(List.generate(product.dataForChart2.length, (index) {
                   int year = product.dataForChart2.keys.elementAt(index);
                   return YearChart(
                       year: year,
@@ -47,7 +47,7 @@ class _YearPageScreen2State extends State<YearPageScreen2> {
                           ? false
                           : true,
                       product: product);
-                })..add(CustomPaint(size : Size(10, 20),painter : OpenPainter()))
+                }))
             ),
           ),
         ),
@@ -77,6 +77,7 @@ class OpenPainter extends CustomPainter {
     final textStyle = TextStyle(
       color: Colors.white,
       fontSize: 8,
+
     );
 
     final textSpan = TextSpan(
@@ -111,7 +112,7 @@ class OpenPainter extends CustomPainter {
         ..text = textSpan;
       textPainter.layout(
         minWidth: 0,
-        maxWidth: size.width,
+        maxWidth: 15,
       );
 
       textPainter.paint(canvas, Offset(xOffset, yOffset));

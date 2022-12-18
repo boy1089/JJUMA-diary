@@ -17,7 +17,6 @@ class YearPageScreen2 extends StatefulWidget {
 }
 
 class _YearPageScreen2State extends State<YearPageScreen2> {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,48 +35,48 @@ class _YearPageScreen2State extends State<YearPageScreen2> {
             height: physicalWidth,
             child: Stack(
                 alignment: Alignment.center,
-
-                children: [CustomPaint(size : Size(0, 0),painter : OpenPainter())]..addAll(List.generate(product.dataForChart2.length, (index) {
-                  int year = product.dataForChart2.keys.elementAt(index);
-                  return YearChart(
-                      year: year,
-                      radius: 1 - index * 0.1,
-                      isExpanded: (product.expandedYear == null) ||
-                              (product.expandedYear == year)
-                          ? false
-                          : true,
-                      product: product);
-                }))
-            ),
+                children: [
+                  CustomPaint(size: Size(0, 0), painter: OpenPainter())
+                ]..addAll(List.generate(product.dataForChart2.length, (index) {
+                    int year = product.dataForChart2.keys.elementAt(index);
+                    return YearChart(
+                        year: year,
+                        radius: 1 - index * 0.1,
+                        isExpanded: (product.expandedYear == null) ||
+                                (product.expandedYear == year)
+                            ? false
+                            : true,
+                        product: product);
+                  }))),
           ),
         ),
+      ),
+      floatingActionButton : FloatingActionButton(
+        onPressed: (){print(positionExpanded);},
       ),
     );
   }
 }
 
-
-
 class OpenPainter extends CustomPainter {
-
   @override
   void paint(Canvas canvas, Size size) {
     var paint1 = Paint()
       ..color = Color(0xff808080)
-      ..style = PaintingStyle.stroke..strokeWidth = 0.7;
-    canvas.drawCircle(Offset(0, 0), (physicalWidth/2-3)* 0.3, paint1);
-    canvas.drawCircle(Offset(0, 0), physicalWidth/2-3, paint1);
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 0.7;
+    canvas.drawCircle(Offset(0, 0), (physicalWidth / 2 - 3) * 0.3, paint1);
+    canvas.drawCircle(Offset(0, 0), physicalWidth / 2 - 3, paint1);
 
     var paint2 = Paint()
       ..color = Color(0xff3f3f3f)
-      ..style = PaintingStyle.stroke..strokeWidth = 0.7;
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 0.7;
     double radius = 240;
-
 
     final textStyle = TextStyle(
       color: Colors.white,
       fontSize: 8,
-
     );
 
     final textSpan = TextSpan(
@@ -97,8 +96,8 @@ class OpenPainter extends CustomPainter {
 
     final intl.DateFormat formatter = intl.DateFormat('MMM');
 
-    for(int i = 0; i< 12; i++){
-      double angle = 2 * pi /12 * i + 2*pi/24 * 16;
+    for (int i = 0; i < 12; i++) {
+      double angle = 2 * pi / 12 * i + 2 * pi / 24 * 16;
       double xOffset = cos(angle) * radius;
       double yOffset = sin(angle) * radius;
       canvas.drawLine(Offset(0, 0), Offset(xOffset, yOffset), paint2);
@@ -108,18 +107,14 @@ class OpenPainter extends CustomPainter {
         style: textStyle,
       );
 
-      textPainter
-        ..text = textSpan;
+      textPainter..text = textSpan;
       textPainter.layout(
         minWidth: 0,
         maxWidth: 15,
       );
 
       textPainter.paint(canvas, Offset(xOffset, yOffset));
-
     }
-
-
   }
 
   @override

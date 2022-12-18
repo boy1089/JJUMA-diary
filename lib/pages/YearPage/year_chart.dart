@@ -46,11 +46,8 @@ class _YearChartState extends State<YearChart> {
                 double top = isExpanded ? data[index][1] : data[index][3];
 
                 if ((product.expandedYear != null) && (!isExpanded)) {
-                  left = data[index][4] * 5 * (physicalWidth) / 2 +
-                      (physicalWidth) / 2;
-                  top = data[index][5] * 5 * (physicalWidth) / 2 +
-                      (physicalWidth) / 2;
-                  ;
+                  left = data[index][4];
+                  top = data[index][5];
                 }
 
                 double size = data[index][6];

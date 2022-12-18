@@ -1,4 +1,7 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart' as intl;
 import 'package:photo_view/photo_view.dart';
 import 'package:provider/provider.dart';
 import 'package:lateDiary/StateProvider/year_page_state_provider.dart';
@@ -35,10 +38,7 @@ class _YearPageScreen2State extends State<YearPageScreen2> {
                 alignment: Alignment.center,
 
                 children: List.generate(product.dataForChart2.length, (index) {
-                // children: List.generate(3, (index) {
                   int year = product.dataForChart2.keys.elementAt(index);
-
-                  // if (product.expandedYear == null) {
                   return YearChart(
                       year: year,
                       radius: 1 - index * 0.1,
@@ -47,10 +47,80 @@ class _YearPageScreen2State extends State<YearPageScreen2> {
                           ? false
                           : true,
                       product: product);
-                })),
+                })..add(CustomPaint(size : Size(10, 20),painter : OpenPainter()))
+            ),
           ),
         ),
       ),
     );
   }
+}
+
+
+
+class OpenPainter extends CustomPainter {
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    var paint1 = Paint()
+      ..color = Color(0xff808080)
+      ..style = PaintingStyle.stroke..strokeWidth = 0.7;
+    canvas.drawCircle(Offset(0, 0), (physicalWidth/2-3)* 0.3, paint1);
+    canvas.drawCircle(Offset(0, 0), physicalWidth/2-3, paint1);
+
+    var paint2 = Paint()
+      ..color = Color(0xff3f3f3f)
+      ..style = PaintingStyle.stroke..strokeWidth = 0.7;
+    double radius = 240;
+
+
+    final textStyle = TextStyle(
+      color: Colors.white,
+      fontSize: 8,
+    );
+
+    final textSpan = TextSpan(
+      text: 'aa',
+      style: textStyle,
+    );
+
+    final textPainter = TextPainter(
+      text: textSpan,
+      textDirection: TextDirection.ltr,
+    );
+
+    textPainter.layout(
+      minWidth: 0,
+      maxWidth: size.width,
+    );
+
+    final intl.DateFormat formatter = intl.DateFormat('MMM');
+
+    for(int i = 0; i< 12; i++){
+      double angle = 2 * pi /12 * i + 2*pi/24 * 16;
+      double xOffset = cos(angle) * radius;
+      double yOffset = sin(angle) * radius;
+      canvas.drawLine(Offset(0, 0), Offset(xOffset, yOffset), paint2);
+
+      final textSpan = TextSpan(
+        text: '${formatter.format(DateTime(2022, i))}',
+        style: textStyle,
+      );
+
+      textPainter
+        ..text = textSpan;
+      textPainter.layout(
+        minWidth: 0,
+        maxWidth: size.width,
+      );
+
+      textPainter.paint(canvas, Offset(xOffset, yOffset));
+
+    }
+
+
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) => true;
 }

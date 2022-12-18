@@ -12,11 +12,11 @@ import 'package:lateDiary/StateProvider/navigation_index_state_provider.dart';
 class PolarMonthIndicators {
   @override
   Widget build(BuildContext context) {
-    return Provider.of<YearPageStateProvider>(context, listen: false).isZoomIn
-        ? Stack(
+    return
+         Stack(
             children: List<Widget>.generate(
-                12, (int index) => PolarMonthIndicator(index).build(context)))
-        : Text("");
+                12, (int index) => PolarMonthIndicator(index).build(context)));
+
   }
 }
 

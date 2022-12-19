@@ -88,8 +88,6 @@ class _YearChartState extends State<YearChart> {
                           });
                           return;
                         }
-                        print(
-                            "${detail.localPosition}, ${detail.globalPosition}");
                         if (widget.isExpanded) {
                           showDialog(
                               context: context,
@@ -98,9 +96,10 @@ class _YearChartState extends State<YearChart> {
                                   position: detail.globalPosition));
                         }
                       },
-                      child: Scatter.fromType(size: size,color: color,type : scatterType.defaultRect)
-                  ));
-
+                      child: Scatter.fromType(
+                          size: size,
+                          color: color,
+                          type: scatterType.defaultRect)));
             }))),
     );
   }
@@ -109,21 +108,47 @@ class _YearChartState extends State<YearChart> {
 class photoSpread extends StatelessWidget {
   var entries;
   var position;
+  var sortedEntries;
   photoSpread({Key? key, required this.entries, required this.position})
-      : super(key: key);
+      : super(key: key){
+    sortEntries();
+  }
+
+  void sortEntries() async {
+    List events = [];
+    DateTime datetime_prev = entries.elementAt(0).value.datetime;
+    DateTime datetime_after = DateTime(2022);
+
+
+    List event = [];
+    event.add(entries.elementAt(0));
+    for(int i = 1; i< entries.length; i++){
+      print("$i, ${entries.elementAt(i)}");
+      datetime_after = entries.elementAt(i).value.datetime;
+      if((datetime_after.difference(datetime_prev))> Duration(hours : 1)){
+        events.add(event);
+        event = [entries.elementAt(i)];
+        datetime_prev = datetime_after;
+        continue;
+      }
+      event.add(entries.elementAt(i));
+    }
+    sortedEntries = events;
+
+  }
 
   @override
   Widget build(BuildContext context) {
     return Stack(
-        children: List.generate(entries.length, (index) {
+        children: List.generate(sortedEntries.length, (index) {
       return Positioned(
-          left: position.dx + cos(2 * pi / entries.length * index) * 100,
-          top: position.dy + sin(2 * pi / entries.length * index) * 100,
+          left: position.dx + cos(2 * pi / sortedEntries.length * index) * 100,
+          top: position.dy + sin(2 * pi / sortedEntries.length * index) * 100,
           child: SizedBox(
             width: 100,
             height: 100,
             child: ExtendedImage.file(
-              File(entries.elementAt(index).key),
+              File(sortedEntries.elementAt(index)[0].key),
               compressionRatio: 0.1,
             ),
           ));

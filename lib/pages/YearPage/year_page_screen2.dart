@@ -54,9 +54,7 @@ class _YearPageScreen2State extends State<YearPageScreen2> {
           ),
         ),
       ),
-      floatingActionButton : FloatingActionButton(
-        onPressed: (){print(positionExpanded);},
-      ),
+      
     );
   }
 }

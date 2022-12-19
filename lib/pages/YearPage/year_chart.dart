@@ -7,6 +7,7 @@ import 'package:extended_image/extended_image.dart';
 import 'dart:io';
 
 import 'package:lateDiary/pages/YearPage/year_page_screen2.dart';
+import 'scatters.dart';
 
 class YearChart extends StatefulWidget {
   YearChart({
@@ -73,37 +74,33 @@ class _YearChartState extends State<YearChart> {
                   curve: Curves.easeOutExpo,
                   left: left,
                   top: top,
-                  child: Container(
-                    width: size,
-                    height: size,
-                    decoration:
-                        ShapeDecoration(shape: const Border(), color: color),
-                    child: GestureDetector(
-                        behavior: HitTestBehavior.translucent,
-                        onDoubleTap: () {
-                          product.setExpandedYear(null);
-                          setState(() {});
-                        },
-                        onTapUp: (detail) {
-                          if (!widget.isExpanded) {
-                            setState(() {
-                              product.setExpandedYear(widget.year);
-                              product.setPhotoViewScale(1);
-                            });
-                            return;
-                          }
-                          print(
-                              "${detail.localPosition}, ${detail.globalPosition}");
-                          if (widget.isExpanded) {
-                            showDialog(
-                                context: context,
-                                builder: (context) => photoSpread(
-                                    entries: entries,
-                                    position: detail.globalPosition));
-                          }
-                        },
-                        child: SizedBox(width: 100, height: 100)),
+                  child: GestureDetector(
+                      behavior: HitTestBehavior.translucent,
+                      onDoubleTap: () {
+                        product.setExpandedYear(null);
+                        setState(() {});
+                      },
+                      onTapUp: (detail) {
+                        if (!widget.isExpanded) {
+                          setState(() {
+                            product.setExpandedYear(widget.year);
+                            product.setPhotoViewScale(1);
+                          });
+                          return;
+                        }
+                        print(
+                            "${detail.localPosition}, ${detail.globalPosition}");
+                        if (widget.isExpanded) {
+                          showDialog(
+                              context: context,
+                              builder: (context) => photoSpread(
+                                  entries: entries,
+                                  position: detail.globalPosition));
+                        }
+                      },
+                      child: DefaultRectangleScatter(size: size,color: color,)
                   ));
+
             }))),
     );
   }

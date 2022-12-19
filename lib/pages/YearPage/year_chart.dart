@@ -6,6 +6,8 @@ import 'package:lateDiary/Util/Util.dart';
 import 'package:extended_image/extended_image.dart';
 import 'dart:io';
 
+import 'package:lateDiary/pages/YearPage/year_page_screen2.dart';
+
 class YearChart extends StatefulWidget {
   YearChart({
     Key? key,
@@ -39,75 +41,70 @@ class _YearChartState extends State<YearChart> {
     return Center(
       child: Stack(
           alignment: Alignment.center,
-          children: List.generate(product.dataForChart2_modified[year].length,
-              (index) {
-            var data = product.dataForChart2_modified[year];
-            isExpanded = (product.expandedYear == year);
-            double left = isExpanded ? data[index][0] : data[index][2];
-            double top = isExpanded ? data[index][1] : data[index][3];
-
-            if ((product.expandedYear != null) && (!isExpanded)) {
-              left = data[index][4];
-              top = data[index][5];
-            }
-
-            double size = data[index][6];
-            Color color = data[index][7];
-            List entries = data[index][8];
-
-            return AnimatedPositioned(
+          children: [
+            AnimatedPositioned(
                 duration: Duration(milliseconds: 1000),
+                left: sizeOfChart.width / 2 - 16,
+                top: (product.expandedYear == year)
+                    ? sizeOfChart.height / 2 - 8
+                    : (2 - radius) / 2 * sizeOfChart.height / 2 - 16,
                 curve: Curves.easeOutExpo,
-                left: left,
-                top: top,
-                child: Container(
-                  // width: (product.expandedYear == year) &&(product.photoViewScale! > 2)
-                  //     ? size/ product.photoViewScale!
-                  //     : size ,
-                  // height: (product.expandedYear == year) &&(product.photoViewScale! > 2)
-                  //     ? size/ product.photoViewScale!
-                  //     : size ,
+                child: Offstage(
+                    offstage: (product.expandedYear != null) && (!isExpanded),
+                    child: Text("$year")))
+          ]..addAll(List.generate(product.dataForChart2_modified[year].length,
+                (index) {
+              var data = product.dataForChart2_modified[year];
+              isExpanded = (product.expandedYear == year);
+              double left = isExpanded ? data[index][0] : data[index][2];
+              double top = isExpanded ? data[index][1] : data[index][3];
 
-                  width: size,
-                  height: size,
+              if ((product.expandedYear != null) && (!isExpanded)) {
+                left = data[index][4];
+                top = data[index][5];
+              }
 
-                  decoration:
-                      ShapeDecoration(shape: const Border(), color: color),
-                  child: GestureDetector(
-                      behavior: HitTestBehavior.translucent,
-                      onDoubleTap: () {
-                        product.setExpandedYear(null);
-                        setState(() {});
-                      },
-                      onTapUp: (detail) {
-                        if (!widget.isExpanded) {
-                          setState(() {
-                            product.setExpandedYear(widget.year);
-                            product.setPhotoViewScale(1);
-                          });
-                          return;
-                        }
-                        print(
-                            "${detail.localPosition}, ${detail.globalPosition}");
-                        if (widget.isExpanded) {
-                          showDialog(
-                              context: context,
-                              builder: (context) => photoSpread(entries: entries, position: detail.globalPosition));
-                        }
-                      },
-                      child: SizedBox(width: 100, height: 100)
-                      // child: (product.expandedYear == year) &&
-                      //     (product.photoViewScale! > 2)
-                      //     ? ExtendedImage.file(
-                      //   File(entries.elementAt(0).key),
-                      //   compressionRatio: 0.1,
-                      //   cacheRawData: true,
-                      // )
-                      //     : SizedBox(width: 100, height: 100)
+              double size = data[index][6];
+              Color color = data[index][7];
+              List entries = data[index][8];
 
-                      ),
-                ));
-          })),
+              return AnimatedPositioned(
+                  duration: Duration(milliseconds: 1000),
+                  curve: Curves.easeOutExpo,
+                  left: left,
+                  top: top,
+                  child: Container(
+                    width: size,
+                    height: size,
+                    decoration:
+                        ShapeDecoration(shape: const Border(), color: color),
+                    child: GestureDetector(
+                        behavior: HitTestBehavior.translucent,
+                        onDoubleTap: () {
+                          product.setExpandedYear(null);
+                          setState(() {});
+                        },
+                        onTapUp: (detail) {
+                          if (!widget.isExpanded) {
+                            setState(() {
+                              product.setExpandedYear(widget.year);
+                              product.setPhotoViewScale(1);
+                            });
+                            return;
+                          }
+                          print(
+                              "${detail.localPosition}, ${detail.globalPosition}");
+                          if (widget.isExpanded) {
+                            showDialog(
+                                context: context,
+                                builder: (context) => photoSpread(
+                                    entries: entries,
+                                    position: detail.globalPosition));
+                          }
+                        },
+                        child: SizedBox(width: 100, height: 100)),
+                  ));
+            }))),
     );
   }
 }
@@ -115,23 +112,24 @@ class _YearChartState extends State<YearChart> {
 class photoSpread extends StatelessWidget {
   var entries;
   var position;
-  photoSpread({Key? key, required this.entries, required this.position}) : super(key: key);
+  photoSpread({Key? key, required this.entries, required this.position})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Stack(children:
-    List.generate(entries.length, (index){
-    return Positioned(
-          left: position.dx + cos(2*pi/entries.length * index)* 100,
-          top: position.dy+ sin(2*pi/entries.length * index)* 100,
+    return Stack(
+        children: List.generate(entries.length, (index) {
+      return Positioned(
+          left: position.dx + cos(2 * pi / entries.length * index) * 100,
+          top: position.dy + sin(2 * pi / entries.length * index) * 100,
           child: SizedBox(
-            width : 100,
-            height : 100,
-            child: ExtendedImage.file(File(entries.elementAt(index).key),
-              compressionRatio: 0.1,),
+            width: 100,
+            height: 100,
+            child: ExtendedImage.file(
+              File(entries.elementAt(index).key),
+              compressionRatio: 0.1,
+            ),
           ));
-
-    })
-    );
+    }));
   }
 }

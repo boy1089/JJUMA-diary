@@ -98,7 +98,7 @@ class _YearChartState extends State<YearChart> {
                                   position: detail.globalPosition));
                         }
                       },
-                      child: DefaultRectangleScatter(size: size,color: color,)
+                      child: Scatter.fromType(size: size,color: color,type : scatterType.defaultRect)
                   ));
 
             }))),

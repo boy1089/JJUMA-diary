@@ -1,48 +1,83 @@
-
 import 'dart:io';
 
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 
+enum scatterType {
+  defaultRect,
+  defaultCircle,
+  image,
+}
 
-class DefaultRectangleScatter extends StatelessWidget {
+abstract class Scatter extends StatelessWidget {
   double size;
   Color color;
-  DefaultRectangleScatter({Key? key, required this.size, required this.color}) : super(key: key);
+
+  Scatter({required this.size, required this.color, required type});
+
+  factory Scatter.fromType({required size, required color, required type}) {
+    switch (type) {
+      case scatterType.defaultCircle:
+        return DefaultCircleScatter(size: size, color: color);
+      case scatterType.defaultRect:
+        return DefaultRectangleScatter(size: size, color: color);
+      default:
+        return DefaultCircleScatter(size: size, color: color);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context);
+}
+
+class DefaultRectangleScatter extends Scatter {
+  double size;
+  Color color;
+  DefaultRectangleScatter({Key? key, required this.size, required this.color})
+      : super(size: size, color: color, type : scatterType.defaultRect);
 
   @override
   Widget build(BuildContext context) {
-    return Container(width: size, height: size,
-      decoration:
-      ShapeDecoration(shape: const Border(), color: color));
+    return Container(
+        width: size,
+        height: size,
+        decoration: ShapeDecoration(shape: const Border(), color: color));
   }
 }
 
-class DefaultCircleScatter extends StatelessWidget {
+class DefaultCircleScatter extends Scatter {
   double size;
   Color color;
-  DefaultCircleScatter({Key? key, required this.size, required this.color}) : super(key: key);
+  DefaultCircleScatter({Key? key, required this.size, required this.color})
+      : super(size: size, color: color, type : scatterType.defaultCircle);
 
   @override
   Widget build(BuildContext context) {
-    return Container(width: size, height: size,
-        decoration:
-        ShapeDecoration(shape: const CircleBorder(), color: color));
+    return Container(
+        width: size,
+        height: size,
+        decoration: ShapeDecoration(shape: const CircleBorder(), color: color));
   }
 }
 
-
-class ImageScatter extends StatelessWidget {
+class ImageScatter extends Scatter {
   double size;
   Color color;
   String imagePath;
-  ImageScatter({Key? key, required this.size, required this.color, required this.imagePath}) : super(key: key);
+  ImageScatter(
+      {Key? key,
+      required this.size,
+      required this.color,
+      required this.imagePath})
+      : super(size: size, color: color, type : scatterType.image);
+
 
   @override
   Widget build(BuildContext context) {
-    return Container(width: size, height: size,
-        decoration:
-        ShapeDecoration(shape: const Border(), color: color),
-    child : ExtendedImage.file(File(imagePath)));
+    return Container(
+        width: size,
+        height: size,
+        decoration: ShapeDecoration(shape: const Border(), color: color),
+        child: ExtendedImage.file(File(imagePath)));
   }
 }

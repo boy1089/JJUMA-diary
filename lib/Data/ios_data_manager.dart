@@ -25,6 +25,8 @@ class IosDataManager extends ChangeNotifier implements DataManagerInterface {
   Map<String, Coordinate> summaryOfCoordinate = {};
 
   Map<String, Map<String, String>> noteForChart2 = {};
+  Map<String, Map<String, int?>> indexOfFavoriteImages = {};
+
   List setOfDates = [];
   List dates = [];
   List datetimes = [];
@@ -36,7 +38,8 @@ class IosDataManager extends ChangeNotifier implements DataManagerInterface {
   Map<dynamic, InfoFromFile> infoFromFiles = {};
   Map<String, Event> eventList = {};
   DataRepository dataRepository = DataRepository();
-  void setNote(DateTime datetime, String note){}
+  void setNote(DateTime datetime, String note, int? indexOfFavoriteImage){}
+  void setIndexOfFavoriteImage(DateTime datetime, int? indexOfFavoriteImage){}
   @override
   Future<void> init() async {
     Stopwatch stopwatch = Stopwatch()..start();

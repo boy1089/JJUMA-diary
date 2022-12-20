@@ -79,9 +79,13 @@ class _YearChartState extends State<YearChart> with TickerProviderStateMixin {
               double left = isExpanded ? data[index][0] : data[index][2];
               double top = isExpanded ? data[index][1] : data[index][3];
               String date = data[index][9];
-              bool hasNote = product.dataManager.noteForChart2[year.toString()]?[date] != null;
-              if(hasNote)
-              print("hasNote : $hasNote");
+              bool hasNote = product.dataManager.noteForChart2[year.toString()]
+                      ?[date] !=
+                  null;
+              if (hasNote) print("hasNote : $hasNote");
+
+              int? indexOfFavoriteImage = product.dataManager.indexOfFavoriteImages[year.toString()]?[date];
+
 
               if ((product.expandedYear != null) && (!isExpanded)) {
                 left = data[index][4];
@@ -116,40 +120,41 @@ class _YearChartState extends State<YearChart> with TickerProviderStateMixin {
                             context,
                             PageRouteBuilder(
                                 transitionDuration: Duration(milliseconds: 500),
-                                pageBuilder: (_, __, ___) =>
-                                      PhotoCard(tag: "${index}",
-                                        isMagnified: true,
-                                          event: Event(
-                                        images : Map.fromIterable(entries,
-                                        key : (item) => item.key,
-                                        value : (item) => item.value),
-                                            // {for(MapEntry<dynamic, InfoFromFile> entry in entries)}),
-                                        note : "",
+                                pageBuilder: (_, __, ___) => PhotoCard(
+                                      tag: "${year.toString()}${index}",
+                                      isMagnified: true,
+                                      event: Event(
+                                        images: Map.fromIterable(entries,
+                                            key: (item) => item.key,
+                                            value: (item) => item.value),
+                                        // {for(MapEntry<dynamic, InfoFromFile> entry in entries)}),
+                                        note: "",
                                       ),
                                     )),
                           );
                         }
                       },
                       child: Hero(
-                          tag: "$index",
-                          child:hasNote?
-                           Badge(
-                             padding: EdgeInsets.all(3.0),
-                             position: BadgePosition(end : -3.0, top : -3.0),
-                             showBadge: hasNote,
-                             child: Scatter.fromType(entries.elementAt(0).key,
-                          size: size,
-                          color: color,
-                          type: scatterType.image),
-                           ) :
-                              Scatter.fromType("aa", size : size, color : color, type : scatterType.defaultRect)
-                  )
-                  ));
+                          tag: "${year.toString()}${index}",
+                          child: indexOfFavoriteImage !=null
+                              ? Badge(
+                                  padding: EdgeInsets.all(3.0),
+                                  position: BadgePosition(end: -3.0, top: -3.0),
+                                  showBadge: hasNote,
+                                  child: Scatter.fromType(
+                                      entries.elementAt(indexOfFavoriteImage).key,
+                                      size: size,
+                                      color: color,
+                                      type: scatterType.image),
+                                )
+                              : Scatter.fromType("aa",
+                                  size: size,
+                                  color: color,
+                                  type: scatterType.defaultRect))));
             }))),
     );
   }
 }
-
 
 class photoSpread extends StatelessWidget {
   var entries;
@@ -203,4 +208,3 @@ class photoSpread extends StatelessWidget {
     }));
   }
 }
-

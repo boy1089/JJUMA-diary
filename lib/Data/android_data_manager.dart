@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/material.dart';
 import 'package:glob/list_local_fs.dart';
 import 'package:flutter/foundation.dart';
 import 'package:glob/glob.dart';
@@ -40,16 +41,26 @@ class AndroidDataManager extends ChangeNotifier
   DataRepository dataRepository = DataRepository();
 
   Map<String, Map<String, String>> noteForChart2 = {};
+  Map<String, Map<String, int?>> indexOfFavoriteImages = {};
 
-  void setNote(DateTime datetime, String note){
-    print("noite created ${note}");
+  void setNote(DateTime datetime, String note, int? indexOfFavoriteImage){
     if(noteForChart2[datetime.year.toString()] == null)
       noteForChart2[datetime.year.toString()] = {};
     noteForChart2[datetime.year.toString()]![formatDate(datetime)] = note;
-    print("noite created ${note}");
     dataRepository.writeNote(noteForChart2);
-    // notifyListeners();
   }
+
+  void setIndexOfFavoriteImage(DateTime datetime, int? indexOfFavoriteImage){
+    if(indexOfFavoriteImages[datetime.year.toString()] == null)
+      indexOfFavoriteImages[datetime.year.toString()] = {};
+    indexOfFavoriteImages[datetime.year.toString()]![formatDate(datetime)] = indexOfFavoriteImage;
+    dataRepository.writeIndexOfFavoriteImage(indexOfFavoriteImages);
+
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) =>notifyListeners());
+  }
+
+
   Future<void> init() async {
     Stopwatch stopwatch = Stopwatch()..start();
 
@@ -57,6 +68,8 @@ class AndroidDataManager extends ChangeNotifier
     files = await dataRepository.getAllFiles();
     infoFromFiles = await dataRepository.readInfoFromJson();
     noteForChart2 = await dataRepository.readNote();
+    indexOfFavoriteImages = await dataRepository.readIndexOfFavoriteImages();
+
     notifyListeners();
     print("DataManager init, $files");
 

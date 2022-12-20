@@ -51,6 +51,8 @@ dependencies:
 
   syncfusion_flutter_treemap: ^20.3.60-beta
   photo_view:
+  favorite_button:
+  clickable_list_wheel_view:
 
 dev_dependencies:
   flutter_test:

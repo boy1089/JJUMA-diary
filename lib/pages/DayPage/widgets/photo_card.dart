@@ -16,7 +16,8 @@ import 'dart:math';
 import '../../../Util/DateHandler.dart';
 import '../model/event.dart';
 import 'package:lateDiary/Util/global.dart' as global;
-
+import 'package:favorite_button/favorite_button.dart';
+import 'package:clickable_list_wheel_view/clickable_list_wheel_widget.dart';
 class PhotoCard extends StatefulWidget {
   Event event;
   bool isMagnified = false;
@@ -45,14 +46,34 @@ class _PhotoCardState extends State<PhotoCard>
   FixedExtentScrollController scrollController1 = FixedExtentScrollController();
   FixedExtentScrollController scrollController2 = FixedExtentScrollController();
 
+  int? indexOfFavoriteImage = null;
+
   @override
   void initState() {
-
     dateTime = widget.event.images.entries.elementAt(0).value.datetime!;
     var a = DataManagerInterface(global.kOs);
 
-    if (a.noteForChart2[dateTime.year.toString()]?[formatDate(dateTime)] != null)
-      controller.text = a.noteForChart2[dateTime.year.toString()]?[formatDate(dateTime)]?? "";
+    if (a.noteForChart2[dateTime.year.toString()]?[formatDate(dateTime)] !=
+        null)
+      controller.text = a.noteForChart2[dateTime.year.toString()]
+              ?[formatDate(dateTime)] ??
+          "";
+    print("indexOfFavoriteImage : ${a.indexOfFavoriteImages[dateTime.year.toString()]?[formatDate(dateTime)]}");
+    if (a.indexOfFavoriteImages[dateTime.year.toString()]?[formatDate(dateTime)] !=
+        null)
+      indexOfFavoriteImage = a.indexOfFavoriteImages[dateTime.year.toString()]?[formatDate(dateTime)];
+
+    final keyList = List.generate(
+        widget.event.images.length, (index) => GlobalKey());
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await Future.delayed(Duration(milliseconds: 2000));
+      Scrollable.ensureVisible(
+        keyList[indexOfFavoriteImage!=null? indexOfFavoriteImage!:0].currentContext!,
+        duration: Duration(milliseconds: 300),
+        curve: Curves.bounceInOut,
+      );
+    });
   }
 
   late Timer timer;
@@ -60,9 +81,15 @@ class _PhotoCardState extends State<PhotoCard>
   Widget build(BuildContext context) {
     // controller.text = widget.event.note;
     dateTime = widget.event.images.entries.first.value.datetime!;
+    //
+    // if(indexOfFavoriteImage!=null) {
+    //   scrollController1.animateToItem(indexOfFavoriteImage!,
+    //       duration: Duration(seconds: 1), curve: Curves.easeIn);
+    // }
+    //
 
     return Hero(
-      tag : widget.tag,
+      tag: widget.tag,
       child: Scaffold(
         resizeToAvoidBottomInset: true,
         body: SafeArea(
@@ -79,46 +106,92 @@ class _PhotoCardState extends State<PhotoCard>
                             : EdgeInsets.all(global.kContainerPadding),
                         child: RotatedBox(
                           quarterTurns: -1,
-                          child: ListWheelScrollView(
-                              onSelectedItemChanged: (index) {
-                                if (this.scrollIndex == index) return;
-                                scrollController2.animateToItem(index,
-                                    duration: Duration(milliseconds: 500),
-                                    curve: Curves.easeIn);
-                                this.scrollIndex = index;
-                                setState(() {});
-                                // scrollController2.jumpToItem(index);
-                              },
-                              controller: scrollController1,
-                              physics: PageScrollPhysics(),
-                              diameterRatio: 200,
-                              itemExtent: widget.isMagnified
+                          child: Stack(
+                            children: [ClickableListWheelScrollView(
+                              itemCount: widget.event.images.length,
+                              itemHeight: widget.isMagnified
                                   ? physicalWidth
-                                  : widget.height - global.kContainerPadding * 2,
-                              children: List.generate(
-                                  widget.event.images.entries.length,
-                                  (index) => Center(
-                                        child: RotatedBox(
-                                            quarterTurns: 1,
-                                            child: SizedBox(
-                                              height: widget.isMagnified
-                                                  ? physicalWidth
-                                                  : widget.height -
-                                                      global.kContainerPadding * 2,
-                                              width: widget.isMagnified
-                                                  ? physicalWidth
-                                                  : widget.height -
-                                                      global.kContainerPadding * 2,
-                                              child: ExtendedImage.file(
-                                                File(widget.event.images.entries
-                                                    .elementAt(index)
-                                                    .key),
-                                                cacheRawData: true,
-                                                compressionRatio: 0.1,
-                                                fit: BoxFit.cover,
-                                              ),
-                                            )),
-                                      ))),
+                                  : widget.height -
+                                  global.kContainerPadding * 2,
+                              scrollController: scrollController1,
+                              onItemTapCallback: (index){
+                                setState(() {
+                                  if(indexOfFavoriteImage==null) {
+                                    indexOfFavoriteImage = index;
+                                    return;
+                                  }
+
+                                  indexOfFavoriteImage = null;
+                                });
+                              },
+                              child: ListWheelScrollView(
+                                  onSelectedItemChanged: (index) {
+                                    if (this.scrollIndex == index) return;
+                                    scrollController2.animateToItem(index,
+                                        duration: Duration(milliseconds: 500),
+                                        curve: Curves.easeIn);
+                                    this.scrollIndex = index;
+                                    setState(() {});
+                                    // scrollController2.jumpToItem(index);
+                                  },
+
+                                  controller: scrollController1,
+                                  physics: PageScrollPhysics(),
+                                  scrollBehavior: MaterialScrollBehavior(),
+                                  diameterRatio: 200,
+                                  itemExtent: widget.isMagnified
+                                      ? physicalWidth
+                                      : widget.height -
+                                          global.kContainerPadding * 2,
+                                  children: List.generate(
+                                      widget.event.images.entries.length,
+                                      (index) => Center(
+                                            child: RotatedBox(
+                                                quarterTurns: 1,
+                                                child: Stack(
+                                                  children: [SizedBox(
+                                                    height: widget.isMagnified
+                                                        ? physicalWidth
+                                                        : widget.height -
+                                                            global.kContainerPadding *
+                                                                2,
+                                                    width: widget.isMagnified
+                                                        ? physicalWidth
+                                                        : widget.height -
+                                                            global.kContainerPadding *
+                                                                2,
+                                                    child: ExtendedImage.file(
+                                                      File(widget
+                                                          .event.images.entries
+                                                          .elementAt(index)
+                                                          .key),
+                                                      cacheRawData: true,
+                                                      compressionRatio: 0.1,
+                                                      fit: BoxFit.cover,
+                                                    ),
+                                                  ),
+                                                  Positioned(
+                                                    right : 10.0,
+                                                    bottom : 10.0,
+                                                    // child : FavoriteButton(
+                                                    //   isFavorite: indexOfFavoriteImage==index,
+                                                    //   valueChanged: (){},
+                                                    // )
+                                                     child :
+                                                     indexOfFavoriteImage==index?
+                                                          Icon(Icons.favorite,
+                                                            size : 32.0,
+                                                            color: Colors.red,)
+                                                      :Icon(Icons.favorite_outline_outlined,
+                                                         size : 32.0,color : Colors.red)
+
+                                            )
+                                                  ]
+                                                )),
+                                          ))),
+                            ),
+                            ]
+                          ),
                         ))),
                 if (widget.isMagnified)
                   Container(
@@ -177,8 +250,9 @@ class _PhotoCardState extends State<PhotoCard>
                           maxLines: 5,
                           controller: controller,
                           focusNode: focusNode,
-                          onChanged: (a){print(controller.text);},
-
+                          onChanged: (a) {
+                            print(controller.text);
+                          },
                           style: TextStyle(
                             // color: Colors.black,
                             fontSize: 16.0,
@@ -200,21 +274,20 @@ class _PhotoCardState extends State<PhotoCard>
   void dispose() async {
     print("dispose cards");
     print("${controller.text}, ${widget.isMagnified}");
-    if (!widget.isMagnified | (controller.text == "")) {
-      print('cc');
-      super.dispose();
-      if (widget.isTickEnabled) timer?.cancel();
-      return;
-    }
-    print('bb');
+    // if (!widget.isMagnified | (controller.text == "")) {
+    //   print('cc');
+    //   super.dispose();
+    //   if (widget.isTickEnabled) timer?.cancel();
+    //   return;
+    // }
     super.dispose();
     // timer?.cancel();
     // widget.event.setNote(controller.text);
     DataManagerInterface dataManager = DataManagerInterface(global.kOs);
     // dataManager.addEvent(widget.event);
-    print('dd');
     // var a = Provider.of<YearPageStateProvider>(context, listen : false);
-    dataManager.setNote(this.dateTime, controller.text);
+    dataManager.setNote(this.dateTime, controller.text, indexOfFavoriteImage);
+    dataManager.setIndexOfFavoriteImage(this.dateTime, indexOfFavoriteImage);
   }
 }
 

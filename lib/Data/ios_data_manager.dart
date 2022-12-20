@@ -24,6 +24,7 @@ class IosDataManager extends ChangeNotifier implements DataManagerInterface {
   Map<String, double> summaryOfLocationData = {};
   Map<String, Coordinate> summaryOfCoordinate = {};
 
+  Map<int, Map<String, String>> noteForChart2 = {};
   List setOfDates = [];
   List dates = [];
   List datetimes = [];
@@ -35,7 +36,7 @@ class IosDataManager extends ChangeNotifier implements DataManagerInterface {
   Map<dynamic, InfoFromFile> infoFromFiles = {};
   Map<String, Event> eventList = {};
   DataRepository dataRepository = DataRepository();
-
+  void setNote(DateTime datetime, String note){}
   @override
   Future<void> init() async {
     Stopwatch stopwatch = Stopwatch()..start();

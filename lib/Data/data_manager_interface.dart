@@ -15,11 +15,13 @@ abstract class DataManagerInterface extends ChangeNotifier {
       default: return AndroidDataManager();
     }
   }
+  void setNote(DateTime datetime, String note);
 
   Map<String, int> summaryOfPhotoData = {};
   Map<String, double> summaryOfLocationData = {};
   Map<String, Coordinate> summaryOfCoordinate = {};
 
+  Map<int, Map<String, String>> noteForChart2 = {};
   List setOfDates = [];
   List dates = [];
   List datetimes = [];

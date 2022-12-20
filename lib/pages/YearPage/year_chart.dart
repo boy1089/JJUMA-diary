@@ -1,12 +1,15 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:lateDiary/Data/info_from_file.dart';
 import 'package:lateDiary/StateProvider/year_page_state_provider.dart';
 import 'package:lateDiary/Util/Util.dart';
 import 'package:extended_image/extended_image.dart';
 import 'dart:io';
 
 import 'package:lateDiary/pages/YearPage/year_page_screen2.dart';
+import '../DayPage/model/event.dart';
+import '../DayPage/widgets/photo_card.dart';
 import 'scatters.dart';
 
 class YearChart extends StatefulWidget {
@@ -107,29 +110,28 @@ class _YearChartState extends State<YearChart> with TickerProviderStateMixin {
                           Navigator.push(
                             context,
                             PageRouteBuilder(
-                                transitionDuration: Duration(milliseconds: 300),
+                                transitionDuration: Duration(milliseconds: 500),
                                 pageBuilder: (_, __, ___) =>
-                                    TestPage(entries: entries, tag : "$index")),
+                                      PhotoCard(tag: "${index}",
+                                        isMagnified: true,
+                                          event: Event(
+                                        images : Map.fromIterable(entries,
+                                        key : (item) => item.key,
+                                        value : (item) => item.value),
+                                            // {for(MapEntry<dynamic, InfoFromFile> entry in entries)}),
+                                        note : "",
+                                      ),
+                                    )),
                           );
                         }
                       },
                       child: Hero(
                           tag: "$index",
-                          // child: (product.expandedYear == year)
-                              // ? Scatter.fromType(entries.elementAt(0).key,
-                              //     size: size,
-                              //     color: color,
-                              //     type: scatterType.image)
-                              // : Scatter.fromType("aa",
-                              //     size: size,
-                              //     color: color,
-                              //     type: scatterType.defaultRect)
                           child:
                            Scatter.fromType("aa",
                           size: size,
                           color: color,
                           type: scatterType.defaultRect)
-
                   )
                   ));
             }))),
@@ -155,25 +157,6 @@ class TestPage extends StatelessWidget {
         ),
       ),
     );
-  }
-}
-
-class PhotoCard extends StatelessWidget {
-  var entries;
-  var position;
-  var sortedEntries;
-  PhotoCard({Key? key, required this.entries, required this.position})
-      : super(key: key) {}
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-        width: physicalWidth,
-        height: physicalWidth,
-        child: ExtendedImage.file(
-          File(entries.elementAt(0).key),
-          compressionRatio: 0.1,
-        ));
   }
 }
 

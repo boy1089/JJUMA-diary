@@ -65,11 +65,6 @@ class YearPageStateProvider with ChangeNotifier {
   }
 
 
-  void setExpandedYear(int? year) {
-    expandedYear = year;
-    notifyListeners();
-  }
-
   void updateData() {
     dataForChart = [];
     dataForChart2 = {};
@@ -131,10 +126,7 @@ class YearPageStateProvider with ChangeNotifier {
 
         xLocationNotExpanded = (1-i*0.1) * xLocationNotExpanded;
         yLocationNotExpanded = (1-i*0.1) * yLocationNotExpanded;
-
         yLocationNotExpanded = yLocationNotExpanded + 0.95;
-
-
 
         int numberOfImages = data[date]?[0].length ?? 1;
         Coordinate? coordinate = data[date]?[1];
@@ -209,6 +201,10 @@ class YearPageStateProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  void setExpandedYear(int? year) {
+    expandedYear = year;
+    notifyListeners();
+  }
   @override
   void dispose() {
     print("yearPageSTateProvider disposed");

@@ -39,6 +39,16 @@ class AndroidDataManager extends ChangeNotifier
 
   DataRepository dataRepository = DataRepository();
 
+  Map<int, Map<String, String>> noteForChart2 = {};
+
+  void setNote(DateTime datetime, String note){
+    print("noite created ${note}");
+    if(noteForChart2[datetime.year] == null)
+      noteForChart2[datetime.year] = {};
+    noteForChart2[datetime.year]![formatDate(datetime)] = note;
+    print("noite created ${note}");
+    // notifyListeners();
+  }
   Future<void> init() async {
     Stopwatch stopwatch = Stopwatch()..start();
 

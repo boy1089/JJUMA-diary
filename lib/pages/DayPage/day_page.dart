@@ -55,11 +55,11 @@ class _DayPageState extends State<DayPage> {
             String date =
                 provider.listOfEventsInDay.entries.elementAt(index).key;
             return Stack(key: keyList[index], children: [
-              CardContainer(
-                  listOfEvents: provider.listOfEventsInDay.entries
-                      .elementAt(index)
-                      .value,
-              isTickEnabled: index%5==0? true : false,),
+              // CardContainer(
+              //     listOfEvents: provider.listOfEventsInDay.entries
+              //         .elementAt(index)
+              //         .value,
+              // isTickEnabled: index%5==0? true : false,),
               Text(
                   "${DateFormat('EEEE').format(DateTime.parse(date))}/"
                   "${DateFormat('MMM').format(DateTime.parse(date))} "

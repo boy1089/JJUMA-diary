@@ -27,7 +27,7 @@ class YearChart extends StatefulWidget {
       _YearChartState(product, year, isExpanded, radius);
 }
 
-class _YearChartState extends State<YearChart> {
+class _YearChartState extends State<YearChart> with TickerProviderStateMixin {
   int year;
   var data;
   bool isExpanded;
@@ -36,6 +36,21 @@ class _YearChartState extends State<YearChart> {
     print("debugging.. ${year}");
   }
   YearPageStateProvider product;
+
+  late final AnimationController _controller = AnimationController(
+    duration: const Duration(seconds: 2),
+    vsync: this,
+  )..repeat(reverse: true);
+
+  late final Animation<AlignmentGeometry> _animation = Tween<AlignmentGeometry>(
+    begin: Alignment.bottomLeft,
+    end: Alignment.center,
+  ).animate(
+    CurvedAnimation(
+      parent: _controller,
+      curve: Curves.decelerate,
+    ),
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -89,19 +104,76 @@ class _YearChartState extends State<YearChart> {
                           return;
                         }
                         if (widget.isExpanded) {
-                          showDialog(
-                              context: context,
-                              builder: (context) => photoSpread(
-                                  entries: entries,
-                                  position: detail.globalPosition));
+                          Navigator.push(
+                            context,
+                            PageRouteBuilder(
+                                transitionDuration: Duration(milliseconds: 300),
+                                pageBuilder: (_, __, ___) =>
+                                    TestPage(entries: entries, tag : "$index")),
+                          );
                         }
                       },
-                      child: Scatter.fromType(
+                      child: Hero(
+                          tag: "$index",
+                          // child: (product.expandedYear == year)
+                              // ? Scatter.fromType(entries.elementAt(0).key,
+                              //     size: size,
+                              //     color: color,
+                              //     type: scatterType.image)
+                              // : Scatter.fromType("aa",
+                              //     size: size,
+                              //     color: color,
+                              //     type: scatterType.defaultRect)
+                          child:
+                           Scatter.fromType("aa",
                           size: size,
                           color: color,
-                          type: scatterType.defaultRect)));
+                          type: scatterType.defaultRect)
+
+                  )
+                  ));
             }))),
     );
+  }
+}
+
+class TestPage extends StatelessWidget {
+  String tag;
+  var entries;
+  TestPage({Key? key, required this.entries, required this.tag}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: Hero(
+          tag: tag,
+          child: ExtendedImage.file(
+            File(entries.elementAt(0).key),
+            compressionRatio: 0.05,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class PhotoCard extends StatelessWidget {
+  var entries;
+  var position;
+  var sortedEntries;
+  PhotoCard({Key? key, required this.entries, required this.position})
+      : super(key: key) {}
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+        width: physicalWidth,
+        height: physicalWidth,
+        child: ExtendedImage.file(
+          File(entries.elementAt(0).key),
+          compressionRatio: 0.1,
+        ));
   }
 }
 
@@ -110,7 +182,7 @@ class photoSpread extends StatelessWidget {
   var position;
   var sortedEntries;
   photoSpread({Key? key, required this.entries, required this.position})
-      : super(key: key){
+      : super(key: key) {
     sortEntries();
   }
 
@@ -119,13 +191,11 @@ class photoSpread extends StatelessWidget {
     DateTime datetime_prev = entries.elementAt(0).value.datetime;
     DateTime datetime_after = DateTime(2022);
 
-
     List event = [];
     event.add(entries.elementAt(0));
-    for(int i = 1; i< entries.length; i++){
-      print("$i, ${entries.elementAt(i)}");
+    for (int i = 1; i < entries.length; i++) {
       datetime_after = entries.elementAt(i).value.datetime;
-      if((datetime_after.difference(datetime_prev))> Duration(hours : 1)){
+      if ((datetime_after.difference(datetime_prev)) > Duration(hours: 1)) {
         events.add(event);
         event = [entries.elementAt(i)];
         datetime_prev = datetime_after;
@@ -133,8 +203,8 @@ class photoSpread extends StatelessWidget {
       }
       event.add(entries.elementAt(i));
     }
+    if (event.isNotEmpty) events.add(event);
     sortedEntries = events;
-
   }
 
   @override
@@ -142,11 +212,15 @@ class photoSpread extends StatelessWidget {
     return Stack(
         children: List.generate(sortedEntries.length, (index) {
       return Positioned(
-          left: position.dx + cos(2 * pi / sortedEntries.length * index) * 100,
-          top: position.dy + sin(2 * pi / sortedEntries.length * index) * 100,
+          left: position.dx -
+              50 +
+              cos(2 * pi / sortedEntries.length * index) * physicalWidth / 4,
+          top: position.dy -
+              50 +
+              sin(2 * pi / sortedEntries.length * index) * physicalWidth / 4,
           child: SizedBox(
-            width: 100,
-            height: 100,
+            width: physicalWidth / 4,
+            height: physicalWidth / 4,
             child: ExtendedImage.file(
               File(sortedEntries.elementAt(index)[0].key),
               compressionRatio: 0.1,
@@ -155,3 +229,4 @@ class photoSpread extends StatelessWidget {
     }));
   }
 }
+

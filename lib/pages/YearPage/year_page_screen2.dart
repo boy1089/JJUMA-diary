@@ -40,7 +40,7 @@ class _YearPageScreen2State extends State<YearPageScreen2> {
                 alignment: Alignment.center,
                 children: [
                   CustomPaint(size: Size(0, 0), painter: OpenPainter())
-                ]..addAll(List.generate(product.dataForChart2.length, (index) {
+                ]..addAll(List.generate(product.dataForChart2.length>10? 9:product.dataForChart2.length, (index) {
                     int year = product.dataForChart2.keys.elementAt(index);
                     return YearChart(
                         year: year,

@@ -171,7 +171,7 @@ class YearPageStateProvider with ChangeNotifier {
             physicalWidth / 2 -
             size / 2;
         // return [xLocation, yLocation, size, color, entries];
-        return [leftExpanded, topExpanded, leftNotExpanded, topNotExpanded, leftExpandedExtra, topExpandedExtra, size, color, entries];
+        return [leftExpanded, topExpanded, leftNotExpanded, topNotExpanded, leftExpandedExtra, topExpandedExtra, size, color, entries, date];
       });
 
     }

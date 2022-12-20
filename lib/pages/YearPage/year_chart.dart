@@ -11,6 +11,7 @@ import 'package:lateDiary/pages/YearPage/year_page_screen2.dart';
 import '../DayPage/model/event.dart';
 import '../DayPage/widgets/photo_card.dart';
 import 'scatters.dart';
+import 'package:badges/badges.dart';
 
 class YearChart extends StatefulWidget {
   YearChart({
@@ -77,6 +78,10 @@ class _YearChartState extends State<YearChart> with TickerProviderStateMixin {
               isExpanded = (product.expandedYear == year);
               double left = isExpanded ? data[index][0] : data[index][2];
               double top = isExpanded ? data[index][1] : data[index][3];
+              String date = data[index][9];
+              bool hasNote = product.dataManager.noteForChart2[year.toString()]?[date] != null;
+              if(hasNote)
+              print("hasNote : $hasNote");
 
               if ((product.expandedYear != null) && (!isExpanded)) {
                 left = data[index][4];
@@ -127,11 +132,17 @@ class _YearChartState extends State<YearChart> with TickerProviderStateMixin {
                       },
                       child: Hero(
                           tag: "$index",
-                          child:
-                           Scatter.fromType("aa",
+                          child:hasNote?
+                           Badge(
+                             padding: EdgeInsets.all(3.0),
+                             position: BadgePosition(end : -3.0, top : -3.0),
+                             showBadge: hasNote,
+                             child: Scatter.fromType(entries.elementAt(0).key,
                           size: size,
                           color: color,
-                          type: scatterType.defaultRect)
+                          type: scatterType.image),
+                           ) :
+                              Scatter.fromType("aa", size : size, color : color, type : scatterType.defaultRect)
                   )
                   ));
             }))),
@@ -139,26 +150,6 @@ class _YearChartState extends State<YearChart> with TickerProviderStateMixin {
   }
 }
 
-class TestPage extends StatelessWidget {
-  String tag;
-  var entries;
-  TestPage({Key? key, required this.entries, required this.tag}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Hero(
-          tag: tag,
-          child: ExtendedImage.file(
-            File(entries.elementAt(0).key),
-            compressionRatio: 0.05,
-          ),
-        ),
-      ),
-    );
-  }
-}
 
 class photoSpread extends StatelessWidget {
   var entries;

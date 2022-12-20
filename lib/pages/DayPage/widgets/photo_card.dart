@@ -50,11 +50,9 @@ class _PhotoCardState extends State<PhotoCard>
 
     dateTime = widget.event.images.entries.elementAt(0).value.datetime!;
     var a = DataManagerInterface(global.kOs);
-    print(a.noteForChart2);
-    print(a.noteForChart2[dateTime.year]?[formatDate(dateTime)]);
 
-    if (a.noteForChart2[dateTime.year]?[formatDate(dateTime)] != null)
-      controller.text = a.noteForChart2[dateTime.year]?[formatDate(dateTime)]?? "";
+    if (a.noteForChart2[dateTime.year.toString()]?[formatDate(dateTime)] != null)
+      controller.text = a.noteForChart2[dateTime.year.toString()]?[formatDate(dateTime)]?? "";
   }
 
   late Timer timer;

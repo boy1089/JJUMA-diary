@@ -39,14 +39,15 @@ class AndroidDataManager extends ChangeNotifier
 
   DataRepository dataRepository = DataRepository();
 
-  Map<int, Map<String, String>> noteForChart2 = {};
+  Map<String, Map<String, String>> noteForChart2 = {};
 
   void setNote(DateTime datetime, String note){
     print("noite created ${note}");
-    if(noteForChart2[datetime.year] == null)
-      noteForChart2[datetime.year] = {};
-    noteForChart2[datetime.year]![formatDate(datetime)] = note;
+    if(noteForChart2[datetime.year.toString()] == null)
+      noteForChart2[datetime.year.toString()] = {};
+    noteForChart2[datetime.year.toString()]![formatDate(datetime)] = note;
     print("noite created ${note}");
+    dataRepository.writeNote(noteForChart2);
     // notifyListeners();
   }
   Future<void> init() async {
@@ -55,6 +56,7 @@ class AndroidDataManager extends ChangeNotifier
     print("DataManager instance is initializing..");
     files = await dataRepository.getAllFiles();
     infoFromFiles = await dataRepository.readInfoFromJson();
+    noteForChart2 = await dataRepository.readNote();
     notifyListeners();
     print("DataManager init, $files");
 

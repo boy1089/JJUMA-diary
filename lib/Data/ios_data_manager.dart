@@ -24,7 +24,7 @@ class IosDataManager extends ChangeNotifier implements DataManagerInterface {
   Map<String, double> summaryOfLocationData = {};
   Map<String, Coordinate> summaryOfCoordinate = {};
 
-  Map<int, Map<String, String>> noteForChart2 = {};
+  Map<String, Map<String, String>> noteForChart2 = {};
   List setOfDates = [];
   List dates = [];
   List datetimes = [];

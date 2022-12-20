@@ -24,6 +24,7 @@ class DataRepository {
   List files = [];
 
   Map<dynamic, InfoFromFile> infoFromFiles = {};
+  Map<String, Map<String, String>> notes = {};
 
   Future<void> init() async {
     print("DataRepository instance is initializing..");
@@ -31,6 +32,7 @@ class DataRepository {
     await readInfoFromJson();
     await readSummaryOfPhoto();
     await readSummaryOfLocation();
+    await readNote();
   }
 
   Future<List> getAllFiles() async {
@@ -228,5 +230,27 @@ class DataRepository {
       test[key] = mapOfInfo;
     }
     await file.writeAsString(jsonEncode(test), mode: FileMode.write);
+  }
+
+  Future<void> writeNote(Map<String, Map<String, String>> notes) async {
+    final Directory directory = await getApplicationDocumentsDirectory();
+    final File file = File('${directory.path}/notes.json');
+    await file.writeAsString(jsonEncode(notes), mode: FileMode.write);
+  }
+
+  Future<Map<String, Map<String, String>>> readNote() async {
+    final Directory directory = await getApplicationDocumentsDirectory();
+    final File file = File('${directory.path}/notes.json');
+    var data = await file.readAsString();
+
+    var jsonData = json.decode(data);
+    Map<String, Map<String, String>> test = {};
+
+    for (var key in jsonData.keys) {
+      test[key] = Map<String, String>.fromIterable(jsonData[key].entries,
+          key: (item) => item.key, value: (item) => item.value);
+    }
+    this.notes = test;
+    return test;
   }
 }

@@ -126,16 +126,11 @@ class _YearChartState extends State<YearChart> with TickerProviderStateMixin {
                         child: Hero(
                             tag: "${year.toString()}${index}",
                             child: indexOfFavoriteImage !=null
-                                ? Badge(
-                              padding: EdgeInsets.all(3.0),
-                              position: BadgePosition(end: -3.0, top: -3.0),
-                              showBadge: hasNote,
-                              child: Scatter.fromType(
-                                  entries.elementAt(indexOfFavoriteImage).key,
-                                  size: size,
-                                  color: color,
-                                  type: scatterType.image),
-                            )
+                                ? Scatter.fromType(
+                                    entries.elementAt(indexOfFavoriteImage).key,
+                                    size: size>30.0? size:30.0,
+                                    color: color,
+                                    type: scatterType.image)
                                 : Scatter.fromType("aa",
                                 size: size,
                                 color: color,
@@ -154,9 +149,11 @@ class _YearChartState extends State<YearChart> with TickerProviderStateMixin {
                     ? sizeOfChart.height / 2 - 18
                     : (2 - radius) / 2 * sizeOfChart.height / 2 -14,
                 curve: Curves.easeOutExpo,
-                child: Offstage(
+                child:
+                Offstage(
                     offstage: (product.expandedYear != null) && (!isExpanded),
-                    child: Text("$year", style: TextStyle(fontSize: isExpanded? 24:16),)))
+                    child: Text("$year", style: TextStyle(fontSize: isExpanded? 24:16),))
+            )
           ]
 
       ),

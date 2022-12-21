@@ -32,6 +32,7 @@ List positionNotExpanded = List.generate(372, (index) {
   double yLocation = 1 * sin(angle - pi / 2);
   return [xLocation, yLocation];
 });
+
 enum LocationFilter {
   trip,
   none,
@@ -64,7 +65,6 @@ class YearPageStateProvider with ChangeNotifier {
     modifyData();
   }
 
-
   void updateData() {
     dataForChart = [];
     dataForChart2 = {};
@@ -82,9 +82,9 @@ class YearPageStateProvider with ChangeNotifier {
 
       dataForChart2[year]![formatDate(datetime)]![0].add(entry);
 
-      if(coordinate == null) continue;
+      if (coordinate == null) continue;
 
-      if(dataForChart2[year]![formatDate(datetime)]!.length ==2) {
+      if (dataForChart2[year]![formatDate(datetime)]!.length == 2) {
         dataForChart2[year]![formatDate(datetime)]![1] = coordinate;
         continue;
       }
@@ -93,28 +93,32 @@ class YearPageStateProvider with ChangeNotifier {
     }
     double latitude = 0.0;
     double longitude = 0.0;
-    for(Coordinate? coordinate in coordinates){
-      latitude += coordinate?.latitude?? 0;
-      longitude += coordinate?.longitude?? 0;
+    for (Coordinate? coordinate in coordinates) {
+      latitude += coordinate?.latitude ?? 0;
+      longitude += coordinate?.longitude ?? 0;
     }
-    dataForChart2= Map.fromEntries(dataForChart2.entries.toList()..sort((e1, e2)=>e2.key.compareTo(e1.key)));
+    dataForChart2 = Map.fromEntries(dataForChart2.entries.toList()
+      ..sort((e1, e2) => e2.key.compareTo(e1.key)));
 
-    averageCoordinate = Coordinate(latitude/ coordinates.length, longitude/coordinates.length);
+    averageCoordinate = Coordinate(
+        latitude / coordinates.length, longitude / coordinates.length);
     notifyListeners();
   }
 
-  void modifyData(){
-    for(int i = 0; i< dataForChart2.length; i++){
+  void modifyData() {
+    for (int i = 0; i < dataForChart2.length; i++) {
       int year = dataForChart2.keys.elementAt(i);
       var data = dataForChart2[year];
 
-     dataForChart2_modified[year] = List.generate(data!.length, (index){
+      dataForChart2_modified[year] = List.generate(data!.length, (index) {
         String date = data.keys.elementAt(index);
         DateTime datetime = DateTime(year, int.parse(date.substring(4, 6)),
             int.parse(date.substring(6, 8)));
-        int indexOfDate = datetime.difference(DateTime(year)).inDays + DateTime(year).weekday -1;
+        int indexOfDate = datetime.difference(DateTime(year)).inDays +
+            DateTime(year).weekday -
+            1;
 
-        double xLocationExpanded =  positionExpanded[indexOfDate][0];
+        double xLocationExpanded = positionExpanded[indexOfDate][0];
         double yLocationExpanded = positionExpanded[indexOfDate][1];
 
         xLocationExpanded = (1.0) * xLocationExpanded;
@@ -122,11 +126,11 @@ class YearPageStateProvider with ChangeNotifier {
 
         yLocationExpanded = yLocationExpanded + 0.95;
 
-        double xLocationNotExpanded =  positionNotExpanded[indexOfDate][0];
+        double xLocationNotExpanded = positionNotExpanded[indexOfDate][0];
         double yLocationNotExpanded = positionNotExpanded[indexOfDate][1];
 
-        xLocationNotExpanded = (1-i*0.1) * xLocationNotExpanded;
-        yLocationNotExpanded = (1-i*0.1) * yLocationNotExpanded;
+        xLocationNotExpanded = (1 - i * 0.1) * xLocationNotExpanded;
+        yLocationNotExpanded = (1 - i * 0.1) * yLocationNotExpanded;
         yLocationNotExpanded = yLocationNotExpanded + 0.95;
 
         int numberOfImages = data[date]?[0].length ?? 1;
@@ -134,22 +138,22 @@ class YearPageStateProvider with ChangeNotifier {
         Color color = coordinate == null
             ? Colors.grey.withAlpha(150)
             : Color.fromARGB(
-          100,
-          // 0,
-          255 -
-              ((coordinate.longitude ??
-                  127 - averageCoordinate!.longitude!) *
-                  200)
-                  .toInt(),
-          150,
-          ((coordinate.longitude ??
-              127 - averageCoordinate!.longitude!)
-              .abs() *
-              200)
-              .toInt(),
-        );
+                100,
+                // 0,
+                255 -
+                    ((coordinate.longitude ??
+                                127 - averageCoordinate!.longitude!) *
+                            200)
+                        .toInt(),
+                150,
+                ((coordinate.longitude ?? 127 - averageCoordinate!.longitude!)
+                            .abs() *
+                        200)
+                    .toInt(),
+              );
         double size = 20;
-        size = log(numberOfImages) * 5;
+        size = numberOfImages / 5.toDouble();
+        size = size < 100 ? size : 100;
         List entries = data[date]![0];
 
         double leftExpanded = xLocationExpanded * (physicalWidth) / 2 +
@@ -165,22 +169,39 @@ class YearPageStateProvider with ChangeNotifier {
             physicalWidth / 2 -
             size / 2;
 
-        double leftExpandedExtra = positionNotExpanded[indexOfDate][0]*1.5 * (physicalWidth) / 2 +
+        double leftExpandedExtra = positionNotExpanded[indexOfDate][0] *
+                (1.5 - 0.05 * i) *
+                (physicalWidth) /
+                2 +
             (sizeOfChart.width) / 2 -
             size / 2;
-        double topExpandedExtra = (positionNotExpanded[indexOfDate][1]*1.5 + 0.95) * physicalWidth / 2 +
-            physicalWidth / 2 -
-            size / 2;
-        // return [xLocation, yLocation, size, color, entries];
-        return [leftExpanded, topExpanded, leftNotExpanded, topNotExpanded, leftExpandedExtra, topExpandedExtra, size, color, entries, date];
-      });
 
+        double topExpandedExtra =
+            (positionNotExpanded[indexOfDate][1] * (1.5 - 0.05 * i) + 0.95) *
+                    physicalWidth /
+                    2 +
+                physicalWidth / 2 -
+                size / 2;
+        // return [xLocation, yLocation, size, color, entries];
+        return [
+          leftExpanded,
+          topExpanded,
+          leftNotExpanded,
+          topNotExpanded,
+          leftExpandedExtra,
+          topExpandedExtra,
+          size,
+          color,
+          entries,
+          date
+        ];
+      });
     }
     // dataForChart2_modified = Map.fromEntries(dataForChart2_modified.entries.toList()..sort((e1, e2)=>e2.key.compareTo(e1.key)));
     notifyListeners();
   }
 
-  void setPhotoViewScale(double photoViewScale){
+  void setPhotoViewScale(double photoViewScale) {
     this.photoViewScale = photoViewScale;
     notifyListeners();
   }
@@ -208,6 +229,7 @@ class YearPageStateProvider with ChangeNotifier {
     expandedYear = year;
     notifyListeners();
   }
+
   @override
   void dispose() {
     print("yearPageSTateProvider disposed");

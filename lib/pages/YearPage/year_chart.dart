@@ -61,7 +61,88 @@ class _YearChartState extends State<YearChart> with TickerProviderStateMixin {
     return Center(
       child: Stack(
           alignment: Alignment.center,
-          children: [
+          children: [...List.generate(product.dataForChart2_modified[year].length,
+                  (index) {
+                var data = product.dataForChart2_modified[year];
+                isExpanded = (product.expandedYear == year);
+                double left = isExpanded ? data[index][0] : data[index][2];
+                double top = isExpanded ? data[index][1] : data[index][3];
+                String date = data[index][9];
+                bool hasNote = product.dataManager.noteForChart2[year.toString()]
+                ?[date] !=
+                    null;
+                if (hasNote) print("hasNote : $hasNote");
+
+                int? indexOfFavoriteImage = product.dataManager.indexOfFavoriteImages[year.toString()]?[date];
+
+
+                if ((product.expandedYear != null) && (!isExpanded)) {
+                  left = data[index][4];
+                  top = data[index][5];
+                }
+
+                double size = data[index][6];
+                Color color = data[index][7];
+                List entries = data[index][8];
+
+                return AnimatedPositioned(
+                    duration: Duration(milliseconds: 1000),
+                    curve: Curves.easeOutExpo,
+                    left: left,
+                    top: top,
+                    child: GestureDetector(
+                        behavior: HitTestBehavior.translucent,
+                        onDoubleTap: () {
+                          product.setExpandedYear(null);
+                          setState(() {});
+                        },
+                        onTapUp: (detail) {
+                          if (!widget.isExpanded) {
+                            setState(() {
+                              product.setExpandedYear(widget.year);
+                              product.setPhotoViewScale(1);
+                            });
+                            return;
+                          }
+                          if (widget.isExpanded) {
+                            Navigator.push(
+                              context,
+                              PageRouteBuilder(
+                                  transitionDuration: Duration(milliseconds: 500),
+                                  pageBuilder: (_, __, ___) => PhotoCard(
+                                    tag: "${year.toString()}${index}",
+                                    isMagnified: true,
+                                    event: Event(
+                                      images: Map.fromIterable(entries,
+                                          key: (item) => item.key,
+                                          value: (item) => item.value),
+                                      // {for(MapEntry<dynamic, InfoFromFile> entry in entries)}),
+                                      note: "",
+                                    ),
+                                  )),
+                            );
+                          }
+                        },
+                        child: Hero(
+                            tag: "${year.toString()}${index}",
+                            child: indexOfFavoriteImage !=null
+                                ? Badge(
+                              padding: EdgeInsets.all(3.0),
+                              position: BadgePosition(end: -3.0, top: -3.0),
+                              showBadge: hasNote,
+                              child: Scatter.fromType(
+                                  entries.elementAt(indexOfFavoriteImage).key,
+                                  size: size,
+                                  color: color,
+                                  type: scatterType.image),
+                            )
+                                : Scatter.fromType("aa",
+                                size: size,
+                                color: color,
+                                type: scatterType.defaultRect))));
+              }),
+
+
             AnimatedPositioned(
                 duration: Duration(milliseconds: 1000),
                 left: sizeOfChart.width / 2 - 16,
@@ -72,86 +153,9 @@ class _YearChartState extends State<YearChart> with TickerProviderStateMixin {
                 child: Offstage(
                     offstage: (product.expandedYear != null) && (!isExpanded),
                     child: Text("$year")))
-          ]..addAll(List.generate(product.dataForChart2_modified[year].length,
-                (index) {
-              var data = product.dataForChart2_modified[year];
-              isExpanded = (product.expandedYear == year);
-              double left = isExpanded ? data[index][0] : data[index][2];
-              double top = isExpanded ? data[index][1] : data[index][3];
-              String date = data[index][9];
-              bool hasNote = product.dataManager.noteForChart2[year.toString()]
-                      ?[date] !=
-                  null;
-              if (hasNote) print("hasNote : $hasNote");
+          ]
 
-              int? indexOfFavoriteImage = product.dataManager.indexOfFavoriteImages[year.toString()]?[date];
-
-
-              if ((product.expandedYear != null) && (!isExpanded)) {
-                left = data[index][4];
-                top = data[index][5];
-              }
-
-              double size = data[index][6];
-              Color color = data[index][7];
-              List entries = data[index][8];
-
-              return AnimatedPositioned(
-                  duration: Duration(milliseconds: 1000),
-                  curve: Curves.easeOutExpo,
-                  left: left,
-                  top: top,
-                  child: GestureDetector(
-                      behavior: HitTestBehavior.translucent,
-                      onDoubleTap: () {
-                        product.setExpandedYear(null);
-                        setState(() {});
-                      },
-                      onTapUp: (detail) {
-                        if (!widget.isExpanded) {
-                          setState(() {
-                            product.setExpandedYear(widget.year);
-                            product.setPhotoViewScale(1);
-                          });
-                          return;
-                        }
-                        if (widget.isExpanded) {
-                          Navigator.push(
-                            context,
-                            PageRouteBuilder(
-                                transitionDuration: Duration(milliseconds: 500),
-                                pageBuilder: (_, __, ___) => PhotoCard(
-                                      tag: "${year.toString()}${index}",
-                                      isMagnified: true,
-                                      event: Event(
-                                        images: Map.fromIterable(entries,
-                                            key: (item) => item.key,
-                                            value: (item) => item.value),
-                                        // {for(MapEntry<dynamic, InfoFromFile> entry in entries)}),
-                                        note: "",
-                                      ),
-                                    )),
-                          );
-                        }
-                      },
-                      child: Hero(
-                          tag: "${year.toString()}${index}",
-                          child: indexOfFavoriteImage !=null
-                              ? Badge(
-                                  padding: EdgeInsets.all(3.0),
-                                  position: BadgePosition(end: -3.0, top: -3.0),
-                                  showBadge: hasNote,
-                                  child: Scatter.fromType(
-                                      entries.elementAt(indexOfFavoriteImage).key,
-                                      size: size,
-                                      color: color,
-                                      type: scatterType.image),
-                                )
-                              : Scatter.fromType("aa",
-                                  size: size,
-                                  color: color,
-                                  type: scatterType.defaultRect))));
-            }))),
+      ),
     );
   }
 }

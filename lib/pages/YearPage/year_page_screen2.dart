@@ -38,23 +38,44 @@ class _YearPageScreen2State extends State<YearPageScreen2> {
             height: physicalWidth,
             child: Stack(
                 alignment: Alignment.center,
-                children: [
-                  CustomPaint(size: Size(0, 0), painter: OpenPainter())
-                ]..addAll(List.generate(product.dataForChart2.length>10? 9:product.dataForChart2.length, (index) {
-                    int year = product.dataForChart2.keys.elementAt(index);
-                    return YearChart(
-                        year: year,
-                        radius: 1 - index * 0.1,
-                        isExpanded: (product.expandedYear == null) ||
-                                (product.expandedYear != year)
-                            ? false
-                            : true,
-                        product: product);
-                  }))),
+                children:
+                    [...List.generate(
+                    product.dataForChart2_modified.length > 10
+            ? 9
+                : product.dataForChart2_modified.length, (index) {
+              int year = product.dataForChart2_modified.keys.elementAt(index);
+              return YearChart(
+                  year: year,
+                  radius: 1 - index * 0.1,
+                  isExpanded: (product.expandedYear == null) ||
+                      (product.expandedYear != year)
+                      ? false
+                      : true,
+                  product: product);
+            }),
+                      CustomPaint(size: Size(0, 0), painter: OpenPainter())
+              ]
+                  // List.generate(
+                  //     product.dataForChart2_modified.length > 10
+                  //         ? 9
+                  //         : product.dataForChart2_modified.length, (index) {
+                  //   int year = product.dataForChart2_modified.keys.elementAt(index);
+                  //   return YearChart(
+                  //       year: year,
+                  //       radius: 1 - index * 0.1,
+                  //       isExpanded: (product.expandedYear == null) ||
+                  //               (product.expandedYear != year)
+                  //           ? false
+                  //           : true,
+                  //       product: product);
+                  // })
+                  // ..addAll(
+                  //     [CustomPaint(size: Size(0, 0), painter: OpenPainter())])
+
+            ),
           ),
         ),
       ),
-      
     );
   }
 }

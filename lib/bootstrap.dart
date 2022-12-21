@@ -41,8 +41,7 @@ void bootstrap(int i) {
               YearPageStateProvider>(
             update: (context, dataManager, a) {
               print("on update, $a");
-              return yearPageStateProvider
-                ..updateData()..modifyData();
+              return yearPageStateProvider..updateData()..modifyData();
             },
             create: (context) => yearPageStateProvider,
           ),

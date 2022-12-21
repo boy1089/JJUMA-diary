@@ -9,6 +9,9 @@ import '../Data/data_manager_interface.dart';
 import '../Location/coordinate.dart';
 import '../pages/YearPage/year_page_screen2.dart';
 
+import 'package:scidart/numdart.dart';
+import 'dart:core';
+
 enum ImportanceFilter { memorable, casual, none }
 
 List positionExpanded = List.generate(372, (index) {
@@ -56,16 +59,24 @@ class YearPageStateProvider with ChangeNotifier {
   Map dataForChart2_modified = {};
   Map<int, Map<String, List>> dataForChart2 = {};
   int? expandedYear = null;
-  Coordinate? averageCoordinate;
+  Map<int, Coordinate?>? medianCoordinates = {};
+  Coordinate? medianCoordinate;
   double? photoViewScale = 1;
+  int? highlightedYear = null;
+
+  void setHighlightedYear(int? year) {
+    highlightedYear = year;
+    notifyListeners();
+  }
 
   DataManagerInterface dataManager;
   YearPageStateProvider(this.dataManager) {
-    updateData();
-    modifyData();
+    // updateData();
+    // modifyData();
   }
 
   void updateData() {
+    print("update Data For YearPage StateProvider");
     dataForChart = [];
     dataForChart2 = {};
     List<Coordinate> coordinates = [];
@@ -82,28 +93,45 @@ class YearPageStateProvider with ChangeNotifier {
 
       dataForChart2[year]![formatDate(datetime)]![0].add(entry);
 
-      if (coordinate == null) continue;
+      if ((coordinate == null) | (coordinate!.latitude == null)) continue;
 
       if (dataForChart2[year]![formatDate(datetime)]!.length == 2) {
         dataForChart2[year]![formatDate(datetime)]![1] = coordinate;
         continue;
       }
-      dataForChart2[year]![formatDate(datetime)]!.add(coordinate);
-      coordinates.add(coordinate);
-    }
-    double latitude = 0.0;
-    double longitude = 0.0;
-    for (Coordinate? coordinate in coordinates) {
-      latitude += coordinate?.latitude ?? 0;
-      longitude += coordinate?.longitude ?? 0;
-    }
-    dataForChart2 = Map.fromEntries(dataForChart2.entries.toList()
-      ..sort((e1, e2) => e2.key.compareTo(e1.key)));
 
-    averageCoordinate = Coordinate(
-        latitude / coordinates.length, longitude / coordinates.length);
+      dataForChart2[year]![formatDate(datetime)]!.add(coordinate);
+
+      if ((coordinate != null) && (coordinate.longitude != null))
+        coordinates.add(coordinate);
+    }
+
+    dataForChart2 = Map.fromEntries(
+        dataForChart2.entries.toList()
+          ..sort((e1, e2) => e2.key.compareTo(e1.key)))
+      ..removeWhere((key, value) => key > DateTime.now().year);
+
+    getMedianCoordinate(coordinates);
+
     notifyListeners();
   }
+
+  void getMedianCoordinate(List<Coordinate> coordinates){
+    if (coordinates.length == 0) return;
+
+    medianCoordinate = Coordinate(
+        median(Array(List<double>.generate(
+            coordinates.length,
+                (index) => double.parse(
+                coordinates[index].latitude!.toStringAsFixed(3))))),
+        median(
+          Array(List<double>.generate(
+              coordinates.length,
+                  (index) => double.parse(
+                  coordinates[index].longitude!.toStringAsFixed(3)))),
+        ));
+  }
+
 
   void modifyData() {
     for (int i = 0; i < dataForChart2.length; i++) {
@@ -134,26 +162,31 @@ class YearPageStateProvider with ChangeNotifier {
         yLocationNotExpanded = yLocationNotExpanded + 0.95;
 
         int numberOfImages = data[date]?[0].length ?? 1;
-        Coordinate? coordinate = data[date]?[1];
-        Color color = coordinate == null
-            ? Colors.grey.withAlpha(150)
-            : Color.fromARGB(
-                100,
-                // 0,
-                255 -
-                    ((coordinate.longitude ??
-                                127 - averageCoordinate!.longitude!) *
-                            200)
-                        .toInt(),
-                150,
-                ((coordinate.longitude ?? 127 - averageCoordinate!.longitude!)
-                            .abs() *
-                        200)
-                    .toInt(),
-              );
-        double size = 20;
-        size = numberOfImages / 5.toDouble();
-        size = size < 100 ? size : 100;
+        Coordinate? coordinate = data[date]!.length > 1
+            ? data[date]![1]
+            : Coordinate(
+                medianCoordinate!.latitude, medianCoordinate!.longitude);
+
+        double diffInCoord =
+            (coordinate!.longitude! - medianCoordinate!.longitude!).abs();
+
+        diffInCoord = diffInCoord > 215 ? 215 : diffInCoord;
+
+        int locationClassification = 4;
+        // if (diffInCoord < 10) locationClassification = 4;
+        if (diffInCoord < 5) locationClassification = 3;
+        if (diffInCoord < 1) locationClassification = 2;
+        if (diffInCoord < 0.1) locationClassification = 1;
+        if (diffInCoord < 0.01) locationClassification = 0;
+
+        Color color = (coordinate == null) | (coordinate.longitude == null)
+            ? Colors.grey.withAlpha(100)
+            : HSLColor.fromAHSL(
+                    0.5, 215 - locationClassification * 50, 67 / 100, 50 / 100)
+                .toColor();
+
+        double size = numberOfImages / 5.toDouble();
+        size = size < 50 ? size : 50;
         List entries = data[date]![0];
 
         double leftExpanded = xLocationExpanded * (physicalWidth) / 2 +

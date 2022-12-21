@@ -37,7 +37,7 @@ class _YearChartState extends State<YearChart> with TickerProviderStateMixin {
   bool isExpanded;
   double radius;
   _YearChartState(this.product, this.year, this.isExpanded, this.radius) {
-    print("debugging.. ${year}");
+    print("building year chart.. ${year}");
   }
   YearPageStateProvider product;
 
@@ -59,104 +59,104 @@ class _YearChartState extends State<YearChart> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Stack(
-          alignment: Alignment.center,
-          children: [...List.generate(product.dataForChart2_modified[year].length,
-                  (index) {
-                var data = product.dataForChart2_modified[year];
-                isExpanded = (product.expandedYear == year);
-                double left = isExpanded ? data[index][0] : data[index][2];
-                double top = isExpanded ? data[index][1] : data[index][3];
-                String date = data[index][9];
-                bool hasNote = product.dataManager.noteForChart2[year.toString()]
-                ?[date] !=
-                    null;
-                if (hasNote) print("hasNote : $hasNote");
+      child: Stack(alignment: Alignment.center, children: [
+        ...List.generate(product.dataForChart2_modified[year].length, (index) {
+          var data = product.dataForChart2_modified[year];
+          isExpanded = (product.expandedYear == year);
+          double left = isExpanded ? data[index][0] : data[index][2];
+          double top = isExpanded ? data[index][1] : data[index][3];
+          String date = data[index][9];
+          bool hasNote =
+              product.dataManager.noteForChart2[year.toString()]?[date] != null;
 
-                int? indexOfFavoriteImage = product.dataManager.indexOfFavoriteImages[year.toString()]?[date];
+          int? indexOfFavoriteImage =
+              product.dataManager.indexOfFavoriteImages[year.toString()]?[date];
 
+          if ((product.expandedYear != null) && (!isExpanded)) {
+            left = data[index][4];
+            top = data[index][5];
+          }
 
-                if ((product.expandedYear != null) && (!isExpanded)) {
-                  left = data[index][4];
-                  top = data[index][5];
-                }
+          double size = data[index][6];
+          Color color = data[index][7];
+          color = color.withAlpha(year == product.highlightedYear ? 240 : 100);
+          List entries = data[index][8];
 
-                double size = data[index][6];
-                Color color = data[index][7];
-                List entries = data[index][8];
-
-                return AnimatedPositioned(
-                    duration: Duration(milliseconds: 1000),
-                    curve: Curves.easeOutExpo,
-                    left: left,
-                    top: top,
-                    child: GestureDetector(
-                        behavior: HitTestBehavior.translucent,
-                        onDoubleTap: () {
-                          product.setExpandedYear(null);
-                          setState(() {});
-                        },
-                        onTapUp: (detail) {
-                          if (!widget.isExpanded) {
-                            setState(() {
-                              product.setExpandedYear(year);
-                              product.setPhotoViewScale(1);
-                            });
-                            return;
-                          }
-                          if (widget.isExpanded) {
-                            Navigator.push(
-                              context,
-                              PageRouteBuilder(
-                                  transitionDuration: Duration(milliseconds: 500),
-                                  pageBuilder: (_, __, ___) => PhotoCard(
-                                    tag: "${year.toString()}${index}",
-                                    isMagnified: true,
-                                    event: Event(
-                                      images: Map.fromIterable(entries,
-                                          key: (item) => item.key,
-                                          value: (item) => item.value),
-                                      // {for(MapEntry<dynamic, InfoFromFile> entry in entries)}),
-                                      note: "",
-                                    ),
-                                  )),
-                            );
-                          }
-                        },
-                        child: Hero(
-                            tag: "${year.toString()}${index}",
-                            child: indexOfFavoriteImage !=null
-                                ? Scatter.fromType(
-                                    entries.elementAt(indexOfFavoriteImage).key,
-                                    size: size>30.0? size:30.0,
-                                    color: color,
-                                    type: scatterType.image)
-                                : Scatter.fromType("aa",
-                                size: size,
-                                color: color,
-                                type: scatterType.defaultRect))));
-              }),
-
-
-            AnimatedPositioned(
-                duration: Duration(milliseconds: 1000),
-                left:
-                (product.expandedYear == year)
-                    ?sizeOfChart.width / 2 - 28
-                    :sizeOfChart.width / 2 - 18,
-
-                top: (product.expandedYear == year)
-                    ? sizeOfChart.height / 2 - 18
-                    : (2 - radius) / 2 * sizeOfChart.height / 2 -14,
-                curve: Curves.easeOutExpo,
-                child:
-                Offstage(
-                    offstage: (product.expandedYear != null) && (!isExpanded),
-                    child: Text("$year", style: TextStyle(fontSize: isExpanded? 24:16),))
-            )
-          ]
-
-      ),
+          return AnimatedPositioned(
+              duration: Duration(milliseconds: 1000),
+              curve: Curves.easeOutExpo,
+              left: left,
+              top: top,
+              child: GestureDetector(
+                  behavior: HitTestBehavior.translucent,
+                  onDoubleTap: () {
+                    product.setExpandedYear(null);
+                    setState(() {});
+                  },
+                  onTapDown: (detail) {
+                    if (product.expandedYear == null)
+                      product.setHighlightedYear(year);
+                  },
+                  onTapCancel: () {
+                    product.setHighlightedYear(null);
+                  },
+                  onTapUp: (detail) {
+                    product.setHighlightedYear(null);
+                    if (!widget.isExpanded) {
+                      setState(() {
+                        product.setExpandedYear(year);
+                        product.setPhotoViewScale(1);
+                      });
+                      return;
+                    }
+                    if (widget.isExpanded) {
+                      Navigator.push(
+                        context,
+                        PageRouteBuilder(
+                            transitionDuration: Duration(milliseconds: 500),
+                            pageBuilder: (_, __, ___) => PhotoCard(
+                                  tag: "${year.toString()}${index}",
+                                  isMagnified: true,
+                                  event: Event(
+                                    images: Map.fromIterable(entries,
+                                        key: (item) => item.key,
+                                        value: (item) => item.value),
+                                    // {for(MapEntry<dynamic, InfoFromFile> entry in entries)}),
+                                    note: "",
+                                  ),
+                                )),
+                      );
+                    }
+                  },
+                  child: Hero(
+                      tag: "${year.toString()}${index}",
+                      child: indexOfFavoriteImage != null
+                          ? Scatter.fromType(
+                              entries.elementAt(indexOfFavoriteImage).key,
+                              size: size > 30.0 ? size : 30.0,
+                              color: color,
+                              type: scatterType.image)
+                          : Scatter.fromType("aa",
+                              size: size,
+                              color: color,
+                              type: scatterType.defaultRect))));
+        }),
+        AnimatedPositioned(
+            duration: Duration(milliseconds: 1000),
+            left: (product.expandedYear == year)
+                ? sizeOfChart.width / 2 - 28
+                : sizeOfChart.width / 2 - 16,
+            top: (product.expandedYear == year)
+                ? sizeOfChart.height / 2 - 18
+                : (2 - radius) / 2 * sizeOfChart.height / 2 - 14,
+            curve: Curves.easeOutExpo,
+            child: Offstage(
+                offstage: (product.expandedYear != null) && (!isExpanded),
+                child: Text(
+                  "$year",
+                  style: TextStyle(fontSize: isExpanded ? 24 : 14),
+                )))
+      ]),
     );
   }
 }

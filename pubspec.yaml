@@ -53,6 +53,7 @@ dependencies:
   photo_view:
   favorite_button:
   clickable_list_wheel_view:
+  scidart:
 
 dev_dependencies:
   flutter_test:

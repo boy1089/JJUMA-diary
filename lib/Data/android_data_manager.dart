@@ -43,24 +43,6 @@ class AndroidDataManager extends ChangeNotifier
   Map<String, Map<String, String>> noteForChart2 = {};
   Map<String, Map<String, int?>> indexOfFavoriteImages = {};
 
-  void setNote(DateTime datetime, String note, int? indexOfFavoriteImage){
-    if(noteForChart2[datetime.year.toString()] == null)
-      noteForChart2[datetime.year.toString()] = {};
-    noteForChart2[datetime.year.toString()]![formatDate(datetime)] = note;
-    dataRepository.writeNote(noteForChart2);
-  }
-
-  void setIndexOfFavoriteImage(DateTime datetime, int? indexOfFavoriteImage){
-    if(indexOfFavoriteImages[datetime.year.toString()] == null)
-      indexOfFavoriteImages[datetime.year.toString()] = {};
-    indexOfFavoriteImages[datetime.year.toString()]![formatDate(datetime)] = indexOfFavoriteImage;
-    dataRepository.writeIndexOfFavoriteImage(indexOfFavoriteImages);
-
-    WidgetsBinding.instance
-        .addPostFrameCallback((_) =>notifyListeners());
-  }
-
-
   Future<void> init() async {
     Stopwatch stopwatch = Stopwatch()..start();
 
@@ -99,9 +81,9 @@ class AndroidDataManager extends ChangeNotifier
       infoFromFiles = await compute(
           updateExifOnInfo_compute, [partOfFilesNotupdated, infoFromFiles]);
 
-        await dataRepository.writeInfoAsJson(infoFromFiles, true);
-        notifyListeners();
-      }
+      await dataRepository.writeInfoAsJson(infoFromFiles, true);
+      notifyListeners();
+    }
 
     await dataRepository.writeInfoAsJson(infoFromFiles, true);
 
@@ -325,9 +307,27 @@ class AndroidDataManager extends ChangeNotifier
 
   @override
   void addEvent(Event event) async {
-    this.eventList.addAll({formatDatetime(event.images.values.first.datetime!):event});
+    this
+        .eventList
+        .addAll({formatDatetime(event.images.values.first.datetime!): event});
     await dataRepository.writeEventList(this.eventList);
     // notifyListeners();
   }
 
+  void setNote(DateTime datetime, String note, int? indexOfFavoriteImage) {
+    if (noteForChart2[datetime.year.toString()] == null)
+      noteForChart2[datetime.year.toString()] = {};
+    noteForChart2[datetime.year.toString()]![formatDate(datetime)] = note;
+    dataRepository.writeNote(noteForChart2);
+  }
+
+  void setIndexOfFavoriteImage(DateTime datetime, int? indexOfFavoriteImage) {
+    if (indexOfFavoriteImages[datetime.year.toString()] == null)
+      indexOfFavoriteImages[datetime.year.toString()] = {};
+    indexOfFavoriteImages[datetime.year.toString()]![formatDate(datetime)] =
+        indexOfFavoriteImage;
+    dataRepository.writeIndexOfFavoriteImage(indexOfFavoriteImages);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) => notifyListeners());
+  }
 }

@@ -47,7 +47,6 @@ class _YearPageScreen2State extends State<YearPageScreen2> {
                 : product.dataForChart2_modified.length, (index) {
               int year = product.dataForChart2_modified.keys.elementAt(index);
 
-              print("${1-index*0.1}, ${year}");
               return YearChart(
                   year: year,
                   radius: 1 - index * 0.1,
@@ -81,13 +80,14 @@ class _YearPageScreen2State extends State<YearPageScreen2> {
         ),
       ),
 
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: (){
-      //     var a = Provider.of<YearPageStateProvider>(context, listen : false);
-      //     print(a.dataForChart2_modified);
-      //
-      //   },
-      // ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: (){
+          var a = Provider.of<YearPageStateProvider>(context, listen : false);
+          a.dataManager.infoFromFiles.forEach((key, value) {print(value.coordinate);});
+          print(a.medianCoordinate);
+
+        },
+      ),
     );
   }
 }

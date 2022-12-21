@@ -26,7 +26,6 @@ class App extends StatefulWidget {
 
 class _AppState extends State<App> with SingleTickerProviderStateMixin {
   final permissionManager = PermissionManager();
-  final noteManager = NoteManager();
   late final dataManager;
 
   bool isPermissionOk = false;
@@ -57,8 +56,6 @@ class _AppState extends State<App> with SingleTickerProviderStateMixin {
       await Settings.init();
     }
 
-    await noteManager.init();
-    print("init process, time elapsed : ${stopwatch.elapsed}");
     FlutterNativeSplash.remove();
     await dataManager.init();
     print("init process, time elapsed : ${stopwatch.elapsed}");
@@ -75,8 +72,6 @@ class _AppState extends State<App> with SingleTickerProviderStateMixin {
       duration: const Duration(milliseconds: 300),
       vsync: this,
     );
-
-
 
     final _router = GoRouter(initialLocation: '/year', routes: [
       GoRoute(
@@ -111,8 +106,7 @@ class _AppState extends State<App> with SingleTickerProviderStateMixin {
                       });
                 }),
           ]),
-      GoRoute(
-          path: '/diary', builder: (context, state) => DiaryPage(noteManager)),
+
       GoRoute(
           path: '/setting',
           builder: (context, state) => AndroidSettingsScreen()),

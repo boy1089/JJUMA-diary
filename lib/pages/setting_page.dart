@@ -140,42 +140,7 @@ class _AndroidSettingsScreenState extends State<AndroidSettingsScreen> {
                       value: directories[key],
                     );
                   }))),
-              SettingsTile(
-                  title: Text("Analysis settings"),
-                  description: Column(children: [
-                    ListTile(
-                      title: Text("Reference Coordiante"),
-                      subtitle: Text("${Settings.referenceCoordinate}"),
-                      trailing: ElevatedButton(
-                        child: Text("Get"),
-                        onPressed: () async {
-                          var position = await Settings.determinePosition();
-                          Settings.writeItem(
-                              items.referenceCoordinate,
-                              Coordinate(position.latitude.abs(),
-                                  position.longitude.abs()));
-                          setState(() {});
-                        },
-                      ),
-                    ),
-                    // ListTile(
-                    //   title: Text("Minimum number of images in a day"),
-                    //   trailing: NumberPicker(
-                    //     decoration: BoxDecoration(
-                    //       border : Border.all(width :1)
-                    //
-                    //     ),
-                    //       value: _minimumNumberOfImages,
-                    //       minValue: 1,
-                    //       maxValue: 20,
-                    //       onChanged: (value) =>
-                    //           setState(() => _minimumNumberOfImages = value)),
-                    // ),
-                    // ListTile(
-                    //   title: Text("Minimum time difference [min]"),
-                    //   // trailing : Text('aa'),
-                    // ),
-                  ])),
+
             ],
           )
         ],

@@ -97,9 +97,9 @@ class YearPageStateProvider with ChangeNotifier {
       latitude += coordinate?.latitude?? 0;
       longitude += coordinate?.longitude?? 0;
     }
+    dataForChart2= Map.fromEntries(dataForChart2.entries.toList()..sort((e1, e2)=>e2.key.compareTo(e1.key)));
 
     averageCoordinate = Coordinate(latitude/ coordinates.length, longitude/coordinates.length);
-
     notifyListeners();
   }
 
@@ -175,6 +175,8 @@ class YearPageStateProvider with ChangeNotifier {
       });
 
     }
+    dataForChart2_modified = Map.fromEntries(dataForChart2_modified.entries.toList()..sort((e1, e2)=>e2.key.compareTo(e1.key)));
+    notifyListeners();
   }
 
   void setPhotoViewScale(double photoViewScale){

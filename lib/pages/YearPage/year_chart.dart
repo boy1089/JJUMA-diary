@@ -99,7 +99,7 @@ class _YearChartState extends State<YearChart> with TickerProviderStateMixin {
                         onTapUp: (detail) {
                           if (!widget.isExpanded) {
                             setState(() {
-                              product.setExpandedYear(widget.year);
+                              product.setExpandedYear(year);
                               product.setPhotoViewScale(1);
                             });
                             return;

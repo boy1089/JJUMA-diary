@@ -20,12 +20,12 @@ class PermissionManager {
     await getStoragePermission();
     // getCameraPermission();
     await getMediaLibraryPermission();
-    await getLocationPermission();
+    // await getLocationPermission();
     debugPrint("permissionManager initiation done");
   }
 
  Future<void> checkPermissions() async {
-    await checkLocationPermission();
+    // await checkLocationPermission();
     // checkAudioPermission();
     await checkStoragePermission();
     // checkPhonePermission();

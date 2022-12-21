@@ -5,6 +5,7 @@ class LateDiaryTheme {
   static ThemeData get light {
     return ThemeData(
       progressIndicatorTheme: ProgressIndicatorThemeData(),
+      fontFamily: 'NotoSans',
       textTheme: TextTheme(
           //theme for year page year
           headline1: TextStyle(
@@ -40,6 +41,7 @@ class LateDiaryTheme {
 
   static ThemeData get dark {
     return ThemeData(
+      fontFamily: 'NotoSans',
       appBarTheme: const AppBarTheme(
         color: Color(0xFF13B9FF),
       ),

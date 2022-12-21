@@ -61,6 +61,11 @@ dev_dependencies:
     #    android_12:
   flutter_lints: ^2.0.0
 
+
+
+
+
+
 flutter_native_splash:
   image: images/playstore.png
   color: "#ffffff"
@@ -77,6 +82,37 @@ flutter:
 
   assets:
     - images/
+  fonts:
+
+    - family: NotoSansKR
+      fonts:
+      - asset: assets/font/NotoSansKR-Light.otf
+        weight: 300
+      - asset: assets/font/NotoSansKR-Regular.otf
+        weight: 400
+      - asset: assets/font/NotoSansKR-Medium.otf
+        weight: 500
+      - asset: assets/font/NotoSansKR-Bold.otf
+        weight: 700
+      - asset: assets/font/NotoSansKR-Black.otf
+        weight: 900
+
+    - family: NotoSans
+      fonts:
+      - asset : assets/font/NotoSans-ExtraLight.ttf
+        weight: 200
+      - asset: assets/font/NotoSans-Light.ttf
+        weight: 300
+      - asset: assets/font/NotoSans-Regular.ttf
+        weight: 400
+      - asset: assets/font/NotoSans-Medium.ttf
+        weight: 500
+      - asset: assets/font/NotoSans-Semibold.ttf
+        weight: 600
+      - asset: assets/font/NotoSans-Bold.ttf
+        weight: 700
+      - asset: assets/font/NotoSans-Black.ttf
+        weight: 900
 
   #   - images/a_dot_ham.jpeg
 

@@ -39,7 +39,9 @@ class _YearPageScreen2State extends State<YearPageScreen2> {
             child: Stack(
                 alignment: Alignment.center,
                 children:
-                    [...List.generate(
+                    [
+                      CustomPaint(size: Size(0, 0), painter: OpenPainter()),
+                      ...List.generate(
                     product.dataForChart2_modified.length > 10
             ? 10
                 : product.dataForChart2_modified.length, (index) {
@@ -55,7 +57,7 @@ class _YearPageScreen2State extends State<YearPageScreen2> {
                       : true,
                   product: product);
             }),
-                      CustomPaint(size: Size(0, 0), painter: OpenPainter())
+
               ]
                   // List.generate(
                   //     product.dataForChart2_modified.length > 10
@@ -79,13 +81,13 @@ class _YearPageScreen2State extends State<YearPageScreen2> {
         ),
       ),
 
-      floatingActionButton: FloatingActionButton(
-        onPressed: (){
-          var a = Provider.of<YearPageStateProvider>(context, listen : false);
-          print(a.dataForChart2_modified);
-
-        },
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: (){
+      //     var a = Provider.of<YearPageStateProvider>(context, listen : false);
+      //     print(a.dataForChart2_modified);
+      //
+      //   },
+      // ),
     );
   }
 }
@@ -108,7 +110,7 @@ class OpenPainter extends CustomPainter {
 
     final textStyle = TextStyle(
       color: Colors.white,
-      fontSize: 8,
+      fontSize: 12,
     );
 
     final textSpan = TextSpan(
@@ -142,7 +144,7 @@ class OpenPainter extends CustomPainter {
       textPainter..text = textSpan;
       textPainter.layout(
         minWidth: 0,
-        maxWidth: 15,
+        maxWidth: 22,
       );
 
       textPainter.paint(canvas, Offset(xOffset, yOffset));

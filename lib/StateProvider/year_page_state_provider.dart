@@ -11,7 +11,7 @@ import '../pages/YearPage/year_page_screen2.dart';
 
 enum ImportanceFilter { memorable, casual, none }
 
-List positionExpanded = List.generate(366, (index) {
+List positionExpanded = List.generate(372, (index) {
   double day = index.toDouble();
   double week = day / 7.ceil();
   double weekday = day % 7;
@@ -23,7 +23,7 @@ List positionExpanded = List.generate(366, (index) {
   return [xLocation, yLocation];
 });
 
-List positionNotExpanded = List.generate(366, (index) {
+List positionNotExpanded = List.generate(372, (index) {
   double day = index.toDouble();
   double week = day / 7.ceil();
   double weekday = day % 7;
@@ -107,11 +107,12 @@ class YearPageStateProvider with ChangeNotifier {
     for(int i = 0; i< dataForChart2.length; i++){
       int year = dataForChart2.keys.elementAt(i);
       var data = dataForChart2[year];
+
      dataForChart2_modified[year] = List.generate(data!.length, (index){
         String date = data.keys.elementAt(index);
         DateTime datetime = DateTime(year, int.parse(date.substring(4, 6)),
             int.parse(date.substring(6, 8)));
-        int indexOfDate = datetime.difference(DateTime(year)).inDays;
+        int indexOfDate = datetime.difference(DateTime(year)).inDays + DateTime(year).weekday -1;
 
         double xLocationExpanded =  positionExpanded[indexOfDate][0];
         double yLocationExpanded = positionExpanded[indexOfDate][1];

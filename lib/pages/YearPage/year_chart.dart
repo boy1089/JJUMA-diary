@@ -145,14 +145,18 @@ class _YearChartState extends State<YearChart> with TickerProviderStateMixin {
 
             AnimatedPositioned(
                 duration: Duration(milliseconds: 1000),
-                left: sizeOfChart.width / 2 - 16,
+                left:
+                (product.expandedYear == year)
+                    ?sizeOfChart.width / 2 - 28
+                    :sizeOfChart.width / 2 - 18,
+
                 top: (product.expandedYear == year)
-                    ? sizeOfChart.height / 2 - 8
-                    : (2 - radius) / 2 * sizeOfChart.height / 2 - 16,
+                    ? sizeOfChart.height / 2 - 18
+                    : (2 - radius) / 2 * sizeOfChart.height / 2 -14,
                 curve: Curves.easeOutExpo,
                 child: Offstage(
                     offstage: (product.expandedYear != null) && (!isExpanded),
-                    child: Text("$year")))
+                    child: Text("$year", style: TextStyle(fontSize: isExpanded? 24:16),)))
           ]
 
       ),

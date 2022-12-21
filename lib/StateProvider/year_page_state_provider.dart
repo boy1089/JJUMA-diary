@@ -175,7 +175,7 @@ class YearPageStateProvider with ChangeNotifier {
       });
 
     }
-    dataForChart2_modified = Map.fromEntries(dataForChart2_modified.entries.toList()..sort((e1, e2)=>e2.key.compareTo(e1.key)));
+    // dataForChart2_modified = Map.fromEntries(dataForChart2_modified.entries.toList()..sort((e1, e2)=>e2.key.compareTo(e1.key)));
     notifyListeners();
   }
 

@@ -5,11 +5,11 @@ import 'package:lateDiary/Data/info_from_file.dart';
 import 'package:lateDiary/StateProvider/year_page_state_provider.dart';
 import 'package:lateDiary/Util/Util.dart';
 import 'package:extended_image/extended_image.dart';
+import 'package:lateDiary/pages/YearPage/widgets/photo_card.dart';
 import 'dart:io';
 
 import 'package:lateDiary/pages/YearPage/year_page_screen.dart';
-import '../DayPage/model/event.dart';
-import '../DayPage/widgets/photo_card.dart';
+import '../event.dart';
 import 'scatters.dart';
 import 'package:badges/badges.dart';
 

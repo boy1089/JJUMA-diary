@@ -43,7 +43,8 @@ class LateDiaryTheme {
     return ThemeData(
       fontFamily: 'NotoSans',
       appBarTheme: const AppBarTheme(
-        color: Color(0xFF13B9FF),
+        // color: Color(0xFF13B9FF),
+        color : Colors.black12,
       ),
       colorScheme: ColorScheme.fromSwatch(
         brightness: Brightness.dark,

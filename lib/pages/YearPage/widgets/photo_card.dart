@@ -9,9 +9,10 @@ import 'dart:io';
 import 'package:extended_image/extended_image.dart';
 
 import '../../../Util/DateHandler.dart';
-import '../model/event.dart';
 import 'package:lateDiary/Util/global.dart' as global;
 import 'package:clickable_list_wheel_view/clickable_list_wheel_widget.dart';
+
+import '../../event.dart';
 
 class PhotoCard extends StatefulWidget {
   Event event;

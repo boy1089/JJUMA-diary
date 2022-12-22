@@ -4,14 +4,12 @@ import 'package:lateDiary/Permissions/PermissionManager.dart';
 import 'package:lateDiary/Note/note_manager.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:lateDiary/navigation.dart';
-import 'package:lateDiary/pages/DayPage/day_page.dart';
 import 'package:lateDiary/pages/YearPage/year_page_screen.dart';
 import 'package:lateDiary/pages/YearPage/year_page_screen.dart';
 import 'package:lateDiary/pages/diary_page.dart';
 import 'pages/permission_page.dart';
 import 'package:lateDiary/Settings.dart';
 import 'package:lateDiary/Data/directories.dart';
-import 'pages/MainPage/main_page.dart';
 import 'pages/setting_page.dart';
 import 'package:lateDiary/Util/global.dart' as global;
 import 'package:lateDiary/theme/theme.dart';
@@ -65,50 +63,20 @@ class _AppState extends State<App> with SingleTickerProviderStateMixin {
     global.isInitializationDone = true;
     print("init done,executed in ${stopwatch.elapsed}");
     FlutterNativeSplash.remove();
-    // dataManager.executeSlowProcesses();
+    dataManager.executeSlowProcesses();
     return 0;
   }
 
   @override
   Widget build(BuildContext context) {
-    late final AnimationController _controller = AnimationController(
-      duration: const Duration(milliseconds: 300),
-      vsync: this,
-    );
 
+    var a = YearPageScreen();
+    // var a = template();
     final _router = GoRouter(initialLocation: '/year', routes: [
       GoRoute(
           path: '/year',
-          builder: (context, state) => YearPageScreen(),
-          routes: [
-            GoRoute(
-                path: 'day',
-                // builder: (context, state) => DayPage()
-                pageBuilder: (context, state) {
-                  return CustomTransitionPage(
-                      key: state.pageKey,
-                      child: DayPage(),
-                      transitionsBuilder:
-                          (context, animation, secondaryAnimation, child) {
-                        // return SizeTransition(
-                        //   // alignment: Alignment(context.),
-                        //     sizeFactor: CurveTween(curve: Curves.easeInOutCirc)
-                        //         .animate(animation),
-                        //     child: child);
-
-                        return ScaleTransition(
-                            // alignment: Alignment(context.),
-                            scale: CurveTween(curve: Curves.easeInOutCirc)
-                                .animate(animation),
-                            child: child);
-                        // // return FadeTransition(
-                        //   opacity:
-                        //   CurveTween(curve: Curves.easeInOutCirc).animate(animation),
-                        //   child: child,
-                        // );
-                      });
-                }),
-          ]),
+          builder: (context, state) => a,
+      ),
 
       GoRoute(
           path: '/setting',

@@ -7,7 +7,6 @@ import 'package:lateDiary/Util/global.dart' as global;
 import 'package:lateDiary/Note/note_manager.dart';
 import 'package:lateDiary/StateProvider/navigation_index_state_provider.dart';
 import 'package:lateDiary/StateProvider/year_page_state_provider.dart';
-import 'package:lateDiary/StateProvider/day_page_state_provider.dart';
 
 class DiaryPage extends StatefulWidget {
   NoteManager noteManager;
@@ -47,8 +46,7 @@ class _DiaryPageState extends State<DiaryPage> {
                   provider.setDate(formatDateString(date));
                   yearPageStateProvider
                       .setAvailableDates(int.parse(date.substring(0, 4)));
-                  Provider.of<DayPageStateProvider>(context, listen: false)
-                      .setAvailableDates(yearPageStateProvider.availableDates);
+
                 },
                 // padding: EdgeInsets.all(5),
                 child: Container(

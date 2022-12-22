@@ -19,9 +19,6 @@ enum buttons { googleAccount, Location, Audio, Phone }
 
 class AndroidSettingsScreen extends StatefulWidget {
   static String id = 'setting';
-  // final GoogleAccountManager = googleAccountManager;
-  //
-  // static var googleAccountManager;
   AndroidSettingsScreen({
     Key? key,
   })  :
@@ -38,20 +35,20 @@ class _AndroidSettingsScreenState extends State<AndroidSettingsScreen> {
       "https://www.termsfeed.com/live/c780905a-d580-4e20-83a0-3f88929eca2e";
   String email = "latediary.info@gmail.com";
 
-  int _minimumNumberOfImages = 1;
 
   @override
   Widget build(BuildContext context) {
-    print("settingScreen build");
     return Scaffold(
       appBar: AppBar(
         title: Text(
           'Settings',
-          style: TextStyle(color: Colors.black54),
+          // style: TextStyle(color: Colors.black54),
         ),
-        backgroundColor: Colors.white,
+        // backgroundColor: Colors.white,
       ),
+      backgroundColor: Colors.black12,
       body: SettingsList(
+
         platform: DevicePlatform.android,
         sections: [
           SettingsSection(
@@ -97,31 +94,6 @@ class _AndroidSettingsScreenState extends State<AndroidSettingsScreen> {
           SettingsSection(
             title: Text("Photo"),
             tiles: [
-              // SettingsTile(
-              //     title: Text("Reset Data"),
-              //     onPressed: (context) {
-              //       showDialog(
-              //           context: (context),
-              //           builder: (BuildContext context) {
-              //             return AlertDialog(
-              //                 content: Text(
-              //                     "Existing analysis data will be reset.\nPlease restart the service afterward."),
-              //                 actions: [
-              //                   TextButton(
-              //                     child: const Text("cancel"),
-              //                     onPressed: () {
-              //                       Navigator.of(context).pop();
-              //                     },
-              //                   ),
-              //                   TextButton(
-              //                     child: const Text("ok"),
-              //                     onPressed: () {
-              //                       Navigator.of(context).pop();
-              //                     },
-              //                   )
-              //                 ]);
-              //           });
-              //     }),
               SettingsTile(
                   title: Text("Directories"),
                   description: Column(
@@ -140,20 +112,12 @@ class _AndroidSettingsScreenState extends State<AndroidSettingsScreen> {
                       value: directories[key],
                     );
                   }))),
-
             ],
           )
         ],
       ),
     );
   }
-
-  // void setDirectory() {
-  //   print(selectedDirectories);
-  //   print(
-  //       Directories.directories.where((i) => selectedDirectories.elementAt(i)));
-  // Directories.init()
-  // }
 
   void toNotificationsScreen(BuildContext context) {
     Navigation.navigateTo(

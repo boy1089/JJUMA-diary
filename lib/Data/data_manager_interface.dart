@@ -3,7 +3,7 @@ import 'package:lateDiary/Location/coordinate.dart';
 import 'package:lateDiary/Data/info_from_file.dart';
 import 'package:lateDiary/Data/data_repository.dart';
 
-import '../pages/DayPage/model/event.dart';
+import '../pages/event.dart';
 import 'android_data_manager.dart';
 import 'ios_data_manager.dart';
 

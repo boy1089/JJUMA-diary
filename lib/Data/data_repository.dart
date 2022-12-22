@@ -3,7 +3,7 @@ import 'package:lateDiary/Location/coordinate.dart';
 import 'package:lateDiary/Data/info_from_file.dart';
 import 'package:glob/glob.dart';
 import 'package:photo_manager/photo_manager.dart';
-import '../pages/DayPage/model/event.dart';
+import '../pages/event.dart';
 import 'directories.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:convert';

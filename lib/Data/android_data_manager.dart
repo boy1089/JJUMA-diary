@@ -10,7 +10,7 @@ import 'package:lateDiary/Util/global.dart' as global;
 import 'package:lateDiary/Location/location_data_manager.dart';
 import "package:lateDiary/Location/coordinate.dart";
 import 'package:path_provider/path_provider.dart';
-import '../pages/DayPage/model/event.dart';
+import '../pages/event.dart';
 import 'info_from_file.dart';
 import 'package:lateDiary/Data/directories.dart';
 import 'data_repository.dart';

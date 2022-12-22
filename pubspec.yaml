@@ -44,16 +44,14 @@ dependencies:
   url_launcher:
   flutter_shake_animated:
   numberpicker:
-  flutter_bloc:
   photo_manager:
   go_router:
   flutter_animated_button:
-
-  syncfusion_flutter_treemap: ^20.3.60-beta
+  dropdown_button2:
   photo_view:
-  favorite_button:
   clickable_list_wheel_view:
   scidart:
+  screenshot:
 
 dev_dependencies:
   flutter_test:

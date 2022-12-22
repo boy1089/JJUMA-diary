@@ -6,7 +6,6 @@ import 'package:lateDiary/Util/global.dart' as global;
 import 'package:intl/intl.dart';
 
 import 'package:lateDiary/StateProvider/year_page_state_provider.dart';
-import 'package:lateDiary/StateProvider/day_page_state_provider.dart';
 import 'package:lateDiary/StateProvider/navigation_index_state_provider.dart';
 
 class PolarMonthIndicators {

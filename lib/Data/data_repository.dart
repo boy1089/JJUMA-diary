@@ -54,7 +54,6 @@ class DataRepository {
 
     for (int i = 0; i < Directories.selectedDirectories.length; i++) {
       String path = Directories.selectedDirectories.elementAt(i);
-      print("${i}, ${path}");
 
       newFiles = Glob("$path/{**.jpg, **.png}").listSync();
       files.addAll(List.generate(
@@ -62,10 +61,6 @@ class DataRepository {
     }
 
     files = files.where((element) => !element.contains('thumbnail')).toList();
-    // files.sort((a, b) => a.compareTo(b));
-    // print(files);
-    // files.forEach((element) {print(element);});
-
     return files;
   }
 

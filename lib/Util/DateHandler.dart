@@ -51,18 +51,18 @@ Future<DateTime> inferDatetime(filename) async {
 
   return FileStat.statSync(filename).modified;
 }
+//20221010*201020
+RegExp exp1 = RegExp(r"[0-9]{8}\D[0-9]{6}");
+//2022-10-10 20-20-10
+RegExp exp2 =
+// RegExp(r"[0-9]{4}\D[0-9]{2}\D[0-9]{2}\D[0-9]{2}\D[0-9]{2}\D[0-9]{2}");
+RegExp(r"[0-9]{4}\D[0-9]{2}\D[0-9]{2}[ ][0-9]{2}\D[0-9]{2}\D[0-9]{2}");
+
+//timestamp
+RegExp exp3 = RegExp(r"[0-9]{13}");
 
 
 String? inferDatetimeFromFilename(filename) {
-  //20221010*201020
-  RegExp exp1 = RegExp(r"[0-9]{8}\D[0-9]{6}");
-  //2022-10-10 20-20-10
-  RegExp exp2 =
-  // RegExp(r"[0-9]{4}\D[0-9]{2}\D[0-9]{2}\D[0-9]{2}\D[0-9]{2}\D[0-9]{2}");
-  RegExp(r"[0-9]{4}\D[0-9]{2}\D[0-9]{2}[ ][0-9]{2}\D[0-9]{2}\D[0-9]{2}");
-
-  //timestamp
-  RegExp exp3 = RegExp(r"[0-9]{13}");
 
   //order if matching is important. 3->1->2.
   Iterable<RegExpMatch> matches = exp3.allMatches(filename);
@@ -74,21 +74,17 @@ String? inferDatetimeFromFilename(filename) {
 
   matches = exp1.allMatches(filename);
   if (matches.length != 0) {
-    // print(
-    //     matches.first.group(0).toString().replaceAll(RegExp(r"[^0-9]"), "_"));
     return matches.first
-        .group(0)
-        .toString()
+        .group(0)!
+        // .toString()
         .replaceAll(RegExp(r"[^0-9]"), " ");
   }
 
   matches = exp2.allMatches(filename);
   if (matches.length != 0) {
-    // print(
-    //     matches.first.group(0).toString().replaceAll(RegExp(r"[^0-9]"), ""));
     return matches.first
-        .group(0)
-        .toString()
+        .group(0)!
+        // .toString()
         .replaceAll(RegExp(r"[^0-9 ]"), "");
   }
 

@@ -409,6 +409,7 @@ class YearPageStateProvider with ChangeNotifier {
 
         double size = numberOfImages / 5.toDouble();
         size = size < 50 ? size : 50;
+        size = size> 1? size: 1;
         List entries = data[date]![0];
 
         double leftExpanded = xLocationExpanded * (physicalWidth) / 2 +

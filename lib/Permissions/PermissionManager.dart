@@ -12,16 +12,14 @@ class PermissionManager {
   bool isMediaLibraryPermissionGranted = false;
   bool isCameraPermissionGranted = false;
 
-  PermissionManager() {
-    // init();
-  }
-
   Future<void> init() async {
+
     await checkPermissions();
     if(!isStoragePermissionGranted)
     await getStoragePermission();
     if(!isMediaLibraryPermissionGranted && (global.kOs =='ios'))
       await getMediaLibraryPermission();
+
     debugPrint("permissionManager initiation done");
   }
 

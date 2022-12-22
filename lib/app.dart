@@ -29,7 +29,7 @@ class _AppState extends State<App> with SingleTickerProviderStateMixin {
   late final dataManager;
 
   bool isPermissionOk = false;
-  Future initApp = Future.delayed(const Duration(seconds: 5));
+  Future initApp = Future.delayed(const Duration(seconds: 1));
 
   _AppState() {
     dataManager = DataManagerInterface(global.kOs);
@@ -40,6 +40,7 @@ class _AppState extends State<App> with SingleTickerProviderStateMixin {
   Future<int> init() async {
     Stopwatch stopwatch = new Stopwatch()..start();
 
+    print("init process start init time elapsed : ${stopwatch.elapsed}");
     global.isInitializationDone = false;
     await permissionManager.init();
 

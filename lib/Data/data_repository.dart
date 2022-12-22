@@ -51,15 +51,12 @@ class DataRepository {
       return files;
     }
 
+
     for (int i = 0; i < Directories.selectedDirectories.length; i++) {
       String path = Directories.selectedDirectories.elementAt(i);
       print("${i}, ${path}");
 
-      newFiles = Glob("$path/**.jpg", recursive: true).listSync();
-      files.addAll(List.generate(
-          newFiles.length, (index) => newFiles.elementAt(index).path));
-
-      newFiles = Glob("$path/**.png", recursive: true).listSync();
+      newFiles = Glob("$path/{**.jpg, **.png}").listSync();
       files.addAll(List.generate(
           newFiles.length, (index) => newFiles.elementAt(index).path));
     }

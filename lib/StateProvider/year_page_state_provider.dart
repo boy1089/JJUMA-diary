@@ -169,7 +169,11 @@ class YearPageStateProvider with ChangeNotifier {
 
 
   Future<void> updateProvider_compute() async {
-    if((dataManager.infoFromFiles==null)|(dataManager.infoFromFiles=={})) return;
+    print("updateProvider..");
+    if((dataManager.infoFromFiles==null)|(dataManager.infoFromFiles.isEmpty)) {
+      print("updateProvider.. no data");
+      return;
+    }
     var result = await compute(updateData_static, [dataManager.infoFromFiles]);
     dataForChart2 = result[0];
     medianCoordinate = result[1];

@@ -59,7 +59,7 @@ class DataRepository {
       files.addAll(List.generate(
           newFiles.length, (index) => newFiles.elementAt(index).path));
 
-      newFiles = Glob("$path/**.png", recursive : true).listSync();
+      newFiles = Glob("$path/**.png", recursive: true).listSync();
       files.addAll(List.generate(
           newFiles.length, (index) => newFiles.elementAt(index).path));
     }
@@ -79,7 +79,7 @@ class DataRepository {
     if (!isFileExist) return {};
 
     var data = await file.readAsString();
-    if(data == "") return {};
+    if (data == "") return {};
     Map<String, dynamic> mapFromJson = jsonDecode(data);
 
     Map<dynamic, InfoFromFile> test = {};
@@ -181,35 +181,27 @@ class DataRepository {
   }
 
   // Map<dynamic, InfoFromFile> infoFromFiles, bool overwrite
-  static Future<void> writeInfoAsJson_static(List input
-) async {
+  static Future<void> writeInfoAsJson_static(List input) async {
     Map<dynamic, InfoFromFile> infoFromFiles = input[0];
     List filenames = infoFromFiles.keys.toList();
 
-    final Directory directory = await getApplicationDocumentsDirectory();
+    Directory directory = input[1];
+
     final File file = File('${directory.path}/InfoOfFiles.json');
 
     var test = {};
     for (int i = 0; i < filenames.length; i++) {
       dynamic filename = filenames.elementAt(i);
       Map mapOfInfo = infoFromFiles[filename]!.toMap();
-
-      if (global.kOs == "ios") {
-        test[filename.id] = mapOfInfo;
-        continue;
-      }
       test[filename] = mapOfInfo;
-      // if (i % 1000 == 0) print("$i / ${filenames.length}");
     }
     await file.writeAsString(jsonEncode(test));
   }
-
 
   Future<void> writeSummaryOfPhoto(
       Map<dynamic, int> summaryOfPhotoData, bool overwrite, setOfDates) async {
     final Directory directory = await getApplicationDocumentsDirectory();
     final File file = File('${directory.path}/summaryOfPhoto.json');
-
 
     String stringToWrite = jsonEncode(summaryOfPhotoData);
 
@@ -220,7 +212,6 @@ class DataRepository {
       bool overwrite, setOfDates) async {
     final Directory directory = await getApplicationDocumentsDirectory();
     final File file = File('${directory.path}/summaryOfLocation.json');
-
 
     String stringToWrite = jsonEncode(summaryOfLocationData);
     await file.writeAsString(stringToWrite, mode: FileMode.write);
@@ -253,23 +244,25 @@ class DataRepository {
     bool isFileExist = await file.exists();
     if (!isFileExist) return {};
 
-      var data = await file.readAsString();
+    var data = await file.readAsString();
 
-      var jsonData = json.decode(data);
-      Map<String, Map<String, String>> test = {};
+    var jsonData = json.decode(data);
+    Map<String, Map<String, String>> test = {};
 
-      for (var key in jsonData.keys) {
-        test[key] = Map<String, String>.fromIterable(jsonData[key].entries,
-            key: (item) => item.key, value: (item) => item.value);
-      }
-      this.notes = test;
-      return test;
+    for (var key in jsonData.keys) {
+      test[key] = Map<String, String>.fromIterable(jsonData[key].entries,
+          key: (item) => item.key, value: (item) => item.value);
+    }
+    this.notes = test;
+    return test;
   }
 
-  Future<void> writeIndexOfFavoriteImage(Map<String, Map<String, int?>> indexOfFavoriteImages) async {
+  Future<void> writeIndexOfFavoriteImage(
+      Map<String, Map<String, int?>> indexOfFavoriteImages) async {
     final Directory directory = await getApplicationDocumentsDirectory();
     final File file = File('${directory.path}/indexOfFavoriteImage.json');
-    await file.writeAsString(jsonEncode(indexOfFavoriteImages), mode: FileMode.write);
+    await file.writeAsString(jsonEncode(indexOfFavoriteImages),
+        mode: FileMode.write);
   }
 
   Future<Map<String, Map<String, int?>>> readIndexOfFavoriteImages() async {
@@ -291,6 +284,4 @@ class DataRepository {
     this.indexOfFavoriteImages = test;
     return test;
   }
-
-
 }

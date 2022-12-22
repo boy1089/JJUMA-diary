@@ -8,6 +8,7 @@ import 'package:lateDiary/Util/Util.dart';
 
 void main() {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  DartPluginRegistrant.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   Future.delayed(Duration(milliseconds: 200)).then((a){
 

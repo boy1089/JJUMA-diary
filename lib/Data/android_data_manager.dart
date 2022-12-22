@@ -9,6 +9,7 @@ import 'package:lateDiary/Util/Util.dart';
 import 'package:lateDiary/Util/global.dart' as global;
 import 'package:lateDiary/Location/location_data_manager.dart';
 import "package:lateDiary/Location/coordinate.dart";
+import 'package:path_provider/path_provider.dart';
 import '../pages/DayPage/model/event.dart';
 import 'info_from_file.dart';
 import 'package:lateDiary/Data/directories.dart';
@@ -93,9 +94,11 @@ class AndroidDataManager extends ChangeNotifier
       infoFromFiles = await compute(
           updateExifOnInfo_compute, [partOfFilesNotupdated, infoFromFiles]);
 
-      await dataRepository.writeInfoAsJson(infoFromFiles, true);
-      // await compute(DataRepository.writeInfoAsJson_static, [infoFromFiles]);
-      notifyListeners();
+      // await dataRepository.writeInfoAsJson(infoFromFiles, true);
+
+      final Directory directory = await getApplicationDocumentsDirectory();
+      await compute(DataRepository.writeInfoAsJson_static, [infoFromFiles, directory]);
+      // notifyListeners();
     }
 
     await dataRepository.writeInfoAsJson(infoFromFiles, true);

@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
@@ -7,6 +8,7 @@ import 'package:lateDiary/Util/DateHandler.dart';
 import 'package:lateDiary/Util/Util.dart';
 import 'dart:math';
 import 'package:intl/intl.dart';
+import 'package:path_provider/path_provider.dart';
 
 import '../Data/data_manager_interface.dart';
 import '../Location/coordinate.dart';
@@ -174,7 +176,7 @@ class YearPageStateProvider with ChangeNotifier {
     var result2 = await compute(modifyData_static, [dataForChart2, medianCoordinate, physicalWidth]);
     dataForChart2_modified = result2[0];
 
-    // notifyListeners();
+    notifyListeners();
   }
 
 

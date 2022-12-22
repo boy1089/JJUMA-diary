@@ -68,11 +68,9 @@ class DataRepository {
   Future<Map<dynamic, InfoFromFile>> readInfoFromJson() async {
 
 
-    Stopwatch stopwatch = Stopwatch()..start();
     final Directory directory = await getApplicationDocumentsDirectory();
     final File file = File('${directory.path}/InfoOfFiles.json');
 
-    print("readInfoFromFiles step1, time elapsed : ${stopwatch.elapsed}");
 
     bool isFileExist = await file.exists();
     if (!isFileExist) return {};
@@ -80,14 +78,11 @@ class DataRepository {
     var data = await file.readAsString();
     if (data == "") return {};
 
-    print("readInfoFromFiles step2, time elapsed : ${stopwatch.elapsed}");
     Map<String, dynamic> mapFromJson = jsonDecode(data);
 
-    print("readInfoFromFiles step3, time elapsed : ${stopwatch.elapsed}");
     Map<dynamic, InfoFromFile> test = {};
     List filenames = mapFromJson.keys.toList();
 
-    print("readInfoFromFiles step4, time elapsed : ${stopwatch.elapsed}");
     var keys = files;
     var ids = [for (var a in keys) a.id];
 
@@ -107,10 +102,8 @@ class DataRepository {
       test[filename] = InfoFromFile.fromJson(json: mapFromJson[filename]);
     }
 
-    print("readInfoFromFiles step5, time elapsed : ${stopwatch.elapsed}");
     infoFromFiles = test;
 
-    print("readInfoFromFiles step6, time elapsed : ${stopwatch.elapsed}");
     return infoFromFiles;
   }
 

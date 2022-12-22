@@ -66,7 +66,7 @@ class _AppState extends State<App> with SingleTickerProviderStateMixin {
     global.isInitializationDone = true;
     print("init done,executed in ${stopwatch.elapsed}");
     FlutterNativeSplash.remove();
-    // dataManager.executeSlowProcesses();
+    dataManager.executeSlowProcesses();
     return 0;
   }
 

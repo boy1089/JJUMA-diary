@@ -113,10 +113,6 @@ class AndroidDataManager extends ChangeNotifier
 
     Map info = {...infoFromFiles};
     int j = 0;
-    print("debug");
-    print(files);
-    print(filenamesFromInfo);
-
     for (int i = 0; i < files.length; i++) {
       String filename = files.elementAt(i);
       int sublistIndex = j + 1000 < filenamesFromInfo.length

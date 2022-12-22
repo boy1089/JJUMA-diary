@@ -175,8 +175,6 @@ class YearPageStateProvider with ChangeNotifier {
       return;
     }
 
-    print("updateProvider.. data : ${dataManager.infoFromFiles}");
-
     var result = await compute(updateData_static, [dataManager.infoFromFiles]);
     dataForChart2 = result[0];
     medianCoordinate = result[1];

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:developer';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'app.dart';
 import 'package:provider/provider.dart';
@@ -38,7 +39,10 @@ void bootstrap(int i) {
           ChangeNotifierProxyProvider<DataManagerInterface,
               YearPageStateProvider>(
             update: (context, dataManager, a) {
-              return yearPageStateProvider..updateData()..modifyData();
+
+              // return yearPageStateProvider..updateData()..modifyData();
+              return yearPageStateProvider..test();
+
             },
             create: (context) => yearPageStateProvider,
           ),

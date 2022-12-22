@@ -48,15 +48,23 @@ class AndroidDataManager extends ChangeNotifier
 
     print("DataManager instance is initializing..");
     files = await dataRepository.getAllFiles();
+    print("getAllFiles done, time elapsed : ${stopwatch.elapsed}");
+
     infoFromFiles = await dataRepository.readInfoFromJson();
+    print("readInfoFromJson done, time elapsed : ${stopwatch.elapsed}");
+
     noteForChart2 = await dataRepository.readNote();
+    print("read note done, time elapsed : ${stopwatch.elapsed}");
+
     indexOfFavoriteImages = await dataRepository.readIndexOfFavoriteImages();
+    print("readIndexOfFavoriteImage done, time elapsed : ${stopwatch.elapsed}");
 
     notifyListeners();
     print("DataManager init, $files");
 
     // find the files which are in local but not in Info
     filesNotUpdated = await matchFilesAndInfo2();
+    print("matchFile done, time elapsed : ${stopwatch.elapsed}");
 
     // update info which are not updated
     await addFilesToInfo(filesNotUpdated);
@@ -66,6 +74,8 @@ class AndroidDataManager extends ChangeNotifier
     print("updateDateOnInfo done, time elapsed : ${stopwatch.elapsed}");
 
     notifyListeners();
+    print("notifyListner done, time elapsed : ${stopwatch.elapsed}");
+
   }
 
   void executeSlowProcesses() async {
@@ -74,14 +84,17 @@ class AndroidDataManager extends ChangeNotifier
     int lengthOfFiles = filesNotUpdated!.length;
 
     for (int i = 0; i < lengthOfFiles / 100.floor(); i++) {
+
+      print("executing slow process.. $i / ${lengthOfFiles / 100.floor()}");
       List partOfFilesNotupdated = filesNotUpdated!.sublist(i * 100,
           lengthOfFiles < (i + 1) * 100 ? lengthOfFiles : (i + 1) * 100);
 
-      await Future.delayed(Duration(seconds: 1));
+      // await Future.delayed(Duration(seconds: 1));
       infoFromFiles = await compute(
           updateExifOnInfo_compute, [partOfFilesNotupdated, infoFromFiles]);
 
       await dataRepository.writeInfoAsJson(infoFromFiles, true);
+      // await compute(DataRepository.writeInfoAsJson_static, [infoFromFiles]);
       notifyListeners();
     }
 
@@ -192,9 +205,6 @@ class AndroidDataManager extends ChangeNotifier
       List exifData = [];
       exifData = await getExifInfoOfFile(filename);
 
-      if (i % 100 == 0)
-        print(
-            "updateExifOnInfo : $i / ${filenames.length}, $filename, ${exifData[0]}, ${exifData[1]}");
       infoFromFiles[filename]?.coordinate = exifData[1];
       if (exifData[1] != null) {
         infoFromFiles[filename]?.distance = calculateDistanceToRef(exifData[1]);

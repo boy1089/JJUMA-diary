@@ -29,7 +29,7 @@ class InfoFromFile {
   factory InfoFromFile.fromJson({required Map<String, dynamic> json}) {
     return InfoFromFile(
       file: json['file'],
-      datetime: formatDateString(json['datetime']),
+      datetime: (json['datetime']=="null")? null:formatDateString(json['datetime']),
       date: json['date'],
       coordinate: Coordinate(json['latitude'], json['longitude']),
       distance: json['distance'],

@@ -12,7 +12,7 @@ import 'package:path_provider/path_provider.dart';
 
 import '../Data/data_manager_interface.dart';
 import '../Location/coordinate.dart';
-import '../pages/YearPage/year_page_screen2.dart';
+import '../pages/YearPage/year_page_screen.dart';
 
 import 'package:scidart/numdart.dart';
 import 'dart:core';

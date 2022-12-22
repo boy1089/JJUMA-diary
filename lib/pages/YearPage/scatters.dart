@@ -15,7 +15,8 @@ abstract class Scatter extends StatelessWidget {
 
   Scatter({required this.size, required this.color, required type});
 
-  factory Scatter.fromType(imagePath , {required size, required color, required type}) {
+  factory Scatter.fromType(imagePath,
+      {required size, required color, required type}) {
     switch (type) {
       case scatterType.defaultCircle:
         return DefaultCircleScatter(size: size, color: color);
@@ -37,7 +38,7 @@ class DefaultRectangleScatter extends Scatter {
   double size;
   Color color;
   DefaultRectangleScatter({Key? key, required this.size, required this.color})
-      : super(size: size, color: color, type : scatterType.defaultRect);
+      : super(size: size, color: color, type: scatterType.defaultRect);
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +53,7 @@ class DefaultCircleScatter extends Scatter {
   double size;
   Color color;
   DefaultCircleScatter({Key? key, required this.size, required this.color})
-      : super(size: size, color: color, type : scatterType.defaultCircle);
+      : super(size: size, color: color, type: scatterType.defaultCircle);
 
   @override
   Widget build(BuildContext context) {
@@ -72,8 +73,7 @@ class ImageScatter extends Scatter {
       required this.size,
       required this.color,
       required this.imagePath})
-      : super(size: size, color: color, type : scatterType.image);
-
+      : super(size: size, color: color, type: scatterType.image);
 
   @override
   Widget build(BuildContext context) {
@@ -81,7 +81,11 @@ class ImageScatter extends Scatter {
         width: size,
         height: size,
         decoration: ShapeDecoration(shape: const Border(), color: color),
-        child: ExtendedImage.file(File(imagePath),
-        compressionRatio: 0.05,cacheRawData: true, enableMemoryCache: true,));
+        child: ExtendedImage.file(
+          File(imagePath),
+          compressionRatio: 0.05,
+          cacheRawData: true,
+          enableMemoryCache: true,
+        ));
   }
 }

@@ -224,7 +224,7 @@ class _PhotoCardState extends State<PhotoCard>
                                               File(widget.event.images.entries
                                                   .elementAt(index)
                                                   .key),
-                                              compressionRatio: 0.01,
+                                              compressionRatio: 0.0003,
                                             )),
                                       ))),
                         )),

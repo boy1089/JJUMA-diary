@@ -426,14 +426,14 @@ class YearPageStateProvider with ChangeNotifier {
             size / 2;
 
         double leftExpandedExtra = positionNotExpanded[indexOfDate][0] *
-            (1.5 - 0.05 * i) *
+            (1.7 - 0.05 * i) *
             (physicalWidth) /
             2 +
             (sizeOfChart.width) / 2 -
             size / 2;
 
         double topExpandedExtra =
-            (positionNotExpanded[indexOfDate][1] * (1.5 - 0.05 * i) + 0.95) *
+            (positionNotExpanded[indexOfDate][1] * (1.7 - 0.05 * i) + 0.95) *
                 physicalWidth /
                 2 +
                 physicalWidth / 2 -

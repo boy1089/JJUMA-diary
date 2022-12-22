@@ -174,6 +174,9 @@ class YearPageStateProvider with ChangeNotifier {
       print("updateProvider.. no data");
       return;
     }
+
+    print("updateProvider.. data : ${dataManager.infoFromFiles}");
+
     var result = await compute(updateData_static, [dataManager.infoFromFiles]);
     dataForChart2 = result[0];
     medianCoordinate = result[1];
@@ -203,7 +206,7 @@ class YearPageStateProvider with ChangeNotifier {
 
 
   static Coordinate? getMedianCoordinate_static(List<Coordinate> coordinates) {
-    if (coordinates.length == 0) return null;
+    if (coordinates.length == 0) return Coordinate(37.55, 127.0);
 
     Coordinate medianCoordinate = Coordinate(
         median(Array(List<double>.generate(
@@ -329,6 +332,7 @@ class YearPageStateProvider with ChangeNotifier {
     Coordinate? medianCoordinate = input[1];
     double physicalWidth = input[2];
     Map dataForChart2_modified = {};
+    if(dataForChart2 == {}) return [{}];
 
     for (int i = 0; i < dataForChart2.length; i++) {
       int year = dataForChart2.keys.elementAt(i);
@@ -394,7 +398,6 @@ class YearPageStateProvider with ChangeNotifier {
         diffInCoord = diffInCoord > 215 ? 215 : diffInCoord;
 
         int locationClassification = 4;
-        // if (diffInCoord < 10) locationClassification = 4;
         if (diffInCoord < 5) locationClassification = 3;
         if (diffInCoord < 1) locationClassification = 2;
         if (diffInCoord < 0.1) locationClassification = 1;

@@ -37,6 +37,7 @@ class InfoFromFile {
       map: null,
     );
   }
+
   Map<String, dynamic> toJson() => {
         'file': file,
         'datetime': datetime.toString(),

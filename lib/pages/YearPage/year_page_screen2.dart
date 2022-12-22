@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' as intl;
+import 'package:lateDiary/Data/data_manager_interface.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:provider/provider.dart';
 import 'package:lateDiary/StateProvider/year_page_state_provider.dart';
@@ -83,8 +84,13 @@ class _YearPageScreen2State extends State<YearPageScreen2> {
       floatingActionButton: FloatingActionButton(
         onPressed: (){
           var a = Provider.of<YearPageStateProvider>(context, listen : false);
-          a.dataManager.infoFromFiles.forEach((key, value) {print(value.coordinate);});
-          print(a.medianCoordinate);
+          var dataManager = DataManagerInterface(global.kOs);
+
+          int index = 3000;
+          print(dataManager.files.sublist(index));
+          var b=dataManager.infoFromFiles.keys.toList();
+          b..sort();
+          print(b.sublist(index));
 
         },
       ),

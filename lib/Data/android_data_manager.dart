@@ -60,11 +60,8 @@ class AndroidDataManager extends ChangeNotifier
     indexOfFavoriteImages = await dataRepository.readIndexOfFavoriteImages();
     print("readIndexOfFavoriteImage done, time elapsed : ${stopwatch.elapsed}");
 
-    notifyListeners();
-    print("DataManager init, $files");
-
     // find the files which are in local but not in Info
-    filesNotUpdated = await matchFilesAndInfo2();
+    filesNotUpdated = await matchFilesAndInfo();
     print("matchFile done, time elapsed : ${stopwatch.elapsed}");
 
     // update info which are not updated
@@ -85,16 +82,12 @@ class AndroidDataManager extends ChangeNotifier
     int lengthOfFiles = filesNotUpdated!.length;
 
     for (int i = 0; i < lengthOfFiles / 100.floor(); i++) {
-
       print("executing slow process.. $i / ${lengthOfFiles / 100.floor()}");
       List partOfFilesNotupdated = filesNotUpdated!.sublist(i * 100,
           lengthOfFiles < (i + 1) * 100 ? lengthOfFiles : (i + 1) * 100);
 
-      // await Future.delayed(Duration(seconds: 1));
       infoFromFiles = await compute(
           updateExifOnInfo_compute, [partOfFilesNotupdated, infoFromFiles]);
-
-      // await dataRepository.writeInfoAsJson(infoFromFiles, true);
 
       final Directory directory = await getApplicationDocumentsDirectory();
       await compute(DataRepository.writeInfoAsJson_static, [infoFromFiles, directory]);
@@ -108,19 +101,26 @@ class AndroidDataManager extends ChangeNotifier
 
   // i) check whether this file is contained in Info
   // ii) check whether this file is saved previously.
-  Future<List?> matchFilesAndInfo2() async {
+  Future<List?> matchFilesAndInfo() async {
     List? filesNotUpdated = [];
     List filenamesFromInfo = infoFromFiles.keys.toList();
-    if (filenamesFromInfo
-        .isNotEmpty) if (filenamesFromInfo.elementAt(0).runtimeType == String)
-      filenamesFromInfo.sort((a, b) => a.compareTo(b));
+
+    if ((filenamesFromInfo
+        .isNotEmpty)&&(global.kOs=='android')) {
+      print("match file, sort..");
+      filenamesFromInfo..sort();
+    }
 
     Map info = {...infoFromFiles};
     int j = 0;
+    print("debug");
+    print(files);
+    print(filenamesFromInfo);
+
     for (int i = 0; i < files.length; i++) {
-      var filename = files.elementAt(i);
-      int sublistIndex = j + 100 < filenamesFromInfo.length
-          ? j + 100
+      String filename = files.elementAt(i);
+      int sublistIndex = j + 1000 < filenamesFromInfo.length
+          ? j + 1000
           : filenamesFromInfo.length;
       bool isContained =
           filenamesFromInfo.sublist(j, sublistIndex).contains(filename);
@@ -213,6 +213,7 @@ class AndroidDataManager extends ChangeNotifier
         infoFromFiles[filename]?.distance = calculateDistanceToRef(exifData[1]);
       }
       infoFromFiles[filename]?.isUpdated = true;
+
       //if datetime is updated from filename, then does not overwrite with exif
       if (infoFromFiles[filename]?.datetime != null) continue;
       //update the datetime of EXif if there is datetime is null from filename

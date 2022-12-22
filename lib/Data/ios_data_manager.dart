@@ -54,7 +54,7 @@ class IosDataManager extends ChangeNotifier implements DataManagerInterface {
     print("DataManager init, $files");
 
     // find the files which are in local but not in Info
-    filesNotUpdated = await matchFilesAndInfo2();
+    filesNotUpdated = await matchFilesAndInfo();
 
     // update info which are not updated
     await addFilesToInfo(filesNotUpdated);
@@ -155,7 +155,7 @@ class IosDataManager extends ChangeNotifier implements DataManagerInterface {
   // i) check whether this file is contained in Info
   // ii) check whether this file is saved previously.
   @override
-  Future<List?> matchFilesAndInfo2() async {
+  Future<List?> matchFilesAndInfo() async {
     List? filesNotUpdated = [];
     List filenamesFromInfo = infoFromFiles.keys.toList();
     if (filenamesFromInfo

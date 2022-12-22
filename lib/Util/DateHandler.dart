@@ -63,7 +63,6 @@ RegExp exp3 = RegExp(r"[0-9]{13}");
 
 
 String? inferDatetimeFromFilename(filename) {
-
   //order if matching is important. 3->1->2.
   Iterable<RegExpMatch> matches = exp3.allMatches(filename);
   if (matches.length != 0) {

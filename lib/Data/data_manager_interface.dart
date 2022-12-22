@@ -45,7 +45,7 @@ abstract class DataManagerInterface extends ChangeNotifier {
   }
 
   void executeSlowProcesses() async {}
-  Future<List?> matchFilesAndInfo2() async {}
+  Future<List?> matchFilesAndInfo() async {}
   Future<void> addFilesToInfo(List? filenames) async {}
   Future<void> updateDateOnInfo(List? input) async {}
   Future<List<String>> resetInfoFromFiles() async {

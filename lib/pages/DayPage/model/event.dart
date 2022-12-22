@@ -4,13 +4,21 @@ class Event {
   Map<dynamic, InfoFromFile> images;
   String note = '';
 
-  Event({required this.images, required this.note});
+  Event({required this.images, required this.note}){
+    try {
+      images = Map.fromEntries(images.entries.toList()
+        ..sort((e1, e2) => e1.value.datetime!.compareTo(e2.value.datetime!)));
+    } catch(e){}
+
+    // images.forEach((element)=>print(element));
+  }
 
   factory Event.fromImages({required images}) {
     return Event(images: images, note: "");
   }
 
   factory Event.fromJson({required json}) {
+
     var images = Map.fromIterables(
         json['images'].keys.toList(),
         List.generate(

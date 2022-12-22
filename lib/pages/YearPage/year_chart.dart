@@ -25,11 +25,10 @@ class YearChart extends StatefulWidget {
   int year;
   YearPageStateProvider product;
   @override
-  State<YearChart> createState() =>
-      _YearChartState(product, year, radius);
+  State<YearChart> createState() => _YearChartState(product, year, radius);
 }
 
-class _YearChartState extends State<YearChart>   {
+class _YearChartState extends State<YearChart> {
   int year;
   var data;
   bool isExpanded = false;
@@ -37,19 +36,18 @@ class _YearChartState extends State<YearChart>   {
 
   Map locationOfYearText = {};
 
-
   _YearChartState(this.product, this.year, this.radius) {
     print("building year chart.. ${year}");
-    locationOfYearText =  {
-      true : {
-        "left" : sizeOfChart.width / 2 - 28,
-        'top' : sizeOfChart.height / 2 - 16,
+    locationOfYearText = {
+      true: {
+        "left": sizeOfChart.width / 2 - 28,
+        'top': sizeOfChart.height / 2 - 16,
       },
-      false : {
-        "left" : sizeOfChart.width / 2 - 28,
-        'top' : (2 - radius) / 2 * sizeOfChart.height / 2 - 14,
+      false: {
+        "left": sizeOfChart.width / 2 - 14,
+        'top': (2 - radius) / 2 * sizeOfChart.height / 2 - 14,
       }
-  };
+    };
   }
   YearPageStateProvider product;
 
@@ -75,7 +73,7 @@ class _YearChartState extends State<YearChart>   {
 
           double size = data[index][6];
           Color color = data[index][7];
-          // color = color.withAlpha(year == product.highlightedYear ? 240 : 100);
+          color = color.withAlpha(year == product.highlightedYear ? 240 : 100);
 
           List entries = data[index][8];
 
@@ -91,17 +89,19 @@ class _YearChartState extends State<YearChart>   {
                     setState(() {});
                   },
                   onTapDown: (detail) {
-                    if (product.expandedYear == null)
+                    if ((product.expandedYear != year))
                       product.setHighlightedYear(year);
                   },
+
                   onTapCancel: () {
                     product.setHighlightedYear(null);
                   },
+
                   onTapUp: (detail) {
                     product.setHighlightedYear(null);
                     if (!isExpanded) {
-                        product.setExpandedYear(year);
-                        product.setPhotoViewScale(1);
+                      product.setExpandedYear(year);
+                      product.setPhotoViewScale(1);
                       return;
                     }
                     if (isExpanded) {
@@ -119,6 +119,7 @@ class _YearChartState extends State<YearChart>   {
                                     // {for(MapEntry<dynamic, InfoFromFile> entry in entries)}),
                                     note: "",
                                   ),
+                              indexOfFavoriteImage : indexOfFavoriteImage,
                                 )),
                       );
                     }
@@ -128,7 +129,7 @@ class _YearChartState extends State<YearChart>   {
                       child: indexOfFavoriteImage != null
                           ? Scatter.fromType(
                               entries.elementAt(indexOfFavoriteImage).key,
-                              size: size > 30.0 ? size : 30.0,
+                              size: size > 20.0 ? size : 20.0,
                               color: color,
                               type: scatterType.image)
                           : Scatter.fromType("aa",
@@ -139,13 +140,14 @@ class _YearChartState extends State<YearChart>   {
         AnimatedPositioned(
             duration: Duration(milliseconds: 1000),
             left: locationOfYearText[isExpanded]['left'],
-            top:  locationOfYearText[isExpanded]['top'],
+            top: locationOfYearText[isExpanded]['top'],
             curve: Curves.easeOutExpo,
             child: Offstage(
-                offstage: (product.expandedYear != null) && (!isExpanded),
+                offstage: (!isExpanded),
                 child: Text(
                   "$year",
-                  style: TextStyle(fontSize: isExpanded ? 24 : 14),
+                  style: TextStyle(fontSize: isExpanded ? 24 : 12,
+                  fontWeight: year==product.highlightedYear? FontWeight.w800:FontWeight.w400),
                 )))
       ]),
     );

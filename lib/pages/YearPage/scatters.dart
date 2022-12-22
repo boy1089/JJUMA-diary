@@ -45,24 +45,11 @@ class DefaultRectangleScatter extends Scatter {
     return Container(
         width: size,
         height: size,
-        decoration: ShapeDecoration(shape: const Border(), color: color));
+        decoration: ShapeDecoration(shape: const Border(), color: color)
+    );
   }
 }
 
-class DefaultCircleScatter extends Scatter {
-  double size;
-  Color color;
-  DefaultCircleScatter({Key? key, required this.size, required this.color})
-      : super(size: size, color: color, type: scatterType.defaultCircle);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-        width: size,
-        height: size,
-        decoration: ShapeDecoration(shape: const CircleBorder(), color: color));
-  }
-}
 
 class ImageScatter extends Scatter {
   double size;
@@ -87,5 +74,21 @@ class ImageScatter extends Scatter {
           cacheRawData: true,
           enableMemoryCache: true,
         ));
+  }
+}
+
+
+class DefaultCircleScatter extends Scatter {
+  double size;
+  Color color;
+  DefaultCircleScatter({Key? key, required this.size, required this.color})
+      : super(size: size, color: color, type: scatterType.defaultCircle);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        width: size,
+        height: size,
+        decoration: ShapeDecoration(shape: const CircleBorder(), color: color));
   }
 }

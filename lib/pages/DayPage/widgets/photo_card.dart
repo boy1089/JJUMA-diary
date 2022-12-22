@@ -4,20 +4,15 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lateDiary/Data/data_manager_interface.dart';
-import 'package:lateDiary/Data/info_from_file.dart';
-import 'package:lateDiary/StateProvider/year_page_state_provider.dart';
 import 'package:lateDiary/Util/Util.dart';
 import 'dart:io';
 import 'package:extended_image/extended_image.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:provider/provider.dart';
-import 'dart:math';
 
 import '../../../Util/DateHandler.dart';
 import '../model/event.dart';
 import 'package:lateDiary/Util/global.dart' as global;
-import 'package:favorite_button/favorite_button.dart';
 import 'package:clickable_list_wheel_view/clickable_list_wheel_widget.dart';
+
 class PhotoCard extends StatefulWidget {
   Event event;
   bool isMagnified = false;
@@ -25,6 +20,7 @@ class PhotoCard extends StatefulWidget {
   int scrollIndex = 0;
   bool isTickEnabled = false;
   String tag;
+  int? indexOfFavoriteImage = null;
   PhotoCard({
     this.isMagnified = false,
     this.height = 200,
@@ -32,13 +28,14 @@ class PhotoCard extends StatefulWidget {
     this.isTickEnabled = false,
     required this.tag,
     required this.event,
+    this.indexOfFavoriteImage,
   });
   @override
   State<PhotoCard> createState() => _PhotoCardState();
 }
 
 class _PhotoCardState extends State<PhotoCard>
-    with SingleTickerProviderStateMixin {
+    {
   int scrollIndex = 0;
   FocusNode focusNode = FocusNode();
   DateTime dateTime = DateTime.now();
@@ -51,43 +48,50 @@ class _PhotoCardState extends State<PhotoCard>
   @override
   void initState() {
     dateTime = widget.event.images.entries.elementAt(0).value.datetime!;
-    var a = DataManagerInterface(global.kOs);
+    var dataManager = DataManagerInterface(global.kOs);
 
-    if (a.noteForChart2[dateTime.year.toString()]?[formatDate(dateTime)] !=
+    if (dataManager.noteForChart2[dateTime.year.toString()]
+            ?[formatDate(dateTime)] !=
         null)
-      controller.text = a.noteForChart2[dateTime.year.toString()]
+      controller.text = dataManager.noteForChart2[dateTime.year.toString()]
               ?[formatDate(dateTime)] ??
           "";
-    print("indexOfFavoriteImage : ${a.indexOfFavoriteImages[dateTime.year.toString()]?[formatDate(dateTime)]}");
-    if (a.indexOfFavoriteImages[dateTime.year.toString()]?[formatDate(dateTime)] !=
-        null)
-      indexOfFavoriteImage = a.indexOfFavoriteImages[dateTime.year.toString()]?[formatDate(dateTime)];
+    print(
+        "indexOfFavoriteImage : ${dataManager.indexOfFavoriteImages[dateTime.year.toString()]?[formatDate(dateTime)]}");
 
-    final keyList = List.generate(
-        widget.event.images.length, (index) => GlobalKey());
+    if (dataManager.indexOfFavoriteImages[dateTime.year.toString()]
+            ?[formatDate(dateTime)] !=
+        null)
+      indexOfFavoriteImage =
+          dataManager.indexOfFavoriteImages[dateTime.year.toString()]
+              ?[formatDate(dateTime)];
+
+    final keyList =
+        List.generate(widget.event.images.length, (index) => GlobalKey());
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await Future.delayed(Duration(milliseconds: 2000));
       Scrollable.ensureVisible(
-        keyList[indexOfFavoriteImage!=null? indexOfFavoriteImage!:0].currentContext!,
+        keyList[indexOfFavoriteImage != null ? indexOfFavoriteImage! : 0]
+            .currentContext!,
         duration: Duration(milliseconds: 300),
         curve: Curves.bounceInOut,
       );
     });
+
+    indexOfFavoriteImage = widget.indexOfFavoriteImage;
+    if(indexOfFavoriteImage!= null) {
+      scrollController1 =
+          FixedExtentScrollController(initialItem: indexOfFavoriteImage!);
+      scrollController2 =
+          FixedExtentScrollController(initialItem: indexOfFavoriteImage!);
+
+    }
   }
 
-  late Timer timer;
   @override
   Widget build(BuildContext context) {
-    // controller.text = widget.event.note;
     dateTime = widget.event.images.entries.first.value.datetime!;
-    //
-    // if(indexOfFavoriteImage!=null) {
-    //   scrollController1.animateToItem(indexOfFavoriteImage!,
-    //       duration: Duration(seconds: 1), curve: Curves.easeIn);
-    // }
-    //
-
     return Hero(
       tag: widget.tag,
       child: Scaffold(
@@ -106,17 +110,17 @@ class _PhotoCardState extends State<PhotoCard>
                             : EdgeInsets.all(global.kContainerPadding),
                         child: RotatedBox(
                           quarterTurns: -1,
-                          child: Stack(
-                            children: [ClickableListWheelScrollView(
+                          child: Stack(children: [
+                            ClickableListWheelScrollView(
                               itemCount: widget.event.images.length,
                               itemHeight: widget.isMagnified
                                   ? physicalWidth
                                   : widget.height -
-                                  global.kContainerPadding * 2,
+                                      global.kContainerPadding * 2,
                               scrollController: scrollController1,
-                              onItemTapCallback: (index){
+                              onItemTapCallback: (index) {
                                 setState(() {
-                                  if(indexOfFavoriteImage==null) {
+                                  if (indexOfFavoriteImage == null) {
                                     indexOfFavoriteImage = index;
                                     return;
                                   }
@@ -132,9 +136,7 @@ class _PhotoCardState extends State<PhotoCard>
                                         curve: Curves.easeIn);
                                     this.scrollIndex = index;
                                     setState(() {});
-                                    // scrollController2.jumpToItem(index);
                                   },
-
                                   controller: scrollController1,
                                   physics: PageScrollPhysics(),
                                   scrollBehavior: MaterialScrollBehavior(),
@@ -148,8 +150,8 @@ class _PhotoCardState extends State<PhotoCard>
                                       (index) => Center(
                                             child: RotatedBox(
                                                 quarterTurns: 1,
-                                                child: Stack(
-                                                  children: [SizedBox(
+                                                child: Stack(children: [
+                                                  SizedBox(
                                                     height: widget.isMagnified
                                                         ? physicalWidth
                                                         : widget.height -
@@ -171,27 +173,32 @@ class _PhotoCardState extends State<PhotoCard>
                                                     ),
                                                   ),
                                                   Positioned(
-                                                    right : 10.0,
-                                                    bottom : 10.0,
-                                                    // child : FavoriteButton(
-                                                    //   isFavorite: indexOfFavoriteImage==index,
-                                                    //   valueChanged: (){},
-                                                    // )
-                                                     child :
-                                                     indexOfFavoriteImage==index?
-                                                          Icon(Icons.favorite,
-                                                            size : 32.0,
-                                                            color: Colors.red,)
-                                                      :Icon(Icons.favorite_outline_outlined,
-                                                         size : 32.0,color : Colors.red)
-
-                                            )
-                                                  ]
-                                                )),
+                                                      right: 10.0,
+                                                      bottom: 10.0,
+                                                      child: indexOfFavoriteImage ==
+                                                              index
+                                                          ? Icon(
+                                                              Icons.favorite,
+                                                              size: 32.0,
+                                                              color: Colors.red,
+                                                            )
+                                                          : Icon(
+                                                              Icons
+                                                                  .favorite_outline_outlined,
+                                                              size: 32.0,
+                                                              color:
+                                                                  Colors.red)),
+                                                  Text(
+                                                      "${widget.event.images.entries.elementAt(index).value.datetime}"),
+                                                  Positioned(
+                                                      top: 20,
+                                                      width : physicalWidth,
+                                                      child: Text(
+                                                          "${widget.event.images.entries.elementAt(index).key}")),
+                                                ])),
                                           ))),
                             ),
-                            ]
-                          ),
+                          ]),
                         ))),
                 if (widget.isMagnified)
                   Container(
@@ -233,7 +240,7 @@ class _PhotoCardState extends State<PhotoCard>
                 if (widget.isMagnified)
                   Container(
                       width: physicalWidth,
-                      height: 18,
+                      height: 20,
                       child: Padding(
                           padding: EdgeInsets.symmetric(horizontal: 8.0),
                           child: Row(

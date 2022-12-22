@@ -1,12 +1,9 @@
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' as intl;
-import 'package:lateDiary/Data/data_manager_interface.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:provider/provider.dart';
 import 'package:lateDiary/StateProvider/year_page_state_provider.dart';
-import 'package:lateDiary/Util/global.dart' as global;
 import 'package:lateDiary/Util/Util.dart';
 import 'year_chart.dart';
 
@@ -48,19 +45,21 @@ class YearPageScreen extends StatelessWidget {
         ),
       ),
 
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: (){
-      //     var a = Provider.of<YearPageStateProvider>(context, listen : false);
-      //     var dataManager = DataManagerInterface(global.kOs);
-      //
-      //     int index = 3000;
-      //     print(dataManager.files.sublist(index));
-      //     var b=dataManager.infoFromFiles.keys.toList();
-      //     b..sort();
-      //     print(b.sublist(index));
-      //
-      //   },
-      // ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: (){
+          var a = Provider.of<YearPageStateProvider>(context, listen : false);
+          print(a.dataForChart2_modified[2022].elementAt(95));
+
+          // for(int i = 0; i< a.dataForChart2_modified[2022].length; i++){
+          //   print("$i, ${a.dataForChart2_modified[2022].elementAt(i)}");
+          // }
+
+          for(int i = 0; i< a.dataForChart2_modified[2022].elementAt(80).elementAt(8).length; i++){
+            print("$i, ${a.dataForChart2_modified[2022].elementAt(80).elementAt(8).elementAt(i)}");
+          }
+
+        },
+      ),
     );
   }
 }
@@ -85,7 +84,7 @@ class OpenPainter extends CustomPainter {
 
     final textStyle = TextStyle(
       color: Colors.white,
-      fontSize: 12,
+      fontSize: 16,
     );
 
     final textSpan = TextSpan(
@@ -119,7 +118,7 @@ class OpenPainter extends CustomPainter {
       textPainter..text = textSpan;
       textPainter.layout(
         minWidth: 0,
-        maxWidth: 22,
+        maxWidth: 30,
       );
 
       textPainter.paint(canvas, Offset(xOffset, yOffset));

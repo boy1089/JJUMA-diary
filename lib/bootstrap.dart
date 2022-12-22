@@ -19,8 +19,6 @@ void bootstrap(int i) {
 
   YearPageStateProvider yearPageStateProvider =
       YearPageStateProvider(DataManagerInterface(global.kOs));
-  DayPageStateProvider dayPageStateProvider =
-      DayPageStateProvider(DataManagerInterface(global.kOs));
 
 
   runZonedGuarded(
@@ -40,18 +38,11 @@ void bootstrap(int i) {
           ChangeNotifierProxyProvider<DataManagerInterface,
               YearPageStateProvider>(
             update: (context, dataManager, a) {
-              print("on update, $a");
               return yearPageStateProvider..updateData()..modifyData();
             },
             create: (context) => yearPageStateProvider,
           ),
-          ChangeNotifierProxyProvider<DataManagerInterface,
-                  DayPageStateProvider>(
-              update: (context, dataManager, a) => dayPageStateProvider,
-              // update : (context, dataManager, a) =>DayPageStateProvider(dataManager),
-              create: (context) {
-                return dayPageStateProvider;
-              })
+
         ],
         child: App(),
       ),

@@ -33,8 +33,7 @@ class Directories {
           path + '/*');
       selectedDirectories_path.add(
           path + '/*/*');
-      selectedDirectories_path.add(
-          path + '/*/*/*');
+
     }
     return selectedDirectories_path;
   }

@@ -41,8 +41,7 @@ class _AppState extends State<App> with SingleTickerProviderStateMixin {
     Stopwatch stopwatch = new Stopwatch()..start();
     global.isInitializationDone = false;
     await permissionManager.init();
-    if (!permissionManager.isStoragePermissionGranted |
-        !permissionManager.isLocationPermissionGranted) {
+    if (!permissionManager.isStoragePermissionGranted) {
       // FlutterNativeSplash.remove();
       isPermissionOk = await Navigation.navigateTo(
           context: context,
@@ -56,12 +55,12 @@ class _AppState extends State<App> with SingleTickerProviderStateMixin {
       await Settings.init();
     }
 
-    FlutterNativeSplash.remove();
     await dataManager.init();
     print("init process, time elapsed : ${stopwatch.elapsed}");
     global.isInitializationDone = true;
     await Future.delayed(Duration(seconds: 1));
     print("init done,executed in ${stopwatch.elapsed}");
+    FlutterNativeSplash.remove();
     dataManager.executeSlowProcesses();
     return 0;
   }

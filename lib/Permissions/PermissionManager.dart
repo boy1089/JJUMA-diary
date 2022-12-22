@@ -2,6 +2,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:permission_handler/permission_handler.dart' as PermissionHandler;
 // import 'package:record/record.dart';
+import 'package:lateDiary/Util/global.dart' as global;
 
 class PermissionManager {
   bool isLocationPermissionGranted = false;
@@ -17,20 +18,17 @@ class PermissionManager {
 
   Future<void> init() async {
     await checkPermissions();
+    if(!isStoragePermissionGranted)
     await getStoragePermission();
-    // getCameraPermission();
-    await getMediaLibraryPermission();
-    // await getLocationPermission();
+    if(!isMediaLibraryPermissionGranted && (global.kOs =='ios'))
+      await getMediaLibraryPermission();
     debugPrint("permissionManager initiation done");
   }
 
  Future<void> checkPermissions() async {
-    // await checkLocationPermission();
-    // checkAudioPermission();
     await checkStoragePermission();
-    // checkPhonePermission();
+    if(global.kOs=="ios")
     await checkMediaLibraryPermission();
-    // checkCameraPermission();
   }
 
   Future<void> checkMediaLibraryPermission() async{

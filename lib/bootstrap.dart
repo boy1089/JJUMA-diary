@@ -21,7 +21,6 @@ void bootstrap(int i) {
   YearPageStateProvider yearPageStateProvider =
       YearPageStateProvider(DataManagerInterface(global.kOs));
 
-
   runZonedGuarded(
     () => runApp(
       MultiProvider(
@@ -39,14 +38,10 @@ void bootstrap(int i) {
           ChangeNotifierProxyProvider<DataManagerInterface,
               YearPageStateProvider>(
             update: (context, dataManager, a) {
-
-              // return yearPageStateProvider..updateData()..modifyData();
-              return yearPageStateProvider..test();
-
+              return yearPageStateProvider..updateProvider_compute();
             },
             create: (context) => yearPageStateProvider,
           ),
-
         ],
         child: App(),
       ),

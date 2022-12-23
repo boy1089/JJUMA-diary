@@ -10,57 +10,73 @@ import 'year_chart.dart';
 import 'drop_down_button_2.dart';
 import 'package:screenshot/screenshot.dart';
 
-class template extends StatelessWidget {
-  template({Key? key}) : super(key: key);
-  var key = GlobalKey();
-
-  //Create an instance of ScreenshotController
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: RepaintBoundary(key: key, child: YearPageScreen()),
-    );
-  }
-}
+// class template extends StatelessWidget {
+//   template({Key? key}) : super(key: key);
+//   var key = GlobalKey();
+//
+//   //Create an instance of ScreenshotController
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       body: RepaintBoundary(key: key, child: YearPageScreen()),
+//     );
+//   }
+// }
 
 class YearPageScreen extends StatelessWidget {
-  const YearPageScreen( {Key? key}) : super(key: key);
+   YearPageScreen( {Key? key}) : super(key: key);
+
+  final scaleStateController = PhotoViewScaleStateController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
       body: Consumer<YearPageStateProvider>(
-        builder: (context, product, child) => PhotoView.customChild(
-          backgroundDecoration: BoxDecoration(color: Colors.black12),
-          customSize: sizeOfChart,
-          minScale: 1.0,
-          onScaleEnd: (context, value, a) {
-            product.setPhotoViewScale(a.scale ?? 1);
-            if (product.photoViewScale! < 1) {
-              product.setPhotoViewScale(1);
-              product.setExpandedYear(null);
-            }
+        builder: (context, product, child) => WillPopScope(
+          onWillPop: () async {
+
+            if((product.highlightedYear==null)&(product.expandedYear==null)&(product.photoViewScale==1))
+              return true;
+
+            product.setHighlightedYear(null);
+            product.setExpandedYear(null);
+            scaleStateController.reset();
+            product.setPhotoViewScale(1);
+            return false;
+
           },
-          child: Stack(
-              alignment: Alignment.center,
-              children: [
+          child: PhotoView.customChild(
+            backgroundDecoration: BoxDecoration(color: Colors.black12),
+            customSize: sizeOfChart,
+            minScale: 1.0,
+            scaleStateController: scaleStateController,
+            onScaleEnd: (context, value, a) {
+              product.setPhotoViewScale(a.scale ?? 1);
+              if (product.photoViewScale! < 1) {
+                product.setPhotoViewScale(1);
+                product.setExpandedYear(null);
+              }
+            },
+            child: Stack(
+                alignment: Alignment.center,
+                children: [
 
-            CustomPaint(size: Size(0, 0), painter: OpenPainter()),
-            ...List.generate(
-                product.dataForChart2_modified.length > 10
-                    ? 10
-                    : product.dataForChart2_modified.length, (index) {
-              int year = product.dataForChart2_modified.keys.elementAt(index);
+              CustomPaint(size: Size(0, 0), painter: OpenPainter()),
+              ...List.generate(
+                  product.dataForChart2_modified.length > 10
+                      ? 10
+                      : product.dataForChart2_modified.length, (index) {
+                int year = product.dataForChart2_modified.keys.elementAt(index);
 
-              return YearChart(
-                  year: year, radius: 1 - index * 0.1, product: product);
-            }),
-                Positioned(
-                    right : sizeOfChart.height/4,
-                    top : sizeOfChart.height/8,
-                    child : CustomButtonTest())
-          ]),
+                return YearChart(
+                    year: year, radius: 1 - index * 0.1, product: product);
+              }),
+                  Positioned(
+                      right : sizeOfChart.height/4,
+                      top : sizeOfChart.height/8,
+                      child : CustomButtonTest())
+            ]),
+          ),
         ),
 
         // floatingActionButton: FloatingActionButton(

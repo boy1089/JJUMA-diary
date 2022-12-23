@@ -4,4 +4,7 @@ This is the project for Late Diary, which enables users to write diary for the p
 
 I'm not disciplined developer and it would be grateful if anyone can help me building this application. 
 
-I'm targetting to launch this application to Play store 2022.Nov
+it's currently open test status in play store. 
+
+I'm trying to make it usable for common users. 
+

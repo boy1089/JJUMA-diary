@@ -69,6 +69,13 @@ class YearPageStateProvider with ChangeNotifier {
   double? photoViewScale = 1;
   int? highlightedYear = null;
 
+  bool offstageMenu = false;
+
+  void setOffstageMenu(bool offstageMenu){
+    this.offstageMenu = offstageMenu;
+    notifyListeners();
+  }
+
   void setHighlightedYear(int? year) {
     highlightedYear = year;
     notifyListeners();

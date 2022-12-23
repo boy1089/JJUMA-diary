@@ -30,33 +30,36 @@ class YearPageScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool offstage = scaleStateController==1;
     return Scaffold(
       body: Consumer<YearPageStateProvider>(
         builder: (context, product, child) => WillPopScope(
           onWillPop: () async {
-
             if((product.highlightedYear==null)&(product.expandedYear==null)&(product.photoViewScale==1))
               return true;
-
             product.setHighlightedYear(null);
             product.setExpandedYear(null);
             scaleStateController.reset();
             product.setPhotoViewScale(1);
             return false;
-
           },
           child: PhotoView.customChild(
             backgroundDecoration: BoxDecoration(color: Colors.black12),
             customSize: sizeOfChart,
             minScale: 1.0,
             scaleStateController: scaleStateController,
+            onTapDown: (context, detail, _){
+              product.setOffstageMenu(true);
+            },
             onScaleEnd: (context, value, a) {
               product.setPhotoViewScale(a.scale ?? 1);
               if (product.photoViewScale! < 1) {
                 product.setPhotoViewScale(1);
+                product.setOffstageMenu(false);
                 product.setExpandedYear(null);
               }
             },
+
             child: Stack(
                 alignment: Alignment.center,
                 children: [
@@ -72,9 +75,11 @@ class YearPageScreen extends StatelessWidget {
                     year: year, radius: 1 - index * 0.1, product: product);
               }),
                   Positioned(
-                      right : sizeOfChart.height/4,
-                      top : sizeOfChart.height/8,
-                      child : CustomButtonTest())
+                      right : sizeOfChart.width/2 - physicalWidth/2 + 10,
+                      top : sizeOfChart.height/2 - physicalHeight/2 + 40,
+                      child : Offstage(
+                          offstage : product.offstageMenu,
+                          child: CustomButtonTest()))
             ]),
           ),
         ),

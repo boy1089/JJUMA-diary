@@ -137,10 +137,10 @@ class OpenPainter extends CustomPainter {
       textPainter..text = textSpan;
       textPainter.layout(
         minWidth: 0,
-        maxWidth: 30,
+        maxWidth: 35,
       );
 
-      textPainter.paint(canvas, Offset(xOffset, yOffset));
+      textPainter.paint(canvas, Offset(xOffset-14, yOffset-7));
     }
   }
 

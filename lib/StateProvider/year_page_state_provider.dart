@@ -99,7 +99,7 @@ class YearPageStateProvider with ChangeNotifier {
       dataForChart2[year]![formatDate(datetime)]![0].add(entry);
 
       if (coordinate == null) continue;
-      if (coordinate!.latitude == null) continue;
+      if (coordinate.latitude == null) continue;
 
       if (dataForChart2[year]![formatDate(datetime)]!.length == 2) {
         dataForChart2[year]![formatDate(datetime)]![1] = coordinate;
@@ -142,7 +142,7 @@ class YearPageStateProvider with ChangeNotifier {
       dataForChart2[year]![formatDate(datetime)]![0].add(entry);
 
       if (coordinate == null) continue;
-      if (coordinate!.latitude == null) continue;
+      if (coordinate.latitude == null) continue;
 
       if (dataForChart2[year]![formatDate(datetime)]!.length == 2) {
         dataForChart2[year]![formatDate(datetime)]![1] = coordinate;
@@ -388,7 +388,7 @@ class YearPageStateProvider with ChangeNotifier {
         Coordinate? coordinate = data[date]!.length > 1
             ? data[date]![1]
             : Coordinate(
-            medianCoordinate!.latitude, medianCoordinate!.longitude);
+            medianCoordinate!.latitude, medianCoordinate.longitude);
 
         double diffInCoord =
         (coordinate!.longitude! - medianCoordinate!.longitude!).abs();

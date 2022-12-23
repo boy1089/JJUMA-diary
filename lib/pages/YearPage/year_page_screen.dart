@@ -24,27 +24,28 @@ class template extends StatelessWidget {
 }
 
 class YearPageScreen extends StatelessWidget {
-  YearPageScreen( {Key? key}) : super(key: key);
+  const YearPageScreen( {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<YearPageStateProvider>(
-      builder: (context, product, child) => PhotoView.customChild(
-        backgroundDecoration: BoxDecoration(color: Colors.black12),
-        customSize: sizeOfChart,
-        minScale: 1.0,
-        onScaleEnd: (context, value, a) {
-          product.setPhotoViewScale(a.scale ?? 1);
-          if (product.photoViewScale! < 1) {
-            product.setPhotoViewScale(1);
-            product.setExpandedYear(null);
-          }
-        },
-        child: SizedBox(
-          width: physicalWidth,
-          height: physicalWidth,
-          child: Stack(alignment: Alignment.center, children: [
-            // CustomButtonTest(),
+    return Scaffold(
+
+      body: Consumer<YearPageStateProvider>(
+        builder: (context, product, child) => PhotoView.customChild(
+          backgroundDecoration: BoxDecoration(color: Colors.black12),
+          customSize: sizeOfChart,
+          minScale: 1.0,
+          onScaleEnd: (context, value, a) {
+            product.setPhotoViewScale(a.scale ?? 1);
+            if (product.photoViewScale! < 1) {
+              product.setPhotoViewScale(1);
+              product.setExpandedYear(null);
+            }
+          },
+          child: Stack(
+              alignment: Alignment.center,
+              children: [
+
             CustomPaint(size: Size(0, 0), painter: OpenPainter()),
             ...List.generate(
                 product.dataForChart2_modified.length > 10
@@ -55,25 +56,29 @@ class YearPageScreen extends StatelessWidget {
               return YearChart(
                   year: year, radius: 1 - index * 0.1, product: product);
             }),
+                Positioned(
+                    right : sizeOfChart.height/4,
+                    top : sizeOfChart.height/8,
+                    child : CustomButtonTest())
           ]),
         ),
-      ),
 
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: (){
-      //     var a = Provider.of<YearPageStateProvider>(context, listen : false);
-      //     print(a.dataForChart2_modified[2022].elementAt(95));
-      //
-      //     // for(int i = 0; i< a.dataForChart2_modified[2022].length; i++){
-      //     //   print("$i, ${a.dataForChart2_modified[2022].elementAt(i)}");
-      //     // }
-      //
-      //     for(int i = 0; i< a.dataForChart2_modified[2022].elementAt(80).elementAt(8).length; i++){
-      //       print("$i, ${a.dataForChart2_modified[2022].elementAt(80).elementAt(8).elementAt(i)}");
-      //     }
-      //
-      //   },
-      // ),
+        // floatingActionButton: FloatingActionButton(
+        //   onPressed: (){
+        //     var a = Provider.of<YearPageStateProvider>(context, listen : false);
+        //     print(a.dataForChart2_modified[2022].elementAt(95));
+        //
+        //     // for(int i = 0; i< a.dataForChart2_modified[2022].length; i++){
+        //     //   print("$i, ${a.dataForChart2_modified[2022].elementAt(i)}");
+        //     // }
+        //
+        //     for(int i = 0; i< a.dataForChart2_modified[2022].elementAt(80).elementAt(8).length; i++){
+        //       print("$i, ${a.dataForChart2_modified[2022].elementAt(80).elementAt(8).elementAt(i)}");
+        //     }
+        //
+        //   },
+        // ),
+      ),
     );
   }
 }

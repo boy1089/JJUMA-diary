@@ -2,11 +2,9 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:dropdown_button2/custom_dropdown_button2.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/rendering.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lateDiary/pages/YearPage/year_page_screen.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:screenshot/screenshot.dart';
 import 'dart:ui' as ui;
@@ -24,14 +22,9 @@ class _CustomButtonTestState extends State<CustomButtonTest> {
   ScreenshotController screenshotController = ScreenshotController();
 
   @override
-  void initState(){
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
+    return
+      Center(
         child: DropdownButtonHideUnderline(
           child: DropdownButton2(
             customButton: const Icon(
@@ -67,7 +60,7 @@ class _CustomButtonTestState extends State<CustomButtonTest> {
             offset: const Offset(0, 8),
           ),
         ),
-      ),
+
     );
   }
 }

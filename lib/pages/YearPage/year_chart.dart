@@ -88,6 +88,7 @@ class _YearChartState extends State<YearChart> {
                     product.setExpandedYear(null);
                     setState(() {});
                   },
+
                   onTapDown: (detail) {
                     if ((product.expandedYear != year))
                       product.setHighlightedYear(year);

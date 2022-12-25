@@ -41,7 +41,7 @@ List positionNotExpanded = List.generate(372, (index) {
   return [xLocation, yLocation];
 });
 
-List<double> hueList = [215.0, 126.0, 63.0, 0.0, 306.0];
+List<double> hueList = [215.0, 126.0, 63.0, 0.0, 281.0];
 
 enum LocationFilter {
   trip,

@@ -41,6 +41,8 @@ List positionNotExpanded = List.generate(372, (index) {
   return [xLocation, yLocation];
 });
 
+List<double> hueList = [215.0, 126.0, 63.0, 0.0, 306.0];
+
 enum LocationFilter {
   trip,
   none,
@@ -264,9 +266,10 @@ class YearPageStateProvider with ChangeNotifier {
                 medianCoordinate!.latitude, medianCoordinate!.longitude);
 
         double diffInCoord =
-            (coordinate!.longitude! - medianCoordinate!.longitude!).abs();
+            (coordinate!.longitude! - medianCoordinate!.longitude!).abs() + (coordinate!.latitude! - medianCoordinate!.latitude!).abs() ;
 
         diffInCoord = diffInCoord > 215 ? 215 : diffInCoord;
+        if(i==1) print(diffInCoord);
 
         int locationClassification = 4;
         // if (diffInCoord < 10) locationClassification = 4;
@@ -274,11 +277,12 @@ class YearPageStateProvider with ChangeNotifier {
         if (diffInCoord < 1) locationClassification = 2;
         if (diffInCoord < 0.1) locationClassification = 1;
         if (diffInCoord < 0.01) locationClassification = 0;
+        double hue = hueList.elementAt(locationClassification);
 
         Color color = (coordinate == null) | (coordinate.longitude == null)
             ? Colors.grey.withAlpha(100)
             : HSLColor.fromAHSL(
-                    0.5, 215 - locationClassification * 50, 67 / 100, 50 / 100)
+                    0.5, hue, 67 / 100, 50 / 100)
                 .toColor();
 
         double size = numberOfImages / 5.toDouble();
@@ -403,15 +407,17 @@ class YearPageStateProvider with ChangeNotifier {
         diffInCoord = diffInCoord > 215 ? 215 : diffInCoord;
 
         int locationClassification = 4;
-        if (diffInCoord < 5) locationClassification = 3;
-        if (diffInCoord < 1) locationClassification = 2;
+        if (diffInCoord < 3) locationClassification = 3;
+        if (diffInCoord < 0.5) locationClassification = 2;
         if (diffInCoord < 0.1) locationClassification = 1;
         if (diffInCoord < 0.01) locationClassification = 0;
+
+        double hue = hueList.elementAt(locationClassification);
 
         Color color = (coordinate == null) | (coordinate.longitude == null)
             ? Colors.grey.withAlpha(100)
             : HSLColor.fromAHSL(
-            0.5, 215 - locationClassification * 50, 67 / 100, 50 / 100)
+            0.5, hue, 67 / 100, 50 / 100)
             .toColor();
 
         double size = numberOfImages / 5.toDouble();

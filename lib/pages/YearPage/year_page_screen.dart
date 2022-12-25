@@ -27,7 +27,7 @@ class YearPageScreen extends StatelessWidget {
 
   final scaleStateController = PhotoViewScaleStateController();
 
-  int maxNumOfYearChart = 9;
+  int maxNumOfYearChart = 10;
 
   @override
   Widget build(BuildContext context) {

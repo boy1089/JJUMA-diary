@@ -77,7 +77,9 @@ class MenuItem {
 
 class MenuItems {
   // static const List<MenuItem> firstItems = [home, share, settings, export];
-  static const List<MenuItem> firstItems = [export, settings];
+  static const List<MenuItem> firstItems = [
+    // export,
+    settings];
 
   static const List<MenuItem> secondItems = [logout];
 

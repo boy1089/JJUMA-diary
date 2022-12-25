@@ -91,29 +91,29 @@ class _AndroidSettingsScreenState extends State<AndroidSettingsScreen> {
             ],
           ),
           //
-          SettingsSection(
-            title: Text("Photo"),
-            tiles: [
-              SettingsTile(
-                  title: Text("Directories"),
-                  description: Column(
-                      children: List<Widget>.generate(
-                          Directories.directories.length, (i) {
-                    String key = Settings.directories.keys.elementAt(i);
-                    return CheckboxListTile(
-                      controlAffinity: ListTileControlAffinity.leading,
-                      title: Text(key),
-                      onChanged: (flag) {
-                        directories[key] = flag;
-                        Settings.writeItem(items.directories, directories);
-                        Settings.writeFile();
-                        setState(() {});
-                      },
-                      value: directories[key],
-                    );
-                  }))),
-            ],
-          )
+          // SettingsSection(
+          //   title: Text("Photo"),
+          //   tiles: [
+          //     SettingsTile(
+          //         title: Text("Directories"),
+          //         description: Column(
+          //             children: List<Widget>.generate(
+          //                 Directories.directories.length, (i) {
+          //           String key = Settings.directories.keys.elementAt(i);
+          //           return CheckboxListTile(
+          //             controlAffinity: ListTileControlAffinity.leading,
+          //             title: Text(key),
+          //             onChanged: (flag) {
+          //               directories[key] = flag;
+          //               Settings.writeItem(items.directories, directories);
+          //               Settings.writeFile();
+          //               setState(() {});
+          //             },
+          //             value: directories[key],
+          //           );
+          //         }))),
+          //   ],
+          // )
         ],
       ),
     );

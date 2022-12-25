@@ -8,7 +8,6 @@ import 'package:lateDiary/StateProvider/year_page_state_provider.dart';
 import 'package:lateDiary/Util/Util.dart';
 import 'year_chart.dart';
 import 'drop_down_button_2.dart';
-import 'package:screenshot/screenshot.dart';
 
 // class template extends StatelessWidget {
 //   template({Key? key}) : super(key: key);
@@ -28,9 +27,10 @@ class YearPageScreen extends StatelessWidget {
 
   final scaleStateController = PhotoViewScaleStateController();
 
+  int maxNumOfYearChart = 9;
+
   @override
   Widget build(BuildContext context) {
-    bool offstage = scaleStateController==1;
     return Scaffold(
       body: Consumer<YearPageStateProvider>(
         builder: (context, product, child) => WillPopScope(
@@ -49,7 +49,8 @@ class YearPageScreen extends StatelessWidget {
             minScale: 1.0,
             scaleStateController: scaleStateController,
             onTapDown: (context, detail, _){
-              product.setOffstageMenu(true);
+              if(detail.globalPosition.dy>70)
+                 product.setOffstageMenu(true);
             },
             onScaleEnd: (context, value, a) {
               product.setPhotoViewScale(a.scale ?? 1);
@@ -63,11 +64,10 @@ class YearPageScreen extends StatelessWidget {
             child: Stack(
                 alignment: Alignment.center,
                 children: [
-
               CustomPaint(size: Size(0, 0), painter: OpenPainter()),
               ...List.generate(
-                  product.dataForChart2_modified.length > 10
-                      ? 10
+                  product.dataForChart2_modified.length > maxNumOfYearChart
+                      ? maxNumOfYearChart
                       : product.dataForChart2_modified.length, (index) {
                 int year = product.dataForChart2_modified.keys.elementAt(index);
 

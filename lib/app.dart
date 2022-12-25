@@ -71,7 +71,6 @@ class _AppState extends State<App> with SingleTickerProviderStateMixin {
   Widget build(BuildContext context) {
 
     var a = YearPageScreen();
-    // var a = template();
     final _router = GoRouter(initialLocation: '/year', routes: [
       GoRoute(
           path: '/year',

@@ -35,8 +35,7 @@ class PhotoCard extends StatefulWidget {
   State<PhotoCard> createState() => _PhotoCardState();
 }
 
-class _PhotoCardState extends State<PhotoCard>
-    {
+class _PhotoCardState extends State<PhotoCard> {
   int scrollIndex = 0;
   FocusNode focusNode = FocusNode();
   DateTime dateTime = DateTime.now();
@@ -81,12 +80,11 @@ class _PhotoCardState extends State<PhotoCard>
     });
 
     indexOfFavoriteImage = widget.indexOfFavoriteImage;
-    if(indexOfFavoriteImage!= null) {
+    if (indexOfFavoriteImage != null) {
       scrollController1 =
           FixedExtentScrollController(initialItem: indexOfFavoriteImage!);
       scrollController2 =
           FixedExtentScrollController(initialItem: indexOfFavoriteImage!);
-
     }
   }
 
@@ -102,178 +100,190 @@ class _PhotoCardState extends State<PhotoCard>
             child: Column(
               mainAxisSize: MainAxisSize.max,
               children: [
-                SizedBox(
-                    height: widget.isMagnified ? physicalWidth : widget.height,
-                    width: widget.isMagnified ? physicalWidth : widget.height,
-                    child: Padding(
-                        padding: widget.isMagnified
-                            ? EdgeInsets.zero
-                            : EdgeInsets.all(global.kContainerPadding),
-                        child: RotatedBox(
-                          quarterTurns: -1,
-                          child: Stack(children: [
-                            ClickableListWheelScrollView(
-                              itemCount: widget.event.images.length,
-                              itemHeight: widget.isMagnified
-                                  ? physicalWidth
-                                  : widget.height -
-                                      global.kContainerPadding * 2,
-                              scrollController: scrollController1,
-                              onItemTapCallback: (index) {
-                                setState(() {
-                                  if (indexOfFavoriteImage == null) {
-                                    indexOfFavoriteImage = index;
-                                    return;
-                                  }
-
-                                  indexOfFavoriteImage = null;
-                                });
-                              },
-                              child: ListWheelScrollView(
-                                  onSelectedItemChanged: (index) {
-                                    if (this.scrollIndex == index) return;
-                                    scrollController2.animateToItem(index,
-                                        duration: Duration(milliseconds: 500),
-                                        curve: Curves.easeIn);
-                                    this.scrollIndex = index;
-                                    setState(() {});
-                                  },
-                                  controller: scrollController1,
-                                  physics: PageScrollPhysics(),
-                                  scrollBehavior: MaterialScrollBehavior(),
-                                  diameterRatio: 200,
-                                  itemExtent: widget.isMagnified
-                                      ? physicalWidth
-                                      : widget.height -
-                                          global.kContainerPadding * 2,
-                                  children: List.generate(
-                                      widget.event.images.entries.length,
-                                      (index) => Center(
-                                            child: RotatedBox(
-                                                quarterTurns: 1,
-                                                child: Stack(children: [
-                                                  SizedBox(
-                                                    height: widget.isMagnified
-                                                        ? physicalWidth
-                                                        : widget.height -
-                                                            global.kContainerPadding *
-                                                                2,
-                                                    width: widget.isMagnified
-                                                        ? physicalWidth
-                                                        : widget.height -
-                                                            global.kContainerPadding *
-                                                                2,
-                                                    child: ExtendedImage.file(
-                                                      File(widget
-                                                          .event.images.entries
-                                                          .elementAt(index)
-                                                          .key),
-                                                      cacheRawData: true,
-                                                      compressionRatio: 0.1,
-                                                      fit: BoxFit.cover,
-                                                    ),
-                                                  ),
-                                                  Positioned(
-                                                      right: 10.0,
-                                                      bottom: 10.0,
-                                                      child: indexOfFavoriteImage ==
-                                                              index
-                                                          ? Icon(
-                                                              Icons.favorite,
-                                                              size: 32.0,
-                                                              color: Colors.red,
-                                                            )
-                                                          : Icon(
-                                                              Icons
-                                                                  .favorite_outline_outlined,
-                                                              size: 32.0,
-                                                              color:
-                                                                  Colors.red)),
-                                                  Text(
-                                                      "${widget.event.images.entries.elementAt(index).value.datetime}"),
-                                                  Positioned(
-                                                      top: 20,
-                                                      width : physicalWidth,
-                                                      child: Text(
-                                                          "${widget.event.images.entries.elementAt(index).key}")),
-                                                ])),
-                                          ))),
-                            ),
-                          ]),
-                        ))),
-                if (widget.isMagnified)
-                  Container(
-                    height: 50,
-                    width: physicalWidth,
-                    child: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 8),
-                        child: RotatedBox(
-                          quarterTurns: -1,
-                          child: ListWheelScrollView(
-                              // useMagnifier: true,
-                              // magnification: 2,
-                              controller: scrollController2,
-                              onSelectedItemChanged: (index) {
-                                print("$index, ${this.scrollIndex}");
-
-                                if (this.scrollIndex == index) return;
-                                this.scrollIndex = index;
-                                setState(() {});
-                                scrollController1.jumpToItem(index);
-                              },
-                              diameterRatio: 200,
-                              itemExtent: 40,
-                              children: List.generate(
-                                  widget.event.images.entries.length,
-                                  (index) => Center(
-                                        child: RotatedBox(
-                                            quarterTurns: 1,
-                                            child: ExtendedImage.file(
-                                              File(widget.event.images.entries
-                                                  .elementAt(index)
-                                                  .key),
-                                              compressionRatio: 0.0003,
-                                            )),
-                                      ))),
-                        )),
-                  ),
-                //
-                if (widget.isMagnified)
-                  Container(
-                      width: physicalWidth,
-                      height: 20,
-                      child: Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 8.0),
-                          child: Row(
-                            children: [
-                              DateText(dateTime: dateTime),
-                            ],
-                          ))),
-                if (widget.isMagnified)
-                  Container(
-                    height: 100,
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 8.0),
-                      child: EditableText(
-                          maxLines: 5,
-                          controller: controller,
-                          focusNode: focusNode,
-                          onChanged: (a) {
-                            print(controller.text);
-                          },
-                          style: TextStyle(
-                            // color: Colors.black,
-                            fontSize: 16.0,
-                          ),
-                          // onChanged: (value){controller.text = value;},
-                          cursorColor: Colors.black,
-                          backgroundCursorColor: Colors.grey),
-                    ),
-                  )
+                mainPhotoListView(),
+                if (widget.isMagnified) subPhotoListView(),
+                if (widget.isMagnified) dateText(),
+                if (widget.isMagnified) noteView()
               ],
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  mainPhotoListView() {
+    return SizedBox(
+        height: widget.isMagnified ? physicalWidth : widget.height,
+        width: widget.isMagnified ? physicalWidth : widget.height,
+        child: Padding(
+            padding: widget.isMagnified
+                ? EdgeInsets.zero
+                : EdgeInsets.all(global.kContainerPadding),
+            child: RotatedBox(
+              quarterTurns: -1,
+              child: Stack(children: [
+                ClickableListWheelScrollView(
+                  itemCount: widget.event.images.length,
+                  itemHeight: widget.isMagnified
+                      ? physicalWidth
+                      : widget.height - global.kContainerPadding * 2,
+                  scrollController: scrollController1,
+                  onItemTapCallback: (index) {
+                    setState(() {
+                      if (indexOfFavoriteImage == null) {
+                        indexOfFavoriteImage = index;
+                        return;
+                      }
+
+                      indexOfFavoriteImage = null;
+                    });
+                  },
+                  child: ListWheelScrollView(
+                      onSelectedItemChanged: (index) {
+                        if (this.scrollIndex == index) return;
+                        scrollController2.animateToItem(index,
+                            duration: Duration(milliseconds: 500),
+                            curve: Curves.easeIn);
+                        this.scrollIndex = index;
+                        setState(() {});
+                      },
+                      controller: scrollController1,
+                      physics: PageScrollPhysics(),
+                      scrollBehavior: MaterialScrollBehavior(),
+                      diameterRatio: 200,
+                      itemExtent: widget.isMagnified
+                          ? physicalWidth
+                          : widget.height - global.kContainerPadding * 2,
+                      children: List.generate(
+                          widget.event.images.entries.length,
+                          (index) => Center(
+                                child: RotatedBox(
+                                    quarterTurns: 1,
+                                    child: Stack(children: [
+                                      SizedBox(
+                                        height: widget.isMagnified
+                                            ? physicalWidth
+                                            : widget.height -
+                                                global.kContainerPadding * 2,
+                                        width: widget.isMagnified
+                                            ? physicalWidth
+                                            : widget.height -
+                                                global.kContainerPadding * 2,
+                                        child: ExtendedImage.file(
+                                          File(widget.event.images.entries
+                                              .elementAt(index)
+                                              .key),
+                                          cacheRawData: true,
+                                          compressionRatio: 0.1,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                      Positioned(
+                                          right: 10.0,
+                                          bottom: 10.0,
+                                          child: indexOfFavoriteImage == index
+                                              ? Icon(
+                                                  Icons.favorite,
+                                                  size: 32.0,
+                                                  color: Colors.red,
+                                                )
+                                              : Icon(
+                                                  Icons
+                                                      .favorite_outline_outlined,
+                                                  size: 32.0,
+                                                  color: Colors.red)),
+                                      Positioned(
+                                        left: 10.0,
+                                        top: 10.0,
+                                        child: Text(
+                                            "${DateFormat('Hm').format(widget.event.images.entries.elementAt(index).value.datetime
+                                                ?? DateTime.now())}", style: TextStyle(fontSize: 16.0),),
+                                      ),
+                                      // Positioned(
+                                      //     top: 20,
+                                      //     width : physicalWidth,
+                                      //     child: Text(
+                                      //         "${widget.event.images.entries.elementAt(index).key}")),
+                                    ])),
+                              ))),
+                ),
+              ]),
+            )));
+  }
+
+  subPhotoListView() {
+    return Container(
+      height: 50,
+      width: physicalWidth,
+      margin: EdgeInsets.only(top: 8.0),
+      child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 8),
+          child: RotatedBox(
+            quarterTurns: -1,
+            child: ListWheelScrollView(
+                // useMagnifier: true,
+                // magnification: 2,
+                controller: scrollController2,
+                onSelectedItemChanged: (index) {
+                  print("$index, ${this.scrollIndex}");
+
+                  if (this.scrollIndex == index) return;
+                  this.scrollIndex = index;
+                  setState(() {});
+                  scrollController1.jumpToItem(index);
+                },
+                diameterRatio: 200,
+                itemExtent: 40,
+                children: List.generate(
+                    widget.event.images.entries.length,
+                    (index) => Center(
+                          child: RotatedBox(
+                              quarterTurns: 1,
+                              child: ExtendedImage.file(
+                                File(widget.event.images.entries
+                                    .elementAt(index)
+                                    .key),
+                                compressionRatio: 0.0003,
+                              )),
+                        ))),
+          )),
+    );
+  }
+
+  dateText() {
+    return Container(
+        width: physicalWidth,
+        height: 20,
+        margin: EdgeInsets.symmetric(vertical: 8.0),
+        child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 8.0),
+            child: Row(
+              children: [
+                DateText(dateTime: dateTime),
+              ],
+            )));
+  }
+
+  noteView() {
+    return SizedBox(
+      height: 100,
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 8.0),
+        child: EditableText(
+            maxLines: 5,
+            controller: controller,
+            focusNode: focusNode,
+            onChanged: (a) {
+              print(controller.text);
+            },
+            style: TextStyle(
+              // color: Colors.black,
+              fontSize: 16.0,
+            ),
+            // onChanged: (value){controller.text = value;},
+            cursorColor: Colors.black,
+            backgroundCursorColor: Colors.grey),
       ),
     );
   }

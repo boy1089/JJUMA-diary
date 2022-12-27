@@ -49,6 +49,7 @@ class _PhotoCardState extends State<PhotoCard> {
   void initState() {
     dateTime = widget.event.images.entries.elementAt(0).value.datetime!;
     var dataManager = DataManagerInterface(global.kOs);
+    print("numberOfImages : ${widget.event.images.length}");
 
     if (dataManager.noteForChart2[dateTime.year.toString()]
             ?[formatDate(dateTime)] !=

@@ -63,8 +63,8 @@ class _YearChartState extends State<YearChart> {
           double top = isExpanded ? data[index][1] : data[index][3];
           String date = data[index][9];
 
-          int? indexOfFavoriteImage =
-              product.dataManager.indexOfFavoriteImages[year.toString()]?[date];
+          String? filenameOfFavoriteImage =
+              product.dataManager.filenameOfFavoriteImages[year.toString()]?[date];
 
           if ((product.expandedYear != null) && (!isExpanded)) {
             left = data[index][4];
@@ -88,16 +88,13 @@ class _YearChartState extends State<YearChart> {
                     product.setExpandedYear(null);
                     setState(() {});
                   },
-
                   onTapDown: (detail) {
                     if ((product.expandedYear != year))
                       product.setHighlightedYear(year);
                   },
-
                   onTapCancel: () {
                     product.setHighlightedYear(null);
                   },
-
                   onTapUp: (detail) {
                     product.setHighlightedYear(null);
                     if (!isExpanded) {
@@ -120,19 +117,20 @@ class _YearChartState extends State<YearChart> {
                                     // {for(MapEntry<dynamic, InfoFromFile> entry in entries)}),
                                     note: "",
                                   ),
-                              indexOfFavoriteImage : indexOfFavoriteImage,
+                                  filenameOfFavoriteImage: filenameOfFavoriteImage,
                                 )),
                       );
                     }
                   },
                   child: Hero(
                       tag: "${year.toString()}${index}",
-                      child: indexOfFavoriteImage != null
+                      child: filenameOfFavoriteImage != null
                           ? Scatter.fromType(
-                              entries.elementAt(indexOfFavoriteImage).key,
+                              filenameOfFavoriteImage,
                               size: size > 20.0 ? size : 20.0,
                               color: color,
                               type: scatterType.image)
+
                           : Scatter.fromType("aa",
                               size: size,
                               color: color,
@@ -147,8 +145,11 @@ class _YearChartState extends State<YearChart> {
                 offstage: (!isExpanded),
                 child: Text(
                   "$year",
-                  style: TextStyle(fontSize: isExpanded ? 24 : 12,
-                  fontWeight: year==product.highlightedYear? FontWeight.w800:FontWeight.w400),
+                  style: TextStyle(
+                      fontSize: isExpanded ? 24 : 12,
+                      fontWeight: year == product.highlightedYear
+                          ? FontWeight.w800
+                          : FontWeight.w400),
                 )))
       ]),
     );

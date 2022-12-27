@@ -105,11 +105,11 @@ class _YearPageScreenState extends State<YearPageScreen> {
           if (renderObject is RenderRepaintBoundary) {
             var boundary = renderObject;
             ui.Image image = await boundary.toImage(pixelRatio: 10.0);
-            final directory = (await getApplicationDocumentsDirectory()).path;
+            final directory = (await getExternalStorageDirectory())?.path;
             ByteData byteData =
                 (await image.toByteData(format: ui.ImageByteFormat.png))!;
             Uint8List pngBytes = byteData.buffer.asUint8List();
-            File imgFile = new File('$directory/screenshot.png');
+            File imgFile = new File('$directory/lateDiary_${DateTime.now()}.png');
             imgFile.writeAsBytes(pngBytes);
             print("FINISH CAPTURE ${imgFile.path}");
           }

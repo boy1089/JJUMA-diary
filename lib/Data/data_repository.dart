@@ -25,7 +25,7 @@ class DataRepository {
 
   Map<dynamic, InfoFromFile> infoFromFiles = {};
   Map<String, Map<String, String>> notes = {};
-  Map<String, Map<String, int?>> indexOfFavoriteImages = {};
+  Map<String, Map<String, String?>> filenameOfFavoriteImages = {};
 
   Future<void> init() async {
     print("DataRepository instance is initializing..");
@@ -254,17 +254,17 @@ class DataRepository {
     return test;
   }
 
-  Future<void> writeIndexOfFavoriteImage(
-      Map<String, Map<String, int?>> indexOfFavoriteImages) async {
+  Future<void> writeFilenameOfFavoriteImage(
+      Map<String, Map<String, String?>> indexOfFavoriteImages) async {
     final Directory directory = await getApplicationDocumentsDirectory();
-    final File file = File('${directory.path}/indexOfFavoriteImage.json');
+    final File file = File('${directory.path}/filenameOfFavoriteImage.json');
     await file.writeAsString(jsonEncode(indexOfFavoriteImages),
         mode: FileMode.write);
   }
 
-  Future<Map<String, Map<String, int?>>> readIndexOfFavoriteImages() async {
+  Future<Map<String, Map<String, String?>>> readFilenameOfFavoriteImages() async {
     final Directory directory = await getApplicationDocumentsDirectory();
-    final File file = File('${directory.path}/indexOfFavoriteImage.json');
+    final File file = File('${directory.path}/filenameOfFavoriteImage.json');
 
     bool isFileExist = await file.exists();
     if (!isFileExist) return {};
@@ -272,13 +272,13 @@ class DataRepository {
     var data = await file.readAsString();
 
     var jsonData = json.decode(data);
-    Map<String, Map<String, int?>> test = {};
+    Map<String, Map<String, String?>> test = {};
 
     for (var key in jsonData.keys) {
-      test[key] = Map<String, int?>.fromIterable(jsonData[key].entries,
+      test[key] = Map<String, String?>.fromIterable(jsonData[key].entries,
           key: (item) => item.key, value: (item) => item.value);
     }
-    this.indexOfFavoriteImages = test;
+    this.filenameOfFavoriteImages = test;
     return test;
   }
 }

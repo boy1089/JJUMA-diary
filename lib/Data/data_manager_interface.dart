@@ -15,15 +15,15 @@ abstract class DataManagerInterface extends ChangeNotifier {
       default: return AndroidDataManager();
     }
   }
-  void setNote(DateTime datetime, String note, int? indexOfFavoriteImage);
-  void setIndexOfFavoriteImage(DateTime datetime, int? indexOfFavoriteImage);
+  void setNote(DateTime datetime, String note);
+  void setFilenameOfFavoriteImage(DateTime datetime, String? indexOfFavoriteImage);
 
   Map<String, int> summaryOfPhotoData = {};
   Map<String, double> summaryOfLocationData = {};
   Map<String, Coordinate> summaryOfCoordinate = {};
 
   Map<String, Map<String, String>> noteForChart2 = {};
-  Map<String, Map<String, int?>> indexOfFavoriteImages = {};
+  Map<String, Map<String, String?>> filenameOfFavoriteImages = {};
 
   List setOfDates = [];
   List dates = [];

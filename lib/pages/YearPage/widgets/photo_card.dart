@@ -21,7 +21,7 @@ class PhotoCard extends StatefulWidget {
   int scrollIndex = 0;
   bool isTickEnabled = false;
   String tag;
-  int? indexOfFavoriteImage = null;
+  String? filenameOfFavoriteImage = null;
   PhotoCard({
     this.isMagnified = false,
     this.height = 200,
@@ -29,7 +29,7 @@ class PhotoCard extends StatefulWidget {
     this.isTickEnabled = false,
     required this.tag,
     required this.event,
-    this.indexOfFavoriteImage,
+    this.filenameOfFavoriteImage,
   });
   @override
   State<PhotoCard> createState() => _PhotoCardState();
@@ -43,8 +43,8 @@ class _PhotoCardState extends State<PhotoCard> {
   FixedExtentScrollController scrollController1 = FixedExtentScrollController();
   FixedExtentScrollController scrollController2 = FixedExtentScrollController();
 
+  String? filenameOfFavoriteImage = null;
   int? indexOfFavoriteImage = null;
-
   @override
   void initState() {
     dateTime = widget.event.images.entries.elementAt(0).value.datetime!;
@@ -56,31 +56,32 @@ class _PhotoCardState extends State<PhotoCard> {
       controller.text = dataManager.noteForChart2[dateTime.year.toString()]
               ?[formatDate(dateTime)] ??
           "";
-    print(
-        "indexOfFavoriteImage : ${dataManager.indexOfFavoriteImages[dateTime.year.toString()]?[formatDate(dateTime)]}");
 
-    if (dataManager.indexOfFavoriteImages[dateTime.year.toString()]
+    if (dataManager.filenameOfFavoriteImages[dateTime.year.toString()]
             ?[formatDate(dateTime)] !=
         null)
-      indexOfFavoriteImage =
-          dataManager.indexOfFavoriteImages[dateTime.year.toString()]
+      filenameOfFavoriteImage =
+          dataManager.filenameOfFavoriteImages[dateTime.year.toString()]
               ?[formatDate(dateTime)];
 
     final keyList =
         List.generate(widget.event.images.length, (index) => GlobalKey());
 
+    filenameOfFavoriteImage = widget.filenameOfFavoriteImage;
+    print("index : ${widget.event.images.keys.toList().indexOf(filenameOfFavoriteImage)}");
+    indexOfFavoriteImage = widget.event.images.keys.toList().indexOf(filenameOfFavoriteImage);
+
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await Future.delayed(Duration(milliseconds: 2000));
       Scrollable.ensureVisible(
-        keyList[indexOfFavoriteImage != null ? indexOfFavoriteImage! : 0]
+        keyList[indexOfFavoriteImage != -1 ? indexOfFavoriteImage! : 0]
             .currentContext!,
         duration: Duration(milliseconds: 300),
         curve: Curves.bounceInOut,
       );
     });
 
-    indexOfFavoriteImage = widget.indexOfFavoriteImage;
-    if (indexOfFavoriteImage != null) {
+    if (filenameOfFavoriteImage != null) {
       scrollController1 =
           FixedExtentScrollController(initialItem: indexOfFavoriteImage!);
       scrollController2 =
@@ -131,12 +132,12 @@ class _PhotoCardState extends State<PhotoCard> {
                   scrollController: scrollController1,
                   onItemTapCallback: (index) {
                     setState(() {
-                      if (indexOfFavoriteImage == null) {
-                        indexOfFavoriteImage = index;
+                      print("tap");
+                      if (filenameOfFavoriteImage == null) {
+                        filenameOfFavoriteImage = widget.event.images.keys.elementAt(index);
                         return;
                       }
-
-                      indexOfFavoriteImage = null;
+                      filenameOfFavoriteImage = null;
                     });
                   },
                   child: ListWheelScrollView(
@@ -197,8 +198,9 @@ class _PhotoCardState extends State<PhotoCard> {
                                         left: 10.0,
                                         top: 10.0,
                                         child: Text(
-                                            "${DateFormat('Hm').format(widget.event.images.entries.elementAt(index).value.datetime
-                                                ?? DateTime.now())}", style: TextStyle(fontSize: 16.0),),
+                                          "${DateFormat('Hm').format(widget.event.images.entries.elementAt(index).value.datetime ?? DateTime.now())}",
+                                          style: TextStyle(fontSize: 16.0),
+                                        ),
                                       ),
                                       // Positioned(
                                       //     top: 20,
@@ -304,8 +306,8 @@ class _PhotoCardState extends State<PhotoCard> {
     DataManagerInterface dataManager = DataManagerInterface(global.kOs);
     // dataManager.addEvent(widget.event);
     // var a = Provider.of<YearPageStateProvider>(context, listen : false);
-    dataManager.setNote(this.dateTime, controller.text, indexOfFavoriteImage);
-    dataManager.setIndexOfFavoriteImage(this.dateTime, indexOfFavoriteImage);
+    dataManager.setNote(this.dateTime, controller.text);
+    dataManager.setFilenameOfFavoriteImage(this.dateTime, filenameOfFavoriteImage);
   }
 }
 

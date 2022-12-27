@@ -42,7 +42,7 @@ class AndroidDataManager extends ChangeNotifier
   DataRepository dataRepository = DataRepository();
 
   Map<String, Map<String, String>> noteForChart2 = {};
-  Map<String, Map<String, int?>> indexOfFavoriteImages = {};
+  Map<String, Map<String, String?>> filenameOfFavoriteImages = {};
 
   Future<void> init() async {
     Stopwatch stopwatch = Stopwatch()..start();
@@ -57,7 +57,7 @@ class AndroidDataManager extends ChangeNotifier
     noteForChart2 = await dataRepository.readNote();
     print("read note done, time elapsed : ${stopwatch.elapsed}");
 
-    indexOfFavoriteImages = await dataRepository.readIndexOfFavoriteImages();
+    filenameOfFavoriteImages = await dataRepository.readFilenameOfFavoriteImages();
     print("readIndexOfFavoriteImage done, time elapsed : ${stopwatch.elapsed}");
 
     // find the files which are in local but not in Info
@@ -324,19 +324,20 @@ class AndroidDataManager extends ChangeNotifier
     // notifyListeners();
   }
 
-  void setNote(DateTime datetime, String note, int? indexOfFavoriteImage) {
+  void setNote(DateTime datetime, String note) {
     if (noteForChart2[datetime.year.toString()] == null)
       noteForChart2[datetime.year.toString()] = {};
     noteForChart2[datetime.year.toString()]![formatDate(datetime)] = note;
     dataRepository.writeNote(noteForChart2);
   }
 
-  void setIndexOfFavoriteImage(DateTime datetime, int? indexOfFavoriteImage) {
-    if (indexOfFavoriteImages[datetime.year.toString()] == null)
-      indexOfFavoriteImages[datetime.year.toString()] = {};
-    indexOfFavoriteImages[datetime.year.toString()]![formatDate(datetime)] =
-        indexOfFavoriteImage;
-    dataRepository.writeIndexOfFavoriteImage(indexOfFavoriteImages);
+  void setFilenameOfFavoriteImage(DateTime datetime, String? filenameOfFavoriteImage) {
+    print("setFilenameOfFavoriateImage");
+    if (filenameOfFavoriteImages[datetime.year.toString()] == null)
+      filenameOfFavoriteImages[datetime.year.toString()] = {};
+    filenameOfFavoriteImages[datetime.year.toString()]![formatDate(datetime)] =
+        filenameOfFavoriteImage;
+    dataRepository.writeFilenameOfFavoriteImage(filenameOfFavoriteImages);
 
     WidgetsBinding.instance.addPostFrameCallback((_) => notifyListeners());
   }

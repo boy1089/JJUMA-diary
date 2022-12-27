@@ -135,8 +135,10 @@ class _PhotoCardState extends State<PhotoCard> {
                       print("tap");
                       if (filenameOfFavoriteImage == null) {
                         filenameOfFavoriteImage = widget.event.images.keys.elementAt(index);
+                        indexOfFavoriteImage = index;
                         return;
                       }
+                      indexOfFavoriteImage = null;
                       filenameOfFavoriteImage = null;
                     });
                   },

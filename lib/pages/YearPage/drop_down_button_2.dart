@@ -9,8 +9,8 @@ import 'package:path_provider/path_provider.dart';
 import 'package:screenshot/screenshot.dart';
 import 'dart:ui' as ui;
 class CustomButtonTest extends StatefulWidget {
-
-  CustomButtonTest({Key? key}) : super(key: key);
+  Function capture;
+  CustomButtonTest(this.capture, {Key? key}) : super(key: key);
 
   @override
   State<CustomButtonTest> createState() => _CustomButtonTestState();
@@ -46,7 +46,7 @@ class _CustomButtonTestState extends State<CustomButtonTest> {
               ),
             ],
             onChanged: (value) {
-              MenuItems.onChanged(context, value as MenuItem);
+              MenuItems.onChanged(context, value as MenuItem, widget.capture);
             },
             itemHeight: 48,
             itemPadding: const EdgeInsets.only(left: 16, right: 16),
@@ -78,7 +78,7 @@ class MenuItem {
 class MenuItems {
   // static const List<MenuItem> firstItems = [home, share, settings, export];
   static const List<MenuItem> firstItems = [
-    // export,
+    share,
     settings];
 
   static const List<MenuItem> secondItems = [logout];
@@ -107,7 +107,7 @@ class MenuItems {
     );
   }
 
-  static onChanged(BuildContext context, MenuItem item) async {
+  static onChanged(BuildContext context, MenuItem item, capture) async {
     switch (item) {
       case MenuItems.home:
         //Do something
@@ -116,25 +116,12 @@ class MenuItems {
         //Do something
         context.push('/setting');
         break;
-      case MenuItems.export:
-        // _capture(key2);
+      case MenuItems.share:
+        capture();
         //Do something
         break;
     }
   }
-  static void _capture(key) async {
-    print("START CAPTURE");
-    var renderObject = key.currentContext.findRenderObject();
-    if (renderObject is RenderRepaintBoundary) {
-      var boundary = renderObject;
-      ui.Image image = await boundary.toImage();
-      final directory = (await getExternalStorageDirectory())!.path;
-      ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
-      Uint8List pngBytes = byteData!.buffer.asUint8List();
-      print(pngBytes);
-      File imgFile = new File('$directory/screenshot.png');
-      imgFile.writeAsBytes(pngBytes);
-      print("FINISH CAPTURE ${imgFile.path}");
-    }
-  }
+
+
 }

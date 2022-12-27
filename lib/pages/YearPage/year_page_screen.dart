@@ -15,6 +15,8 @@ import 'drop_down_button_2.dart';
 import 'dart:ui' as ui;
 import 'package:share_plus/share_plus.dart';
 
+Size sizeOfChart = Size(800, 800);
+
 class YearPageScreen extends StatefulWidget {
   YearPageScreen({Key? key}) : super(key: key);
 
@@ -25,6 +27,7 @@ class YearPageScreen extends StatefulWidget {
 class _YearPageScreenState extends State<YearPageScreen> {
   PhotoViewScaleStateController scaleStateController =
       PhotoViewScaleStateController();
+  late PhotoViewController controller;
 
   int maxNumOfYearChart = 10;
 
@@ -33,19 +36,30 @@ class _YearPageScreenState extends State<YearPageScreen> {
 
   double minScale = 1;
 
+
   @override
   void initState() {
     super.initState();
+    controller = PhotoViewController()
+      ..outputStateStream.listen(listener);
   }
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+  void listener(PhotoViewControllerValue value){
+    setState((){
+      scaleCopy = value.scale?? 1;
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   excludeHeaderSemantics: true,
-      //   elevation: 0.0,
-      //   actions: [CustomButtonTest()],
-      // ),
+
       body: Stack(children: [
         Consumer<YearPageStateProvider>(
           builder: (context, product, child) => WillPopScope(
@@ -55,8 +69,8 @@ class _YearPageScreenState extends State<YearPageScreen> {
                   (product.photoViewScale == 1)) return true;
               product.setHighlightedYear(null);
               product.setExpandedYear(null);
-              scaleStateController.reset();
               product.setPhotoViewScale(1);
+              controller.scale = 1;
               return false;
             },
             child: RepaintBoundary(
@@ -65,7 +79,8 @@ class _YearPageScreenState extends State<YearPageScreen> {
                 backgroundDecoration: BoxDecoration(color: Colors.black12),
                 customSize: sizeOfChart,
                 minScale: minScale,
-                scaleStateController: scaleStateController,
+                // scaleStateController: scaleStateController,
+                controller: controller,
                 onTapDown: (context, detail, _) {
                   if (detail.globalPosition.dy > 70)
                     product.setOffstageMenu(true);
@@ -98,12 +113,19 @@ class _YearPageScreenState extends State<YearPageScreen> {
         SizedBox(
           height: 70,
           child: AppBar(
+            backgroundColor: Colors.transparent,
             excludeHeaderSemantics: true,
             elevation: 0.0,
             actions: [CustomButtonTest(capture)],
           ),
         ),
       ]),
+    floatingActionButton: FloatingActionButton(
+      onPressed: (){
+        controller.scale = 2.0;
+      },
+    ),
+
     );
   }
 
@@ -123,13 +145,14 @@ class _YearPageScreenState extends State<YearPageScreen> {
 
       await Share.shareXFiles([XFile(imgFile.path)], text: 'aa');
       SnackBar snackBar =
-          SnackBar(content: Text('Image is also saved in ${imgFile.path}'));
+          SnackBar(content: Text('Image is also saved in ${imgFile.path}'),
+          // action: SnackBarAction(label : "navitate", onPressed: (){},),
+    );
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
   }
 }
 
-Size sizeOfChart = Size(800, 800);
 
 class OpenPainter extends CustomPainter {
   @override

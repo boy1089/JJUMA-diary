@@ -69,8 +69,10 @@ class _PhotoCardState extends State<PhotoCard> {
         List.generate(widget.event.images.length, (index) => GlobalKey());
 
     filenameOfFavoriteImage = widget.filenameOfFavoriteImage;
-    print("index : ${widget.event.images.keys.toList().indexOf(filenameOfFavoriteImage)}");
-    indexOfFavoriteImage = widget.event.images.keys.toList().indexOf(filenameOfFavoriteImage);
+    print(
+        "index : ${widget.event.images.keys.toList().indexOf(filenameOfFavoriteImage)}");
+    indexOfFavoriteImage =
+        widget.event.images.keys.toList().indexOf(filenameOfFavoriteImage);
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await Future.delayed(Duration(milliseconds: 2000));
@@ -116,105 +118,86 @@ class _PhotoCardState extends State<PhotoCard> {
 
   mainPhotoListView() {
     return SizedBox(
-        height: widget.isMagnified ? physicalWidth : widget.height,
-        width: widget.isMagnified ? physicalWidth : widget.height,
-        child: Padding(
-            padding: widget.isMagnified
-                ? EdgeInsets.zero
-                : EdgeInsets.all(global.kContainerPadding),
-            child: RotatedBox(
-              quarterTurns: -1,
-              child: Stack(children: [
-                ClickableListWheelScrollView(
-                  itemCount: widget.event.images.length,
-                  itemHeight: widget.isMagnified
-                      ? physicalWidth
-                      : widget.height - global.kContainerPadding * 2,
-                  scrollController: scrollController1,
-                  onItemTapCallback: (index) {
-                    setState(() {
-                      print("tap");
-                      if (filenameOfFavoriteImage == null) {
-                        filenameOfFavoriteImage = widget.event.images.keys.elementAt(index);
-                        indexOfFavoriteImage = index;
-                        return;
-                      }
-                      indexOfFavoriteImage = null;
-                      filenameOfFavoriteImage = null;
-                    });
+        height: physicalWidth,
+        width: physicalWidth,
+        child: RotatedBox(
+          quarterTurns: -1,
+          child: Stack(children: [
+            ClickableListWheelScrollView(
+              itemCount: widget.event.images.length,
+              itemHeight: physicalWidth,
+              scrollController: scrollController1,
+              onItemTapCallback: (index) {
+                setState(() {
+                  print("tap");
+                  if (filenameOfFavoriteImage == null) {
+                    filenameOfFavoriteImage =
+                        widget.event.images.keys.elementAt(index);
+                    indexOfFavoriteImage = index;
+                    return;
+                  }
+                  indexOfFavoriteImage = null;
+                  filenameOfFavoriteImage = null;
+                });
+              },
+              child: ListWheelScrollView(
+                  onSelectedItemChanged: (index) {
+                    if (this.scrollIndex == index) return;
+                    scrollController2.animateToItem(index,
+                        duration: Duration(milliseconds: 500),
+                        curve: Curves.easeIn);
+                    this.scrollIndex = index;
+                    setState(() {});
                   },
-                  child: ListWheelScrollView(
-                      onSelectedItemChanged: (index) {
-                        if (this.scrollIndex == index) return;
-                        scrollController2.animateToItem(index,
-                            duration: Duration(milliseconds: 500),
-                            curve: Curves.easeIn);
-                        this.scrollIndex = index;
-                        setState(() {});
-                      },
-                      controller: scrollController1,
-                      physics: PageScrollPhysics(),
-                      scrollBehavior: MaterialScrollBehavior(),
-                      diameterRatio: 200,
-                      itemExtent: widget.isMagnified
-                          ? physicalWidth
-                          : widget.height - global.kContainerPadding * 2,
-                      children: List.generate(
-                          widget.event.images.entries.length,
-                          (index) => Center(
-                                child: RotatedBox(
-                                    quarterTurns: 1,
-                                    child: Stack(children: [
-                                      SizedBox(
-                                        height: widget.isMagnified
-                                            ? physicalWidth
-                                            : widget.height -
-                                                global.kContainerPadding * 2,
-                                        width: widget.isMagnified
-                                            ? physicalWidth
-                                            : widget.height -
-                                                global.kContainerPadding * 2,
-                                        child: ExtendedImage.file(
-                                          File(widget.event.images.entries
-                                              .elementAt(index)
-                                              .key),
-                                          cacheRawData: true,
-                                          compressionRatio: 0.1,
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
-                                      Positioned(
-                                          right: 10.0,
-                                          bottom: 10.0,
-                                          child: indexOfFavoriteImage == index
-                                              ? Icon(
-                                                  Icons.favorite,
-                                                  size: 32.0,
-                                                  color: Colors.red,
-                                                )
-                                              : Icon(
-                                                  Icons
-                                                      .favorite_outline_outlined,
-                                                  size: 32.0,
-                                                  color: Colors.red)),
-                                      Positioned(
-                                        left: 10.0,
-                                        top: 10.0,
-                                        child: Text(
-                                          "${DateFormat('Hm').format(widget.event.images.entries.elementAt(index).value.datetime ?? DateTime.now())}",
-                                          style: TextStyle(fontSize: 16.0),
-                                        ),
-                                      ),
-                                      // Positioned(
-                                      //     top: 20,
-                                      //     width : physicalWidth,
-                                      //     child: Text(
-                                      //         "${widget.event.images.entries.elementAt(index).key}")),
-                                    ])),
-                              ))),
-                ),
-              ]),
-            )));
+                  controller: scrollController1,
+                  physics: PageScrollPhysics(),
+                  scrollBehavior: MaterialScrollBehavior(),
+                  diameterRatio: 200,
+                  itemExtent: physicalWidth,
+                  children: List.generate(
+                      widget.event.images.entries.length,
+                      (index) => Center(
+                            child: RotatedBox(
+                                quarterTurns: 1,
+                                child: Stack(children: [
+                                  SizedBox(
+                                    height: physicalWidth,
+                                    width: physicalWidth,
+                                    child: ExtendedImage.file(
+                                      File(widget.event.images.entries
+                                          .elementAt(index)
+                                          .key),
+                                      cacheRawData: true,
+                                      compressionRatio: 0.1,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                  Positioned(
+                                      right: 10.0,
+                                      bottom: 10.0,
+                                      child: indexOfFavoriteImage == index
+                                          ? Icon(
+                                              Icons.favorite,
+                                              size: 32.0,
+                                              color: Colors.red,
+                                            )
+                                          : Icon(
+                                              Icons.favorite_outline_outlined,
+                                              size: 32.0,
+                                              color: Colors.red)),
+                                  Positioned(
+                                    left: 10.0,
+                                    top: 10.0,
+                                    child: Text(
+                                      "${DateFormat('Hm').format(widget.event.images.entries.elementAt(index).value.datetime ?? DateTime.now())}",
+                                      style: TextStyle(fontSize: 16.0),
+                                    ),
+                                  ),
+                                ])),
+                          ))),
+            ),
+          ]),
+        ));
   }
 
   subPhotoListView() {
@@ -310,7 +293,8 @@ class _PhotoCardState extends State<PhotoCard> {
     // dataManager.addEvent(widget.event);
     // var a = Provider.of<YearPageStateProvider>(context, listen : false);
     dataManager.setNote(this.dateTime, controller.text);
-    dataManager.setFilenameOfFavoriteImage(this.dateTime, filenameOfFavoriteImage);
+    dataManager.setFilenameOfFavoriteImage(
+        this.dateTime, filenameOfFavoriteImage);
   }
 }
 

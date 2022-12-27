@@ -1,18 +1,11 @@
-import 'dart:io';
-import 'dart:ui';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:lateDiary/Data/info_from_file.dart';
 import 'package:lateDiary/Util/DateHandler.dart';
 import 'package:lateDiary/Util/Util.dart';
-import 'dart:math';
-import 'package:intl/intl.dart';
-import 'package:path_provider/path_provider.dart';
 
 import '../Data/data_manager_interface.dart';
 import '../Location/coordinate.dart';
-import '../pages/YearPage/year_page_screen.dart';
 
 import 'package:scidart/numdart.dart';
 import 'dart:core';
@@ -33,8 +26,6 @@ List positionExpanded = List.generate(372, (index) {
 
 List positionNotExpanded = List.generate(372, (index) {
   double day = index.toDouble();
-  double week = day / 7.ceil();
-  double weekday = day % 7;
   double angle = day / 365 * 2 * pi;
   double xLocation = 1 * cos(angle - pi / 2);
   double yLocation = 1 * sin(angle - pi / 2);
@@ -65,12 +56,12 @@ class YearPageStateProvider with ChangeNotifier {
   List<List<dynamic>> dataForChart = [];
   Map dataForChart2_modified = {};
   Map<int, Map<String, List>> dataForChart2 = {};
-  int? expandedYear = null;
+  int? expandedYear;
   Map<int, Coordinate?>? medianCoordinates = {};
   Map<int, int> numberOfImages = {};
   Coordinate? medianCoordinate;
   double? photoViewScale = 1;
-  int? highlightedYear = null;
+  int? highlightedYear;
 
   bool offstageMenu = false;
 
@@ -85,10 +76,7 @@ class YearPageStateProvider with ChangeNotifier {
   }
 
   DataManagerInterface dataManager;
-  YearPageStateProvider(this.dataManager) {
-    // updateData();
-    // modifyData();
-  }
+  YearPageStateProvider(this.dataManager) ;
 
   static Future<List> updateData_static(List input) async {
     print("static update Data For YearPage StateProvider");
@@ -110,8 +98,9 @@ class YearPageStateProvider with ChangeNotifier {
         numberOfImages[year] = numberOfImages[year]! + 1;
       }
 
-      if (dataForChart2[year]![formatDate(datetime)] == null)
+      if (dataForChart2[year]![formatDate(datetime)] == null) {
         dataForChart2[year]![formatDate(datetime)] = [[]];
+      }
 
       dataForChart2[year]![formatDate(datetime)]![0].add(entry);
 
@@ -125,12 +114,19 @@ class YearPageStateProvider with ChangeNotifier {
 
       dataForChart2[year]![formatDate(datetime)]!.add(coordinate);
 
-      if ((coordinate != null) && (coordinate.longitude != null))
+      if ((coordinate != null) && (coordinate.longitude != null)) {
         coordinates.add(coordinate);
+      }
     }
 
     dataForChart2 = Map.fromEntries(
         dataForChart2.entries.toList()
+          ..sort((e1, e2) => e2.key.compareTo(e1.key)))
+      ..removeWhere((key, value) => key > DateTime.now().year);
+
+
+    numberOfImages = Map.fromEntries(
+        numberOfImages.entries.toList()
           ..sort((e1, e2) => e2.key.compareTo(e1.key)))
       ..removeWhere((key, value) => key > DateTime.now().year);
 
@@ -165,7 +161,7 @@ class YearPageStateProvider with ChangeNotifier {
   }
 
   void getMedianCoordinate(List<Coordinate> coordinates) {
-    if (coordinates.length == 0) return;
+    if (coordinates.isEmpty) return;
 
     medianCoordinate = Coordinate(
         median(Array(List<double>.generate(
@@ -181,7 +177,7 @@ class YearPageStateProvider with ChangeNotifier {
   }
 
   static Coordinate? getMedianCoordinate_static(List<Coordinate> coordinates) {
-    if (coordinates.length == 0) return Coordinate(37.55, 127.0);
+    if (coordinates.isEmpty) return Coordinate(37.55, 127.0);
 
     Coordinate medianCoordinate = Coordinate(
         median(Array(List<double>.generate(
@@ -204,12 +200,20 @@ class YearPageStateProvider with ChangeNotifier {
     Coordinate? medianCoordinate = input[1];
     double physicalWidth = input[2];
     Map<int, int> numberOfImages = input[3];
-    double physicalHeight = input[4];
+    double sizeOfChart = input[4];
     Map dataForChart2_modified = {};
     if (dataForChart2 == {}) return [{}];
 
+    //get proper reference of number of image
     int maximumNumberOfImagesInYear = numberOfImages.values.reduce(max);
-    double sizeScaleFactor = 40 / (maximumNumberOfImagesInYear / 52);
+    int indexOfMaximumNumberOfImages = numberOfImages.values.toList().indexOf(maximumNumberOfImagesInYear);
+    numberOfImages.forEach((key, value) {print("$key, $value}");});
+    int year = dataForChart2.keys.elementAt(indexOfMaximumNumberOfImages);
+    var data = dataForChart2[year];
+    print("max : $year");
+   print(List<int>.generate(data.length, (index) => data.values.elementAt(index)[0].length));
+    int maximumNumberOfImages = List<int>.generate(data.length, (index) => data.values.elementAt(index)[0].length).reduce(max);
+    print("max : ${maximumNumberOfImages}");
 
     for (int i = 0; i < dataForChart2.length; i++) {
       int year = dataForChart2.keys.elementAt(i);
@@ -229,16 +233,15 @@ class YearPageStateProvider with ChangeNotifier {
         xLocationExpanded = (1.0) * xLocationExpanded;
         yLocationExpanded = (1.0) * yLocationExpanded;
 
-        double yOffset = 0; //0.95
 
-        yLocationExpanded = yLocationExpanded + yOffset;
+        yLocationExpanded = yLocationExpanded;
 
         double xLocationNotExpanded = positionNotExpanded[indexOfDate][0];
         double yLocationNotExpanded = positionNotExpanded[indexOfDate][1];
 
         xLocationNotExpanded = (1 - i * 0.1) * xLocationNotExpanded;
         yLocationNotExpanded = (1 - i * 0.1) * yLocationNotExpanded;
-        yLocationNotExpanded = yLocationNotExpanded + yOffset;
+        yLocationNotExpanded = yLocationNotExpanded;
 
         int numberOfImages = data[date]?[0].length ?? 1;
         Coordinate? coordinate = data[date]!.length > 1
@@ -264,39 +267,39 @@ class YearPageStateProvider with ChangeNotifier {
             : HSLColor.fromAHSL(0.5, hue, 67 / 100, 50 / 100).toColor();
 
         // double size = numberOfImages / 5.toDouble();
-        double size = numberOfImages * sizeScaleFactor;
+        double size = numberOfImages  / maximumNumberOfImages * 60;
         size = size < 50 ? size : 50;
         size = size > 1 ? size : 1;
         List entries = data[date]![0];
 
         double leftExpanded = xLocationExpanded * (physicalWidth) / 2 +
-            (sizeOfChart.width) / 2 -
+            sizeOfChart / 2 -
             size / 2;
         double topExpanded = yLocationExpanded * physicalWidth / 2 +
-            physicalHeight/ 2 -
+            sizeOfChart / 2 -
             size / 2;
 
         double leftNotExpanded = xLocationNotExpanded * (physicalWidth) / 2 +
-            (sizeOfChart.width) / 2 -
+            sizeOfChart / 2 -
             size / 2;
         double topNotExpanded = yLocationNotExpanded * physicalWidth / 2 +
-            physicalHeight / 2 -
+            sizeOfChart / 2 -
             size / 2;
 
         double leftExpandedExtra = positionNotExpanded[indexOfDate][0] *
                 (1.7 - 0.05 * i) *
                 (physicalWidth) /
                 2 +
-            (sizeOfChart.width) / 2 -
+            sizeOfChart / 2 -
             size / 2;
 
         double topExpandedExtra =
-            (positionNotExpanded[indexOfDate][1] * (1.7 - 0.05 * i) + 0.95) *
+            positionNotExpanded[indexOfDate][1] * (1.7 - 0.05 * i)  *
                     physicalWidth /
-                    2 +
-                physicalHeight / 2 -
-                size / 2;
-        // return [xLocation, yLocation, size, color, entries];
+                    2+
+                sizeOfChart / 2
+                - size / 2;
+
         return [
           leftExpanded,
           topExpanded,

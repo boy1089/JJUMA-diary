@@ -18,7 +18,7 @@ import 'package:share_plus/share_plus.dart';
 
 
 class YearPageScreen extends StatefulWidget {
-  YearPageScreen({Key? key}) : super(key: key);
+  const YearPageScreen({Key? key}) : super(key: key);
 
   @override
   State<YearPageScreen> createState() => _YearPageScreenState();
@@ -127,8 +127,7 @@ class _YearPageScreenState extends State<YearPageScreen> {
         a.dataForChart2_modified[2022].forEach((element)=>print(element));
       print("$physicalWidth, $physicalHeight}");
       print(window.physicalSize);
-
-
+      print(sizeOfChart);
         },
     ),
 
@@ -174,7 +173,7 @@ class OpenPainter extends CustomPainter {
       ..color = Color(0xff3f3f3f)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 0.7;
-    double radius = physicalWidth/2 * 1.3;
+    double radius = physicalWidth/2 * 1.2;
 
     final textStyle = TextStyle(
       color: Colors.white,

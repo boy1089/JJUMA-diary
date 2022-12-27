@@ -19,6 +19,7 @@ import 'DateHandler.dart';
 
 const bool kDebugMode = !kReleaseMode && !kProfileMode;
 
+Size sizeOfChart = Size(800, 800);
 List<String> kTimeStamps = [
   '00',
   '01',

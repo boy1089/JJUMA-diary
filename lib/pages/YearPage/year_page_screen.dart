@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:math';
+import 'dart:ui';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -15,7 +16,6 @@ import 'drop_down_button_2.dart';
 import 'dart:ui' as ui;
 import 'package:share_plus/share_plus.dart';
 
-Size sizeOfChart = Size(800, 800);
 
 class YearPageScreen extends StatefulWidget {
   YearPageScreen({Key? key}) : super(key: key);
@@ -121,9 +121,15 @@ class _YearPageScreenState extends State<YearPageScreen> {
         ),
       ]),
     floatingActionButton: FloatingActionButton(
-      onPressed: (){
-        controller.scale = 2.0;
-      },
+       onPressed: (){
+        // controller.scale = 2.0;
+        var a = Provider.of<YearPageStateProvider>(context, listen : false);
+        a.dataForChart2_modified[2022].forEach((element)=>print(element));
+      print("$physicalWidth, $physicalHeight}");
+      print(window.physicalSize);
+
+
+        },
     ),
 
     );
@@ -168,7 +174,7 @@ class OpenPainter extends CustomPainter {
       ..color = Color(0xff3f3f3f)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 0.7;
-    double radius = 240;
+    double radius = physicalWidth/2 * 1.3;
 
     final textStyle = TextStyle(
       color: Colors.white,

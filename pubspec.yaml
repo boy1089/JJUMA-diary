@@ -52,6 +52,7 @@ dependencies:
   clickable_list_wheel_view:
   scidart:
   screenshot:
+  share_plus: 6.3.0
 
 dev_dependencies:
   flutter_test:

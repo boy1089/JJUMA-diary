@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:intl/intl.dart' as intl;
+import 'package:lateDiary/Util/DateHandler.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:provider/provider.dart';
@@ -12,6 +13,7 @@ import 'package:lateDiary/Util/Util.dart';
 import 'year_chart.dart';
 import 'drop_down_button_2.dart';
 import 'dart:ui' as ui;
+import 'package:share_plus/share_plus.dart';
 
 class YearPageScreen extends StatefulWidget {
   YearPageScreen({Key? key}) : super(key: key);
@@ -44,10 +46,8 @@ class _YearPageScreenState extends State<YearPageScreen> {
       //   elevation: 0.0,
       //   actions: [CustomButtonTest()],
       // ),
-      body: Stack(
-        children: [
-
-          Consumer<YearPageStateProvider>(
+      body: Stack(children: [
+        Consumer<YearPageStateProvider>(
           builder: (context, product, child) => WillPopScope(
             onWillPop: () async {
               if ((product.highlightedYear == null) &
@@ -95,35 +95,38 @@ class _YearPageScreenState extends State<YearPageScreen> {
             ),
           ),
         ),
-          SizedBox(
-            height : 70,
-            child: AppBar(
-              excludeHeaderSemantics: true,
-              elevation: 0.0,
-              actions: [CustomButtonTest(capture)],),
+        SizedBox(
+          height: 70,
+          child: AppBar(
+            excludeHeaderSemantics: true,
+            elevation: 0.0,
+            actions: [CustomButtonTest(capture)],
           ),
-        ]
-      ),
-
+        ),
+      ]),
     );
   }
-  void capture () async {
+
+  void capture() async {
     var renderObject = key2.currentContext!.findRenderObject();
     if (renderObject is RenderRepaintBoundary) {
       var boundary = renderObject;
       ui.Image image = await boundary.toImage(pixelRatio: 10.0);
       final directory = (await getExternalStorageDirectory())?.path;
-    ByteData byteData =
-    (await image.toByteData(format: ui.ImageByteFormat.png))!;
-    Uint8List pngBytes = byteData.buffer.asUint8List();
-    File imgFile = new File('$directory/lateDiary_${DateTime.now()}.png');
-    imgFile.writeAsBytes(pngBytes);
-    print("FINISH CAPTURE ${imgFile.path}");
+      ByteData byteData =
+          (await image.toByteData(format: ui.ImageByteFormat.png))!;
+      Uint8List pngBytes = byteData.buffer.asUint8List();
+      String dateString = "${formatDatetime(DateTime.now())}";
+      File imgFile = new File('$directory/lateDiary_${dateString}.png');
+      await imgFile.writeAsBytes(pngBytes);
+      print("FINISH CAPTURE ${imgFile.path}");
+
+      await Share.shareXFiles([XFile(imgFile.path)], text: 'aa');
+      SnackBar snackBar =
+          SnackBar(content: Text('Image is also saved in ${imgFile.path}'));
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
   }
-
-
-  }
-
 }
 
 Size sizeOfChart = Size(800, 800);

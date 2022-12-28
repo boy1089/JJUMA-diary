@@ -19,6 +19,9 @@ import 'DateHandler.dart';
 
 const bool kDebugMode = !kReleaseMode && !kProfileMode;
 
+double maximumSizeOfScatter = 50.0;
+double minimumSizeOfScatter = 1.0;
+
 Size sizeOfChart = Size(800, 800);
 List<String> kTimeStamps = [
   '00',

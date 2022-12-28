@@ -16,7 +16,6 @@ import 'drop_down_button_2.dart';
 import 'dart:ui' as ui;
 import 'package:share_plus/share_plus.dart';
 
-
 class YearPageScreen extends StatefulWidget {
   const YearPageScreen({Key? key}) : super(key: key);
 
@@ -33,43 +32,38 @@ class _YearPageScreenState extends State<YearPageScreen> {
 
   var key2 = GlobalKey();
   double scaleCopy = 0.0;
-
   double minScale = 1;
-
 
   @override
   void initState() {
     super.initState();
-    controller = PhotoViewController()
-      ..outputStateStream.listen(listener);
+    controller = PhotoViewController()..outputStateStream.listen(listener);
   }
+
   @override
   void dispose() {
     controller.dispose();
     super.dispose();
   }
 
-  void listener(PhotoViewControllerValue value){
-    setState((){
-      scaleCopy = value.scale?? 1;
+  void listener(PhotoViewControllerValue value) {
+    setState(() {
+      scaleCopy = value.scale ?? 1;
     });
   }
-
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
       body: Stack(children: [
         Consumer<YearPageStateProvider>(
           builder: (context, product, child) => WillPopScope(
             onWillPop: () async {
               if ((product.highlightedYear == null) &
                   (product.expandedYear == null) &
-                  (product.photoViewScale == 1)) return true;
+                  (controller.scale == 1)) return true;
               product.setHighlightedYear(null);
               product.setExpandedYear(null);
-              product.setPhotoViewScale(1);
               controller.scale = 1;
               return false;
             },
@@ -81,15 +75,11 @@ class _YearPageScreenState extends State<YearPageScreen> {
                 minScale: minScale,
                 // scaleStateController: scaleStateController,
                 controller: controller,
-                onTapDown: (context, detail, _) {
-                  if (detail.globalPosition.dy > 70)
-                    product.setOffstageMenu(true);
-                },
+
                 onScaleEnd: (context, value, a) {
-                  product.setPhotoViewScale(a.scale ?? 1);
-                  if (product.photoViewScale! < 1) {
-                    product.setPhotoViewScale(1);
-                    product.setOffstageMenu(false);
+                  controller.scale = a.scale?? 1;
+                  if (controller.scale! < 1) {
+                    controller.scale = 1;
                     product.setExpandedYear(null);
                   }
                 },
@@ -120,17 +110,16 @@ class _YearPageScreenState extends State<YearPageScreen> {
           ),
         ),
       ]),
-    floatingActionButton: FloatingActionButton(
-       onPressed: (){
-        // controller.scale = 2.0;
-        var a = Provider.of<YearPageStateProvider>(context, listen : false);
-        a.dataForChart2_modified[2022].forEach((element)=>print(element));
-      print("$physicalWidth, $physicalHeight}");
-      print(window.physicalSize);
-      print(sizeOfChart);
-        },
-    ),
-
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () {
+      //     // controller.scale = 2.0;
+      //     var a = Provider.of<YearPageStateProvider>(context, listen: false);
+      //     a.dataForChart2_modified[2022].forEach((element) => print(element));
+      //     print("$physicalWidth, $physicalHeight}");
+      //     print(window.physicalSize);
+      //     print(sizeOfChart);
+      //   },
+      // ),
     );
   }
 
@@ -144,43 +133,58 @@ class _YearPageScreenState extends State<YearPageScreen> {
           (await image.toByteData(format: ui.ImageByteFormat.png))!;
       Uint8List pngBytes = byteData.buffer.asUint8List();
       String dateString = "${formatDatetime(DateTime.now())}";
-      File imgFile = new File('$directory/lateDiary_${dateString}.png');
+      File imgFile = File('$directory/lateDiary_${dateString}.png');
       await imgFile.writeAsBytes(pngBytes);
       print("FINISH CAPTURE ${imgFile.path}");
 
       await Share.shareXFiles([XFile(imgFile.path)], text: 'aa');
-      SnackBar snackBar =
-          SnackBar(content: Text('Image is also saved in ${imgFile.path}'),
-          // action: SnackBarAction(label : "navitate", onPressed: (){},),
-    );
+      SnackBar snackBar = SnackBar(
+        content: Text('Image is also saved in ${imgFile.path}'),
+        // action: SnackBarAction(label : "navitate", onPressed: (){},),
+      );
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
   }
 }
-
+var rng = Random();
+int randomNumber1 = rng.nextInt(800);
+int randomNumber2 = rng.nextInt(800);
+int randomNumber3 = rng.nextInt(800);
+int randomNumber4 = rng.nextInt(800);
+int randomNumber5 = rng.nextInt(800);
+int randomNumber6 = rng.nextInt(800);
+int randomNumber7 = rng.nextInt(800);
+List<int> randomNumber = List.generate(20, (index)=>rng.nextInt(800));
 
 class OpenPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     var paint1 = Paint()
-      ..color = Color(0xff808080)
+      ..color = const Color(0xff808080)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 0.7;
-    canvas.drawCircle(Offset(0, 0), (physicalWidth / 2 - 3) * 0.3, paint1);
-    canvas.drawCircle(Offset(0, 0), physicalWidth / 2 - 3, paint1);
+    canvas.drawCircle(const Offset(0, 0), (physicalWidth / 2 - 3) * 0.3, paint1);
+    canvas.drawCircle(const Offset(0, 0), physicalWidth / 2 - 3, paint1);
 
     var paint2 = Paint()
-      ..color = Color(0xff3f3f3f)
+      ..color = const Color(0xff3f3f3f)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 0.7;
-    double radius = physicalWidth/2 * 1.2;
+    double radius = physicalWidth / 2 * 1.2;
+    //
+    // var paint3 = Paint()..color = Colors.white;
 
-    final textStyle = TextStyle(
+    // canvas.drawCircle(Offset(rng.nextInt(800) - 400, rng.nextInt(800) - 400), 5, paint3);
+    // for(int i = 0; i < 19; i++){
+    //   canvas.drawCircle(Offset(randomNumber.elementAt(i) - 400, randomNumber.elementAt(i+1) - 400), 1, paint3);
+    // }
+
+    const textStyle = TextStyle(
       color: Colors.white,
       fontSize: 16,
     );
 
-    final textSpan = TextSpan(
+    const textSpan = TextSpan(
       text: 'aa',
       style: textStyle,
     );
@@ -201,7 +205,7 @@ class OpenPainter extends CustomPainter {
       double angle = 2 * pi / 12 * i + 2 * pi / 24 * 16;
       double xOffset = cos(angle) * radius;
       double yOffset = sin(angle) * radius;
-      canvas.drawLine(Offset(0, 0), Offset(xOffset, yOffset), paint2);
+      canvas.drawLine(const Offset(0, 0), Offset(xOffset, yOffset), paint2);
 
       final textSpan = TextSpan(
         text: '${formatter.format(DateTime(2022, i))}',
@@ -217,6 +221,8 @@ class OpenPainter extends CustomPainter {
       textPainter.paint(canvas, Offset(xOffset - 14, yOffset - 7));
     }
   }
+
+
 
   @override
   bool shouldRepaint(CustomPainter oldDelegate) => true;

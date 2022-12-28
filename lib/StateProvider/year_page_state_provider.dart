@@ -33,7 +33,13 @@ List positionNotExpanded = List.generate(372, (index) {
 });
 
 List<double> hueList = [215.0, 126.0, 63.0, 0.0, 281.0];
+List<Color> colorList = [
+  Color(0xFF2A2A2A),
+  Color(0xFF2A4D7F),
+  Color(0xFF2A7F32),
+  Color(0xFF7B7F2A),
 
+];
 enum LocationFilter {
   trip,
   none,
@@ -46,21 +52,17 @@ class YearPageStateProvider with ChangeNotifier {
   int index = 0;
   double zoomInAngle = 0.0;
   bool isZoomIn = false;
-  List<dynamic> dataForChartList = [];
-  List<dynamic> dataForChartList2 = [];
   //TODO remove availableDates
   List<String> availableDates = [];
-  int importanceFilterIndex = ImportanceFilter.none.index;
-  int locationFilterIndex = LocationFilter.none.index;
 
   List<List<dynamic>> dataForChart = [];
   Map dataForChart2_modified = {};
   Map<int, Map<String, List>> dataForChart2 = {};
-  int? expandedYear;
   Map<int, Coordinate?>? medianCoordinates = {};
   Map<int, int> numberOfImages = {};
   Coordinate? medianCoordinate;
-  double? photoViewScale = 1;
+
+  int? expandedYear = DateTime.now().year;
   int? highlightedYear;
 
   bool offstageMenu = false;
@@ -76,7 +78,7 @@ class YearPageStateProvider with ChangeNotifier {
   }
 
   DataManagerInterface dataManager;
-  YearPageStateProvider(this.dataManager) ;
+  YearPageStateProvider(this.dataManager);
 
   static Future<List> updateData_static(List input) async {
     print("static update Data For YearPage StateProvider");
@@ -123,7 +125,6 @@ class YearPageStateProvider with ChangeNotifier {
         dataForChart2.entries.toList()
           ..sort((e1, e2) => e2.key.compareTo(e1.key)))
       ..removeWhere((key, value) => key > DateTime.now().year);
-
 
     numberOfImages = Map.fromEntries(
         numberOfImages.entries.toList()
@@ -206,13 +207,20 @@ class YearPageStateProvider with ChangeNotifier {
 
     //get proper reference of number of image
     int maximumNumberOfImagesInYear = numberOfImages.values.reduce(max);
-    int indexOfMaximumNumberOfImages = numberOfImages.values.toList().indexOf(maximumNumberOfImagesInYear);
-    numberOfImages.forEach((key, value) {print("$key, $value}");});
+    int indexOfMaximumNumberOfImages =
+        numberOfImages.values.toList().indexOf(maximumNumberOfImagesInYear);
+    numberOfImages.forEach((key, value) {
+      print("$key, $value}");
+    });
     int year = dataForChart2.keys.elementAt(indexOfMaximumNumberOfImages);
     var data = dataForChart2[year];
     print("max : $year");
-   print(List<int>.generate(data.length, (index) => data.values.elementAt(index)[0].length));
-    int maximumNumberOfImages = List<int>.generate(data.length, (index) => data.values.elementAt(index)[0].length).reduce(max);
+
+    print(List<int>.generate(
+        data.length, (index) => data.values.elementAt(index)[0].length));
+    int maximumNumberOfImages = List<int>.generate(
+            data.length, (index) => data.values.elementAt(index)[0].length)
+        .reduce(max);
     print("max : ${maximumNumberOfImages}");
 
     for (int i = 0; i < dataForChart2.length; i++) {
@@ -229,10 +237,8 @@ class YearPageStateProvider with ChangeNotifier {
 
         double xLocationExpanded = positionExpanded[indexOfDate][0];
         double yLocationExpanded = positionExpanded[indexOfDate][1];
-
         xLocationExpanded = (1.0) * xLocationExpanded;
         yLocationExpanded = (1.0) * yLocationExpanded;
-
 
         yLocationExpanded = yLocationExpanded;
 
@@ -267,17 +273,17 @@ class YearPageStateProvider with ChangeNotifier {
             : HSLColor.fromAHSL(0.5, hue, 67 / 100, 50 / 100).toColor();
 
         // double size = numberOfImages / 5.toDouble();
-        double size = numberOfImages  / maximumNumberOfImages * 60;
-        size = size < 50 ? size : 50;
-        size = size > 1 ? size : 1;
+        double size = numberOfImages / maximumNumberOfImages * (maximumSizeOfScatter + 5);
+        size = size < maximumSizeOfScatter ? size : maximumSizeOfScatter;
+        size = size > minimumSizeOfScatter ? size : minimumSizeOfScatter;
+
         List entries = data[date]![0];
 
         double leftExpanded = xLocationExpanded * (physicalWidth) / 2 +
             sizeOfChart / 2 -
             size / 2;
-        double topExpanded = yLocationExpanded * physicalWidth / 2 +
-            sizeOfChart / 2 -
-            size / 2;
+        double topExpanded =
+            yLocationExpanded * physicalWidth / 2 + sizeOfChart / 2 - size / 2;
 
         double leftNotExpanded = xLocationNotExpanded * (physicalWidth) / 2 +
             sizeOfChart / 2 -
@@ -293,12 +299,12 @@ class YearPageStateProvider with ChangeNotifier {
             sizeOfChart / 2 -
             size / 2;
 
-        double topExpandedExtra =
-            positionNotExpanded[indexOfDate][1] * (1.7 - 0.05 * i)  *
-                    physicalWidth /
-                    2+
-                sizeOfChart / 2
-                - size / 2;
+        double topExpandedExtra = positionNotExpanded[indexOfDate][1] *
+                (1.7 - 0.05 * i) *
+                physicalWidth /
+                2 +
+            sizeOfChart / 2 -
+            size / 2;
 
         return [
           leftExpanded,
@@ -314,27 +320,16 @@ class YearPageStateProvider with ChangeNotifier {
         ];
       });
     }
-    // dataForChart2_modified = Map.fromEntries(dataForChart2_modified.entries.toList()..sort((e1, e2)=>e2.key.compareTo(e1.key)));
 
     return [dataForChart2_modified];
   }
 
-  void setPhotoViewScale(double photoViewScale) {
-    this.photoViewScale = photoViewScale;
-    notifyListeners();
-  }
 
   void setAvailableDates(int year) {
     availableDates = dataManager.summaryOfPhotoData.keys.where((element) {
       return element.substring(0, 4) == year.toString();
     }).toList();
     availableDates.sort();
-  }
-
-  void setZoomInRotationAngle(angle) {
-    // print("provider set zoomInAngle to $angle");
-    zoomInAngle = angle;
-    notifyListeners();
   }
 
   void setZoomInState(isZoomIn) {

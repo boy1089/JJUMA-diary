@@ -78,7 +78,7 @@ class _YearChartState extends State<YearChart> {
           List entries = data[index][8];
 
           return AnimatedPositioned(
-              duration: Duration(milliseconds: 1000),
+              duration: const Duration(milliseconds: 1000),
               curve: Curves.easeOutExpo,
               left: left,
               top: top,
@@ -89,8 +89,9 @@ class _YearChartState extends State<YearChart> {
                     setState(() {});
                   },
                   onTapDown: (detail) {
-                    if ((product.expandedYear != year))
+                    if ((product.expandedYear != year)) {
                       product.setHighlightedYear(year);
+                    }
                   },
                   onTapCancel: () {
                     product.setHighlightedYear(null);
@@ -99,7 +100,6 @@ class _YearChartState extends State<YearChart> {
                     product.setHighlightedYear(null);
                     if (!isExpanded) {
                       product.setExpandedYear(year);
-                      product.setPhotoViewScale(1);
                       return;
                     }
                     if (isExpanded) {
@@ -123,7 +123,7 @@ class _YearChartState extends State<YearChart> {
                     }
                   },
                   child: Hero(
-                      tag: "${year.toString()}${index}",
+                      tag: "${year.toString()}$index",
                       child: filenameOfFavoriteImage != null
                           ? Scatter.fromType(
                               filenameOfFavoriteImage,
@@ -137,7 +137,7 @@ class _YearChartState extends State<YearChart> {
                               type: scatterType.defaultRect))));
         }),
         AnimatedPositioned(
-            duration: Duration(milliseconds: 1000),
+            duration: const Duration(milliseconds: 1000),
             left: locationOfYearText[isExpanded]['left'],
             top: locationOfYearText[isExpanded]['top'],
             curve: Curves.easeOutExpo,

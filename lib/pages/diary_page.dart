@@ -44,8 +44,8 @@ class _DiaryPageState extends State<DiaryPage> {
 
                   provider.setNavigationIndex(navigationIndex.day);
                   provider.setDate(formatDateString(date));
-                  yearPageStateProvider
-                      .setAvailableDates(int.parse(date.substring(0, 4)));
+                  // yearPageStateProvider
+                  //     .setAvailableDates(int.parse(date.substring(0, 4)));
 
                 },
                 // padding: EdgeInsets.all(5),

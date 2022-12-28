@@ -46,16 +46,9 @@ enum LocationFilter {
   home,
 }
 
-int yearRange = 20;
-
 class YearPageStateProvider with ChangeNotifier {
-  int index = 0;
-  double zoomInAngle = 0.0;
   bool isZoomIn = false;
-  //TODO remove availableDates
-  List<String> availableDates = [];
 
-  List<List<dynamic>> dataForChart = [];
   Map dataForChart2_modified = {};
   Map<int, Map<String, List>> dataForChart2 = {};
   Map<int, Coordinate?>? medianCoordinates = {};
@@ -65,20 +58,9 @@ class YearPageStateProvider with ChangeNotifier {
   int? expandedYear = DateTime.now().year;
   int? highlightedYear;
 
-  bool offstageMenu = false;
-
-  void setOffstageMenu(bool offstageMenu) {
-    this.offstageMenu = offstageMenu;
-    notifyListeners();
-  }
-
-  void setHighlightedYear(int? year) {
-    highlightedYear = year;
-    notifyListeners();
-  }
-
   DataManagerInterface dataManager;
   YearPageStateProvider(this.dataManager);
+
 
   static Future<List> updateData_static(List input) async {
     print("static update Data For YearPage StateProvider");
@@ -325,11 +307,9 @@ class YearPageStateProvider with ChangeNotifier {
   }
 
 
-  void setAvailableDates(int year) {
-    availableDates = dataManager.summaryOfPhotoData.keys.where((element) {
-      return element.substring(0, 4) == year.toString();
-    }).toList();
-    availableDates.sort();
+  void setHighlightedYear(int? year) {
+    highlightedYear = year;
+    notifyListeners();
   }
 
   void setZoomInState(isZoomIn) {

@@ -32,17 +32,16 @@ class AndroidSettingsScreen extends StatefulWidget {
 class _AndroidSettingsScreenState extends State<AndroidSettingsScreen> {
   Map directories = Settings.directories;
   String urlOfTerm =
-      "https://www.termsfeed.com/live/c780905a-d580-4e20-83a0-3f88929eca2e";
-  String email = "latediary.info@gmail.com";
+      "https://www.termsfeed.com/live/c94e4d69-3927-4e4c-9799-3019237c288c";
+  String email = "jjuma.d.info@gmail.com";
 
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'Settings',
-          // style: TextStyle(color: Colors.black54),
         ),
         // backgroundColor: Colors.white,
       ),
@@ -52,11 +51,11 @@ class _AndroidSettingsScreenState extends State<AndroidSettingsScreen> {
         platform: DevicePlatform.android,
         sections: [
           SettingsSection(
-            title: Text("Common"),
+            title: const Text("Common"),
             tiles: [
               // SettingsTile(title: Text("Language"), onPressed: (context) {}),
               SettingsTile(
-                title: Text("About"),
+                title: const Text("About"),
                 onPressed: (context) {
                   showAboutDialog(
                       context: context,
@@ -65,9 +64,9 @@ class _AndroidSettingsScreenState extends State<AndroidSettingsScreen> {
                         width: 40,
                         height: 40,
                       ),
-                      applicationVersion: "version 1.0",
-                      applicationName: "lateD",
-                      anchorPoint: Offset(0, 0),
+                      applicationVersion: "version 1.2",
+                      applicationName: "JJUMA.d",
+                      anchorPoint: const Offset(0, 0),
                       children: [
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.end,
@@ -84,7 +83,7 @@ class _AndroidSettingsScreenState extends State<AndroidSettingsScreen> {
                 },
               ),
               SettingsTile(
-                  title: Text("Term of Service"),
+                  title: const Text("Term of Service"),
                   onPressed: (context) {
                     launch(urlOfTerm);
                   }),
@@ -122,7 +121,7 @@ class _AndroidSettingsScreenState extends State<AndroidSettingsScreen> {
   void toNotificationsScreen(BuildContext context) {
     Navigation.navigateTo(
       context: context,
-      screen: AndroidNotificationsScreen(),
+      screen: const AndroidNotificationsScreen(),
       style: NavigationRouteStyle.material,
     );
   }

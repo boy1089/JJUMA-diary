@@ -32,7 +32,7 @@ class _YearPageScreenState extends State<YearPageScreen> {
 
   var key2 = GlobalKey();
   double scaleCopy = 0.0;
-  double minScale = 0.6;
+  double minScale = 1;
 
   @override
   void initState() {

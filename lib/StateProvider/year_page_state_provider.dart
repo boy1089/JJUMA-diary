@@ -70,6 +70,8 @@ class YearPageStateProvider with ChangeNotifier {
   int? expandedYear = DateTime.now().year;
   int? highlightedYear;
 
+  double angle = 0.0;
+
   DataManagerInterface dataManager;
   YearPageStateProvider(this.dataManager);
 
@@ -332,6 +334,11 @@ class YearPageStateProvider with ChangeNotifier {
 
   void setExpandedYear(int? year) {
     expandedYear = year;
+    notifyListeners();
+  }
+
+  void setAngle(double angle){
+    this.angle = angle;
     notifyListeners();
   }
 

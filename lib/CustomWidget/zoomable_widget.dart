@@ -10,14 +10,11 @@ class ZoomableWidgets extends StatelessWidget {
   var gestures;
 
   ZoomableWidgets(
-      {required this.widgets,
+      {super.key, required this.widgets,
       required this.layout,
       required this.isZoomIn,
       required this.gestures,
       required this.angle});
-
-  late double graphSize = physicalWidth - 2 * global.kMarginForYearPage;
-
   @override
   Widget build(BuildContext context) {
     return AnimatedPositioned(
@@ -27,14 +24,19 @@ class ZoomableWidgets extends StatelessWidget {
         left: layout['left']?[isZoomIn]?.toDouble(),
         top: layout['top']?[isZoomIn]?.toDouble(),
         curve: global.animationCurve,
-        child: RawGestureDetector(
-          behavior: HitTestBehavior.deferToChild,
-          gestures: gestures,
-          child: AnimatedRotation(
-            turns: isZoomIn ? angle : 0,
-            duration: Duration(milliseconds: global.animationTime),
-            curve: global.animationCurve,
-            child: Stack(alignment: Alignment.center, children: widgets),
+        child: AnimatedScale(
+          duration: Duration(milliseconds: global.animationTime),
+          curve: global.animationCurve,
+          scale : isZoomIn? 2:1,
+          child: RawGestureDetector(
+            behavior: HitTestBehavior.deferToChild,
+            gestures: gestures,
+            child: AnimatedRotation(
+              turns: isZoomIn ? angle : 0,
+              duration: Duration(milliseconds: global.animationTime),
+              curve: global.animationCurve,
+              child: Stack(alignment: Alignment.center, children: widgets),
+            ),
           ),
         ));
   }

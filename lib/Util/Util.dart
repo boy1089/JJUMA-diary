@@ -22,82 +22,9 @@ const bool kDebugMode = !kReleaseMode && !kProfileMode;
 double maximumSizeOfScatter = 50.0;
 double minimumSizeOfScatter = 1.0;
 
-Size sizeOfChart = Size(800, 800);
-List<String> kTimeStamps = [
-  '00',
-  '01',
-  '02',
-  '03',
-  '04',
-  '05',
-  '06',
-  '07',
-  '08',
-  '09',
-  '10',
-  '11',
-  '12',
-  '13',
-  '14',
-  '15',
-  '16',
-  '17',
-  '18',
-  '19',
-  '20',
-  '21',
-  '22',
-  '23'
-];
+Size sizeOfChart = const Size(800, 800);
 
-List<String> kTimeStamps2hour = [
-  '00',
-  '02',
-  '04',
-  '06',
-  '08',
-  '10',
-  '12',
-  '14',
-  '16',
-  '18',
-  '20',
-  '22',
-];
-List<String> kTimeStamps_filtered = [
-  '06',
-  '07',
-  '08',
-  '09',
-  '10',
-  '11',
-  '12',
-  '13',
-  '14',
-  '15',
-  '16',
-  '17',
-  '18',
-  '19',
-  '20',
-  '21',
-  '22',
-  '23'
-];
-
-List<String> kTimeStamps2hour_filtered = [
-  '06',
-  '08',
-  '10',
-  '12',
-  '14',
-  '16',
-  '18',
-  '20',
-  '22',
-];
-
-Size standardScreenSize = Size(411.4, 707.4);
+Size standardScreenSize = const Size(411.4, 707.4);
 
 Size physicalScreenSize = window.physicalSize / window.devicePixelRatio;
 double physicalWidth = physicalScreenSize.width;
@@ -107,15 +34,11 @@ const kSensorPlotRadius = 1.0;
 const kPhotoPlotRadius = 2.0;
 const kDataReaderSubsampleFactor = 50;
 
-const longitude_home = 126.7209;
-const latitude_home = 37.3627;
-const distance_threshold_home = 0.02;
 
 const kDefaultPolarPlotSize = 250.0;
 const kSecondPolarPlotSize = kDefaultPolarPlotSize * 1.3;
 const kThirdPolarPlotSize = kDefaultPolarPlotSize * 2;
 
-const path_phonecall = '/sdcard/Music/TPhoneCallRecords';
 
 int a = 255;
 
@@ -163,81 +86,6 @@ int floorNumberOfImages(int numberOfImages){
   if (numberOfImages > 2) return 3;
   return 4;
 
-}
-
-List modifyListForPlot(List fields,
-    {bool filterTime = false, bool executeTranspose = false}) {
-  //transpose data if needed
-  if (executeTranspose) {
-    fields = transpose(fields);
-  }
-  //filter the value
-  List listFiltered = fields;
-  if (filterTime) listFiltered = filterList(fields);
-
-  // convert time string or timestamp into int
-  print("listfiltered : $listFiltered");
-  List result = convertStringTimeToInt(listFiltered);
-  print("convertTime : $result");
-  List listRadial = List<List<double>>.generate(
-      result.shape[0], (int index) => [kThirdPolarPlotSize]);
-  result = Matrix2d().concatenate(result, listRadial, axis: 1);
-  print("result : $result");
-  return result;
-}
-
-List filterList(List input) {
-  //create empty output with same shape as input
-  List output = [];
-  for (int i = 0; i < input.length; i++) {
-    try {
-      // print("filterList : ${input[i][0]}");
-      //exclude if filename is not in format of yyyyMMdd_HHmmSS
-      print("filterList ${input[i]}");
-      if (input[i][0][8] != "_") continue;
-      if (input[i][0].contains("t")) continue;
-
-      output.add(input[i]);
-    } catch (e) {
-      print(e);
-    }
-  }
-
-  //insert the name of columns
-  output.insert(0, input[0]);
-  print("filterList result: ${output}");
-  return output;
-}
-
-List convertStringTimeToInt(List fields) {
-  // fields = fields.sublist(0);
-  List listTime = slice(fields, [0, fields.shape[0]], [0, 1]).flatten;
-  print("listTime : $listTime");
-  listTime = List<List<double>>.generate(listTime.length,
-      (int index) => [convertStringTimeToDouble(listTime[index])]);
-  print('c');
-  List listValues = slice(fields, [0, fields.shape[0]], [1, fields.shape[1]]);
-  print('d');
-  List output = const Matrix2d().concatenate(listTime, listValues, axis: 1);
-
-  return output;
-}
-
-double convertStringTimeToDouble(String time) {
-  var timeSplit;
-  if (time.contains(":")) {
-    timeSplit = time.substring(11, 19).split(':');
-  } else {
-    timeSplit = [
-      time.substring(9, 11),
-      time.substring(11, 13),
-      time.substring(13, 15)
-    ];
-  }
-  double timeDouble = double.parse(timeSplit[0]) +
-      double.parse(timeSplit[1]) / 60.0 +
-      double.parse(timeSplit[2]) / 3600.0;
-  return timeDouble;
 }
 
 List<List<dynamic>> transpose(list) {
@@ -292,14 +140,6 @@ List slice(List<dynamic> array, List<int> row_index,
   } catch (e) {
     throw Exception(e);
   }
-}
-
-List<List<dynamic>> subsampleList(List list, int factor) {
-  List<List<dynamic>> newList = [];
-  for (int i = 0; i < list.length; i++) {
-    if (i % factor == 0) newList.add(list[i]);
-  }
-  return newList;
 }
 
 class AllowMultipleGestureRecognizer extends TapGestureRecognizer {

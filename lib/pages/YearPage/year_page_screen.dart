@@ -1,16 +1,17 @@
 import 'dart:io';
 import 'dart:math';
-import 'dart:ui';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:intl/intl.dart' as intl;
+import 'package:lateDiary/CustomWidget/zoomable_widget.dart';
 import 'package:lateDiary/Util/DateHandler.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:provider/provider.dart';
 import 'package:lateDiary/StateProvider/year_page_state_provider.dart';
 import 'package:lateDiary/Util/Util.dart';
+import '../../Util/layouts.dart';
 import 'year_chart.dart';
 import 'drop_down_button_2.dart';
 import 'dart:ui' as ui;
@@ -32,7 +33,7 @@ class _YearPageScreenState extends State<YearPageScreen> {
 
   var key2 = GlobalKey();
   double scaleCopy = 0.0;
-  double minScale = 0.6;
+  double minScale = 1;
 
   @override
   void initState() {
@@ -52,64 +53,109 @@ class _YearPageScreenState extends State<YearPageScreen> {
     });
   }
 
+  var layout = layout_yearPage2;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(children: [
-        Consumer<YearPageStateProvider>(
-          builder: (context, product, child) => WillPopScope(
-            onWillPop: () async {
-              if ((product.highlightedYear == null) &
-                  (product.expandedYear == null) &
-                  (controller.scale == 1)) return true;
-              product.setHighlightedYear(null);
-              product.setExpandedYear(null);
-              controller.scale = 1;
-              return false;
-            },
-            child: RepaintBoundary(
-              key: key2,
-              child: PhotoView.customChild(
-                backgroundDecoration: const BoxDecoration(color: Colors.black12),
-                customSize: sizeOfChart,
-                minScale: minScale,
-                controller: controller,
-                onScaleEnd: (context, value, a) {
-                  controller.scale = a.scale?? minScale;
-                  if (controller.scale! < minScale) {
-                    controller.scale = minScale;
-                    // product.setExpandedYear(null);
-                  }
-                },
-                child: Stack(alignment: Alignment.center, children: [
-                  CustomPaint(size: const Size(0, 0), painter: OpenPainter()),
-                  ...List.generate(
-                      product.dataForChart2_modified.length > maxNumOfYearChart
-                          ? maxNumOfYearChart
-                          : product.dataForChart2_modified.length, (index) {
-                    int year =
-                        product.dataForChart2_modified.keys.elementAt(index);
-
-                    return YearChart(
-                        year: year, radius: 1 - index * 0.1, product: product);
-                  }),
-                ]),
-              ),
+      body: Consumer<YearPageStateProvider>(
+        builder: (context, product, child) => WillPopScope(
+      onWillPop: () async {
+        if ((product.highlightedYear == null) &
+        (product.expandedYear == null) &
+        !product.isZoomIn) return true;
+        product.setHighlightedYear(null);
+        product.setExpandedYear(null);
+        controller.scale = 1;
+        product.setZoomInState(false);
+        product.setAngle(0);
+        return false;
+      },
+      child : SizedBox(
+        width : 1200,
+        height : 1200,
+        child: Stack(
+            // alignment: Alignment.topCenter,
+            children: [
+          ZoomableWidgets(
+              widgets: [mainWidget(product)],
+              layout: layout,
+              isZoomIn: product.isZoomIn,
+              gestures: gestures(product),
+              angle: product.angle),
+          SizedBox(
+            height: 70,
+            child: AppBar(
+              backgroundColor: Colors.transparent,
+              excludeHeaderSemantics: true,
+              elevation: 0.0,
+              actions: [CustomButtonTest(capture)],
             ),
           ),
-        ),
-        SizedBox(
-          height: 70,
-          child: AppBar(
-            backgroundColor: Colors.transparent,
-            excludeHeaderSemantics: true,
-            elevation: 0.0,
-            actions: [CustomButtonTest(capture)],
-          ),
-        ),
-      ]),
+        ]),
+      ),
+    )));
+  }
 
-    );
+  gestures(YearPageStateProvider product){
+    return {
+      AllowMultipleGestureRecognizer: GestureRecognizerFactoryWithHandlers<AllowMultipleGestureRecognizer>(
+    () => AllowMultipleGestureRecognizer(),
+    (AllowMultipleGestureRecognizer instance) {
+    instance.onTapDown = (TapDownDetails details) {
+      print("TapDown");
+      if(!product.isZoomIn) {
+              product.setZoomInState(!product.isZoomIn);
+            }
+          };
+    },
+
+    ),
+      AllowMultipleGestureRecognizer2: GestureRecognizerFactoryWithHandlers<AllowMultipleGestureRecognizer2>(
+            () => AllowMultipleGestureRecognizer2(),
+            (AllowMultipleGestureRecognizer2 instance) {
+          instance.onUpdate = ( details) {
+            product.setAngle(
+                product.angle + details.delta.dy / 300);
+            print(product.angle);
+            // provider.setZoomInState(!provider.isZoomIn);
+          };
+        },
+      ),
+
+    };
+  }
+
+  mainWidget(product) {
+    return RepaintBoundary(
+          key: key2,
+          child: PhotoView.customChild(
+            backgroundDecoration: const BoxDecoration(color: Colors.black12),
+            customSize: sizeOfChart,
+            minScale: minScale,
+            controller: controller,
+            onScaleEnd: (context, value, a) {
+              controller.scale = a.scale ?? minScale;
+              if (controller.scale! < minScale) {
+                controller.scale = minScale;
+                // product.setExpandedYear(null);
+              }
+            },
+            child: Stack(alignment: Alignment.center, children: [
+              CustomPaint(size: const Size(0, 0), painter: OpenPainter()),
+              ...List.generate(
+                  product.dataForChart2_modified.length > maxNumOfYearChart
+                      ? maxNumOfYearChart
+                      : product.dataForChart2_modified.length, (index) {
+                int year = product.dataForChart2_modified.keys.elementAt(index);
+                return YearChart(
+                    year: year, radius: 1 - index * 0.1, product: product);
+              }),
+            ]),
+          ),
+        );
+
+
   }
 
   void capture() async {
@@ -135,6 +181,7 @@ class _YearPageScreenState extends State<YearPageScreen> {
     }
   }
 }
+
 var rng = Random();
 int randomNumber1 = rng.nextInt(800);
 int randomNumber2 = rng.nextInt(800);
@@ -143,7 +190,7 @@ int randomNumber4 = rng.nextInt(800);
 int randomNumber5 = rng.nextInt(800);
 int randomNumber6 = rng.nextInt(800);
 int randomNumber7 = rng.nextInt(800);
-List<int> randomNumber = List.generate(20, (index)=>rng.nextInt(800));
+List<int> randomNumber = List.generate(20, (index) => rng.nextInt(800));
 
 class OpenPainter extends CustomPainter {
   @override
@@ -152,7 +199,8 @@ class OpenPainter extends CustomPainter {
       ..color = const Color(0xff808080)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 0.7;
-    canvas.drawCircle(const Offset(0, 0), (physicalWidth / 2 - 3) * 0.3, paint1);
+    canvas.drawCircle(
+        const Offset(0, 0), (physicalWidth / 2 - 3) * 0.3, paint1);
     canvas.drawCircle(const Offset(0, 0), physicalWidth / 2 - 3, paint1);
 
     var paint2 = Paint()
@@ -210,8 +258,6 @@ class OpenPainter extends CustomPainter {
       textPainter.paint(canvas, Offset(xOffset - 14, yOffset - 7));
     }
   }
-
-
 
   @override
   bool shouldRepaint(CustomPainter oldDelegate) => true;

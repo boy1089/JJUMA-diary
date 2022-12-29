@@ -9,6 +9,7 @@ import 'package:lateDiary/pages/YearPage/widgets/photo_card.dart';
 import 'dart:io';
 
 import 'package:lateDiary/pages/YearPage/year_page_screen.dart';
+import 'package:provider/provider.dart';
 import '../event.dart';
 import 'scatters.dart';
 import 'package:badges/badges.dart';
@@ -82,59 +83,65 @@ class _YearChartState extends State<YearChart> {
               curve: Curves.easeOutExpo,
               left: left,
               top: top,
-              child: GestureDetector(
-                  behavior: HitTestBehavior.translucent,
-                  onDoubleTap: () {
-                    product.setExpandedYear(null);
-                    setState(() {});
-                  },
-                  onTapDown: (detail) {
-                    if ((product.expandedYear != year)) {
-                      product.setHighlightedYear(year);
-                    }
-                  },
-                  onTapCancel: () {
-                    product.setHighlightedYear(null);
-                  },
-                  onTapUp: (detail) {
-                    product.setHighlightedYear(null);
-                    if (!isExpanded) {
-                      product.setExpandedYear(year);
-                      return;
-                    }
-                    if (isExpanded) {
-                      Navigator.push(
-                        context,
-                        PageRouteBuilder(
-                            transitionDuration: Duration(milliseconds: 500),
-                            pageBuilder: (_, __, ___) => PhotoCard(
-                                  tag: "${year.toString()}${index}",
-                                  isMagnified: true,
-                                  event: Event(
-                                    images: Map.fromIterable(entries,
-                                        key: (item) => item.key,
-                                        value: (item) => item.value),
-                                    // {for(MapEntry<dynamic, InfoFromFile> entry in entries)}),
-                                    note: "",
-                                  ),
-                                  filenameOfFavoriteImage: filenameOfFavoriteImage,
-                                )),
-                      );
-                    }
-                  },
-                  child: Hero(
-                      tag: "${year.toString()}$index",
-                      child: filenameOfFavoriteImage != null
-                          ? Scatter.fromType(
-                              filenameOfFavoriteImage,
-                              size: size > 20.0 ? size : 20.0,
-                              color: color,
-                              type: scatterType.image)
+              child: Transform.rotate(
+                angle : -Provider.of<YearPageStateProvider>(context, listen : true).angle* 2* pi,
+                child: GestureDetector(
+                    behavior: HitTestBehavior.translucent,
+                    onDoubleTap: () {
+                      product.setExpandedYear(null);
+                      setState(() {});
+                    },
+                    onTapDown: (detail) {
+                      if ((product.expandedYear != year)) {
+                        product.setHighlightedYear(year);
 
-                          : Scatter.fromType("aa",
-                              size: size,
-                              color: color,
-                              type: scatterType.defaultRect))));
+                        if (product.isZoomIn) return;
+                        product.setZoomInState(true);
+                      }
+                    },
+                    onTapCancel: () {
+                      product.setHighlightedYear(null);
+                    },
+                    onTapUp: (detail) {
+                      product.setHighlightedYear(null);
+                      if (!isExpanded) {
+                        product.setExpandedYear(year);
+                        return;
+                      }
+                      if (isExpanded) {
+                        Navigator.push(
+                          context,
+                          PageRouteBuilder(
+                              transitionDuration: Duration(milliseconds: 500),
+                              pageBuilder: (_, __, ___) => PhotoCard(
+                                    tag: "${year.toString()}${index}",
+                                    isMagnified: true,
+                                    event: Event(
+                                      images: Map.fromIterable(entries,
+                                          key: (item) => item.key,
+                                          value: (item) => item.value),
+                                      // {for(MapEntry<dynamic, InfoFromFile> entry in entries)}),
+                                      note: "",
+                                    ),
+                                    filenameOfFavoriteImage: filenameOfFavoriteImage,
+                                  )),
+                        );
+                      }
+                    },
+                    child: Hero(
+                        tag: "${year.toString()}$index",
+                        child: filenameOfFavoriteImage != null
+                            ? Scatter.fromType(
+                                filenameOfFavoriteImage,
+                                size: size > 20.0 ? size : 20.0,
+                                color: color,
+                                type: scatterType.image)
+
+                            : Scatter.fromType("aa",
+                                size: size,
+                                color: color,
+                                type: scatterType.defaultRect))),
+              ));
         }),
         AnimatedPositioned(
             duration: const Duration(milliseconds: 1000),

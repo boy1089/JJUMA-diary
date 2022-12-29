@@ -34,12 +34,24 @@ List positionNotExpanded = List.generate(372, (index) {
 
 List<double> hueList = [215.0, 126.0, 63.0, 0.0, 281.0];
 List<Color> colorList = [
-  Color(0xFF2A2A2A),
-  Color(0xFF2A4D7F),
-  Color(0xFF2A7F32),
-  Color(0xFF7B7F2A),
-
+  const Color(0xFF2A2A2A),
+  const Color(0xFF2A4D7F),
+  const Color(0xFF2A7F32),
+  const Color(0xFFffbf00),
 ];
+
+List<Color> colorList2 = [
+  const Color(0xFF2a71d5),
+  const Color(0xFF2ad53b),
+  const Color(0xFFffbf00),
+  const Color(0xFFd52a2a),
+  const Color(0xFF9f2ad5),
+  const Color(0xFF2A2A2A),
+];
+
+
+// const Color(0xFFccd52a),
+
 enum LocationFilter {
   trip,
   none,
@@ -250,10 +262,10 @@ class YearPageStateProvider with ChangeNotifier {
 
         double hue = hueList.elementAt(locationClassification);
 
-        Color color = (coordinate == null) | (coordinate.longitude == null)
-            ? Colors.grey.withAlpha(100)
-            : HSLColor.fromAHSL(0.5, hue, 67 / 100, 50 / 100).toColor();
-
+        // Color color = (coordinate == null) | (coordinate.longitude == null)
+        //     ? Colors.grey.withAlpha(100)
+        //     : HSLColor.fromAHSL(0.5, hue, 67 / 100, 50 / 100).toColor();
+        Color color =  (coordinate == null) | (coordinate.longitude == null)? Colors.grey.withAlpha(100): colorList2.elementAt(locationClassification);
         // double size = numberOfImages / 5.toDouble();
         double size = numberOfImages / maximumNumberOfImages * (maximumSizeOfScatter + 5);
         size = size < maximumSizeOfScatter ? size : maximumSizeOfScatter;

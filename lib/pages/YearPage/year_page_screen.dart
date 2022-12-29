@@ -28,11 +28,11 @@ class _YearPageScreenState extends State<YearPageScreen> {
       PhotoViewScaleStateController();
   late PhotoViewController controller;
 
-  int maxNumOfYearChart = 10;
+  int maxNumOfYearChart = 9;
 
   var key2 = GlobalKey();
   double scaleCopy = 0.0;
-  double minScale = 1;
+  double minScale = 0.6;
 
   @override
   void initState() {
@@ -70,21 +70,19 @@ class _YearPageScreenState extends State<YearPageScreen> {
             child: RepaintBoundary(
               key: key2,
               child: PhotoView.customChild(
-                backgroundDecoration: BoxDecoration(color: Colors.black12),
+                backgroundDecoration: const BoxDecoration(color: Colors.black12),
                 customSize: sizeOfChart,
                 minScale: minScale,
-                // scaleStateController: scaleStateController,
                 controller: controller,
-
                 onScaleEnd: (context, value, a) {
-                  controller.scale = a.scale?? 1;
-                  if (controller.scale! < 1) {
-                    controller.scale = 1;
-                    product.setExpandedYear(null);
+                  controller.scale = a.scale?? minScale;
+                  if (controller.scale! < minScale) {
+                    controller.scale = minScale;
+                    // product.setExpandedYear(null);
                   }
                 },
                 child: Stack(alignment: Alignment.center, children: [
-                  CustomPaint(size: Size(0, 0), painter: OpenPainter()),
+                  CustomPaint(size: const Size(0, 0), painter: OpenPainter()),
                   ...List.generate(
                       product.dataForChart2_modified.length > maxNumOfYearChart
                           ? maxNumOfYearChart
@@ -110,16 +108,7 @@ class _YearPageScreenState extends State<YearPageScreen> {
           ),
         ),
       ]),
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: () {
-      //     // controller.scale = 2.0;
-      //     var a = Provider.of<YearPageStateProvider>(context, listen: false);
-      //     a.dataForChart2_modified[2022].forEach((element) => print(element));
-      //     print("$physicalWidth, $physicalHeight}");
-      //     print(window.physicalSize);
-      //     print(sizeOfChart);
-      //   },
-      // ),
+
     );
   }
 

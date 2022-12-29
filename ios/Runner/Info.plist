@@ -24,31 +24,26 @@
 		<string>$(FLUTTER_BUILD_NUMBER)</string>
 		<key>LSRequiresIPhoneOS</key>
 		<true/>
-
 		<key>NSPhotoLibraryUsageDescription</key>
-        <string>In order to access your photo library</string>
-
-        <key>NSAppTransportSecurity</key>
-        <dict>
-          <key>NSAllowsArbitraryLoads</key><true/>
-        </dict>
-
-        <key>NSBonjourServices</key>
-        <array>
-            <string>_dartobservatory._tcp</string>
-        </array>
-
-
+		<string>In order to access your photo library</string>
+		<key>NSAppTransportSecurity</key>
+		<dict>
+			<key>NSAllowsArbitraryLoads</key>
+			<true/>
+		</dict>
+		<key>NSBonjourServices</key>
+		<array>
+			<string>_dartobservatory._tcp</string>
+		</array>
 		<!-- Permission options for the `location` group -->
-            <key>NSLocationWhenInUseUsageDescription</key>
-            <string>Need location when in use</string>
-            <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-            <string>Always and when in use!</string>
-            <key>NSLocationUsageDescription</key>
-            <string>Older devices need location.</string>
-            <key>NSLocationAlwaysUsageDescription</key>
-            <string>Can I have location always?</string>
-
+		<key>NSLocationWhenInUseUsageDescription</key>
+		<string>Need location when in use</string>
+		<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+		<string>Always and when in use!</string>
+		<key>NSLocationUsageDescription</key>
+		<string>Older devices need location.</string>
+		<key>NSLocationAlwaysUsageDescription</key>
+		<string>Can I have location always?</string>
 		<key>UILaunchStoryboardName</key>
 		<string>LaunchScreen</string>
 		<key>UIMainStoryboardFile</key>

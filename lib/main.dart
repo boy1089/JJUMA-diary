@@ -19,8 +19,6 @@ void main() {
 
      sizeOfChart = Size(physicalWidth*2, physicalWidth*2);
 
-
-
      maximumSizeOfScatter = physicalWidth/8;
      minimumSizeOfScatter = maximumSizeOfScatter/50;
 

@@ -73,7 +73,7 @@ class _YearChartState extends State<YearChart> {
 
           double size = data[index][6];
           Color color = data[index][7];
-          color = color.withAlpha(year == product.highlightedYear ? 240 : 100);
+          color = color.withAlpha(year == product.highlightedYear ? 240 : 150);
 
           List entries = data[index][8];
 

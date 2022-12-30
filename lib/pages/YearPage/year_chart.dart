@@ -129,12 +129,12 @@ class _YearChartState extends State<YearChart> {
                               filenameOfFavoriteImage,
                               size: size > 20.0 ? size : 20.0,
                               color: color,
-                              type: scatterType.image)
+                              type: ScatterType.image)
 
                           : Scatter.fromType("aa",
                               size: size,
                               color: color,
-                              type: scatterType.defaultRect))));
+                              type: ScatterType.defaultRect))));
         }),
         AnimatedPositioned(
             duration: const Duration(milliseconds: 1000),

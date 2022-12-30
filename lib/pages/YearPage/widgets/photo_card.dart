@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -22,7 +21,7 @@ class PhotoCard extends StatefulWidget {
   bool isTickEnabled = false;
   String tag;
   String? filenameOfFavoriteImage;
-  PhotoCard({
+  PhotoCard({super.key,
     this.isMagnified = false,
     this.height = 200,
     this.scrollIndex = 0,
@@ -173,6 +172,7 @@ class _PhotoCardState extends State<PhotoCard> {
                                       cacheRawData: true,
                                       compressionRatio: 0.1,
                                       fit: BoxFit.cover,
+                                      clearMemoryCacheWhenDispose: true,
                                     ),
                                   ),
                                   Positioned(
@@ -233,6 +233,8 @@ class _PhotoCardState extends State<PhotoCard> {
                                 File(widget.event.images.entries
                                     .elementAt(index)
                                     .key),
+
+                                clearMemoryCacheWhenDispose: true,
                                 compressionRatio: 0.0003,
                               )),
                         ))),
@@ -283,9 +285,9 @@ class _PhotoCardState extends State<PhotoCard> {
     super.dispose();
     DataManagerInterface dataManager = DataManagerInterface(global.kOs);
 
+    dataManager.setFilenameOfFavoriteImage(dateTime, filenameOfFavoriteImage);
     if(controller.text != defaultText) {
       dataManager.setNote(dateTime, controller.text);
-      dataManager.setFilenameOfFavoriteImage(dateTime, filenameOfFavoriteImage);
     }
   }
 }

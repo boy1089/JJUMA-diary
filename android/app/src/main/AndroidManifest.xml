@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="JJUMA.d" xmlns:tools="http://schemas.android.com/tools">>
+    package="lateDiary" xmlns:tools="http://schemas.android.com/tools">>
     <queries>
         <!-- If your app opens https URLs -->
         <intent>

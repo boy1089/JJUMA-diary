@@ -2,15 +2,15 @@ import 'dart:io';
 import 'package:glob/list_local_fs.dart';
 import 'package:flutter/foundation.dart';
 import 'package:glob/glob.dart';
-import 'package:lateDiary/Data/data_manager_interface.dart';
-import 'package:lateDiary/Util/DateHandler.dart';
-import 'package:lateDiary/Util/Util.dart';
-import 'package:lateDiary/Util/global.dart' as global;
-import 'package:lateDiary/Location/location_data_manager.dart';
-import "package:lateDiary/Location/coordinate.dart";
+import 'package:JJUMA.d/Data/data_manager_interface.dart';
+import 'package:JJUMA.d/Util/DateHandler.dart';
+import 'package:JJUMA.d/Util/Util.dart';
+import 'package:JJUMA.d/Util/global.dart' as global;
+import 'package:JJUMA.d/Location/location_data_manager.dart';
+import "package:JJUMA.d/Location/coordinate.dart";
 import '../pages/event.dart';
 import 'info_from_file.dart';
-import 'package:lateDiary/Data/directories.dart';
+import 'package:JJUMA.d/Data/directories.dart';
 import 'data_repository.dart';
 
 class IosDataManager extends ChangeNotifier implements DataManagerInterface {

@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
-import 'package:lateDiary/Location/coordinate.dart';
-import 'package:lateDiary/Data/info_from_file.dart';
-import 'package:lateDiary/Data/data_repository.dart';
+import 'package:JJUMA.d/Location/coordinate.dart';
+import 'package:JJUMA.d/Data/info_from_file.dart';
+import 'package:JJUMA.d/Data/data_repository.dart';
 
 import '../pages/event.dart';
 import 'android_data_manager.dart';

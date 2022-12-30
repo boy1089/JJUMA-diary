@@ -1,5 +1,5 @@
-import 'package:lateDiary/Location/coordinate.dart';
-import 'package:lateDiary/Util/DateHandler.dart';
+import 'package:JJUMA.d/Location/coordinate.dart';
+import 'package:JJUMA.d/Util/DateHandler.dart';
 
 class InfoFromFiles {}
 

@@ -5,12 +5,12 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:intl/intl.dart' as intl;
-import 'package:lateDiary/Util/DateHandler.dart';
+import 'package:JJUMA.d/Util/DateHandler.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:provider/provider.dart';
-import 'package:lateDiary/StateProvider/year_page_state_provider.dart';
-import 'package:lateDiary/Util/Util.dart';
+import 'package:JJUMA.d/StateProvider/year_page_state_provider.dart';
+import 'package:JJUMA.d/Util/Util.dart';
 import 'year_chart.dart';
 import 'drop_down_button_2.dart';
 import 'dart:ui' as ui;
@@ -138,7 +138,7 @@ class _YearPageScreenState extends State<YearPageScreen> {
           (await image.toByteData(format: ui.ImageByteFormat.png))!;
       Uint8List pngBytes = byteData.buffer.asUint8List();
       String dateString = "${formatDatetime(DateTime.now())}";
-      File imgFile = File('$directory/lateDiary_${dateString}.png');
+      File imgFile = File('$directory/JJUMA.d_${dateString}.png');
       await imgFile.writeAsBytes(pngBytes);
       print("FINISH CAPTURE ${imgFile.path}");
 

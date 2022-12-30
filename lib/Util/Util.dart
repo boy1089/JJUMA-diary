@@ -6,13 +6,13 @@ import 'package:path_provider/path_provider.dart';
 import 'package:matrix2d/matrix2d.dart';
 import 'dart:ui';
 import 'package:flutter/gestures.dart';
-import 'package:lateDiary/Util/Util.dart';
+import 'package:JJUMA.d/Util/Util.dart';
 import 'dart:math';
 import 'dart:io';
 import 'package:csv/csv.dart';
 import 'dart:convert';
 import 'package:exif/exif.dart';
-import "package:lateDiary/Location/coordinate.dart";
+import "package:JJUMA.d/Location/coordinate.dart";
 import 'package:photo_manager/photo_manager.dart';
 
 import 'DateHandler.dart';

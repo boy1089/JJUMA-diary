@@ -3,8 +3,8 @@ import 'package:path_provider/path_provider.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:glob/glob.dart';
-import 'package:lateDiary/Util/Util.dart';
-import 'package:lateDiary/Util/global.dart' as global;
+import 'package:JJUMA.d/Util/Util.dart';
+import 'package:JJUMA.d/Util/global.dart' as global;
 
 class NoteManager {
   Map notes = {};

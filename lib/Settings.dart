@@ -1,10 +1,10 @@
 import 'package:path_provider/path_provider.dart';
-import 'package:lateDiary/Data/directories.dart';
-import 'package:lateDiary/Location/coordinate.dart';
+import 'package:JJUMA.d/Data/directories.dart';
+import 'package:JJUMA.d/Location/coordinate.dart';
 import 'dart:io';
 import 'dart:convert';
-import 'package:lateDiary/Util/global.dart' as global;
-import 'package:geolocator/geolocator.dart';
+import 'package:JJUMA.d/Util/global.dart' as global;
+// import 'package:geolocator/geolocator.dart';
 
 enum items {
   language,

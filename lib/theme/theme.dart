@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:lateDiary/Util/global.dart' as global;
+import 'package:JJUMA.d/Util/global.dart' as global;
 
-class LateDiaryTheme {
+class JJUMATheme {
   static ThemeData get light {
     return ThemeData(
       progressIndicatorTheme: ProgressIndicatorThemeData(),

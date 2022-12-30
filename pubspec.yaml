@@ -1,4 +1,4 @@
-name: lateDiary
+name: JJUMA.d
 description: A new Flutter project.
 
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -16,20 +16,14 @@ dependencies:
   flutter_logs:
   permission_handler:
   matrix2d:
-  fluttertoast: ^8.0.9
   settings_ui:
   glob:
   provider: ^6.0.4
-  matrix_gesture_detector: ^0.1.0
   animations:
-  transparent_image:
   extended_image:
   exif:
   image_picker:
   badges:
-  geolocator:
-  google_maps_flutter: ^2.1.8
-  geocoding: ^2.0.5
   flutter_keyboard_visibility: ^5.4.0
   flutter_keyboard_size:
   flutter_native_splash:

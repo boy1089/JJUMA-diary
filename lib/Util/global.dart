@@ -1,10 +1,10 @@
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
-import "package:lateDiary/Location/coordinate.dart";
-import 'package:lateDiary/Data/info_from_file.dart';
-import 'package:lateDiary/Util/Util.dart';
+import "package:JJUMA.d/Location/coordinate.dart";
+import 'package:JJUMA.d/Data/info_from_file.dart';
+import 'package:JJUMA.d/Util/Util.dart';
 import 'dart:io' show Platform;
-import 'package:lateDiary/pages/YearPage/year_page_screen.dart';
+import 'package:JJUMA.d/pages/YearPage/year_page_screen.dart';
 
 Map<String, int> summaryOfNoteData = {};
 

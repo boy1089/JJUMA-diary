@@ -1,8 +1,8 @@
-import 'package:lateDiary/Data/file_info_model.dart';
-import 'package:lateDiary/Util/DateHandler.dart';
-import 'package:lateDiary/Util/Util.dart';
-import 'package:lateDiary/Data/data_manager_interface.dart';
-import 'package:lateDiary/Util/global.dart' as global;
+import 'package:JJUMA.d/Data/file_info_model.dart';
+import 'package:JJUMA.d/Util/DateHandler.dart';
+import 'package:JJUMA.d/Util/Util.dart';
+import 'package:JJUMA.d/Data/data_manager_interface.dart';
+import 'package:JJUMA.d/Util/global.dart' as global;
 
 class PhotoDataManager {
   DataManagerInterface dataManager = DataManagerInterface(global.kOs);

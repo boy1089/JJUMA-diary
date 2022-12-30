@@ -1,5 +1,5 @@
 import 'global.dart' as global;
-import 'package:lateDiary/Util/Util.dart';
+import 'package:JJUMA.d/Util/Util.dart';
 import 'package:flutter/material.dart';
 
 Map layout_yearPage = {

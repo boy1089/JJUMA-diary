@@ -1,5 +1,5 @@
 import "package:external_path/external_path.dart";
-import "package:lateDiary/Util/global.dart";
+import "package:JJUMA.d/Util/global.dart";
 
 class Directories {
 

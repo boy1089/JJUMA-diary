@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:lateDiary/Permissions/PermissionManager.dart';
-import 'package:lateDiary/Util/Util.dart';
+import 'package:JJUMA.d/Permissions/PermissionManager.dart';
+import 'package:JJUMA.d/Util/Util.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:lateDiary/Util/global.dart' as global;
+import 'package:JJUMA.d/Util/global.dart' as global;
 import 'package:flutter_shake_animated/flutter_shake_animated.dart';
 
 class PermissionPage extends StatefulWidget {

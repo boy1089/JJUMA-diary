@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:lateDiary/Data/info_from_file.dart';
-import 'package:lateDiary/Util/DateHandler.dart';
-import 'package:lateDiary/Util/Util.dart';
+import 'package:JJUMA.d/Data/info_from_file.dart';
+import 'package:JJUMA.d/Util/DateHandler.dart';
+import 'package:JJUMA.d/Util/Util.dart';
 
 import '../Data/data_manager_interface.dart';
 import '../Location/coordinate.dart';

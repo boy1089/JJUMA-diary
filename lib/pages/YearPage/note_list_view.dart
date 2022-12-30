@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:lateDiary/Util/global.dart' as global;
-import 'package:lateDiary/Util/layouts.dart';
+import 'package:JJUMA.d/Util/global.dart' as global;
+import 'package:JJUMA.d/Util/layouts.dart';
 import 'package:provider/provider.dart';
-import 'package:lateDiary/StateProvider/navigation_index_state_provider.dart';
-import 'package:lateDiary/Util/DateHandler.dart';
-import 'package:lateDiary/Util/Util.dart';
+import 'package:JJUMA.d/StateProvider/navigation_index_state_provider.dart';
+import 'package:JJUMA.d/Util/DateHandler.dart';
+import 'package:JJUMA.d/Util/Util.dart';
 
 import '../../StateProvider/year_page_state_provider.dart';
 

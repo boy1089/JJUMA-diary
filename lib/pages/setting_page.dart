@@ -1,19 +1,9 @@
-import 'package:permission_handler/permission_handler.dart';
-import 'package:JJUMA.d/Permissions/PermissionManager.dart';
-
-import '../Location/coordinate.dart';
 import 'android_notifications_screen.dart';
 import '../navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:settings_ui/settings_ui.dart';
-import 'package:JJUMA.d/Util/global.dart' as global;
-import 'package:JJUMA.d/Util/Util.dart';
-
-import 'package:JJUMA.d/Data/directories.dart';
 import 'package:JJUMA.d/Settings.dart';
-import 'dart:io';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:numberpicker/numberpicker.dart';
 
 enum buttons { googleAccount, Location, Audio, Phone }
 

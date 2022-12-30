@@ -24,27 +24,44 @@ class AndroidDataManager extends ChangeNotifier
     return _instance;
   }
 
+  @override
   Map<String, int> summaryOfPhotoData = {};
+  @override
   Map<String, double> summaryOfLocationData = {};
+  @override
   Map<String, Coordinate> summaryOfCoordinate = {};
 
+  @override
   List setOfDates = [];
+  @override
   List dates = [];
+  @override
   List datetimes = [];
+  @override
   List setOfDatetimes = [];
+  @override
   List files = [];
+  @override
   List? filesNotUpdated = [];
+  @override
   List<String>? datesOutOfDate = [];
 
+  @override
   Map<dynamic, InfoFromFile> infoFromFiles = {};
+  @override
   Map<String, Event> eventList = {};
 
+  @override
   DataRepository dataRepository = DataRepository();
 
+  @override
   Map<String, Map<String, String>> noteForChart2 = {};
+  @override
   Map<String, Map<String, String?>> filenameOfFavoriteImages = {};
-
+  late final Directory directory;
+  @override
   Future<void> init() async {
+    directory = await getApplicationDocumentsDirectory();
     Stopwatch stopwatch = Stopwatch()..start();
 
     print("DataManager instance is initializing..");
@@ -76,6 +93,7 @@ class AndroidDataManager extends ChangeNotifier
 
   }
 
+  @override
   void executeSlowProcesses() async {
     if (filesNotUpdated!.isEmpty) return;
     print("executing slow process..");
@@ -89,7 +107,7 @@ class AndroidDataManager extends ChangeNotifier
       infoFromFiles = await compute(
           updateExifOnInfo_compute, [partOfFilesNotupdated, infoFromFiles]);
 
-      final Directory directory = await getApplicationDocumentsDirectory();
+
       await compute(DataRepository.writeInfoAsJson_static, [infoFromFiles, directory]);
       // notifyListeners();
     }
@@ -101,6 +119,7 @@ class AndroidDataManager extends ChangeNotifier
 
   // i) check whether this file is contained in Info
   // ii) check whether this file is saved previously.
+  @override
   Future<List?> matchFilesAndInfo() async {
     List? filesNotUpdated = [];
     List filenamesFromInfo = infoFromFiles.keys.toList();
@@ -138,6 +157,7 @@ class AndroidDataManager extends ChangeNotifier
     return filesNotUpdated;
   }
 
+  @override
   Future<void> addFilesToInfo(List? filenames) async {
     if (filenames!.isEmpty) filenames = files;
     print("filenames : $filenames");
@@ -180,6 +200,7 @@ class AndroidDataManager extends ChangeNotifier
     return [setOfDates, setOfDatetimes, dates, datetimes];
   }
 
+  @override
   Future<void> updateDateOnInfo(List? input) async {
     if (input == null || input.isEmpty) input = infoFromFiles.keys.toList();
 
@@ -293,6 +314,7 @@ class AndroidDataManager extends ChangeNotifier
     return input[1];
   }
 
+  @override
   Future<List<String>> resetInfoFromFiles() async {
     List<String> files = [];
     List newFiles = [];
@@ -324,6 +346,7 @@ class AndroidDataManager extends ChangeNotifier
     // notifyListeners();
   }
 
+  @override
   void setNote(DateTime datetime, String note) {
     if (noteForChart2[datetime.year.toString()] == null)
       noteForChart2[datetime.year.toString()] = {};
@@ -331,6 +354,7 @@ class AndroidDataManager extends ChangeNotifier
     dataRepository.writeNote(noteForChart2);
   }
 
+  @override
   void setFilenameOfFavoriteImage(DateTime datetime, String? filenameOfFavoriteImage) {
     print("setFilenameOfFavoriateImage");
     if (filenameOfFavoriteImages[datetime.year.toString()] == null)

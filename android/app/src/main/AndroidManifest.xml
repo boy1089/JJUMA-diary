@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.lateDiary" xmlns:tools="http://schemas.android.com/tools">>
+    package="JJUMA.d" xmlns:tools="http://schemas.android.com/tools">>
     <queries>
         <!-- If your app opens https URLs -->
         <intent>
@@ -23,25 +23,22 @@
         </intent>
     </queries>
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-<!--    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"/>-->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-<!--    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>-->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-<!--    <uses-permission android:name="android.permission.RECORD_AUDIO" />-->
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
     <uses-permission android:name="android.permission.ACCESS_MEDIA_LOCATION"/>
     <meta-data android:name="com.google.android.geo.API_KEY"
         android:value="AIzaSyC0uiUc1qYZhRXgRi-TEpa6ZkltHuj76zI"/>
    <application
-        android:label="lateDiary"
+        android:label="JJUMA diary"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
         android:requestLegacyExternalStorage="true"
        >
 
         <activity
-            android:name="com.lateDiary.MainActivity"
+            android:name="JJUMA.d.MainActivity"
             android:exported="true"
             android:launchMode="singleTop"
             android:theme="@style/LaunchTheme"

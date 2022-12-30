@@ -11,7 +11,6 @@ import 'dart:io';
 import 'package:lateDiary/pages/YearPage/year_page_screen.dart';
 import '../event.dart';
 import 'scatters.dart';
-import 'package:badges/badges.dart';
 
 class YearChart extends StatefulWidget {
   YearChart({

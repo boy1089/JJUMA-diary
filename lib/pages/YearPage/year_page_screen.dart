@@ -62,9 +62,18 @@ class _YearPageScreenState extends State<YearPageScreen> {
               if ((product.highlightedYear == null) &
                   (product.expandedYear == null) &
                   (controller.scale == 1)) return true;
+
               product.setHighlightedYear(null);
-              product.setExpandedYear(null);
-              controller.scale = 1;
+
+              if(controller.scale != 1) {
+                controller.scale = 1;
+                return false;
+              }
+
+              if (product.expandedYear != null) {
+                product.setExpandedYear(null);
+              }
+
               return false;
             },
             child: RepaintBoundary(
@@ -80,6 +89,13 @@ class _YearPageScreenState extends State<YearPageScreen> {
                     controller.scale = minScale;
                     // product.setExpandedYear(null);
                   }
+                },
+                onTapUp: (context, detail, value){
+                  // controller.scale = 2;
+                  // controller.position = detail.localPosition;
+                  // controller.position = detail.globalPosition;
+                  // controller.position = Offset(-200, 0);
+                  print(controller.position);
                 },
                 child: Stack(alignment: Alignment.center, children: [
                   CustomPaint(size: const Size(0, 0), painter: OpenPainter()),

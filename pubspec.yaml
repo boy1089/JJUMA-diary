@@ -22,10 +22,7 @@ dependencies:
   animations:
   extended_image:
   exif:
-  image_picker:
   badges:
-  flutter_keyboard_visibility: ^5.4.0
-  flutter_keyboard_size:
   flutter_native_splash:
   external_path:
   url_launcher:

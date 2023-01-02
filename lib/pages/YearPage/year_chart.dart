@@ -105,7 +105,7 @@ class _YearChartState extends State<YearChart> {
                       Navigator.push(
                         context,
                         PageRouteBuilder(
-                            transitionDuration: Duration(milliseconds: 500),
+                            transitionDuration: Duration(milliseconds: 700),
                             pageBuilder: (_, __, ___) => PhotoCard(
                                   tag: "${year.toString()}${index}",
                                   isMagnified: true,

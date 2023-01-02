@@ -181,6 +181,8 @@ class _PhotoCardState extends State<PhotoCard> {
                   scrollBehavior: const MaterialScrollBehavior(),
                   diameterRatio: 200,
                   itemExtent: physicalWidth,
+                  renderChildrenOutsideViewport: true,
+                  clipBehavior: Clip.none,
                   children: List.generate(
                       widget.event.images.entries.length,
                       (index) => Center(
@@ -190,15 +192,17 @@ class _PhotoCardState extends State<PhotoCard> {
                                   SizedBox(
                                     height: physicalWidth,
                                     width: physicalWidth,
-                                    child: ExtendedImage.file(
-                                      File(widget.event.images.entries
-                                          .elementAt(index)
-                                          .key),
-                                      cacheRawData: true,
-                                      compressionRatio: 0.1,
-                                      fit: BoxFit.cover,
-                                      clearMemoryCacheWhenDispose: true,
-                                    ),
+                                    child:
+                                    listOfImages.elementAt(index)
+                                    // ExtendedImage.file(
+                                    //   File(widget.event.images.entries
+                                    //       .elementAt(index)
+                                    //       .key),
+                                    //   cacheRawData: true,
+                                    //   compressionRatio: 0.1,
+                                    //   fit: BoxFit.cover,
+                                    //   clearMemoryCacheWhenDispose: true,
+                                    // ),
                                   ),
                                   Positioned(
                                       right: 10.0,

@@ -1,6 +1,6 @@
 // import 'package:flutter/material.dart';
-// import 'package:JJUMA.d/Data/info_from_file.dart';
-// import 'package:JJUMA.d/Util/Util.dart';
+// import 'package:jjuma.d/Data/info_from_file.dart';
+// import 'package:jjuma.d/Util/Util.dart';
 // import '../model/event.dart';
 // import 'clickable_photo_card.dart';
 // import 'photo_card.dart';

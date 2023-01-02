@@ -1,10 +1,10 @@
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
-import "package:JJUMA.d/Location/coordinate.dart";
-import 'package:JJUMA.d/Data/info_from_file.dart';
-import 'package:JJUMA.d/Util/Util.dart';
+import "package:jjuma.d/Location/coordinate.dart";
+import 'package:jjuma.d/Data/info_from_file.dart';
+import 'package:jjuma.d/Util/Util.dart';
 import 'dart:io' show Platform;
-import 'package:JJUMA.d/pages/YearPage/year_page_screen.dart';
+import 'package:jjuma.d/pages/YearPage/year_page_screen.dart';
 
 Map<String, int> summaryOfNoteData = {};
 

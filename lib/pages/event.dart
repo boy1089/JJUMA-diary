@@ -1,4 +1,4 @@
-import 'package:JJUMA.d/Data/info_from_file.dart';
+import 'package:jjuma.d/Data/info_from_file.dart';
 
 class Event {
   Map<dynamic, InfoFromFile> images;

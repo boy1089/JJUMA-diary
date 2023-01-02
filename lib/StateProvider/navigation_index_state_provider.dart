@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:JJUMA.d/Util/DateHandler.dart';
+import 'package:jjuma.d/Util/DateHandler.dart';
 
 class NavigationIndexProvider with ChangeNotifier {
   navigationIndex currentNavigationIndex = navigationIndex.year;

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:JJUMA.d/Util/global.dart' as global;
-import 'package:JJUMA.d/Util/layouts.dart';
+import 'package:jjuma.d/Util/global.dart' as global;
+import 'package:jjuma.d/Util/layouts.dart';
 import 'package:provider/provider.dart';
-import 'package:JJUMA.d/StateProvider/navigation_index_state_provider.dart';
-import 'package:JJUMA.d/Util/DateHandler.dart';
-import 'package:JJUMA.d/Util/Util.dart';
+import 'package:jjuma.d/StateProvider/navigation_index_state_provider.dart';
+import 'package:jjuma.d/Util/DateHandler.dart';
+import 'package:jjuma.d/Util/Util.dart';
 
 import '../../StateProvider/year_page_state_provider.dart';
 

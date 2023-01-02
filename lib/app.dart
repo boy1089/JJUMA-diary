@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:JJUMA.d/Permissions/PermissionManager.dart';
-import 'package:JJUMA.d/Note/note_manager.dart';
+import 'package:jjuma.d/Permissions/PermissionManager.dart';
+import 'package:jjuma.d/Note/note_manager.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
-import 'package:JJUMA.d/navigation.dart';
-import 'package:JJUMA.d/pages/YearPage/year_page_screen.dart';
-import 'package:JJUMA.d/pages/YearPage/year_page_screen.dart';
-import 'package:JJUMA.d/pages/diary_page.dart';
+import 'package:jjuma.d/navigation.dart';
+import 'package:jjuma.d/pages/YearPage/year_page_screen.dart';
+import 'package:jjuma.d/pages/YearPage/year_page_screen.dart';
+import 'package:jjuma.d/pages/diary_page.dart';
 import 'pages/permission_page.dart';
-import 'package:JJUMA.d/Settings.dart';
-import 'package:JJUMA.d/Data/directories.dart';
+import 'package:jjuma.d/Settings.dart';
+import 'package:jjuma.d/Data/directories.dart';
 import 'pages/setting_page.dart';
-import 'package:JJUMA.d/Util/global.dart' as global;
-import 'package:JJUMA.d/theme/theme.dart';
-import 'package:JJUMA.d/Data/data_manager_interface.dart';
+import 'package:jjuma.d/Util/global.dart' as global;
+import 'package:jjuma.d/theme/theme.dart';
+import 'package:jjuma.d/Data/data_manager_interface.dart';
 
 class App extends StatefulWidget {
   const App({Key? key}) : super(key: key);
@@ -83,7 +83,7 @@ class _AppState extends State<App> with SingleTickerProviderStateMixin {
     ]);
 
     return MaterialApp.router(
-      theme: JJUMATheme.dark,
+      theme: jjumaTheme.dark,
       routerConfig: _router,
       useInheritedMediaQuery: true,
     );

@@ -2,13 +2,14 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:JJUMA.d/Data/data_manager_interface.dart';
-import 'package:JJUMA.d/Util/Util.dart';
+import 'package:jjuma.d/Data/data_manager_interface.dart';
+import 'package:jjuma.d/Data/info_from_file.dart';
+import 'package:jjuma.d/Util/Util.dart';
 import 'dart:io';
 import 'package:extended_image/extended_image.dart';
 
 import '../../../Util/DateHandler.dart';
-import 'package:JJUMA.d/Util/global.dart' as global;
+import 'package:jjuma.d/Util/global.dart' as global;
 import 'package:clickable_list_wheel_view/clickable_list_wheel_widget.dart';
 
 import '../../event.dart';
@@ -45,6 +46,9 @@ class _PhotoCardState extends State<PhotoCard> {
 
   String? filenameOfFavoriteImage;
   int? indexOfFavoriteImage;
+
+  late List<ExtendedImage> listOfImages;
+
   @override
   void initState() {
     super.initState();
@@ -77,22 +81,43 @@ class _PhotoCardState extends State<PhotoCard> {
     indexOfFavoriteImage =
         widget.event.images.keys.toList().indexOf(filenameOfFavoriteImage);
 
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await Future.delayed(const Duration(milliseconds: 2000));
-      Scrollable.ensureVisible(
-        keyList[indexOfFavoriteImage != -1 ? indexOfFavoriteImage! : 0]
-            .currentContext!,
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.bounceInOut,
-      );
-    });
 
+    if(indexOfFavoriteImage != -1) {
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        await Future.delayed(const Duration(milliseconds: 2000));
+        Scrollable.ensureVisible(
+          keyList[ indexOfFavoriteImage!]
+              .currentContext!,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.bounceInOut,
+        );
+      });
+    }
     if (filenameOfFavoriteImage != null) {
       scrollController1 =
           FixedExtentScrollController(initialItem: indexOfFavoriteImage!);
       scrollController2 =
           FixedExtentScrollController(initialItem: indexOfFavoriteImage!);
     }
+
+  updateListOfImages();
+  }
+
+  void updateListOfImages() {
+    listOfImages = [];
+    List<MapEntry<dynamic, InfoFromFile>> entries = widget.event.images.entries.toList();
+    for(int i = 0; i < entries.length; i++){
+      listOfImages.add(ExtendedImage.file(
+        File(entries
+            .elementAt(i)
+            .key),
+        cacheRawData: true,
+        compressionRatio: 0.1,
+        fit: BoxFit.cover,
+        clearMemoryCacheWhenDispose: true,
+      ),);
+    }
+    super.didChangeDependencies();
   }
 
   @override

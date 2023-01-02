@@ -1,9 +1,9 @@
 import 'package:path_provider/path_provider.dart';
-import 'package:JJUMA.d/Data/directories.dart';
-import 'package:JJUMA.d/Location/coordinate.dart';
+import 'package:jjuma.d/Data/directories.dart';
+import 'package:jjuma.d/Location/coordinate.dart';
 import 'dart:io';
 import 'dart:convert';
-import 'package:JJUMA.d/Util/global.dart' as global;
+import 'package:jjuma.d/Util/global.dart' as global;
 // import 'package:geolocator/geolocator.dart';
 
 enum items {

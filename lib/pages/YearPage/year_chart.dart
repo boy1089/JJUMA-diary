@@ -1,14 +1,14 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:JJUMA.d/Data/info_from_file.dart';
-import 'package:JJUMA.d/StateProvider/year_page_state_provider.dart';
-import 'package:JJUMA.d/Util/Util.dart';
+import 'package:jjuma.d/Data/info_from_file.dart';
+import 'package:jjuma.d/StateProvider/year_page_state_provider.dart';
+import 'package:jjuma.d/Util/Util.dart';
 import 'package:extended_image/extended_image.dart';
-import 'package:JJUMA.d/pages/YearPage/widgets/photo_card.dart';
+import 'package:jjuma.d/pages/YearPage/widgets/photo_card.dart';
 import 'dart:io';
 
-import 'package:JJUMA.d/pages/YearPage/year_page_screen.dart';
+import 'package:jjuma.d/pages/YearPage/year_page_screen.dart';
 import '../event.dart';
 import 'scatters.dart';
 

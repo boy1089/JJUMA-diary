@@ -1,6 +1,6 @@
 import 'package:glob/list_local_fs.dart';
-import 'package:JJUMA.d/Location/coordinate.dart';
-import 'package:JJUMA.d/Data/info_from_file.dart';
+import 'package:jjuma.d/Location/coordinate.dart';
+import 'package:jjuma.d/Data/info_from_file.dart';
 import 'package:glob/glob.dart';
 import 'package:photo_manager/photo_manager.dart';
 import '../pages/event.dart';
@@ -8,7 +8,7 @@ import 'directories.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:convert';
 import 'dart:io';
-import 'package:JJUMA.d/Util/global.dart' as global;
+import 'package:jjuma.d/Util/global.dart' as global;
 
 class DataRepository {
   DataRepository._privateConstructor();

@@ -1,12 +1,12 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:JJUMA.d/Util/Util.dart';
+import 'package:jjuma.d/Util/Util.dart';
 import 'package:provider/provider.dart';
-import 'package:JJUMA.d/Util/global.dart' as global;
+import 'package:jjuma.d/Util/global.dart' as global;
 import 'package:intl/intl.dart';
 
-import 'package:JJUMA.d/StateProvider/year_page_state_provider.dart';
-import 'package:JJUMA.d/StateProvider/navigation_index_state_provider.dart';
+import 'package:jjuma.d/StateProvider/year_page_state_provider.dart';
+import 'package:jjuma.d/StateProvider/navigation_index_state_provider.dart';
 
 class PolarMonthIndicators {
   @override

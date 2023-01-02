@@ -1,7 +1,7 @@
 import 'package:csv/csv.dart';
 import 'package:glob/list_local_fs.dart';
-import 'package:JJUMA.d/Util/DateHandler.dart';
-import 'package:JJUMA.d/Util/responseParser.dart';
+import 'package:jjuma.d/Util/DateHandler.dart';
+import 'package:jjuma.d/Util/responseParser.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';

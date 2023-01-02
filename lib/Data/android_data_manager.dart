@@ -3,16 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:glob/list_local_fs.dart';
 import 'package:flutter/foundation.dart';
 import 'package:glob/glob.dart';
-import 'package:JJUMA.d/Data/data_manager_interface.dart';
-import 'package:JJUMA.d/Util/DateHandler.dart';
-import 'package:JJUMA.d/Util/Util.dart';
-import 'package:JJUMA.d/Util/global.dart' as global;
-import 'package:JJUMA.d/Location/location_data_manager.dart';
-import "package:JJUMA.d/Location/coordinate.dart";
+import 'package:jjuma.d/Data/data_manager_interface.dart';
+import 'package:jjuma.d/Util/DateHandler.dart';
+import 'package:jjuma.d/Util/Util.dart';
+import 'package:jjuma.d/Util/global.dart' as global;
+import 'package:jjuma.d/Location/location_data_manager.dart';
+import "package:jjuma.d/Location/coordinate.dart";
 import 'package:path_provider/path_provider.dart';
 import '../pages/event.dart';
 import 'info_from_file.dart';
-import 'package:JJUMA.d/Data/directories.dart';
+import 'package:jjuma.d/Data/directories.dart';
 import 'data_repository.dart';
 
 class AndroidDataManager extends ChangeNotifier

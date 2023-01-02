@@ -1,5 +1,5 @@
 import "package:external_path/external_path.dart";
-import "package:JJUMA.d/Util/global.dart";
+import "package:jjuma.d/Util/global.dart";
 
 class Directories {
 

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:JJUMA.d/Util/Util.dart';
+import 'package:jjuma.d/Util/Util.dart';
 import 'photo_card.dart';
-import 'package:JJUMA.d/Util/global.dart' as global;
+import 'package:jjuma.d/Util/global.dart' as global;
 class ClickablePhotoCard extends StatelessWidget {
   PhotoCard photoCard;
   double height;

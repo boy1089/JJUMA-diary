@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:JJUMA.d/Util/global.dart' as global;
-import 'package:JJUMA.d/Util/Util.dart';
+import 'package:jjuma.d/Util/global.dart' as global;
+import 'package:jjuma.d/Util/Util.dart';
 
 class ZoomableWidgets extends StatelessWidget {
   bool isZoomIn = false;

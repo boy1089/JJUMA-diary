@@ -1,5 +1,5 @@
 //
-// import 'package:JJUMA.d/Location/coordinate.dart';
+// import 'package:jjuma.d/Location/coordinate.dart';
 //
 // class InfoFromFile{
 //   dynamic? file;

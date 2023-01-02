@@ -1,6 +1,6 @@
 import 'dart:math' as Math;
 
-import 'package:JJUMA.d/Util/global.dart' as global;
+import 'package:jjuma.d/Util/global.dart' as global;
 
 class Coordinate {
   final double? latitude;

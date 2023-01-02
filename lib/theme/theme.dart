@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:JJUMA.d/Util/global.dart' as global;
+import 'package:jjuma.d/Util/global.dart' as global;
 
-class JJUMATheme {
+class jjumaTheme {
   static ThemeData get light {
     return ThemeData(
       progressIndicatorTheme: ProgressIndicatorThemeData(),

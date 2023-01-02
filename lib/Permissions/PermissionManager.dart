@@ -2,7 +2,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:permission_handler/permission_handler.dart' as PermissionHandler;
 // import 'package:record/record.dart';
-import 'package:JJUMA.d/Util/global.dart' as global;
+import 'package:jjuma.d/Util/global.dart' as global;
 
 class PermissionManager {
   bool isLocationPermissionGranted = false;

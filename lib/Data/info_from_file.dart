@@ -1,5 +1,5 @@
-import 'package:JJUMA.d/Location/coordinate.dart';
-import 'package:JJUMA.d/Util/DateHandler.dart';
+import 'package:jjuma.d/Location/coordinate.dart';
+import 'package:jjuma.d/Util/DateHandler.dart';
 
 class InfoFromFiles {}
 

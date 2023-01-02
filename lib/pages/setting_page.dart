@@ -2,7 +2,7 @@ import 'android_notifications_screen.dart';
 import '../navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:settings_ui/settings_ui.dart';
-import 'package:JJUMA.d/Settings.dart';
+import 'package:jjuma.d/Settings.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 enum buttons { googleAccount, Location, Audio, Phone }
@@ -55,7 +55,7 @@ class _AndroidSettingsScreenState extends State<AndroidSettingsScreen> {
                         height: 40,
                       ),
                       applicationVersion: "version 1.2",
-                      applicationName: "JJUMA.d",
+                      applicationName: "jjuma.d",
                       anchorPoint: const Offset(0, 0),
                       children: [
                         Column(

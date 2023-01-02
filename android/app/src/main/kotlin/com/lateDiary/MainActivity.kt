@@ -1,4 +1,4 @@
-package JJUMA.d
+package jjuma.d
 
 import io.flutter.embedding.android.FlutterActivity
 

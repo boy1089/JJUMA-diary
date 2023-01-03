@@ -48,6 +48,7 @@ class _PhotoCardState extends State<PhotoCard> {
 
   String? filenameOfFavoriteImage;
   int? indexOfFavoriteImage;
+  late DataManagerInterface dataManager;
 
   late List<dynamic> listOfImages;
   late List<dynamic> listOfImages_sub;
@@ -56,33 +57,14 @@ class _PhotoCardState extends State<PhotoCard> {
   void initState() {
     super.initState();
     dateTime = widget.event.images.entries.elementAt(0).value.datetime!;
-    var dataManager = DataManagerInterface(global.kOs);
+    dataManager = DataManagerInterface(global.kOs);
     print("numberOfImages : ${widget.event.images.length}");
 
-    controller.text = defaultText;
-    if (dataManager.noteForChart2[dateTime.year.toString()]
-            ?[formatDate(dateTime)] !=
-        null) {
-      controller.text = dataManager.noteForChart2[dateTime.year.toString()]
-              ?[formatDate(dateTime)] ??
-          "";
-    }
-
-    if (dataManager.filenameOfFavoriteImages[dateTime.year.toString()]
-            ?[formatDate(dateTime)] !=
-        null)
-      filenameOfFavoriteImage =
-          dataManager.filenameOfFavoriteImages[dateTime.year.toString()]
-              ?[formatDate(dateTime)];
+    loadText();
+    getFavoriteImage();
 
     final keyList =
         List.generate(widget.event.images.length, (index) => GlobalKey());
-
-    filenameOfFavoriteImage = widget.filenameOfFavoriteImage;
-    print(
-        "index : ${widget.event.images.keys.toList().indexOf(filenameOfFavoriteImage)}");
-    indexOfFavoriteImage =
-        widget.event.images.keys.toList().indexOf(filenameOfFavoriteImage);
 
     if (indexOfFavoriteImage != -1) {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
@@ -94,14 +76,45 @@ class _PhotoCardState extends State<PhotoCard> {
         );
       });
     }
+
+    syncScrollControllers();
+    updateListOfImages();
+  }
+
+  void syncScrollControllers() {
     if (filenameOfFavoriteImage != null) {
       scrollController1 =
           FixedExtentScrollController(initialItem: indexOfFavoriteImage!);
       scrollController2 =
           FixedExtentScrollController(initialItem: indexOfFavoriteImage!);
     }
+  }
 
-    updateListOfImages();
+  void loadText() {
+    controller.text = defaultText;
+    if (dataManager.noteForChart2[dateTime.year.toString()]
+            ?[formatDate(dateTime)] !=
+        null) {
+      controller.text = dataManager.noteForChart2[dateTime.year.toString()]
+              ?[formatDate(dateTime)] ??
+          "";
+    }
+    filenameOfFavoriteImage = widget.filenameOfFavoriteImage;
+
+    print(
+        "index : ${widget.event.images.keys.toList().indexOf(filenameOfFavoriteImage)}");
+    indexOfFavoriteImage =
+        widget.event.images.keys.toList().indexOf(filenameOfFavoriteImage);
+  }
+
+  void getFavoriteImage() {
+    if (dataManager.filenameOfFavoriteImages[dateTime.year.toString()]
+            ?[formatDate(dateTime)] !=
+        null) {
+      filenameOfFavoriteImage =
+          dataManager.filenameOfFavoriteImages[dateTime.year.toString()]
+              ?[formatDate(dateTime)];
+    }
   }
 
   void updateListOfImages() {
@@ -121,9 +134,7 @@ class _PhotoCardState extends State<PhotoCard> {
               fit: BoxFit.cover,
               clearMemoryCacheWhenDispose: true,
             );
-            listOfImages.add(
-              image
-            );
+            listOfImages.add(image);
             listOfImages_sub.add(image);
           }
         }
@@ -137,9 +148,7 @@ class _PhotoCardState extends State<PhotoCard> {
               isOriginal: false,
               fit: BoxFit.cover,
             );
-            listOfImages.add(
-              image
-            );
+            listOfImages.add(image);
             listOfImages_sub.add(image);
           }
         }
@@ -289,9 +298,7 @@ class _PhotoCardState extends State<PhotoCard> {
                     (index) => Center(
                           child: RotatedBox(
                               quarterTurns: 1,
-                              child:
-                              listOfImages_sub.elementAt(index)
-                          ),
+                              child: listOfImages_sub.elementAt(index)),
                         ))),
           )),
     );

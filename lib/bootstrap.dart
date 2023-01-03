@@ -1,15 +1,16 @@
 import 'dart:async';
 import 'dart:developer';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'app.dart';
 import 'package:provider/provider.dart';
-import 'package:lateDiary/StateProvider/YearPageStateProvider.dart';
-import 'package:lateDiary/StateProvider/DayPageStateProvider.dart';
-import 'package:lateDiary/StateProvider/NavigationIndexStateProvider.dart';
+import 'package:jjuma.d/StateProvider/year_page_state_provider.dart';
+import 'package:jjuma.d/StateProvider/navigation_index_state_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:lateDiary/Data/DataManagerInterface.dart';
-import 'package:lateDiary/Util/global.dart' as global;
+import 'package:jjuma.d/Data/data_manager_interface.dart';
+import 'package:jjuma.d/Util/global.dart' as global;
+import 'package:go_router/go_router.dart';
 
 void bootstrap(int i) {
   FlutterError.onError = (details) {
@@ -18,8 +19,6 @@ void bootstrap(int i) {
 
   YearPageStateProvider yearPageStateProvider =
       YearPageStateProvider(DataManagerInterface(global.kOs));
-  DayPageStateProvider dayPageStateProvider =
-      DayPageStateProvider(DataManagerInterface(global.kOs));
 
   runZonedGuarded(
     () => runApp(
@@ -38,19 +37,11 @@ void bootstrap(int i) {
           ChangeNotifierProxyProvider<DataManagerInterface,
               YearPageStateProvider>(
             update: (context, dataManager, a) {
-              print("on update, $a");
-              return yearPageStateProvider
-                ..update(DataManagerInterface(global.kOs));
+              return yearPageStateProvider..updateProvider_compute();
             },
             create: (context) => yearPageStateProvider,
           ),
-          ChangeNotifierProxyProvider<DataManagerInterface, DayPageStateProvider>(
-            update: (context, dataManager, a) => dayPageStateProvider,
-            // update : (context, dataManager, a) =>DayPageStateProvider(dataManager),
-            create: (context) {
-              return dayPageStateProvider;
-            }
-          )   ],
+        ],
         child: App(),
       ),
     ),

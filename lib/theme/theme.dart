@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:lateDiary/Util/global.dart' as global;
+import 'package:jjuma.d/Util/global.dart' as global;
 
-class LateDiaryTheme {
+class jjumaTheme {
   static ThemeData get light {
     return ThemeData(
       progressIndicatorTheme: ProgressIndicatorThemeData(),
+      fontFamily: 'NotoSans',
       textTheme: TextTheme(
           //theme for year page year
           headline1: TextStyle(
@@ -12,7 +13,7 @@ class LateDiaryTheme {
 
           //theme for day page title
           headline3: TextStyle(
-              color: Colors.black45, fontWeight: FontWeight.w300, fontSize: 25),
+          color: Colors.black45, fontWeight: FontWeight.w300, fontSize: 25),
 
           //theme for background texts
           headline2:
@@ -40,8 +41,10 @@ class LateDiaryTheme {
 
   static ThemeData get dark {
     return ThemeData(
+      fontFamily: 'NotoSans',
       appBarTheme: const AppBarTheme(
-        color: Color(0xFF13B9FF),
+        // color: Color(0xFF13B9FF),
+        color : Colors.black12,
       ),
       colorScheme: ColorScheme.fromSwatch(
         brightness: Brightness.dark,

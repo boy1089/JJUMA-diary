@@ -1,5 +1,5 @@
 //
-// import 'package:lateDiary/Location/Coordinate.dart';
+// import 'package:jjuma.d/Location/coordinate.dart';
 //
 // class InfoFromFile{
 //   dynamic? file;

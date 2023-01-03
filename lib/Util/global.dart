@@ -1,9 +1,10 @@
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
-import "package:lateDiary/Location/Coordinate.dart";
-import 'package:lateDiary/Data/infoFromFile.dart';
-import 'package:lateDiary/Util/Util.dart';
+import "package:jjuma.d/Location/coordinate.dart";
+import 'package:jjuma.d/Data/info_from_file.dart';
+import 'package:jjuma.d/Util/Util.dart';
 import 'dart:io' show Platform;
+import 'package:jjuma.d/pages/YearPage/year_page_screen.dart';
 
 Map<String, int> summaryOfNoteData = {};
 
@@ -11,7 +12,7 @@ bool isInitializationDone = false;
 
 List setOfDates = [];
 String kOs = Platform.operatingSystem;
-Map<String, InfoFromFile> infoFromFiles = {};
+
 
 Coordinate referenceCoordinate = Coordinate(37.364, 126.718);
 
@@ -60,7 +61,7 @@ double kSize_polarPlotPhotoScatter = 5;
 
 double kMarginForYearPage = physicalWidth / 40;
 double kBottomNavigationBarHeight = 30;
-double kYPositionRatioOfGraph = 2 / 5;
+double kYPositionRatioOfGraph = 1/2;
 // double kMagnificationOnYearPage = 3.5;
 
 double kMagnificationOnYearPage = 20 / 8 * 40 / 38;
@@ -84,6 +85,11 @@ double kMarginForDayPage = physicalWidth / 10;
 // double kMagnificationOnDayPage = 7;
 double kMagnificationOnDayPage = 7.5;
 double kRatioOfScatterInDayPage = 0.9;
+
+
+//padding for dialog
+double kDialogPadding =8.0;
+double kContainerPadding  = 1.0;
 
 //5 images when it's zoomed in
 double kImageSize = physicalWidth / 5;

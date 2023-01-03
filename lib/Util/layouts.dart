@@ -1,5 +1,5 @@
 import 'global.dart' as global;
-import 'package:lateDiary/Util/Util.dart';
+import 'package:jjuma.d/Util/Util.dart';
 import 'package:flutter/material.dart';
 
 Map layout_yearPage = {
@@ -16,7 +16,11 @@ Map layout_yearPage = {
     false: global.kMarginForYearPage
   },
   'top': {
-    true: null,
+    true:(physicalHeight -
+        global.kBottomNavigationBarHeight -
+        global.kHeightOfArbitraryWidgetOnBottom) *
+        (global.kYPositionRatioOfGraph) -
+        global.kYearPageGraphSize / 2,
     false: (physicalHeight -
         global.kBottomNavigationBarHeight -
         global.kHeightOfArbitraryWidgetOnBottom) *
@@ -42,6 +46,25 @@ Map layout_yearPage = {
   }
 };
 
+
+
+var graphSize = physicalWidth*2;
+
+Map layout_yearPage2 = {
+  'graphSize': {
+    true: graphSize * 2,
+    false:graphSize
+  },
+  'left': {
+    true: -graphSize,
+    false: -graphSize/4,
+  },
+  'top': {
+    true: -graphSize/2,
+    false: 0,
+  }, //30 : bottom bar, 30: navigation bar, (1/3) positioned one third
+
+};
 
 Map layout_dayPage = {
   'graphSize': {

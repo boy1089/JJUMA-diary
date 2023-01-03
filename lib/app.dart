@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:lateDiary/Permissions/PermissionManager.dart';
-import 'package:lateDiary/Note/NoteManager.dart';
+import 'package:go_router/go_router.dart';
+import 'package:jjuma.d/Permissions/PermissionManager.dart';
+import 'package:jjuma.d/Note/note_manager.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
-import 'package:lateDiary/navigation.dart';
-import 'pages/PermissionPage.dart';
-import 'package:lateDiary/Settings.dart';
-import 'package:lateDiary/Data/Directories.dart';
-import 'pages/MainPage/MainPage.dart';
-import 'pages/SettingPage.dart';
-import 'package:lateDiary/Util/global.dart' as global;
-import 'package:lateDiary/theme/theme.dart';
-import 'package:lateDiary/Data/DataManagerInterface.dart';
+import 'package:jjuma.d/navigation.dart';
+import 'package:jjuma.d/pages/YearPage/year_page_screen.dart';
+import 'package:jjuma.d/pages/YearPage/year_page_screen.dart';
+import 'package:jjuma.d/pages/diary_page.dart';
+import 'pages/permission_page.dart';
+import 'package:jjuma.d/Settings.dart';
+import 'package:jjuma.d/Data/directories.dart';
+import 'pages/setting_page.dart';
+import 'package:jjuma.d/Util/global.dart' as global;
+import 'package:jjuma.d/theme/theme.dart';
+import 'package:jjuma.d/Data/data_manager_interface.dart';
 
 class App extends StatefulWidget {
   const App({Key? key}) : super(key: key);
@@ -18,13 +21,13 @@ class App extends StatefulWidget {
   State<App> createState() => _AppState();
 }
 
-class _AppState extends State<App> {
+class _AppState extends State<App> with SingleTickerProviderStateMixin {
   final permissionManager = PermissionManager();
-  final noteManager = NoteManager();
   late final dataManager;
 
   bool isPermissionOk = false;
-  Future initApp = Future.delayed(const Duration(seconds: 5));
+  Future initApp = Future.delayed(const Duration(seconds: 1));
+
   _AppState() {
     dataManager = DataManagerInterface(global.kOs);
     super.initState();
@@ -33,10 +36,13 @@ class _AppState extends State<App> {
 
   Future<int> init() async {
     Stopwatch stopwatch = new Stopwatch()..start();
+
+    print("init process start init time elapsed : ${stopwatch.elapsed}");
     global.isInitializationDone = false;
     await permissionManager.init();
-    if (!permissionManager.isStoragePermissionGranted |
-        !permissionManager.isLocationPermissionGranted) {
+
+    print("init process, permissino init done, time elapsed : ${stopwatch.elapsed}");
+    if (!permissionManager.isStoragePermissionGranted) {
       // FlutterNativeSplash.remove();
       isPermissionOk = await Navigation.navigateTo(
           context: context,
@@ -44,38 +50,41 @@ class _AppState extends State<App> {
           style: NavigationRouteStyle.material);
       setState(() {});
     }
+    print("init process, permissino check done, time elapsed : ${stopwatch.elapsed}");
 
     if (global.kOs == "android") {
       await Directories.init(Directories.directories);
       await Settings.init();
     }
+    print("init process, directories, settings init done, time elapsed : ${stopwatch.elapsed}");
 
-    await noteManager.init();
-    print("init process, time elapsed : ${stopwatch.elapsed}");
-    FlutterNativeSplash.remove();
     await dataManager.init();
-    print("init process, time elapsed : ${stopwatch.elapsed}");
+    print("init process, dataManager init done, time elapsed : ${stopwatch.elapsed}");
     global.isInitializationDone = true;
-    await Future.delayed(Duration(seconds: 1));
     print("init done,executed in ${stopwatch.elapsed}");
+    FlutterNativeSplash.remove();
     dataManager.executeSlowProcesses();
     return 0;
   }
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: LateDiaryTheme.light,
-      initialRoute: MainPage.id,
-      routes: {
-        PermissionPage.id: (context) => PermissionPage(permissionManager),
-        MainPage.id: (context) => FutureBuilder(
-            future: initApp,
-            builder: (BuildContext context, AsyncSnapshot snapshot) {
-              return MainPage();
-            }),
-        AndroidSettingsScreen.id: (context) => AndroidSettingsScreen(),
-      },
+
+    var a = YearPageScreen();
+    final _router = GoRouter(initialLocation: '/year', routes: [
+      GoRoute(
+          path: '/year',
+          builder: (context, state) => a,
+      ),
+
+      GoRoute(
+          path: '/setting',
+          builder: (context, state) => AndroidSettingsScreen()),
+    ]);
+
+    return MaterialApp.router(
+      theme: jjumaTheme.dark,
+      routerConfig: _router,
       useInheritedMediaQuery: true,
     );
   }

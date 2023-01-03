@@ -53,7 +53,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:135403068198:android:94889a7c7b0a21b35a3fe7",
         "android_client_info": {
-          "package_name": "com.lateDiary"
+          "package_name": "jjuma.d"
         }
       },
       "oauth_client": [
@@ -61,7 +61,7 @@
           "client_id": "135403068198-rgepgis72gfs4oph6n2e7pv4jjss66cd.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.lateDiary",
+            "package_name": "jjuma.d",
             "certificate_hash": "6cd51aef67811808b06f073660216416bc9b31f5"
           }
         },

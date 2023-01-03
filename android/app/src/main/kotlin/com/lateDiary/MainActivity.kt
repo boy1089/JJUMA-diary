@@ -1,4 +1,4 @@
-package com.lateDiary
+package jjuma.d
 
 import io.flutter.embedding.android.FlutterActivity
 

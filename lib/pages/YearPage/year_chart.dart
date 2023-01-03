@@ -135,21 +135,21 @@ class _YearChartState extends State<YearChart> {
                               color: color,
                               type: ScatterType.defaultRect))));
         }),
-        AnimatedPositioned(
-            duration: const Duration(milliseconds: 1000),
-            left: locationOfYearText[isExpanded]['left'],
-            top: locationOfYearText[isExpanded]['top'],
-            curve: Curves.easeOutExpo,
-            child: Offstage(
-                offstage: (!isExpanded),
-                child: Text(
-                  "$year",
-                  style: TextStyle(
-                      fontSize: isExpanded ? 24 : 12,
-                      fontWeight: year == product.highlightedYear
-                          ? FontWeight.w800
-                          : FontWeight.w400),
-                )))
+        // AnimatedPositioned(
+        //     duration: const Duration(milliseconds: 1000),
+        //     left: locationOfYearText[isExpanded]['left'],
+        //     top: locationOfYearText[isExpanded]['top'],
+        //     curve: Curves.easeOutExpo,
+        //     child: Offstage(
+        //         offstage: (!isExpanded),
+        //         child: Text(
+        //           "$year",
+        //           style: TextStyle(
+        //               fontSize: isExpanded ? 24 : 12,
+        //               fontWeight: year == product.highlightedYear
+        //                   ? FontWeight.w800
+        //                   : FontWeight.w400),
+        //         )))
       ]),
     );
   }

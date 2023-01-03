@@ -372,7 +372,7 @@ class YearPageStateProvider with ChangeNotifier {
         return;
       }
       if(expandedYear == listOfYears.last){
-        setExpandedYear(listOfYears.first);
+        setExpandedYear(null);
         return;}
 
       setExpandedYear(expandedYear!-1);

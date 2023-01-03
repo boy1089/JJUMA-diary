@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'dart:math';
-import 'dart:ui';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -97,12 +96,27 @@ class _YearPageScreenState extends State<YearPageScreen> {
                         year: year, radius: 1 - index * 0.1, product: product);
                   }),
                   Positioned(
-                      bottom : 200,
                       child : ElevatedButton(
                         onPressed: (){
                           product.setExpandedYearByButton();
                         },
-                        child : Text(product.expandedYear.toString())
+
+                          style: ElevatedButton.styleFrom(
+                            side: const BorderSide(
+                              width : 1,
+                              color : Color(0xff808080)
+                            ),
+                            backgroundColor: Colors.transparent,
+
+                              fixedSize: sizeOfChart /12,
+                              shape : const CircleBorder()
+                          ),
+                        child : Text(
+                          product.expandedYear==null? "All":
+                            product.expandedYear.toString(),
+                          style: const TextStyle(fontSize: 15),
+                        )
+
                       ))
 
                 ]),

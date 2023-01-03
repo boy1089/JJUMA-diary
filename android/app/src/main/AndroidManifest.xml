@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.jjuma.d"
+    package="jjuma.d"
     xmlns:tools="http://schemas.android.com/tools">
     <queries>
         <!-- If your app opens https URLs -->
@@ -32,7 +32,7 @@
     <meta-data android:name="com.google.android.geo.API_KEY"
         android:value="AIzaSyC0uiUc1qYZhRXgRi-TEpa6ZkltHuj76zI"/>
    <application
-        android:label="jjuma diary"
+        android:label="JJUMA diary"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
         android:requestLegacyExternalStorage="true"

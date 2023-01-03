@@ -7,6 +7,7 @@ import 'package:jjuma.d/Data/info_from_file.dart';
 import 'package:jjuma.d/Util/Util.dart';
 import 'dart:io';
 import 'package:extended_image/extended_image.dart';
+import 'package:photo_manager/photo_manager.dart';
 
 import '../../../Util/DateHandler.dart';
 import 'package:jjuma.d/Util/global.dart' as global;
@@ -22,7 +23,8 @@ class PhotoCard extends StatefulWidget {
   bool isTickEnabled = false;
   String tag;
   String? filenameOfFavoriteImage;
-  PhotoCard({super.key,
+  PhotoCard({
+    super.key,
     this.isMagnified = false,
     this.height = 200,
     this.scrollIndex = 0,
@@ -47,7 +49,8 @@ class _PhotoCardState extends State<PhotoCard> {
   String? filenameOfFavoriteImage;
   int? indexOfFavoriteImage;
 
-  late List<ExtendedImage> listOfImages;
+  late List<dynamic> listOfImages;
+  late List<dynamic> listOfImages_sub;
 
   @override
   void initState() {
@@ -81,13 +84,11 @@ class _PhotoCardState extends State<PhotoCard> {
     indexOfFavoriteImage =
         widget.event.images.keys.toList().indexOf(filenameOfFavoriteImage);
 
-
-    if(indexOfFavoriteImage != -1) {
+    if (indexOfFavoriteImage != -1) {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
         await Future.delayed(const Duration(milliseconds: 2000));
         Scrollable.ensureVisible(
-          keyList[ indexOfFavoriteImage!]
-              .currentContext!,
+          keyList[indexOfFavoriteImage!].currentContext!,
           duration: const Duration(milliseconds: 300),
           curve: Curves.bounceInOut,
         );
@@ -100,24 +101,50 @@ class _PhotoCardState extends State<PhotoCard> {
           FixedExtentScrollController(initialItem: indexOfFavoriteImage!);
     }
 
-  updateListOfImages();
+    updateListOfImages();
   }
 
   void updateListOfImages() {
     listOfImages = [];
-    List<MapEntry<dynamic, InfoFromFile>> entries = widget.event.images.entries.toList();
-    for(int i = 0; i < entries.length; i++){
-      listOfImages.add(ExtendedImage.file(
-        File(entries
-            .elementAt(i)
-            .key),
-        cacheRawData: true,
-        compressionRatio: 0.1,
-        fit: BoxFit.cover,
-        clearMemoryCacheWhenDispose: true,
-      ),);
+    listOfImages_sub = [];
+    List<MapEntry<dynamic, InfoFromFile>> entries =
+        widget.event.images.entries.toList();
+
+    switch (global.kOs) {
+      case ("android"):
+        {
+          for (int i = 0; i < entries.length; i++) {
+            var image = ExtendedImage.file(
+              File(entries.elementAt(i).key),
+              cacheRawData: true,
+              compressionRatio: 0.1,
+              fit: BoxFit.cover,
+              clearMemoryCacheWhenDispose: true,
+            );
+            listOfImages.add(
+              image
+            );
+            listOfImages_sub.add(image);
+          }
+        }
+        break;
+
+      case ("ios"):
+        {
+          for (int i = 0; i < entries.length; i++) {
+            var image = AssetEntityImage(
+              entries.elementAt(i).key,
+              isOriginal: false,
+              fit: BoxFit.cover,
+            );
+            listOfImages.add(
+              image
+            );
+            listOfImages_sub.add(image);
+          }
+        }
+        break;
     }
-    super.didChangeDependencies();
   }
 
   @override
@@ -190,20 +217,19 @@ class _PhotoCardState extends State<PhotoCard> {
                                 quarterTurns: 1,
                                 child: Stack(children: [
                                   SizedBox(
-                                    height: physicalWidth,
-                                    width: physicalWidth,
-                                    child:
-                                    listOfImages.elementAt(index)
-                                    // ExtendedImage.file(
-                                    //   File(widget.event.images.entries
-                                    //       .elementAt(index)
-                                    //       .key),
-                                    //   cacheRawData: true,
-                                    //   compressionRatio: 0.1,
-                                    //   fit: BoxFit.cover,
-                                    //   clearMemoryCacheWhenDispose: true,
-                                    // ),
-                                  ),
+                                      height: physicalWidth,
+                                      width: physicalWidth,
+                                      child: listOfImages.elementAt(index)
+                                      // ExtendedImage.file(
+                                      //   File(widget.event.images.entries
+                                      //       .elementAt(index)
+                                      //       .key),
+                                      //   cacheRawData: true,
+                                      //   compressionRatio: 0.1,
+                                      //   fit: BoxFit.cover,
+                                      //   clearMemoryCacheWhenDispose: true,
+                                      // ),
+                                      ),
                                   Positioned(
                                       right: 10.0,
                                       bottom: 10.0,
@@ -221,7 +247,12 @@ class _PhotoCardState extends State<PhotoCard> {
                                     left: 10.0,
                                     top: 10.0,
                                     child: Text(
-                                      DateFormat('Hm').format(widget.event.images.entries.elementAt(index).value.datetime ?? DateTime.now()),
+                                      DateFormat('Hm').format(widget
+                                              .event.images.entries
+                                              .elementAt(index)
+                                              .value
+                                              .datetime ??
+                                          DateTime.now()),
                                       style: const TextStyle(fontSize: 16.0),
                                     ),
                                   ),
@@ -258,14 +289,9 @@ class _PhotoCardState extends State<PhotoCard> {
                     (index) => Center(
                           child: RotatedBox(
                               quarterTurns: 1,
-                              child: ExtendedImage.file(
-                                File(widget.event.images.entries
-                                    .elementAt(index)
-                                    .key),
-
-                                clearMemoryCacheWhenDispose: true,
-                                compressionRatio: 0.0003,
-                              )),
+                              child:
+                              listOfImages_sub.elementAt(index)
+                          ),
                         ))),
           )),
     );
@@ -294,7 +320,6 @@ class _PhotoCardState extends State<PhotoCard> {
             maxLines: 5,
             controller: controller,
             focusNode: focusNode,
-
             onChanged: (a) {
               print(controller.text);
             },
@@ -315,7 +340,7 @@ class _PhotoCardState extends State<PhotoCard> {
     DataManagerInterface dataManager = DataManagerInterface(global.kOs);
 
     dataManager.setFilenameOfFavoriteImage(dateTime, filenameOfFavoriteImage);
-    if(controller.text != defaultText) {
+    if (controller.text != defaultText) {
       dataManager.setNote(dateTime, controller.text);
     }
   }

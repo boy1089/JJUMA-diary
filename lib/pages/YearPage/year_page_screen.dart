@@ -28,8 +28,6 @@ class _YearPageScreenState extends State<YearPageScreen> {
       PhotoViewScaleStateController();
   late PhotoViewController controller;
 
-  int maxNumOfYearChart = 9;
-
   var key2 = GlobalKey();
   double scaleCopy = 0.0;
   double minScale = 0.6;
@@ -40,11 +38,6 @@ class _YearPageScreenState extends State<YearPageScreen> {
     controller = PhotoViewController()..outputStateStream.listen(listener);
   }
 
-  @override
-  void dispose() {
-    controller.dispose();
-    super.dispose();
-  }
 
   void listener(PhotoViewControllerValue value) {
     setState(() {
@@ -96,15 +89,22 @@ class _YearPageScreenState extends State<YearPageScreen> {
                 child: Stack(alignment: Alignment.center, children: [
                   CustomPaint(size: const Size(0, 0), painter: OpenPainter()),
                   ...List.generate(
-                      product.dataForChart2_modified.length > maxNumOfYearChart
-                          ? maxNumOfYearChart
-                          : product.dataForChart2_modified.length, (index) {
+                      product.listOfYears.length, (index) {
                     int year =
-                        product.dataForChart2_modified.keys.elementAt(index);
+                        product.listOfYears.elementAt(index);
 
                     return YearChart(
                         year: year, radius: 1 - index * 0.1, product: product);
                   }),
+                  Positioned(
+                      bottom : 200,
+                      child : ElevatedButton(
+                        onPressed: (){
+                          product.setExpandedYearByButton();
+                        },
+                        child : Text(product.expandedYear.toString())
+                      ))
+
                 ]),
               ),
             ),
@@ -145,6 +145,12 @@ class _YearPageScreenState extends State<YearPageScreen> {
       );
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
   }
 }
 var rng = Random();

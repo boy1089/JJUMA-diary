@@ -70,7 +70,9 @@ class YearPageStateProvider with ChangeNotifier {
   Coordinate? medianCoordinate;
 
   int? expandedYear = DateTime.now().year;
+  int maxNumOfYearChart = 9;
   int? highlightedYear;
+  List listOfYears = [];
 
   double angle = 0.0;
 
@@ -177,6 +179,9 @@ class YearPageStateProvider with ChangeNotifier {
     }
 
     dataForChart2_modified = result2[0];
+
+    listOfYears = dataForChart2_modified.keys.toList();
+    if(listOfYears.length > maxNumOfYearChart) {listOfYears = listOfYears.sublist(0, maxNumOfYearChart);}
 
     notifyListeners();
   }
@@ -360,7 +365,19 @@ class YearPageStateProvider with ChangeNotifier {
     expandedYear = year;
     notifyListeners();
   }
+  void setExpandedYearByButton(){
+    int last = listOfYears.last;
+    if(expandedYear==null){
+        setExpandedYear(listOfYears.elementAt(0));
+        return;
+      }
+      if(expandedYear == listOfYears.last){
+        setExpandedYear(listOfYears.first);
+        return;}
 
+      setExpandedYear(expandedYear!-1);
+
+  }
   void setAngle(double angle){
     this.angle = angle;
     notifyListeners();

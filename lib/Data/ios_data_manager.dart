@@ -40,6 +40,7 @@ class IosDataManager extends ChangeNotifier implements DataManagerInterface {
   DataRepository dataRepository = DataRepository();
   void setNote(DateTime datetime, String note){}
   void setFilenameOfFavoriteImage(DateTime datetime, String? indexOfFavoriteImage){}
+
   @override
   Future<void> init() async {
     Stopwatch stopwatch = Stopwatch()..start();

@@ -1,3 +1,4 @@
+// TODO Implement this library.import 'package:flutter/foundation.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:jjuma.d/Data/info_from_file.dart';
@@ -9,6 +10,7 @@ import '../Location/coordinate.dart';
 
 import 'package:scidart/numdart.dart';
 import 'dart:core';
+import 'package:jjuma.d/Util/global.dart' as global;
 
 enum ImportanceFilter { memorable, casual, none }
 
@@ -140,18 +142,40 @@ class YearPageStateProvider with ChangeNotifier {
       return;
     }
 
-    var result = await compute(updateData_static, [dataManager.infoFromFiles]);
-    dataForChart2 = result[0];
-    medianCoordinate = result[1];
-    numberOfImages = result[2];
+    var result;
+    var result2;
 
-    var result2 = await compute(modifyData_static, [
-      dataForChart2,
-      medianCoordinate,
-      physicalWidth,
-      numberOfImages,
-      sizeOfChart.width
-    ]);
+    switch(global.kOs){
+      case "android" : {
+        result = await compute(updateData_static, [dataManager.infoFromFiles]);
+        dataForChart2 = result[0];
+        medianCoordinate = result[1];
+        numberOfImages = result[2];
+
+        result2 = await compute(modifyData_static, [
+          dataForChart2,
+          medianCoordinate,
+          physicalWidth,
+          numberOfImages,
+          sizeOfChart.width
+        ]);}
+      break;
+      case "ios" :  {
+        result = await updateData_static([dataManager.infoFromFiles]);
+        dataForChart2 = result[0];
+        medianCoordinate = result[1];
+        numberOfImages = result[2];
+
+        result2 = await modifyData_static([
+          dataForChart2,
+          medianCoordinate,
+          physicalWidth,
+          numberOfImages,
+          sizeOfChart.width
+        ]);
+      }
+    }
+
     dataForChart2_modified = result2[0];
 
     notifyListeners();

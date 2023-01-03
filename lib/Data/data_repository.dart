@@ -67,10 +67,8 @@ class DataRepository {
 
   Future<Map<dynamic, InfoFromFile>> readInfoFromJson() async {
 
-
     final Directory directory = await getApplicationDocumentsDirectory();
     final File file = File('${directory.path}/InfoOfFiles.json');
-
 
     bool isFileExist = await file.exists();
     if (!isFileExist) return {};
@@ -134,26 +132,6 @@ class DataRepository {
     return summaryOfLocationData;
   }
 
-  Future<Map<String, Event>> readEventList() async {
-    final Directory directory = await getApplicationDocumentsDirectory();
-    final File file = File('${directory.path}/eventList.json');
-
-    bool isFileExist = await file.exists();
-    if (!isFileExist) return {};
-
-    var data = await file.readAsString();
-    Map<String, dynamic> map = jsonDecode(data);
-    map.forEach((key, value) {
-      print("$key, $value");
-    });
-    Map<String, Event> map2 = Map.fromIterables(
-        map.keys.toList(),
-        List.generate(
-            map.values.length,
-            (index) =>
-                Event.fromJson(json: map[map.keys.toList().elementAt(index)])));
-    return map2;
-  }
 
   Future<void> writeInfoAsJson(
       Map<dynamic, InfoFromFile> infoFromFiles, bool overwrite) async {

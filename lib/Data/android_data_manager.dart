@@ -107,7 +107,6 @@ class AndroidDataManager extends ChangeNotifier
       infoFromFiles = await compute(
           updateExifOnInfo_compute, [partOfFilesNotupdated, infoFromFiles]);
 
-
       await compute(DataRepository.writeInfoAsJson_static, [infoFromFiles, directory]);
       // notifyListeners();
     }

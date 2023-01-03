@@ -91,10 +91,6 @@ class _YearPageScreenState extends State<YearPageScreen> {
                   }
                 },
                 onTapUp: (context, detail, value){
-                  // controller.scale = 2;
-                  // controller.position = detail.localPosition;
-                  // controller.position = detail.globalPosition;
-                  // controller.position = Offset(-200, 0);
                   print(controller.position);
                 },
                 child: Stack(alignment: Alignment.center, children: [

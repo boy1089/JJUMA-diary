@@ -59,6 +59,7 @@ class _PhotoCardState extends State<PhotoCard> {
     var dataManager = DataManagerInterface(global.kOs);
     print("numberOfImages : ${widget.event.images.length}");
 
+    controller.text = defaultText;
     if (dataManager.noteForChart2[dateTime.year.toString()]
             ?[formatDate(dateTime)] !=
         null) {
@@ -67,7 +68,6 @@ class _PhotoCardState extends State<PhotoCard> {
           "";
     }
 
-    controller.text = defaultText;
     if (dataManager.filenameOfFavoriteImages[dateTime.year.toString()]
             ?[formatDate(dateTime)] !=
         null)

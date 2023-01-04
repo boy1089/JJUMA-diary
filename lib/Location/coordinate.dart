@@ -14,6 +14,13 @@ class Coordinate {
     return "$latitude, $longitude";
     // return "latitude : $latitude, longitude : $longitude";
   }
+
+  bool operator ==(Object other){
+    if (other is! Coordinate) return false;
+    return (other.latitude == latitude) && (other.longitude == longitude);
+  }
+
+
 }
 
 double calculateDistance(Coordinate coordinate1, Coordinate coordinate2) {

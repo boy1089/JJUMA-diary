@@ -51,7 +51,6 @@ List<Color> colorList2 = [
   const Color(0xFF2A2A2A),
 ];
 
-
 // const Color(0xFFccd52a),
 
 enum LocationFilter {
@@ -65,9 +64,9 @@ class YearPageStateProvider with ChangeNotifier {
 
   Map dataForChart2_modified = {};
   Map<int, Map<String, List>> dataForChart2 = {};
-  Map<int, Coordinate?>? medianCoordinates = {};
+  Map<int, Coordinate?>? mostFreqCoordinates = {};
   Map<int, int> numberOfImages = {};
-  Coordinate? medianCoordinate;
+  Coordinate? mostFreqCoordinate;
 
   int? expandedYear = DateTime.now().year;
   int maxNumOfYearChart = 9;
@@ -83,7 +82,7 @@ class YearPageStateProvider with ChangeNotifier {
     "Most frequent": true,
     "< 1km": true,
     "< 5km": true,
-    "< 20km":true,
+    "< 20km": true,
     ">100km": true,
   };
 
@@ -138,9 +137,9 @@ class YearPageStateProvider with ChangeNotifier {
           ..sort((e1, e2) => e2.key.compareTo(e1.key)))
       ..removeWhere((key, value) => key > DateTime.now().year);
 
-    Coordinate? median = getMedianCoordinate_static(coordinates);
+    Coordinate? mostFreqCoordinate = getMostFreqCoordinate_static(coordinates);
 
-    return [dataForChart2, median, numberOfImages];
+    return [dataForChart2, mostFreqCoordinate, numberOfImages];
   }
 
   Future<void> updateProvider_compute() async {
@@ -154,83 +153,97 @@ class YearPageStateProvider with ChangeNotifier {
     var result;
     var result2;
 
-    switch(global.kOs){
-      case "android" : {
-        result = await compute(updateData_static, [dataManager.infoFromFiles]);
-        dataForChart2 = result[0];
-        medianCoordinate = result[1];
-        numberOfImages = result[2];
+    switch (global.kOs) {
+      case "android":
+        {
+          result =
+              await compute(updateData_static, [dataManager.infoFromFiles]);
+          dataForChart2 = result[0];
+          mostFreqCoordinate = result[1];
+          numberOfImages = result[2];
 
-        result2 = await compute(modifyData_static, [
-          dataForChart2,
-          medianCoordinate,
-          physicalWidth,
-          numberOfImages,
-          sizeOfChart.width
-        ]);}
-      break;
-      case "ios" :  {
-        result = await updateData_static([dataManager.infoFromFiles]);
-        dataForChart2 = result[0];
-        medianCoordinate = result[1];
-        numberOfImages = result[2];
+          result2 = await compute(modifyData_static, [
+            dataForChart2,
+            mostFreqCoordinate,
+            physicalWidth,
+            numberOfImages,
+            sizeOfChart.width
+          ]);
+        }
+        break;
+      case "ios":
+        {
+          result = await updateData_static([dataManager.infoFromFiles]);
+          dataForChart2 = result[0];
+          mostFreqCoordinate = result[1];
+          numberOfImages = result[2];
 
-        result2 = await modifyData_static([
-          dataForChart2,
-          medianCoordinate,
-          physicalWidth,
-          numberOfImages,
-          sizeOfChart.width
-        ]);
-      }
+          result2 = await modifyData_static([
+            dataForChart2,
+            mostFreqCoordinate,
+            physicalWidth,
+            numberOfImages,
+            sizeOfChart.width
+          ]);
+        }
     }
 
     dataForChart2_modified = result2[0];
 
     listOfYears = dataForChart2_modified.keys.toList();
-    if(listOfYears.length > maxNumOfYearChart) {listOfYears = listOfYears.sublist(0, maxNumOfYearChart);}
+    if (listOfYears.length > maxNumOfYearChart) {
+      listOfYears = listOfYears.sublist(0, maxNumOfYearChart);
+    }
 
     notifyListeners();
   }
 
-  void getMedianCoordinate(List<Coordinate> coordinates) {
-    if (coordinates.isEmpty) return;
-
-    medianCoordinate = Coordinate(
-        median(Array(List<double>.generate(
-            coordinates.length,
-            (index) => double.parse(
-                coordinates[index].latitude!.toStringAsFixed(3))))),
-        median(
-          Array(List<double>.generate(
-              coordinates.length,
-              (index) => double.parse(
-                  coordinates[index].longitude!.toStringAsFixed(3)))),
-        ));
-  }
-
-  static Coordinate? getMedianCoordinate_static(List<Coordinate> coordinates) {
+  static Coordinate? getMostFreqCoordinate_static(List<Coordinate> coordinates) {
     if (coordinates.isEmpty) return Coordinate(37.55, 127.0);
+    coordinates.forEach((element) {
+      print(element.latitude);
+    });
 
-    Coordinate medianCoordinate = Coordinate(
-        median(Array(List<double>.generate(
-            coordinates.length,
-            (index) => double.parse(
-                coordinates[index].latitude!.toStringAsFixed(3))))),
-        median(
-          Array(List<double>.generate(
-              coordinates.length,
-              (index) => double.parse(
-                  coordinates[index].longitude!.toStringAsFixed(3)))),
-        ));
-    return medianCoordinate;
+    List<Coordinate> coordinatesFloor = List<Coordinate>.generate(
+        coordinates.length,
+        (index) => Coordinate(
+              double.parse(coordinates[index].latitude!.toStringAsFixed(2)),
+              double.parse(coordinates[index].longitude!.toStringAsFixed(2)),
+            ));
+
+    Map<dynamic, int> countOfLocations = {};
+
+    for(int i = 0; i< coordinatesFloor.length; i++){
+        // print(
+        //     "is key contained? ${(countOfLocations.keys.contains(element))}, ${element}, ${element.runtimeType}");
+      var element = coordinatesFloor.elementAt(i);
+      int index = -1;
+      if(countOfLocations.length!=0)
+        index = countOfLocations.keys.toList().lastIndexOf(element);
+      print(index);
+      if (index==-1) {
+        countOfLocations[element] = 1;
+      } else {
+        // print(countOfLocations.keys.elementAt(1));
+        countOfLocations[element] = countOfLocations.values.elementAt(index) + 1;
+      }
+    }
+
+
+    List sortedValue = countOfLocations.values.toList()..sort();
+    countOfLocations = Map.fromEntries(countOfLocations.entries.toList()..sort((e1, e2) =>e1.value.compareTo(e2.value)));
+    countOfLocations.forEach((key, value) {print("$key, $value");});
+
+    Coordinate mostFrequentCoordinate = countOfLocations.keys.last;
+
+    return mostFrequentCoordinate;
   }
 
   static Future<List> modifyData_static(List input) async {
     print("static modify data of yearStateProvider");
 
     Map dataForChart2 = input[0];
-    Coordinate? medianCoordinate = input[1];
+    Coordinate? mostFreqCoordinate = input[1];
     double physicalWidth = input[2];
     Map<int, int> numberOfImages = input[3];
     double sizeOfChart = input[4];
@@ -285,27 +298,24 @@ class YearPageStateProvider with ChangeNotifier {
         Coordinate? coordinate = data[date]!.length > 1
             ? data[date]![1]
             : Coordinate(
-                medianCoordinate!.latitude, medianCoordinate.longitude);
+                mostFreqCoordinate!.latitude, mostFreqCoordinate.longitude);
 
-        double diffInCoord =
-            (coordinate!.longitude! - medianCoordinate!.longitude!).abs();
-
-        diffInCoord = diffInCoord > 215 ? 215 : diffInCoord;
-
+        double diffInCoord = calculateDistance(coordinate!, mostFreqCoordinate!);
+        print("$diffInCoord, $coordinate, $mostFreqCoordinate");
         int locationClassification = 4;
-        if (diffInCoord < 3) locationClassification = 3;
-        if (diffInCoord < 0.5) locationClassification = 2;
-        if (diffInCoord < 0.1) locationClassification = 1;
-        if (diffInCoord < 0.01) locationClassification = 0;
+        if (diffInCoord < 20) locationClassification = 3;
+        if (diffInCoord < 5) locationClassification = 2;
+        if (diffInCoord < 1) locationClassification = 1;
+        if (diffInCoord < 0.5) locationClassification = 0;
 
         double hue = hueList.elementAt(locationClassification);
 
-        // Color color = (coordinate == null) | (coordinate.longitude == null)
-        //     ? Colors.grey.withAlpha(100)
-        //     : HSLColor.fromAHSL(0.5, hue, 67 / 100, 50 / 100).toColor();
-        Color color =  (coordinate == null) | (coordinate.longitude == null)? Colors.grey.withAlpha(100): colorList2.elementAt(locationClassification);
+        Color color = (coordinate == null) | (coordinate.longitude == null)
+            ? Colors.grey.withAlpha(100)
+            : colorList2.elementAt(locationClassification);
         // double size = numberOfImages / 5.toDouble();
-        double size = numberOfImages / maximumNumberOfImages * (maximumSizeOfScatter + 5);
+        double size =
+            numberOfImages / maximumNumberOfImages * (maximumSizeOfScatter + 5);
         size = size < maximumSizeOfScatter ? size : maximumSizeOfScatter;
         size = size > minimumSizeOfScatter ? size : minimumSizeOfScatter;
 
@@ -356,10 +366,11 @@ class YearPageStateProvider with ChangeNotifier {
     return [dataForChart2_modified];
   }
 
-  void setEnabledLocation(String text){
+  void setEnabledLocation(String text) {
     enabledLocations[text] = !enabledLocations[text]!;
     notifyListeners();
   }
+
   void setHighlightedYear(int? year) {
     highlightedYear = year;
     notifyListeners();
@@ -375,20 +386,22 @@ class YearPageStateProvider with ChangeNotifier {
     expandedYear = year;
     notifyListeners();
   }
-  void setExpandedYearByButton(){
+
+  void setExpandedYearByButton() {
     int last = listOfYears.last;
-    if(expandedYear==null){
-        setExpandedYear(listOfYears.elementAt(0));
-        return;
-      }
-      if(expandedYear == listOfYears.last){
-        setExpandedYear(null);
-        return;}
+    if (expandedYear == null) {
+      setExpandedYear(listOfYears.elementAt(0));
+      return;
+    }
+    if (expandedYear == listOfYears.last) {
+      setExpandedYear(null);
+      return;
+    }
 
-      setExpandedYear(expandedYear!-1);
-
+    setExpandedYear(expandedYear! - 1);
   }
-  void setAngle(double angle){
+
+  void setAngle(double angle) {
     this.angle = angle;
     notifyListeners();
   }

@@ -1,4 +1,6 @@
 // TODO Implement this library.import 'package:flutter/foundation.dart';
+import 'dart:ui';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:jjuma.d/Data/info_from_file.dart';
@@ -167,7 +169,8 @@ class YearPageStateProvider with ChangeNotifier {
             mostFreqCoordinate,
             physicalWidth,
             numberOfImages,
-            sizeOfChart.width
+            sizeOfChart.width,
+            enabledLocations,
           ]);
         }
         break;
@@ -198,7 +201,8 @@ class YearPageStateProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  static Coordinate? getMostFreqCoordinate_static(List<Coordinate> coordinates) {
+  static Coordinate? getMostFreqCoordinate_static(
+      List<Coordinate> coordinates) {
     if (coordinates.isEmpty) return Coordinate(37.55, 127.0);
     coordinates.forEach((element) {
       print(element.latitude);
@@ -213,26 +217,29 @@ class YearPageStateProvider with ChangeNotifier {
 
     Map<dynamic, int> countOfLocations = {};
 
-    for(int i = 0; i< coordinatesFloor.length; i++){
-        // print(
-        //     "is key contained? ${(countOfLocations.keys.contains(element))}, ${element}, ${element.runtimeType}");
+    for (int i = 0; i < coordinatesFloor.length; i++) {
+      // print(
+      //     "is key contained? ${(countOfLocations.keys.contains(element))}, ${element}, ${element.runtimeType}");
       var element = coordinatesFloor.elementAt(i);
       int index = -1;
-      if(countOfLocations.length!=0)
+      if (countOfLocations.length != 0)
         index = countOfLocations.keys.toList().lastIndexOf(element);
       print(index);
-      if (index==-1) {
+      if (index == -1) {
         countOfLocations[element] = 1;
       } else {
         // print(countOfLocations.keys.elementAt(1));
-        countOfLocations[element] = countOfLocations.values.elementAt(index) + 1;
+        countOfLocations[element] =
+            countOfLocations.values.elementAt(index) + 1;
       }
     }
 
-
     List sortedValue = countOfLocations.values.toList()..sort();
-    countOfLocations = Map.fromEntries(countOfLocations.entries.toList()..sort((e1, e2) =>e1.value.compareTo(e2.value)));
-    countOfLocations.forEach((key, value) {print("$key, $value");});
+    countOfLocations = Map.fromEntries(countOfLocations.entries.toList()
+      ..sort((e1, e2) => e1.value.compareTo(e2.value)));
+    countOfLocations.forEach((key, value) {
+      print("$key, $value");
+    });
 
     Coordinate mostFrequentCoordinate = countOfLocations.keys.last;
 
@@ -247,7 +254,8 @@ class YearPageStateProvider with ChangeNotifier {
     double physicalWidth = input[2];
     Map<int, int> numberOfImages = input[3];
     double sizeOfChart = input[4];
-    Map dataForChart2_modified = {};
+    Map<String, bool> enabledLocations = input[5];
+    Map<int, List> dataForChart2_modified = {};
     if (dataForChart2 == {}) return [{}];
 
     //get proper reference of number of image
@@ -271,6 +279,8 @@ class YearPageStateProvider with ChangeNotifier {
     for (int i = 0; i < dataForChart2.length; i++) {
       int year = dataForChart2.keys.elementAt(i);
       var data = dataForChart2[year];
+
+      var dataInYear = [];
 
       dataForChart2_modified[year] = List.generate(data!.length, (index) {
         String date = data.keys.elementAt(index);
@@ -300,13 +310,22 @@ class YearPageStateProvider with ChangeNotifier {
             : Coordinate(
                 mostFreqCoordinate!.latitude, mostFreqCoordinate.longitude);
 
-        double diffInCoord = calculateDistance(coordinate!, mostFreqCoordinate!);
-        print("$diffInCoord, $coordinate, $mostFreqCoordinate");
+        double diffInCoord =
+            calculateDistance(coordinate!, mostFreqCoordinate!);
         int locationClassification = 4;
-        if (diffInCoord < 20) locationClassification = 3;
-        if (diffInCoord < 5) locationClassification = 2;
-        if (diffInCoord < 1) locationClassification = 1;
-        if (diffInCoord < 0.5) locationClassification = 0;
+
+        if (diffInCoord < 20) {
+          locationClassification = 3;
+        }
+        if (diffInCoord < 5) {
+          locationClassification = 2;
+        }
+        if (diffInCoord < 1) {
+          locationClassification = 1;
+        }
+        if (diffInCoord < 0.5) {
+          locationClassification = 0;
+        }
 
         double hue = hueList.elementAt(locationClassification);
 
@@ -358,9 +377,18 @@ class YearPageStateProvider with ChangeNotifier {
           size,
           color,
           entries,
-          date
+          date,
+          locationClassification
         ];
       });
+
+
+      // dataForChart2_modified[year].forEach((element)
+      // {print("aaa : ${enabledLocations.values.elementAt(element.elementAt(10))}");});
+      dataForChart2_modified[year]!.removeWhere(
+          (element) =>
+              !enabledLocations.values.elementAt(element.elementAt(10)));
+      print("dataForChart2 : $dataForChart2_modified");
     }
 
     return [dataForChart2_modified];
@@ -368,6 +396,7 @@ class YearPageStateProvider with ChangeNotifier {
 
   void setEnabledLocation(String text) {
     enabledLocations[text] = !enabledLocations[text]!;
+    updateProvider_compute();
     notifyListeners();
   }
 

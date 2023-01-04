@@ -91,7 +91,6 @@ class _PhotoCardState extends State<PhotoCard> {
   }
 
   void loadText() {
-    controller.text = defaultText;
     if (dataManager.noteForChart2[dateTime.year.toString()]
             ?[formatDate(dateTime)] !=
         null) {
@@ -319,25 +318,21 @@ class _PhotoCardState extends State<PhotoCard> {
   }
 
   noteView() {
-    return SizedBox(
-      height: 100,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-        child: EditableText(
-            maxLines: 5,
-            controller: controller,
-            focusNode: focusNode,
-            onChanged: (a) {
-              print(controller.text);
-            },
-            style: const TextStyle(
-              // color: Colors.black,
-              fontSize: 20.0,
-            ),
-            // onChanged: (value){controller.text = value;},
-            cursorColor: Colors.white,
-            backgroundCursorColor: Colors.grey),
-      ),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      child : TextField(
+        controller: controller,
+        focusNode: focusNode,
+        cursorColor: Colors.white,
+        maxLines: 10,
+        decoration: InputDecoration(
+          contentPadding: EdgeInsets.all(0),
+          border : InputBorder.none,
+          hintText : "Write your note here!"
+        ),
+
+      )
+
     );
   }
 
@@ -347,7 +342,7 @@ class _PhotoCardState extends State<PhotoCard> {
     DataManagerInterface dataManager = DataManagerInterface(global.kOs);
 
     dataManager.setFilenameOfFavoriteImage(dateTime, filenameOfFavoriteImage);
-    if (controller.text != defaultText) {
+    if (controller.text != "") {
       dataManager.setNote(dateTime, controller.text);
     }
   }

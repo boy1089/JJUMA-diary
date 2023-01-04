@@ -3,8 +3,8 @@ import 'dart:math';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:intl/intl.dart' as intl;
 import 'package:jjuma.d/Util/DateHandler.dart';
+import 'package:jjuma.d/pages/YearPage/legend.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:provider/provider.dart';
@@ -14,6 +14,7 @@ import 'year_chart.dart';
 import 'drop_down_button_2.dart';
 import 'dart:ui' as ui;
 import 'package:share_plus/share_plus.dart';
+import 'package:jjuma.d/pages/YearPage/chart_background.dart';
 
 class YearPageScreen extends StatefulWidget {
   const YearPageScreen({Key? key}) : super(key: key);
@@ -29,14 +30,13 @@ class _YearPageScreenState extends State<YearPageScreen> {
 
   var key2 = GlobalKey();
   double scaleCopy = 0.0;
-  double minScale = 0.6;
+  double minScale = 1;
 
   @override
   void initState() {
     super.initState();
     controller = PhotoViewController()..outputStateStream.listen(listener);
   }
-
 
   void listener(PhotoViewControllerValue value) {
     setState(() {
@@ -47,27 +47,12 @@ class _YearPageScreenState extends State<YearPageScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(children: [
+      body: Stack(
+          alignment: Alignment.topCenter,
+          children: [
         Consumer<YearPageStateProvider>(
           builder: (context, product, child) => WillPopScope(
-            onWillPop: () async {
-              if ((product.highlightedYear == null) &
-                  (product.expandedYear == null) &
-                  (controller.scale == 1)) return true;
-
-              product.setHighlightedYear(null);
-
-              if(controller.scale != 1) {
-                controller.scale = 1;
-                return false;
-              }
-
-              if (product.expandedYear != null) {
-                product.setExpandedYear(null);
-              }
-
-              return false;
-            },
+            onWillPop: ()=> willPopLogic(product),
             child: RepaintBoundary(
               key: key2,
               child: PhotoView.customChild(
@@ -82,9 +67,7 @@ class _YearPageScreenState extends State<YearPageScreen> {
                     // product.setExpandedYear(null);
                   }
                 },
-                onTapUp: (context, detail, value){
-                  print(controller.position);
-                },
+
                 child: Stack(alignment: Alignment.center, children: [
                   CustomPaint(size: const Size(0, 0), painter: OpenPainter()),
                   ...List.generate(
@@ -95,34 +78,18 @@ class _YearPageScreenState extends State<YearPageScreen> {
                     return YearChart(
                         year: year, radius: 1 - index * 0.1, product: product);
                   }),
-                  Positioned(
-                      child : ElevatedButton(
-                        onPressed: (){
-                          product.setExpandedYearByButton();
-                        },
 
-                          style: ElevatedButton.styleFrom(
-                            side: const BorderSide(
-                              width : 1,
-                              color : Color(0xff808080)
-                            ),
-                            backgroundColor: Colors.transparent,
+                  yearButton(product),
 
-                              fixedSize: sizeOfChart /12,
-                              shape : const CircleBorder()
-                          ),
-                        child : Text(
-                          product.expandedYear==null? "All":
-                            product.expandedYear.toString(),
-                          style: const TextStyle(fontSize: 15),
-                        )
-
-                      ))
 
                 ]),
               ),
             ),
           ),
+        ),
+        Positioned(
+            bottom : 30,
+            child : LegendOfYearChart()
         ),
         SizedBox(
           height: 70,
@@ -135,6 +102,49 @@ class _YearPageScreenState extends State<YearPageScreen> {
         ),
       ]),
 
+    );
+  }
+  willPopLogic(product) async {
+        {
+      if ((product.highlightedYear == null) &
+      (product.expandedYear == null) &
+      (controller.scale == 1)) return true;
+
+      product.setHighlightedYear(null);
+
+      if(controller.scale != 1) {
+        controller.scale = 1;
+        return false;
+      }
+
+      if (product.expandedYear != null) {
+        product.setExpandedYear(null);
+      }
+
+      return false;
+    }
+  }
+
+  yearButton(YearPageStateProvider product){
+    return   ElevatedButton(
+        onPressed: (){
+          product.setExpandedYearByButton();
+        },
+        style: ElevatedButton.styleFrom(
+            side: const BorderSide(
+                width : 1,
+                color : Color(0xff808080)
+            ),
+            backgroundColor: Colors.transparent,
+
+            fixedSize: sizeOfChart /12,
+            shape : const CircleBorder()
+        ),
+        child : Text(
+          product.expandedYear==null? "All":
+          product.expandedYear.toString(),
+          style: const TextStyle(fontSize: 15),
+        )
     );
   }
 
@@ -166,85 +176,4 @@ class _YearPageScreenState extends State<YearPageScreen> {
     controller.dispose();
     super.dispose();
   }
-}
-var rng = Random();
-int randomNumber1 = rng.nextInt(800);
-int randomNumber2 = rng.nextInt(800);
-int randomNumber3 = rng.nextInt(800);
-int randomNumber4 = rng.nextInt(800);
-int randomNumber5 = rng.nextInt(800);
-int randomNumber6 = rng.nextInt(800);
-int randomNumber7 = rng.nextInt(800);
-List<int> randomNumber = List.generate(20, (index)=>rng.nextInt(800));
-
-class OpenPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    var paint1 = Paint()
-      ..color = const Color(0xff808080)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 0.7;
-    canvas.drawCircle(const Offset(0, 0), (physicalWidth / 2 - 3) * 0.3, paint1);
-    canvas.drawCircle(const Offset(0, 0), physicalWidth / 2 - 3, paint1);
-
-    var paint2 = Paint()
-      ..color = const Color(0xff3f3f3f)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 0.7;
-    double radius = physicalWidth / 2 * 1.2;
-    //
-    // var paint3 = Paint()..color = Colors.white;
-
-    // canvas.drawCircle(Offset(rng.nextInt(800) - 400, rng.nextInt(800) - 400), 5, paint3);
-    // for(int i = 0; i < 19; i++){
-    //   canvas.drawCircle(Offset(randomNumber.elementAt(i) - 400, randomNumber.elementAt(i+1) - 400), 1, paint3);
-    // }
-
-    const textStyle = TextStyle(
-      color: Colors.white,
-      fontSize: 16,
-    );
-
-    const textSpan = TextSpan(
-      text: 'aa',
-      style: textStyle,
-    );
-
-    final textPainter = TextPainter(
-      text: textSpan,
-      textDirection: TextDirection.ltr,
-    );
-
-    textPainter.layout(
-      minWidth: 0,
-      maxWidth: size.width,
-    );
-
-    final intl.DateFormat formatter = intl.DateFormat('MMM');
-
-    for (int i = 0; i < 12; i++) {
-      double angle = 2 * pi / 12 * i + 2 * pi / 24 * 16;
-      double xOffset = cos(angle) * radius;
-      double yOffset = sin(angle) * radius;
-      canvas.drawLine(const Offset(0, 0), Offset(xOffset, yOffset), paint2);
-
-      final textSpan = TextSpan(
-        text: '${formatter.format(DateTime(2022, i))}',
-        style: textStyle,
-      );
-
-      textPainter..text = textSpan;
-      textPainter.layout(
-        minWidth: 0,
-        maxWidth: 35,
-      );
-
-      textPainter.paint(canvas, Offset(xOffset - 14, yOffset - 7));
-    }
-  }
-
-
-
-  @override
-  bool shouldRepaint(CustomPainter oldDelegate) => true;
 }

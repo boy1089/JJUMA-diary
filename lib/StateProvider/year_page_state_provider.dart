@@ -79,6 +79,13 @@ class YearPageStateProvider with ChangeNotifier {
   DataManagerInterface dataManager;
   YearPageStateProvider(this.dataManager);
 
+  Map<String, bool> enabledLocations = {
+    "Most frequent": true,
+    "< 1km": true,
+    "< 5km": true,
+    "< 20km":true,
+    ">100km": true,
+  };
 
   static Future<List> updateData_static(List input) async {
     print("static update Data For YearPage StateProvider");
@@ -349,7 +356,10 @@ class YearPageStateProvider with ChangeNotifier {
     return [dataForChart2_modified];
   }
 
-
+  void setEnabledLocation(String text){
+    enabledLocations[text] = !enabledLocations[text]!;
+    notifyListeners();
+  }
   void setHighlightedYear(int? year) {
     highlightedYear = year;
     notifyListeners();

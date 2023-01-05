@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:go_router/go_router.dart';
 import 'package:jjuma.d/Util/DateHandler.dart';
 import 'package:jjuma.d/pages/YearPage/legend.dart';
 import 'package:path_provider/path_provider.dart';
@@ -47,52 +48,43 @@ class _YearPageScreenState extends State<YearPageScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: IgnorePointer(
-        ignoring : Provider.of<YearPageStateProvider>(context, listen : true).isUpdating,
-        child: Stack(
-            alignment: Alignment.topCenter,
-            children: [
+      body: SafeArea(
+        child: Stack(alignment: Alignment.topCenter, children: [
           Consumer<YearPageStateProvider>(
             builder: (context, product, child) => WillPopScope(
-              onWillPop: ()=> willPopLogic(product),
+              onWillPop: () => willPopLogic(product),
               child: RepaintBoundary(
                 key: key2,
                 child: PhotoView.customChild(
-                  backgroundDecoration: const BoxDecoration(color: Colors.black12),
+                  backgroundDecoration:
+                      const BoxDecoration(color: Colors.black12),
                   customSize: sizeOfChart,
                   minScale: minScale,
                   controller: controller,
                   onScaleEnd: (context, value, a) {
-                    controller.scale = a.scale?? minScale;
+                    controller.scale = a.scale ?? minScale;
                     if (controller.scale! < minScale) {
                       controller.scale = minScale;
                       // product.setExpandedYear(null);
                     }
                   },
-
                   child: Stack(alignment: Alignment.center, children: [
                     CustomPaint(size: const Size(0, 0), painter: OpenPainter()),
-                    ...List.generate(
-                        product.listOfYears.length, (index) {
-                      int year =
-                          product.listOfYears.elementAt(index);
+                    ...List.generate(product.listOfYears.length, (index) {
+                      int year = product.listOfYears.elementAt(index);
 
                       return YearChart(
-                          year: year, radius: 1 - index * 0.1, product: product);
+                          year: year,
+                          radius: 1 - index * 0.1,
+                          product: product);
                     }),
-
                     yearButton(product),
-
-
                   ]),
                 ),
               ),
             ),
           ),
-          Positioned(
-              bottom : 30,
-              child : LegendOfYearChart()
-          ),
+          Positioned(bottom: 30, child: LegendOfYearChart()),
           SizedBox(
             height: 70,
             child: AppBar(
@@ -104,18 +96,18 @@ class _YearPageScreenState extends State<YearPageScreen> {
           ),
         ]),
       ),
-
     );
   }
+
   willPopLogic(product) async {
-        {
+    {
       if ((product.highlightedYear == null) &
-      (product.expandedYear == null) &
-      (controller.scale == 1)) return true;
+          (product.expandedYear == null) &
+          (controller.scale == 1)) return true;
 
       product.setHighlightedYear(null);
 
-      if(controller.scale != 1) {
+      if (controller.scale != 1) {
         controller.scale = 1;
         return false;
       }
@@ -128,27 +120,65 @@ class _YearPageScreenState extends State<YearPageScreen> {
     }
   }
 
-  yearButton(YearPageStateProvider product){
-    return   ElevatedButton(
-        onPressed: (){
+  yearButton(YearPageStateProvider product) {
+    return ElevatedButton(
+        onPressed: () {
           product.setExpandedYearByButton();
         },
+        onLongPress: () {
+          showGeneralDialog(
+              barrierDismissible: true,
+              barrierLabel: "yearButton",
+              barrierColor: Colors.transparent,
+              context: context,
+              pageBuilder: (context, animation, animation2) => Center(
+                    child: Container(
+                      width: 500,
+                      height: 500,
+                      child: Stack(
+                          alignment: Alignment.center,
+                          children: List<Widget>.generate(
+                              product.listOfYears.length,
+                              (i) => Align(
+                                  alignment: Alignment(
+                                      cos(2 * pi / 10 * i + 0.02*pi) * 0.5,
+                                      sin(2 * pi / 10 * i+ 0.02*pi) * 0.5),
+                                  child: yearButton2(
+                                      product,
+                                      product.listOfYears
+                                          .elementAt(i)
+                                          .toString())))),
+                    ),
+                  ));
+        },
         style: ElevatedButton.styleFrom(
-            side: const BorderSide(
-                width : 1,
-                color : Color(0xff808080)
-            ),
+            side: const BorderSide(width: 1, color: Color(0xff808080)),
             backgroundColor: Colors.transparent,
-
-            fixedSize: sizeOfChart /12,
-            shape : const CircleBorder()
-        ),
-        child : Text(
-          product.expandedYear==null? "All":
-          product.expandedYear.toString(),
+            fixedSize: sizeOfChart / 12,
+            shape: const CircleBorder()),
+        child: Text(
+          product.expandedYear == null
+              ? "All"
+              : product.expandedYear.toString(),
           style: const TextStyle(fontSize: 15),
-        )
-    );
+        ));
+  }
+
+  yearButton2(YearPageStateProvider product, String text) {
+    return ElevatedButton(
+        onPressed: () {
+          product.setExpandedYear(int.parse(text));
+          context.pop();
+        },
+        style: ElevatedButton.styleFrom(
+            side: const BorderSide(width: 1, color: Color(0xff808080)),
+            backgroundColor: Colors.transparent,
+            fixedSize: sizeOfChart / 12,
+            shape: const CircleBorder()),
+        child: Text(
+          text,
+          style: const TextStyle(fontSize: 15),
+        ));
   }
 
   void capture() async {

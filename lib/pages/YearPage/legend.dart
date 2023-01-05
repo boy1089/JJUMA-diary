@@ -14,17 +14,24 @@ class LegendOfYearChart extends StatelessWidget {
     ">100km": Colors.purple
   };
 
-  Widget legendItem(product, Color color, String text) {
+  Widget legendItem(product, Color color, String text, context) {
     bool enabled = product.enabledLocations[text];
     print(enabled);
-    Color textColor = enabled? Colors.white : Colors.grey;
-    color = enabled? color:color.withAlpha(100);
+    Color textColor = enabled ? Colors.white : Colors.grey;
+    color = enabled ? color : color.withAlpha(100);
 
     return TextButton(
       style: TextButton.styleFrom(
         padding: const EdgeInsets.all(0),
       ),
       onPressed: () {
+        if (product.isUpdating) {
+          SnackBar snackBar = SnackBar(
+            content: Text('Sorry, JJUMA diary is still updating the filter!'),
+          );
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          return;
+        }
         product.setEnabledLocation(text);
       },
       child: Row(children: [
@@ -36,7 +43,7 @@ class LegendOfYearChart extends StatelessWidget {
         ),
         Text(
           text,
-          style:  TextStyle(color: textColor),
+          style: TextStyle(color: textColor),
         )
       ]),
     );
@@ -49,7 +56,7 @@ class LegendOfYearChart extends StatelessWidget {
           children: List.generate(
               items.length,
               (i) => legendItem(product, items.values.elementAt(i),
-                  items.keys.elementAt(i)))),
+                  items.keys.elementAt(i), context))),
     );
   }
 }

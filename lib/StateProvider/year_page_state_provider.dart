@@ -200,7 +200,7 @@ class YearPageStateProvider with ChangeNotifier {
     if (listOfYears.length > maxNumOfYearChart) {
       listOfYears = listOfYears.sublist(0, maxNumOfYearChart);
     }
-    await Future.delayed(Duration(seconds: 2));
+    // await Future.delayed(Duration(seconds: 2));
     setIsUpdating(false);
     notifyListeners();
   }

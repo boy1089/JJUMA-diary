@@ -141,8 +141,8 @@ class _YearPageScreenState extends State<YearPageScreen> {
                               product.listOfYears.length,
                               (i) => Align(
                                   alignment: Alignment(
-                                      cos(2 * pi / 10 * i + 0.02*pi) * 0.5,
-                                      sin(2 * pi / 10 * i+ 0.02*pi) * 0.5),
+                                      cos(2 * pi / 10 * i + 0.02 * pi) * 0.5,
+                                      sin(2 * pi / 10 * i + 0.02 * pi) * 0.5),
                                   child: yearButton2(
                                       product,
                                       product.listOfYears

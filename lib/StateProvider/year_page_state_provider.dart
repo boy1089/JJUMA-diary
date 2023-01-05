@@ -76,6 +76,7 @@ class YearPageStateProvider with ChangeNotifier {
   List listOfYears = [];
 
   double angle = 0.0;
+  bool isUpdating = false;
 
   DataManagerInterface dataManager;
   YearPageStateProvider(this.dataManager);
@@ -152,6 +153,8 @@ class YearPageStateProvider with ChangeNotifier {
       return;
     }
 
+    setIsUpdating(true);
+
     var result;
     var result2;
 
@@ -197,7 +200,7 @@ class YearPageStateProvider with ChangeNotifier {
     if (listOfYears.length > maxNumOfYearChart) {
       listOfYears = listOfYears.sublist(0, maxNumOfYearChart);
     }
-
+    setIsUpdating(false);
     notifyListeners();
   }
 
@@ -432,6 +435,11 @@ class YearPageStateProvider with ChangeNotifier {
 
   void setAngle(double angle) {
     this.angle = angle;
+    notifyListeners();
+  }
+
+  void setIsUpdating(bool isUpdating){
+    this.isUpdating = isUpdating;
     notifyListeners();
   }
 

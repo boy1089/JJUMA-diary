@@ -47,60 +47,63 @@ class _YearPageScreenState extends State<YearPageScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-          alignment: Alignment.topCenter,
-          children: [
-        Consumer<YearPageStateProvider>(
-          builder: (context, product, child) => WillPopScope(
-            onWillPop: ()=> willPopLogic(product),
-            child: RepaintBoundary(
-              key: key2,
-              child: PhotoView.customChild(
-                backgroundDecoration: const BoxDecoration(color: Colors.black12),
-                customSize: sizeOfChart,
-                minScale: minScale,
-                controller: controller,
-                onScaleEnd: (context, value, a) {
-                  controller.scale = a.scale?? minScale;
-                  if (controller.scale! < minScale) {
-                    controller.scale = minScale;
-                    // product.setExpandedYear(null);
-                  }
-                },
+      body: IgnorePointer(
+        ignoring : Provider.of<YearPageStateProvider>(context, listen : true).isUpdating,
+        child: Stack(
+            alignment: Alignment.topCenter,
+            children: [
+          Consumer<YearPageStateProvider>(
+            builder: (context, product, child) => WillPopScope(
+              onWillPop: ()=> willPopLogic(product),
+              child: RepaintBoundary(
+                key: key2,
+                child: PhotoView.customChild(
+                  backgroundDecoration: const BoxDecoration(color: Colors.black12),
+                  customSize: sizeOfChart,
+                  minScale: minScale,
+                  controller: controller,
+                  onScaleEnd: (context, value, a) {
+                    controller.scale = a.scale?? minScale;
+                    if (controller.scale! < minScale) {
+                      controller.scale = minScale;
+                      // product.setExpandedYear(null);
+                    }
+                  },
 
-                child: Stack(alignment: Alignment.center, children: [
-                  CustomPaint(size: const Size(0, 0), painter: OpenPainter()),
-                  ...List.generate(
-                      product.listOfYears.length, (index) {
-                    int year =
-                        product.listOfYears.elementAt(index);
+                  child: Stack(alignment: Alignment.center, children: [
+                    CustomPaint(size: const Size(0, 0), painter: OpenPainter()),
+                    ...List.generate(
+                        product.listOfYears.length, (index) {
+                      int year =
+                          product.listOfYears.elementAt(index);
 
-                    return YearChart(
-                        year: year, radius: 1 - index * 0.1, product: product);
-                  }),
+                      return YearChart(
+                          year: year, radius: 1 - index * 0.1, product: product);
+                    }),
 
-                  yearButton(product),
+                    yearButton(product),
 
 
-                ]),
+                  ]),
+                ),
               ),
             ),
           ),
-        ),
-        Positioned(
-            bottom : 30,
-            child : LegendOfYearChart()
-        ),
-        SizedBox(
-          height: 70,
-          child: AppBar(
-            backgroundColor: Colors.transparent,
-            excludeHeaderSemantics: true,
-            elevation: 0.0,
-            actions: [CustomButtonTest(capture)],
+          Positioned(
+              bottom : 30,
+              child : LegendOfYearChart()
           ),
-        ),
-      ]),
+          SizedBox(
+            height: 70,
+            child: AppBar(
+              backgroundColor: Colors.transparent,
+              excludeHeaderSemantics: true,
+              elevation: 0.0,
+              actions: [CustomButtonTest(capture)],
+            ),
+          ),
+        ]),
+      ),
 
     );
   }

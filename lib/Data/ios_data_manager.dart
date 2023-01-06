@@ -38,7 +38,12 @@ class IosDataManager extends ChangeNotifier implements DataManagerInterface {
   Map<dynamic, InfoFromFile> infoFromFiles = {};
   Map<String, Event> eventList = {};
   DataRepository dataRepository = DataRepository();
-  void setNote(DateTime datetime, String note){}
+  void setNote(DateTime datetime, String note){
+    if (noteForChart2[datetime.year.toString()] == null)
+      noteForChart2[datetime.year.toString()] = {};
+    noteForChart2[datetime.year.toString()]![formatDate(datetime)] = note;
+    dataRepository.writeNote(noteForChart2);
+  }
   void setFilenameOfFavoriteImage(DateTime datetime, String? indexOfFavoriteImage){}
 
   @override

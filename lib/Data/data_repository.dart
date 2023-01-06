@@ -43,8 +43,8 @@ class DataRepository {
     if (global.kOs == "ios") {
       final List<AssetPathEntity> paths = await PhotoManager.getAssetPathList();
       for (var path in paths) {
-        if (path.name != "Recents") continue;
-        var assets = await path.getAssetListRange(start: 0, end: 10000);
+        // if (path.name != "Recents") continue;
+        var assets = await path.getAssetListRange(start: 0, end: 20000);
         files.addAll([for (var asset in assets) asset]);
       }
       this.files = files;
@@ -60,7 +60,6 @@ class DataRepository {
     }
 
     files = files.where((element) => !element.contains('thumbnail')).toList();
-    // files.sort((a, b) => a.compare(b));
     files = files..sort();
     return files;
   }

@@ -144,7 +144,8 @@ class _PhotoCardState extends State<PhotoCard> {
           for (int i = 0; i < entries.length; i++) {
             var image = AssetEntityImage(
               entries.elementAt(i).key,
-              isOriginal: true,
+              isOriginal: false,
+              thumbnailSize : ThumbnailSize.square(1000),
               fit: BoxFit.cover,
             );
             listOfImages.add(image);
@@ -209,7 +210,9 @@ class _PhotoCardState extends State<PhotoCard> {
                         duration: const Duration(milliseconds: 500),
                         curve: Curves.easeIn);
                     scrollIndex = index;
+                    focusNode.unfocus();
                     setState(() {});
+
                   },
                   controller: scrollController1,
                   physics: const PageScrollPhysics(),
@@ -228,15 +231,6 @@ class _PhotoCardState extends State<PhotoCard> {
                                       height: physicalWidth,
                                       width: physicalWidth,
                                       child: listOfImages.elementAt(index)
-                                      // ExtendedImage.file(
-                                      //   File(widget.event.images.entries
-                                      //       .elementAt(index)
-                                      //       .key),
-                                      //   cacheRawData: true,
-                                      //   compressionRatio: 0.1,
-                                      //   fit: BoxFit.cover,
-                                      //   clearMemoryCacheWhenDispose: true,
-                                      // ),
                                       ),
                                   Positioned(
                                       right: 10.0,
@@ -289,6 +283,7 @@ class _PhotoCardState extends State<PhotoCard> {
                   scrollIndex = index;
                   setState(() {});
                   scrollController1.jumpToItem(index);
+                  focusNode.unfocus();
                 },
                 diameterRatio: 200,
                 itemExtent: 40,
@@ -342,6 +337,7 @@ class _PhotoCardState extends State<PhotoCard> {
     DataManagerInterface dataManager = DataManagerInterface(global.kOs);
 
     dataManager.setFilenameOfFavoriteImage(dateTime, filenameOfFavoriteImage);
+    print("dispose photocard..");
     if (controller.text != "") {
       dataManager.setNote(dateTime, controller.text);
     }

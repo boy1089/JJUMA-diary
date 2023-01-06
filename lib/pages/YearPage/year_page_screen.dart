@@ -16,6 +16,7 @@ import 'drop_down_button_2.dart';
 import 'dart:ui' as ui;
 import 'package:share_plus/share_plus.dart';
 import 'package:jjuma.d/pages/YearPage/chart_background.dart';
+import 'package:jjuma.d/Util/global.dart' as global;
 
 class YearPageScreen extends StatefulWidget {
   const YearPageScreen({Key? key}) : super(key: key);
@@ -200,7 +201,9 @@ class _YearPageScreenState extends State<YearPageScreen> {
     if (renderObject is RenderRepaintBoundary) {
       var boundary = renderObject;
       ui.Image image = await boundary.toImage(pixelRatio: 10.0);
-      final directory = (await getExternalStorageDirectory())?.path;
+
+      final directory = global.kOs=="android" ? (await getExternalStorageDirectory())?.path
+          :(await getApplicationDocumentsDirectory())?.path;
       ByteData byteData =
           (await image.toByteData(format: ui.ImageByteFormat.png))!;
       Uint8List pngBytes = byteData.buffer.asUint8List();

@@ -46,7 +46,7 @@ class _PhotoCardState extends State<PhotoCard> {
   FixedExtentScrollController scrollController1 = FixedExtentScrollController();
   FixedExtentScrollController scrollController2 = FixedExtentScrollController();
 
-  String? filenameOfFavoriteImage;
+  dynamic? filenameOfFavoriteImage;
   int? indexOfFavoriteImage;
   late DataManagerInterface dataManager;
 

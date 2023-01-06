@@ -144,7 +144,7 @@ class _PhotoCardState extends State<PhotoCard> {
           for (int i = 0; i < entries.length; i++) {
             var image = AssetEntityImage(
               entries.elementAt(i).key,
-              isOriginal: false,
+              isOriginal: true,
               fit: BoxFit.cover,
             );
             listOfImages.add(image);

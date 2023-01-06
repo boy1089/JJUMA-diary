@@ -100,15 +100,7 @@ class _YearPageScreenState extends State<YearPageScreen> {
           ),
         ]),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: (){
-          var provider = Provider.of<YearPageStateProvider>(context, listen : false);
-          print(provider.dataForChart2_modified.keys);
-          print(provider.dataForChart2_modified[2020]);
-          provider.dataForChart2_modified[2020].forEach((element) {print(element);});
 
-        },
-      ),
     );
   }
 

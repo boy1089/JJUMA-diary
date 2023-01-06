@@ -33,10 +33,14 @@ class _YearPageScreenState extends State<YearPageScreen> {
   double scaleCopy = 0.0;
   double minScale = 1;
 
+  late TestWidget testWidget;
+  bool testFlag = false;
+
   @override
   void initState() {
     super.initState();
     controller = PhotoViewController()..outputStateStream.listen(listener);
+    testWidget = TestWidget(testFlag);
   }
 
   void listener(PhotoViewControllerValue value) {
@@ -72,12 +76,12 @@ class _YearPageScreenState extends State<YearPageScreen> {
                     CustomPaint(size: const Size(0, 0), painter: OpenPainter()),
                     ...List.generate(product.listOfYears.length, (index) {
                       int year = product.listOfYears.elementAt(index);
-
                       return YearChart(
                           year: year,
                           radius: 1 - index * 0.1,
                           product: product);
                     }),
+                    // ...testWidget.listOfWidget,
                     yearButton(product),
                   ]),
                 ),
@@ -124,6 +128,13 @@ class _YearPageScreenState extends State<YearPageScreen> {
     return ElevatedButton(
         onPressed: () {
           product.setExpandedYearByButton();
+
+          setState(() {
+            testFlag = !testFlag;
+            testWidget = testWidget..on = testFlag;
+            testWidget.updateListOfWidget();
+            print(testWidget.listOfWidget);
+          });
         },
         onLongPress: () {
           showGeneralDialog(
@@ -131,30 +142,32 @@ class _YearPageScreenState extends State<YearPageScreen> {
               barrierLabel: "yearButton",
               barrierColor: Colors.transparent,
               context: context,
-              pageBuilder: (context, animation, animation2) => Center(
-                    child: Container(
-                      width: 500,
-                      height: 500,
-                      child: Stack(
-                          alignment: Alignment.center,
-                          children: List<Widget>.generate(
-                              product.listOfYears.length,
-                              (i) => Align(
-                                  alignment: Alignment(
-                                      cos(2 * pi / 10 * i + 0.02 * pi) * 0.5,
-                                      sin(2 * pi / 10 * i + 0.02 * pi) * 0.5),
-                                  child: yearButton2(
-                                      product,
-                                      product.listOfYears
-                                          .elementAt(i)
-                                          .toString())))),
+              pageBuilder: (context, animation, animation2) => SafeArea(
+                child: Center(
+                      child: Container(
+                        width: 500,
+                        height: 430,
+                        child: Stack(
+                            alignment: Alignment.center,
+                            children: List<Widget>.generate(
+                                product.listOfYears.length,
+                                (i) => Align(
+                                    alignment: Alignment(
+                                        cos(2 * pi / product.listOfYears.length * i + 0.02 * pi) * 0.6,
+                                        sin(2 * pi / product.listOfYears.length * i + 0.02 * pi) * 0.6),
+                                    child: yearButton2(
+                                        product,
+                                        product.listOfYears
+                                            .elementAt(i)
+                                            .toString())))),
+                      ),
                     ),
-                  ));
+              ));
         },
         style: ElevatedButton.styleFrom(
             side: const BorderSide(width: 1, color: Color(0xff808080)),
             backgroundColor: Colors.transparent,
-            fixedSize: sizeOfChart / 12,
+            fixedSize: Size(70.0, 70.0),
             shape: const CircleBorder()),
         child: Text(
           product.expandedYear == null
@@ -173,7 +186,7 @@ class _YearPageScreenState extends State<YearPageScreen> {
         style: ElevatedButton.styleFrom(
             side: const BorderSide(width: 1, color: Color(0xff808080)),
             backgroundColor: Colors.transparent,
-            fixedSize: sizeOfChart / 12,
+            fixedSize: Size(70.0, 70.0),
             shape: const CircleBorder()),
         child: Text(
           text,
@@ -208,5 +221,26 @@ class _YearPageScreenState extends State<YearPageScreen> {
   void dispose() {
     controller.dispose();
     super.dispose();
+  }
+}
+
+class TestWidget {
+  TestWidget(this.on){
+    updateListOfWidget();
+  }
+  bool on= false;
+  List listOfWidget = [];
+
+  updateListOfWidget(){
+    listOfWidget = List.generate(10, (i) {
+
+      print('aa');
+      return AnimatedPositioned(
+          duration: Duration(seconds: 1),
+          left: on ? 400 : i * 10,
+          child: Container(width: 30, height: 40, color: Colors.blue));
+    }
+
+    );
   }
 }

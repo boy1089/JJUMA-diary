@@ -37,17 +37,21 @@ List positionNotExpanded = List.generate(372, (index) {
 });
 
 List<double> hueList = [215.0, 126.0, 63.0, 0.0, 281.0];
-List<Color> colorList = [
-  const Color(0xFF2A2A2A),
-  const Color(0xFF2A4D7F),
-  const Color(0xFF2A7F32),
-  const Color(0xFFffbf00),
-];
-
+//
+// List<Color> colorList2 = [
+//   const Color(0xFF2a71d5),
+//   const Color(0xFF2ad53b),
+//   const Color(0xFFffbf00),
+//   const Color(0xFFd52a2a),
+//   const Color(0xFF9f2ad5),
+//   const Color(0xFF2A2A2A),
+// ];
 List<Color> colorList2 = [
   const Color(0xFF2a71d5),
+  const Color(0xFF2ad2d5),
   const Color(0xFF2ad53b),
   const Color(0xFFffbf00),
+  const Color(0xFFd5912a),
   const Color(0xFFd52a2a),
   const Color(0xFF9f2ad5),
   const Color(0xFF2A2A2A),
@@ -83,10 +87,11 @@ class YearPageStateProvider with ChangeNotifier {
 
   Map<String, bool> enabledLocations = {
     "Most frequent": true,
-    "< 1km": true,
     "< 5km": true,
     "< 20km": true,
-    ">100km": true,
+    "< 100km": true,
+    "< 500km": true,
+    "more": true,
   };
 
   static Future<List> updateData_static(List input) async {
@@ -208,9 +213,6 @@ class YearPageStateProvider with ChangeNotifier {
   static Coordinate? getMostFreqCoordinate_static(
       List<Coordinate> coordinates) {
     if (coordinates.isEmpty) return Coordinate(37.55, 127.0);
-    coordinates.forEach((element) {
-      print(element.latitude);
-    });
 
     List<Coordinate> coordinatesFloor = List<Coordinate>.generate(
         coordinates.length,
@@ -222,8 +224,6 @@ class YearPageStateProvider with ChangeNotifier {
     Map<dynamic, int> countOfLocations = {};
 
     for (int i = 0; i < coordinatesFloor.length; i++) {
-      // print(
-      //     "is key contained? ${(countOfLocations.keys.contains(element))}, ${element}, ${element.runtimeType}");
       var element = coordinatesFloor.elementAt(i);
       int index = -1;
       if (countOfLocations.length != 0)
@@ -232,13 +232,11 @@ class YearPageStateProvider with ChangeNotifier {
       if (index == -1) {
         countOfLocations[element] = 1;
       } else {
-        // print(countOfLocations.keys.elementAt(1));
         countOfLocations[element] =
             countOfLocations.values.elementAt(index) + 1;
       }
     }
 
-    List sortedValue = countOfLocations.values.toList()..sort();
     countOfLocations = Map.fromEntries(countOfLocations.entries.toList()
       ..sort((e1, e2) => e1.value.compareTo(e2.value)));
     countOfLocations.forEach((key, value) {
@@ -278,13 +276,10 @@ class YearPageStateProvider with ChangeNotifier {
     int maximumNumberOfImages = List<int>.generate(
             data.length, (index) => data.values.elementAt(index)[0].length)
         .reduce(max);
-    print("max : ${maximumNumberOfImages}");
 
     for (int i = 0; i < dataForChart2.length; i++) {
       int year = dataForChart2.keys.elementAt(i);
       var data = dataForChart2[year];
-
-      var dataInYear = [];
 
       dataForChart2_modified[year] = List.generate(data!.length, (index) {
         String date = data.keys.elementAt(index);
@@ -309,6 +304,7 @@ class YearPageStateProvider with ChangeNotifier {
         yLocationNotExpanded = yLocationNotExpanded;
 
         int numberOfImages = data[date]?[0].length ?? 1;
+
         Coordinate? coordinate = data[date]!.length > 1
             ? data[date]![1]
             : Coordinate(
@@ -316,27 +312,28 @@ class YearPageStateProvider with ChangeNotifier {
 
         double diffInCoord =
             calculateDistance(coordinate!, mostFreqCoordinate!);
-        int locationClassification = 4;
+        int locationClassification = 5;
 
-        if (diffInCoord < 20) {
+        if (diffInCoord < 500) {
+          locationClassification = 4;
+        }
+        if (diffInCoord < 100) {
           locationClassification = 3;
         }
-        if (diffInCoord < 5) {
+        if (diffInCoord < 20) {
           locationClassification = 2;
         }
-        if (diffInCoord < 1) {
+        if (diffInCoord < 5) {
           locationClassification = 1;
         }
         if (diffInCoord < 0.5) {
           locationClassification = 0;
         }
 
-        double hue = hueList.elementAt(locationClassification);
-
         Color color = (coordinate == null) | (coordinate.longitude == null)
             ? Colors.grey.withAlpha(100)
             : colorList2.elementAt(locationClassification);
-        // double size = numberOfImages / 5.toDouble();
+
         double size =
             numberOfImages / maximumNumberOfImages * (maximumSizeOfScatter + 5);
         size = size < maximumSizeOfScatter ? size : maximumSizeOfScatter;
@@ -386,9 +383,6 @@ class YearPageStateProvider with ChangeNotifier {
         ];
       });
 
-
-      // dataForChart2_modified[year].forEach((element)
-      // {print("aaa : ${enabledLocations.values.elementAt(element.elementAt(10))}");});
       dataForChart2_modified[year]!.removeWhere(
           (element) =>
               !enabledLocations.values.elementAt(element.elementAt(10)));

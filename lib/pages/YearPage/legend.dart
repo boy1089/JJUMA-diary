@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:jjuma.d/Util/Util.dart';
 import 'package:provider/provider.dart';
 import '../../StateProvider/year_page_state_provider.dart';
 
@@ -7,16 +9,36 @@ class LegendOfYearChart extends StatelessWidget {
   LegendOfYearChart({Key? key}) : super(key: key);
 
   Map<String, Color> items = {
-    "Most frequent": Colors.blue,
-    "< 1km": Colors.green,
-    "< 5km": Colors.yellow,
-    "< 20km": Colors.red,
-    ">100km": Colors.purple
+    "Most frequent": colorList2.elementAt(0),
+    "< 5km": colorList2.elementAt(1),
+    "< 20km": colorList2.elementAt(2),
+    "< 100km": colorList2.elementAt(3),
+    "< 500km": colorList2.elementAt(4),
+    'more' : colorList2.elementAt(5),
   };
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<YearPageStateProvider>(
+      builder: (context, product, child) =>
+          // Row(
+          // children: List.generate(
+          //     items.length,
+          //     (i) => legendItem(product, items.values.elementAt(i),
+          //         items.keys.elementAt(i), context))),
+      SizedBox(
+        width : physicalWidth,
+        height : 30,
+        child: ListView(
+          scrollDirection: Axis.horizontal,
+          children: List.generate(items.length, (i)=> legendItem(product, items.values.elementAt(i),
+                items.keys.elementAt(i), context))),
+      ),
+    );
+  }
 
   Widget legendItem(product, Color color, String text, context) {
     bool enabled = product.enabledLocations[text];
-    print(enabled);
     Color textColor = enabled ? Colors.white : Colors.grey;
     color = enabled ? color : color.withAlpha(100);
 
@@ -24,16 +46,7 @@ class LegendOfYearChart extends StatelessWidget {
       style: TextButton.styleFrom(
         padding: const EdgeInsets.all(0),
       ),
-      onPressed: () {
-        if (product.isUpdating) {
-          SnackBar snackBar = SnackBar(
-            content: Text('Sorry, JJUMA diary is still updating the filter!'),
-          );
-          ScaffoldMessenger.of(context).showSnackBar(snackBar);
-          return;
-        }
-        product.setEnabledLocation(text);
-      },
+
       child: Row(children: [
         Container(
           color: color,
@@ -46,17 +59,17 @@ class LegendOfYearChart extends StatelessWidget {
           style: TextStyle(color: textColor),
         )
       ]),
+      onPressed: () {
+        if (product.isUpdating) {
+          SnackBar snackBar = const SnackBar(
+            content: Text('Sorry, JJUMA diary is working on the previous action!'),
+          );
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          return;
+        }
+        product.setEnabledLocation(text);
+      },
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Consumer<YearPageStateProvider>(
-      builder: (context, product, child) => Row(
-          children: List.generate(
-              items.length,
-              (i) => legendItem(product, items.values.elementAt(i),
-                  items.keys.elementAt(i), context))),
-    );
-  }
 }

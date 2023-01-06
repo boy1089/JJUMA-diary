@@ -154,14 +154,13 @@ class YearPageStateProvider with ChangeNotifier {
     print("updateProvider..");
     if ((dataManager.infoFromFiles == null) |
         (dataManager.infoFromFiles.isEmpty)) {
-      print("updateProvider.. no data");
       return;
     }
 
     setIsUpdating(true);
 
-    var result;
-    var result2;
+    List result;
+    List result2 = [];
 
     switch (global.kOs) {
       case "android":
@@ -194,7 +193,8 @@ class YearPageStateProvider with ChangeNotifier {
             mostFreqCoordinate,
             physicalWidth,
             numberOfImages,
-            sizeOfChart.width
+            sizeOfChart.width,
+            enabledLocations,
           ]);
         }
     }

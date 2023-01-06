@@ -102,7 +102,7 @@ class ImageScatter extends Scatter {
 class DefaultCircleScatter extends Scatter {
   final double size;
   final Color color;
-  DefaultCircleScatter({Key? key, required this.size, required this.color})
+  const DefaultCircleScatter({Key? key, required this.size, required this.color})
       : super(size: size, color: color, type: ScatterType.defaultCircle);
 
   @override

@@ -226,9 +226,9 @@ class YearPageStateProvider with ChangeNotifier {
     for (int i = 0; i < coordinatesFloor.length; i++) {
       var element = coordinatesFloor.elementAt(i);
       int index = -1;
-      if (countOfLocations.length != 0)
+      if (countOfLocations.isNotEmpty) {
         index = countOfLocations.keys.toList().lastIndexOf(element);
-      print(index);
+      }
       if (index == -1) {
         countOfLocations[element] = 1;
       } else {
@@ -289,20 +289,6 @@ class YearPageStateProvider with ChangeNotifier {
             DateTime(year).weekday -
             1;
 
-        double xLocationExpanded = positionExpanded[indexOfDate][0];
-        double yLocationExpanded = positionExpanded[indexOfDate][1];
-        xLocationExpanded = (1.0) * xLocationExpanded;
-        yLocationExpanded = (1.0) * yLocationExpanded;
-
-        yLocationExpanded = yLocationExpanded;
-
-        double xLocationNotExpanded = positionNotExpanded[indexOfDate][0];
-        double yLocationNotExpanded = positionNotExpanded[indexOfDate][1];
-
-        xLocationNotExpanded = (1 - i * 0.1) * xLocationNotExpanded;
-        yLocationNotExpanded = (1 - i * 0.1) * yLocationNotExpanded;
-        yLocationNotExpanded = yLocationNotExpanded;
-
         int numberOfImages = data[date]?[0].length ?? 1;
 
         Coordinate? coordinate = data[date]!.length > 1
@@ -312,23 +298,8 @@ class YearPageStateProvider with ChangeNotifier {
 
         double diffInCoord =
             calculateDistance(coordinate!, mostFreqCoordinate!);
-        int locationClassification = 5;
 
-        if (diffInCoord < 500) {
-          locationClassification = 4;
-        }
-        if (diffInCoord < 100) {
-          locationClassification = 3;
-        }
-        if (diffInCoord < 20) {
-          locationClassification = 2;
-        }
-        if (diffInCoord < 5) {
-          locationClassification = 1;
-        }
-        if (diffInCoord < 0.5) {
-          locationClassification = 0;
-        }
+        int locationClassification = classifyCoordinate(diffInCoord);
 
         Color color = (coordinate == null) | (coordinate.longitude == null)
             ? Colors.grey.withAlpha(100)
@@ -341,32 +312,20 @@ class YearPageStateProvider with ChangeNotifier {
 
         List entries = data[date]![0];
 
-        double leftExpanded = xLocationExpanded * (physicalWidth) / 2 +
-            sizeOfChart / 2 -
-            size / 2;
-        double topExpanded =
-            yLocationExpanded * physicalWidth / 2 + sizeOfChart / 2 - size / 2;
+        List locationOfScatter = convertLocationOfScatterFromWeekdayToLeftTop(
+            positionExpanded[indexOfDate],
+            positionNotExpanded[indexOfDate],
+            i,
+            sizeOfChart,
+            size,
+            physicalWidth);
 
-        double leftNotExpanded = xLocationNotExpanded * (physicalWidth) / 2 +
-            sizeOfChart / 2 -
-            size / 2;
-        double topNotExpanded = yLocationNotExpanded * physicalWidth / 2 +
-            sizeOfChart / 2 -
-            size / 2;
-
-        double leftExpandedExtra = positionNotExpanded[indexOfDate][0] *
-                (1.7 - 0.05 * i) *
-                (physicalWidth) /
-                2 +
-            sizeOfChart / 2 -
-            size / 2;
-
-        double topExpandedExtra = positionNotExpanded[indexOfDate][1] *
-                (1.7 - 0.05 * i) *
-                physicalWidth /
-                2 +
-            sizeOfChart / 2 -
-            size / 2;
+        double leftExpanded = locationOfScatter[0];
+        double topExpanded = locationOfScatter[1];
+        double leftNotExpanded = locationOfScatter[2];
+        double topNotExpanded = locationOfScatter[3];
+        double leftExpandedExtra = locationOfScatter[4];
+        double topExpandedExtra = locationOfScatter[5];
 
         return [
           leftExpanded,
@@ -383,13 +342,79 @@ class YearPageStateProvider with ChangeNotifier {
         ];
       });
 
-      dataForChart2_modified[year]!.removeWhere(
-          (element) =>
-              !enabledLocations.values.elementAt(element.elementAt(10)));
+      dataForChart2_modified[year]!.removeWhere((element) =>
+          !enabledLocations.values.elementAt(element.elementAt(10)));
       print("dataForChart2 : $dataForChart2_modified");
     }
 
     return [dataForChart2_modified];
+  }
+
+  static int classifyCoordinate(diffInCoord) {
+    int locationClassification = 5;
+
+    if (diffInCoord < 500) {
+      locationClassification = 4;
+    }
+    if (diffInCoord < 100) {
+      locationClassification = 3;
+    }
+    if (diffInCoord < 20) {
+      locationClassification = 2;
+    }
+    if (diffInCoord < 5) {
+      locationClassification = 1;
+    }
+    if (diffInCoord < 0.5) {
+      locationClassification = 0;
+    }
+
+    return locationClassification;
+  }
+
+  static List convertLocationOfScatterFromWeekdayToLeftTop(
+      positionExpandedOfDate,
+      positionNotExpandedOfDate,
+      int i,
+      sizeOfChart,
+      size,
+      physicalWidth) {
+    double xLocationExpanded = positionExpandedOfDate[0];
+    double yLocationExpanded = positionExpandedOfDate[1];
+    double xLocationNotExpanded = positionNotExpandedOfDate[0];
+    double yLocationNotExpanded = positionNotExpandedOfDate[1];
+
+    xLocationNotExpanded = (1 - i * 0.1) * xLocationNotExpanded;
+    yLocationNotExpanded = (1 - i * 0.1) * yLocationNotExpanded;
+
+    double leftExpanded =
+        xLocationExpanded * (physicalWidth) / 2 + sizeOfChart / 2 - size / 2;
+    double topExpanded =
+        yLocationExpanded * physicalWidth / 2 + sizeOfChart / 2 - size / 2;
+
+    double leftNotExpanded =
+        xLocationNotExpanded * (physicalWidth) / 2 + sizeOfChart / 2 - size / 2;
+    double topNotExpanded =
+        yLocationNotExpanded * physicalWidth / 2 + sizeOfChart / 2 - size / 2;
+
+    double leftExpandedExtra =
+        xLocationNotExpanded * (1.7 - 0.05 * i) * (physicalWidth) / 2 +
+            sizeOfChart / 2 -
+            size / 2;
+
+    double topExpandedExtra =
+        yLocationNotExpanded * (1.7 - 0.05 * i) * physicalWidth / 2 +
+            sizeOfChart / 2 -
+            size / 2;
+
+    return [
+      leftExpanded,
+      topExpanded,
+      leftNotExpanded,
+      topNotExpanded,
+      leftExpandedExtra,
+      topExpandedExtra
+    ];
   }
 
   void setEnabledLocation(String text) {
@@ -433,7 +458,7 @@ class YearPageStateProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void setIsUpdating(bool isUpdating){
+  void setIsUpdating(bool isUpdating) {
     this.isUpdating = isUpdating;
     print("isUpdating : $isUpdating}");
     notifyListeners();

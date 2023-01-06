@@ -384,8 +384,8 @@ class YearPageStateProvider with ChangeNotifier {
     double xLocationNotExpanded = positionNotExpandedOfDate[0];
     double yLocationNotExpanded = positionNotExpandedOfDate[1];
 
-    xLocationNotExpanded = (1 - i * 0.1) * xLocationNotExpanded;
-    yLocationNotExpanded = (1 - i * 0.1) * yLocationNotExpanded;
+    // xLocationNotExpanded = (1 - i * 0.1) * xLocationNotExpanded;
+    // yLocationNotExpanded = (1 - i * 0.1) * yLocationNotExpanded;
 
     double leftExpanded =
         xLocationExpanded * (physicalWidth) / 2 + sizeOfChart / 2 - size / 2;
@@ -393,10 +393,11 @@ class YearPageStateProvider with ChangeNotifier {
         yLocationExpanded * physicalWidth / 2 + sizeOfChart / 2 - size / 2;
 
     double leftNotExpanded =
-        xLocationNotExpanded * (physicalWidth) / 2 + sizeOfChart / 2 - size / 2;
+        (1 - i * 0.1) *xLocationNotExpanded * (physicalWidth) / 2 + sizeOfChart / 2 - size / 2;
     double topNotExpanded =
-        yLocationNotExpanded * physicalWidth / 2 + sizeOfChart / 2 - size / 2;
+        (1 - i * 0.1) * yLocationNotExpanded * physicalWidth / 2 + sizeOfChart / 2 - size / 2;
 
+    print("i for debug : ${i}, $physicalWidth");
     double leftExpandedExtra =
         xLocationNotExpanded * (1.7 - 0.05 * i) * (physicalWidth) / 2 +
             sizeOfChart / 2 -
@@ -441,16 +442,18 @@ class YearPageStateProvider with ChangeNotifier {
 
   void setExpandedYearByButton() {
     int last = listOfYears.last;
+    int indexOfCurrentYear = listOfYears.indexOf(expandedYear);
+    print("indexOfcurentYear : $indexOfCurrentYear");
     if (expandedYear == null) {
       setExpandedYear(listOfYears.elementAt(0));
       return;
     }
-    if (expandedYear == listOfYears.last) {
+    if (expandedYear == last) {
       setExpandedYear(null);
       return;
     }
 
-    setExpandedYear(expandedYear! - 1);
+    setExpandedYear(listOfYears.elementAt(indexOfCurrentYear+1));
   }
 
   void setAngle(double angle) {

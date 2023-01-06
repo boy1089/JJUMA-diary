@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:jjuma.d/StateProvider/year_page_state_provider.dart';
 import 'package:jjuma.d/pages/YearPage/widgets/photo_card.dart';
 import 'package:swipeable_page_route/swipeable_page_route.dart';
+import '../../Util/Util.dart';
 import '../event.dart';
 import 'scatters.dart';
 import 'package:jjuma.d/Util/global.dart' as global;
@@ -83,47 +84,52 @@ class _YearChartState extends State<YearChart> {
                       return;
                     }
                     if (isExpanded) {
-                      switch(global.kOs){
-                        case("android"):{
-                          Navigator.push(
-                            context,
-                            PageRouteBuilder(
-                                transitionDuration: Duration(milliseconds: 700),
-                                pageBuilder: (_, __, ___) => PhotoCard(
-                                  tag: "${year.toString()}${index}",
-                                  isMagnified: true,
-                                  event: Event(
-                                    images: Map.fromIterable(entries,
-                                        key: (item) => item.key,
-                                        value: (item) => item.value),
-                                    // {for(MapEntry<dynamic, InfoFromFile> entry in entries)}),
-                                    note: "",
-                                  ),
-                                  filenameOfFavoriteImage:
-                                  filenameOfFavoriteImage,
-                                )),
-                          );
-                        }
-                        case ("ios"):{
-                          Navigator.of(context).push(SwipeablePageRoute(builder:
-                              (BuildContext context) => PhotoCard(
-                            tag: "${year.toString()}${index}",
-                            isMagnified: true,
-                            event: Event(
-                              images: Map.fromIterable(entries,
-                                  key: (item) => item.key,
-                                  value: (item) => item.value),
-                              // {for(MapEntry<dynamic, InfoFromFile> entry in entries)}),
-                              note: "",
-                            ),
-                            filenameOfFavoriteImage:
-                            filenameOfFavoriteImage,
-                          )));
-
-                        }
+                      switch (global.kOs) {
+                        case ("android"):
+                          {
+                            Navigator.push(
+                              context,
+                              PageRouteBuilder(
+                                  transitionDuration:
+                                      Duration(milliseconds: 700),
+                                  pageBuilder: (_, __, ___) => PhotoCard(
+                                        tag: "${year.toString()}${index}",
+                                        isMagnified: true,
+                                        event: Event(
+                                          images: Map.fromIterable(entries,
+                                              key: (item) => item.key,
+                                              value: (item) => item.value),
+                                          // {for(MapEntry<dynamic, InfoFromFile> entry in entries)}),
+                                          note: "",
+                                        ),
+                                        filenameOfFavoriteImage:
+                                            filenameOfFavoriteImage,
+                                      )),
+                            );
+                          }
+                          break;
+                        case ("ios"):
+                          {
+                            Navigator.of(context).push(SwipeablePageRoute(
+                              builder: (BuildContext context) => PhotoCard(
+                                tag: "${year.toString()}${index}",
+                                isMagnified: true,
+                                event: Event(
+                                  images: Map.fromIterable(entries,
+                                      key: (item) => item.key,
+                                      value: (item) => item.value),
+                                  // {for(MapEntry<dynamic, InfoFromFile> entry in entries)}),
+                                  note: "",
+                                ),
+                                filenameOfFavoriteImage:
+                                    filenameOfFavoriteImage,
+                              ),
+                              canOnlySwipeFromEdge: true,
+                              backGestureDetectionStartOffset: 2.0,
+                              backGestureDetectionWidth: 100.0,
+                            ));
+                          }
                       }
-
-
                     }
                   },
                   child: Hero(
@@ -141,5 +147,4 @@ class _YearChartState extends State<YearChart> {
       ]),
     );
   }
-
 }

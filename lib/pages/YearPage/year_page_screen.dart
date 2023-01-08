@@ -128,17 +128,17 @@ class _YearPageScreenState extends State<YearPageScreen> {
 
   yearButton(YearPageStateProvider product) {
     return ElevatedButton(
+        // onPressed: () {
+        //   product.setExpandedYearByButton();
+        //
+        //   setState(() {
+        //     testFlag = !testFlag;
+        //     testWidget = testWidget..on = testFlag;
+        //     testWidget.updateListOfWidget();
+        //     print(testWidget.listOfWidget);
+        //   });
+        // },
         onPressed: () {
-          product.setExpandedYearByButton();
-
-          setState(() {
-            testFlag = !testFlag;
-            testWidget = testWidget..on = testFlag;
-            testWidget.updateListOfWidget();
-            print(testWidget.listOfWidget);
-          });
-        },
-        onLongPress: () {
           showGeneralDialog(
               barrierDismissible: true,
               barrierLabel: "yearButton",

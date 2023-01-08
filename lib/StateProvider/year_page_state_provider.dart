@@ -75,7 +75,7 @@ class YearPageStateProvider with ChangeNotifier {
   Coordinate? mostFreqCoordinate;
 
   int? expandedYear = DateTime.now().year;
-  int maxNumOfYearChart = 9;
+  int maxNumOfYearChart = 20;
   int? highlightedYear;
   List listOfYears = [];
 

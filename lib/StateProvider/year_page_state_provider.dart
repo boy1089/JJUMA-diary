@@ -171,6 +171,11 @@ class YearPageStateProvider with ChangeNotifier {
           mostFreqCoordinate = result[1];
           numberOfImages = result[2];
 
+          listOfYears = dataForChart2.keys.toList();
+          if (listOfYears.length > maxNumOfYearChart) {
+            listOfYears = listOfYears.sublist(0, maxNumOfYearChart);
+          }
+
           result2 = await compute(modifyData_static, [
             dataForChart2,
             mostFreqCoordinate,
@@ -201,10 +206,6 @@ class YearPageStateProvider with ChangeNotifier {
 
     dataForChart2_modified = result2[0];
 
-    listOfYears = dataForChart2_modified.keys.toList();
-    if (listOfYears.length > maxNumOfYearChart) {
-      listOfYears = listOfYears.sublist(0, maxNumOfYearChart);
-    }
     // await Future.delayed(Duration(seconds: 2));
     setIsUpdating(false);
     notifyListeners();
@@ -258,21 +259,24 @@ class YearPageStateProvider with ChangeNotifier {
     double sizeOfChart = input[4];
     Map<String, bool> enabledLocations = input[5];
     Map<int, List> dataForChart2_modified = {};
+    int numberOfYears = dataForChart2_modified.length;
+    double gapBetweenYearChart = numberOfYears<10? 0.05: 0.05 / numberOfYears * 10;
+
     if (dataForChart2 == {}) return [{}];
 
     //get proper reference of number of image
     int maximumNumberOfImagesInYear = numberOfImages.values.reduce(max);
     int indexOfMaximumNumberOfImages =
         numberOfImages.values.toList().indexOf(maximumNumberOfImagesInYear);
-    numberOfImages.forEach((key, value) {
-      print("$key, $value}");
-    });
+    // numberOfImages.forEach((key, value) {
+    //   print("$key, $value}");
+    // });
     int year = dataForChart2.keys.elementAt(indexOfMaximumNumberOfImages);
     var data = dataForChart2[year];
     print("max : $year");
 
-    print(List<int>.generate(
-        data.length, (index) => data.values.elementAt(index)[0].length));
+    // print(List<int>.generate(
+    //     data.length, (index) => data.values.elementAt(index)[0].length));
     int maximumNumberOfImages = List<int>.generate(
             data.length, (index) => data.values.elementAt(index)[0].length)
         .reduce(max);
@@ -318,7 +322,8 @@ class YearPageStateProvider with ChangeNotifier {
             i,
             sizeOfChart,
             size,
-            physicalWidth);
+            physicalWidth,gapBetweenYearChart
+            );
 
         double leftExpanded = locationOfScatter[0];
         double topExpanded = locationOfScatter[1];
@@ -378,7 +383,7 @@ class YearPageStateProvider with ChangeNotifier {
       int i,
       sizeOfChart,
       size,
-      physicalWidth) {
+      physicalWidth, gapBetweenYearChart) {
     double xLocationExpanded = positionExpandedOfDate[0];
     double yLocationExpanded = positionExpandedOfDate[1];
     double xLocationNotExpanded = positionNotExpandedOfDate[0];
@@ -399,12 +404,12 @@ class YearPageStateProvider with ChangeNotifier {
 
     print("i for debug : ${i}, $physicalWidth");
     double leftExpandedExtra =
-        xLocationNotExpanded * (1.7 - 0.05 * i) * (physicalWidth) / 2 +
+        xLocationNotExpanded * (1.7 - gapBetweenYearChart * i) * (physicalWidth) / 2 +
             sizeOfChart / 2 -
             size / 2;
 
     double topExpandedExtra =
-        yLocationNotExpanded * (1.7 - 0.05 * i) * physicalWidth / 2 +
+        yLocationNotExpanded * (1.7 - gapBetweenYearChart * i) * physicalWidth / 2 +
             sizeOfChart / 2 -
             size / 2;
 

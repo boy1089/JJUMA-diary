@@ -101,7 +101,6 @@ class _YearPageScreenState extends State<YearPageScreen> {
           ),
         ]),
       ),
-
     );
   }
 
@@ -145,7 +144,7 @@ class _YearPageScreenState extends State<YearPageScreen> {
               barrierColor: Colors.transparent,
               context: context,
               pageBuilder: (context, animation, animation2) => SafeArea(
-                child: Center(
+                    child: Center(
                       child: Container(
                         width: 500,
                         height: 430,
@@ -155,8 +154,18 @@ class _YearPageScreenState extends State<YearPageScreen> {
                                 product.listOfYears.length,
                                 (i) => Align(
                                     alignment: Alignment(
-                                        cos(2 * pi / product.listOfYears.length * i + 0.02 * pi) * 0.6,
-                                        sin(2 * pi / product.listOfYears.length * i + 0.02 * pi) * 0.6),
+                                        cos(2 *
+                                                    pi /
+                                                    product.listOfYears.length *
+                                                    i +
+                                                0.02 * pi) *
+                                            0.6,
+                                        sin(2 *
+                                                    pi /
+                                                    product.listOfYears.length *
+                                                    i +
+                                                0.02 * pi) *
+                                            0.6),
                                     child: yearButton2(
                                         product,
                                         product.listOfYears
@@ -164,7 +173,7 @@ class _YearPageScreenState extends State<YearPageScreen> {
                                             .toString())))),
                       ),
                     ),
-              ));
+                  ));
         },
         style: ElevatedButton.styleFrom(
             side: const BorderSide(width: 1, color: Color(0xff808080)),
@@ -202,8 +211,9 @@ class _YearPageScreenState extends State<YearPageScreen> {
       var boundary = renderObject;
       ui.Image image = await boundary.toImage(pixelRatio: 10.0);
 
-      final directory = global.kOs=="android" ? (await getExternalStorageDirectory())?.path
-          :(await getApplicationDocumentsDirectory())?.path;
+      final directory = global.kOs == "android"
+          ? (await getExternalStorageDirectory())?.path
+          : (await getApplicationDocumentsDirectory())?.path;
       ByteData byteData =
           (await image.toByteData(format: ui.ImageByteFormat.png))!;
       Uint8List pngBytes = byteData.buffer.asUint8List();
@@ -229,22 +239,19 @@ class _YearPageScreenState extends State<YearPageScreen> {
 }
 
 class TestWidget {
-  TestWidget(this.on){
+  TestWidget(this.on) {
     updateListOfWidget();
   }
-  bool on= false;
+  bool on = false;
   List listOfWidget = [];
 
-  updateListOfWidget(){
+  updateListOfWidget() {
     listOfWidget = List.generate(10, (i) {
-
       print('aa');
       return AnimatedPositioned(
           duration: Duration(seconds: 1),
           left: on ? 400 : i * 10,
           child: Container(width: 30, height: 40, color: Colors.blue));
-    }
-
-    );
+    });
   }
 }

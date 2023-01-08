@@ -110,24 +110,27 @@ class _YearChartState extends State<YearChart> {
                           break;
                         case ("ios"):
                           {
-                            Navigator.of(context).push(SwipeablePageRoute(
-                              builder: (BuildContext context) => PhotoCard(
-                                tag: "${year.toString()}${index}",
-                                isMagnified: true,
-                                event: Event(
-                                  images: Map.fromIterable(entries,
-                                      key: (item) => item.key,
-                                      value: (item) => item.value),
-                                  // {for(MapEntry<dynamic, InfoFromFile> entry in entries)}),
-                                  note: "",
-                                ),
-                                filenameOfFavoriteImage:
-                                    filenameOfFavoriteImage,
-                              ),
-                              canOnlySwipeFromEdge: true,
-                              backGestureDetectionStartOffset: 2.0,
-                              backGestureDetectionWidth: 100.0,
-                            ));
+                            Navigator.push(
+                              context,
+                              PageRouteBuilder(
+                                  transitionDuration:
+                                  Duration(milliseconds: 700),
+                                  pageBuilder: (_, __, ___) =>
+                                     PhotoCard(
+                                      tag: "${year.toString()}${index}",
+                                      isMagnified: true,
+                                      event: Event(
+                                        images: Map.fromIterable(entries,
+                                            key: (item) => item.key,
+                                            value: (item) => item.value),
+                                        // {for(MapEntry<dynamic, InfoFromFile> entry in entries)}),
+                                        note: "",
+                                      ),
+                                      filenameOfFavoriteImage:
+                                      filenameOfFavoriteImage,
+                                    ),
+                                  )
+                            );
                           }
                       }
                     }

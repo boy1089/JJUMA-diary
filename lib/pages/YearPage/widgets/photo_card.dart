@@ -162,6 +162,8 @@ class _PhotoCardState extends State<PhotoCard> {
     return Hero(
       tag: widget.tag,
       child: Scaffold(
+        extendBodyBehindAppBar: true,
+        appBar: AppBar(),
         resizeToAvoidBottomInset: true,
         body: SafeArea(
           child: SingleChildScrollView(

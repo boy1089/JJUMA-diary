@@ -43,7 +43,7 @@ class DataRepository {
     if (global.kOs == "ios") {
       final List<AssetPathEntity> paths = await PhotoManager.getAssetPathList();
       for (var path in paths) {
-        // if (path.name != "Recents") continue;
+        if (path.name != "Recents") continue;
         var assets = await path.getAssetListRange(start: 0, end: 20000);
         files.addAll([for (var asset in assets) asset]);
       }

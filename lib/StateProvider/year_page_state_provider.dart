@@ -81,6 +81,8 @@ class YearPageStateProvider with ChangeNotifier {
 
   double angle = 0.0;
   bool isUpdating = false;
+  double scale = 1.0;
+  Offset? position = Offset(-sizeOfChart.width/4, -sizeOfChart.height/8);
 
   DataManagerInterface dataManager;
   YearPageStateProvider(this.dataManager);
@@ -469,6 +471,16 @@ class YearPageStateProvider with ChangeNotifier {
   void setIsUpdating(bool isUpdating) {
     this.isUpdating = isUpdating;
     print("isUpdating : $isUpdating}");
+    notifyListeners();
+  }
+
+  void setScale(double scale){
+    this.scale = scale;
+    notifyListeners();
+  }
+
+  void setPosition(Offset? position){
+    this.position = position;
     notifyListeners();
   }
 

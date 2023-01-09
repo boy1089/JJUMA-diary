@@ -41,6 +41,11 @@ class _YearPageScreenState extends State<YearPageScreen> {
   late TestWidget testWidget;
   bool testFlag = false;
 
+  Offset position = Offset(-sizeOfChart.width/4, -sizeOfChart.height/8);
+
+  Offset center = Offset(-sizeOfChart.width/4, -sizeOfChart.height/8);
+
+
   @override
   void initState() {
     super.initState();
@@ -62,55 +67,77 @@ class _YearPageScreenState extends State<YearPageScreen> {
           Consumer<YearPageStateProvider>(
             builder: (context, product, child) => WillPopScope(
               onWillPop: () => willPopLogic(product),
-              child: RepaintBoundary(
-                key: key2,
-                child: PhotoView.customChild(
-                  onTapUp: (context, detail, value) {
-                    // double x = physicalWidth -
-                    //     2 * detail.localPosition.dx +
-                    //     controller.position.dx * controller.scale!;
-                    // double y = physicalHeight -
-                    //     2 * detail.localPosition.dy +
-                    //     controller.position.dy * controller.scale!;
+              child: GestureDetector(
+                onTapUp: (detail) {
 
-                    double scale = controller.scale! <4? 2:1.5;
-                    scale = 2;`
-                    double x = (physicalWidth/2 -
-                         detail.localPosition.dx )*2  +
-                        controller.position.dx * scale;
-                    double y = (physicalHeight/2 -
-                         detail.globalPosition.dy)  *2 +
-                        controller.position.dy * scale;
+                  double scale_prev = product.scale;
+                  double scale = product.scale * 2;
+
+                  // double x = -(detail.localPosition.dx - physicalWidth/2) *scale + position.dx * scale;
+                  // double y = -(detail.localPosition.dy - physicalHeight/2) * scale + position.dy * scale;
 
 
-                    print('$x, $y, ${controller.position}');
+                  double x = -(detail.localPosition.dx - physicalWidth/2 ) *2 + position.dx * 2;
+                  double y = -(detail.localPosition.dy - physicalHeight/2 ) * 2 + position.dy * 2;
 
-                    controller.scale = controller.scale! * scale;
-                    controller.position = Offset(x, y);
-                  },
-                  backgroundDecoration:
-                      const BoxDecoration(color: Colors.black12),
-                  customSize: sizeOfChart,
-                  minScale: minScale,
-                  controller: controller,
-                  onScaleEnd: (context, value, a) {
-                    controller.scale = a.scale ?? minScale;
-                    if (controller.scale! < minScale) {
-                      controller.scale = minScale;
-                      // product.setExpandedYear(null);
-                    }
-                  },
-                  child: Stack(alignment: Alignment.center, children: [
-                    CustomPaint(size: const Size(0, 0), painter: OpenPainter()),
-                    ...List.generate(product.listOfYears.length, (index) {
-                      int year = product.listOfYears.elementAt(index);
-                      return YearChart(
-                          year: year,
-                          radius: 1 - index * 0.1,
-                          product: product);
-                    }),
-                    // ...testWidget.listOfWidget,
-                    yearButton(product),
+                  print("${detail.localPosition}, $x, $y");
+
+                  product.setScale(scale);
+                  //
+                  //
+                  // product.setPosition(Offset( x, y));
+                  setState((){
+                    position = Offset(x, y) - center - Offset(0, 50);
+                  });
+                },
+                onPanUpdate: (detail){
+                  setState((){position = position + detail.delta;
+                  });
+                  // product.setPosition(Offset(product.position!.dx + detail.delta.dx, product.position!.dy + detail.delta.dy));
+                },
+
+
+                onDoubleTap: (){
+                  product.setScale(1.0);
+                  product.setPosition(Offset(-sizeOfChart.width/4, -sizeOfChart.height/8));
+                  position =  Offset(0, 0);
+
+                },
+
+
+                child: Container(
+                  color: Colors.transparent,
+                  child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        AnimatedPositioned(
+                          width : sizeOfChart.width,
+                          height : sizeOfChart.width,
+                          // left : product.position!.dx,
+                          // top : product.position!.dy,
+                          left : position.dx,
+                          top : position.dy,
+                          curve : Curves.easeInOut,
+                          duration: Duration(milliseconds: 300),
+                          child: AnimatedScale(
+                            scale : product.scale,
+                            duration : Duration(milliseconds: 300),
+                            curve : Curves.easeInOut,
+                            child : Stack(
+                              alignment: Alignment.center,
+                              children : [
+                                CustomPaint(size: const Size(0, 0), painter: OpenPainter()),
+                                ...List.generate(product.listOfYears.length, (index) {
+                                  int year = product.listOfYears.elementAt(index);
+                                  return YearChart(
+                                      year: year, radius: 1 - index * 0.1, product: product);
+                                }),
+                                // ...testWidget.listOfWidget,
+                                yearButton(product),]
+                            )
+                          ),
+                        )
+
                   ]),
                 ),
               ),
@@ -205,12 +232,15 @@ class _YearPageScreenState extends State<YearPageScreen> {
     {
       if ((product.highlightedYear == null) &
           (product.expandedYear == null) &
-          (controller.scale == 1)) return true;
+          (product.scale == 1)) return true;
 
       product.setHighlightedYear(null);
 
-      if (controller.scale != 1) {
-        controller.scale = 1;
+      if (product.scale != 1) {
+        product.setScale(1.0);
+        product.setPosition(Offset(-sizeOfChart.width/4, -sizeOfChart.height/8));
+        // position = Offset(-sizeOfChart.width/4, -sizeOfChart.height/8);
+        position = center;
         return false;
       }
 

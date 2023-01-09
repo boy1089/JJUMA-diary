@@ -65,6 +65,29 @@ class _YearPageScreenState extends State<YearPageScreen> {
               child: RepaintBoundary(
                 key: key2,
                 child: PhotoView.customChild(
+                  onTapUp: (context, detail, value) {
+                    // double x = physicalWidth -
+                    //     2 * detail.localPosition.dx +
+                    //     controller.position.dx * controller.scale!;
+                    // double y = physicalHeight -
+                    //     2 * detail.localPosition.dy +
+                    //     controller.position.dy * controller.scale!;
+
+                    double scale = controller.scale! <4? 2:1.5;
+                    scale = 2;`
+                    double x = (physicalWidth/2 -
+                         detail.localPosition.dx )*2  +
+                        controller.position.dx * scale;
+                    double y = (physicalHeight/2 -
+                         detail.globalPosition.dy)  *2 +
+                        controller.position.dy * scale;
+
+
+                    print('$x, $y, ${controller.position}');
+
+                    controller.scale = controller.scale! * scale;
+                    controller.position = Offset(x, y);
+                  },
                   backgroundDecoration:
                       const BoxDecoration(color: Colors.black12),
                   customSize: sizeOfChart,
@@ -105,58 +128,78 @@ class _YearPageScreenState extends State<YearPageScreen> {
           ),
         ]),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          // String? filenameOfFavoriteImage = product
-          //     .dataManager.filenameOfFavoriteImages[year.toString()]?[date];
-
-          DataManagerInterface dataManager = DataManagerInterface(global.kOs);
-          var dicOfFavoriteImages = dataManager.filenameOfFavoriteImages;
-          List listOfFavoriteImages = [];
-          print(dicOfFavoriteImages);
-          for(int i = 0; i < dicOfFavoriteImages.length; i++){
-            String year = dicOfFavoriteImages.keys.elementAt(i);
-            // for(int j = 0; j< listOfFavoriteImages[year].length; j++){
-            //
-            // }
-            // listOfFavoriteImages.expand(dicOfFavoriteImages[year]!.values);
-            listOfFavoriteImages.addAll(dicOfFavoriteImages[year]!.values);
-          }
-          print(listOfFavoriteImages);
-          final image.JpegDecoder decoder = image.JpegDecoder();
-
-          final List<image.Image> images = [];
-          for(var imagePath in listOfFavoriteImages){
-            if(imagePath == null) continue;
-            Uint8List data = await File(imagePath).readAsBytes();
-            print(data);
-            var png = image.decodeJpg(data);
-            var pngResized = image.copyResize(png!, width : 500);
-
-            images.add(decoder.decodeImage(image.encodeJpg(pngResized))!);
-          }
-          List<int>? gifData = generateGIF(images);
-          print(gifData);
-          final directory = global.kOs == "android"
-              ? (await getExternalStorageDirectory())?.path
-              : (await getApplicationDocumentsDirectory())?.path;
-          File imgFile = File('$directory/jjuma.d_gif}.gif');
-          Uint8List a = Uint8List.fromList(gifData!);
-          await imgFile.writeAsBytes(a);
-          print("done!");
-
-        },
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () async {
+      //     // generateJumadeung();
+      //
+      //     DataManagerInterface dataManager = DataManagerInterface(global.kOs);
+      //     print(dataManager.infoFromFiles);
+      //
+      //   },
+      // ),
     );
   }
 
-  List<int>? generateGIF(Iterable<image.Image> images) {
+//TODO : make
+  generateJumadeung() async {
+    List listOfFavoriteImages = getFavoriteImagePaths();
+
+    final image.JpegDecoder decoder = image.JpegDecoder();
+    final List<image.Image> images = [];
+    for (var imagePath in listOfFavoriteImages) {
+      print("genering Jumadeung... add ${imagePath}");
+      if (imagePath == null) continue;
+      image.Image pngResized = await readImageWithDownsampling(imagePath, 500);
+      images.add(decoder.decodeImage(image.encodeJpg(pngResized))!);
+    }
+
+    List<int>? gifData = generateGIFFromImages(images);
+    final directory = global.kOs == "android"
+        ? (await getExternalStorageDirectory())?.path
+        : (await getApplicationDocumentsDirectory())?.path;
+    File imgFile = File('$directory/jjuma.d_gif}.gif');
+    Uint8List a = Uint8List.fromList(gifData!);
+    await imgFile.writeAsBytes(a);
+    print("done!");
+  }
+
+  getFavoriteImagePaths() {
+    DataManagerInterface dataManager = DataManagerInterface(global.kOs);
+    var dicOfFavoriteImages = dataManager.filenameOfFavoriteImages;
+    List listOfFavoriteImages = [];
+    for (int i = 0; i < dicOfFavoriteImages.length; i++) {
+      String year = dicOfFavoriteImages.keys.elementAt(i);
+      listOfFavoriteImages.addAll(dicOfFavoriteImages[year]!.values);
+    }
+    return listOfFavoriteImages;
+  }
+
+  Future<image.Image> readImageWithDownsampling(imagePath, width) async {
+    Uint8List data = await File(imagePath).readAsBytes();
+    image.Image png = image.decodeJpg(data)!;
+    int width = png.width;
+    int height = png.height;
+    bool isWidthWiderThanHeight = width > height;
+    int lengthOfBoundingBox = isWidthWiderThanHeight ? height : width;
+
+    png = isWidthWiderThanHeight
+        ? image.copyCrop(png, (lengthOfBoundingBox / 8).floor(), 0,
+            lengthOfBoundingBox, lengthOfBoundingBox)
+        : image.copyCrop(png, 0, (lengthOfBoundingBox / 8).floor(),
+            lengthOfBoundingBox, lengthOfBoundingBox);
+
+    image.Image pngResized = image.copyResize(png!, width: 1000);
+    return pngResized;
+  }
+
+  List<int>? generateGIFFromImages(Iterable<image.Image> images) {
     final image.Animation animation = image.Animation();
-    for(image.Image image2 in images) {
+    for (image.Image image2 in images) {
       animation.addFrame(image2);
     }
     return image.encodeGifAnimation(animation);
   }
+
   //
   willPopLogic(product) async {
     {

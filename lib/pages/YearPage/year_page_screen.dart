@@ -1,9 +1,13 @@
 import 'dart:io';
 import 'dart:math';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image/image.dart' as image;
+import 'package:jjuma.d/Data/android_data_manager.dart';
+import 'package:jjuma.d/Data/data_manager_interface.dart';
 import 'package:jjuma.d/Util/DateHandler.dart';
 import 'package:jjuma.d/pages/YearPage/legend.dart';
 import 'package:path_provider/path_provider.dart';
@@ -101,9 +105,59 @@ class _YearPageScreenState extends State<YearPageScreen> {
           ),
         ]),
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          // String? filenameOfFavoriteImage = product
+          //     .dataManager.filenameOfFavoriteImages[year.toString()]?[date];
+
+          DataManagerInterface dataManager = DataManagerInterface(global.kOs);
+          var dicOfFavoriteImages = dataManager.filenameOfFavoriteImages;
+          List listOfFavoriteImages = [];
+          print(dicOfFavoriteImages);
+          for(int i = 0; i < dicOfFavoriteImages.length; i++){
+            String year = dicOfFavoriteImages.keys.elementAt(i);
+            // for(int j = 0; j< listOfFavoriteImages[year].length; j++){
+            //
+            // }
+            // listOfFavoriteImages.expand(dicOfFavoriteImages[year]!.values);
+            listOfFavoriteImages.addAll(dicOfFavoriteImages[year]!.values);
+          }
+          print(listOfFavoriteImages);
+          final image.JpegDecoder decoder = image.JpegDecoder();
+
+          final List<image.Image> images = [];
+          for(var imagePath in listOfFavoriteImages){
+            if(imagePath == null) continue;
+            Uint8List data = await File(imagePath).readAsBytes();
+            print(data);
+            var png = image.decodeJpg(data);
+            var pngResized = image.copyResize(png!, width : 500);
+
+            images.add(decoder.decodeImage(image.encodeJpg(pngResized))!);
+          }
+          List<int>? gifData = generateGIF(images);
+          print(gifData);
+          final directory = global.kOs == "android"
+              ? (await getExternalStorageDirectory())?.path
+              : (await getApplicationDocumentsDirectory())?.path;
+          File imgFile = File('$directory/jjuma.d_gif}.gif');
+          Uint8List a = Uint8List.fromList(gifData!);
+          await imgFile.writeAsBytes(a);
+          print("done!");
+
+        },
+      ),
     );
   }
 
+  List<int>? generateGIF(Iterable<image.Image> images) {
+    final image.Animation animation = image.Animation();
+    for(image.Image image2 in images) {
+      animation.addFrame(image2);
+    }
+    return image.encodeGifAnimation(animation);
+  }
+  //
   willPopLogic(product) async {
     {
       if ((product.highlightedYear == null) &
@@ -127,16 +181,6 @@ class _YearPageScreenState extends State<YearPageScreen> {
 
   yearButton(YearPageStateProvider product) {
     return ElevatedButton(
-        // onPressed: () {
-        //   product.setExpandedYearByButton();
-        //
-        //   setState(() {
-        //     testFlag = !testFlag;
-        //     testWidget = testWidget..on = testFlag;
-        //     testWidget.updateListOfWidget();
-        //     print(testWidget.listOfWidget);
-        //   });
-        // },
         onPressed: () {
           showGeneralDialog(
               barrierDismissible: true,

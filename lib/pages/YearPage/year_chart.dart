@@ -77,7 +77,8 @@ class _YearChartState extends State<YearChart> {
                   onTapCancel: () {
                     product.setHighlightedYear(null);
                   },
-                  onTapUp: (detail)=>onTapUp(isExpanded, index, entries, filenameOfFavoriteImage),
+                  onTapUp: (detail) => onTapUp(
+                      isExpanded, index, entries, filenameOfFavoriteImage),
                   child: Hero(
                       tag: "${year.toString()}$index",
                       child: filenameOfFavoriteImage != null
@@ -94,9 +95,7 @@ class _YearChartState extends State<YearChart> {
     );
   }
 
-
-  onTapUp(isExpanded, index, entries, filenameOfFavoriteImage){
-
+  onTapUp(isExpanded, index, entries, filenameOfFavoriteImage) {
     product.setHighlightedYear(null);
     if (!isExpanded) {
       product.setExpandedYear(year);
@@ -109,33 +108,8 @@ class _YearChartState extends State<YearChart> {
             Navigator.push(
               context,
               PageRouteBuilder(
-                  transitionDuration:
-                  Duration(milliseconds: 700),
+                  transitionDuration: Duration(milliseconds: 700),
                   pageBuilder: (_, __, ___) => PhotoCard(
-                    tag: "${year.toString()}${index}",
-                    isMagnified: true,
-                    event: Event(
-                      images: Map.fromIterable(entries,
-                          key: (item) => item.key,
-                          value: (item) => item.value),
-                      // {for(MapEntry<dynamic, InfoFromFile> entry in entries)}),
-                      note: "",
-                    ),
-                    filenameOfFavoriteImage:
-                    filenameOfFavoriteImage,
-                  )),
-            );
-          }
-          break;
-        case ("ios"):
-          {
-            Navigator.push(
-                context,
-                PageRouteBuilder(
-                  transitionDuration:
-                  Duration(milliseconds: 700),
-                  pageBuilder: (_, __, ___) =>
-                      PhotoCard(
                         tag: "${year.toString()}${index}",
                         isMagnified: true,
                         event: Event(
@@ -145,16 +119,31 @@ class _YearChartState extends State<YearChart> {
                           // {for(MapEntry<dynamic, InfoFromFile> entry in entries)}),
                           note: "",
                         ),
-                        filenameOfFavoriteImage:
-                        filenameOfFavoriteImage,
-                      ),
-                )
+                        filenameOfFavoriteImage: filenameOfFavoriteImage,
+                      )),
             );
+          }
+          break;
+        case ("ios"):
+          {
+            Navigator.push(
+                context,
+                PageRouteBuilder(
+                  transitionDuration: Duration(milliseconds: 700),
+                  pageBuilder: (_, __, ___) => PhotoCard(
+                    tag: "${year.toString()}${index}",
+                    isMagnified: true,
+                    event: Event(
+                      images: Map.fromIterable(entries,
+                          key: (item) => item.key, value: (item) => item.value),
+                      // {for(MapEntry<dynamic, InfoFromFile> entry in entries)}),
+                      note: "",
+                    ),
+                    filenameOfFavoriteImage: filenameOfFavoriteImage,
+                  ),
+                ));
           }
       }
     }
-
-
   }
-
 }

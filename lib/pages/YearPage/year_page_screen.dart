@@ -43,7 +43,7 @@ class _YearPageScreenState extends State<YearPageScreen> {
 
   Offset position = Offset(-sizeOfChart.width/4, -sizeOfChart.height/8);
 
-  Offset center = Offset(-sizeOfChart.width/4, -sizeOfChart.height/8);
+  Offset center = Offset(-sizeOfChart.width/4, -sizeOfChart.height/32);
 
 
   @override
@@ -51,6 +51,7 @@ class _YearPageScreenState extends State<YearPageScreen> {
     super.initState();
     controller = PhotoViewController()..outputStateStream.listen(listener);
     testWidget = TestWidget(testFlag);
+    position = center;
   }
 
   void listener(PhotoViewControllerValue value) {
@@ -98,9 +99,7 @@ class _YearPageScreenState extends State<YearPageScreen> {
 
 
                 onDoubleTap: (){
-                  product.setScale(1.0);
-                  product.setPosition(Offset(-sizeOfChart.width/4, -sizeOfChart.height/8));
-                  position =  Offset(0, 0);
+                  position =  center;
 
                 },
 

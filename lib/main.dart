@@ -10,7 +10,7 @@ void main() {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   DartPluginRegistrant.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
-  Future.delayed(Duration(milliseconds: 200)).then((a){
+  Future.delayed(Duration(milliseconds: 400)).then((a){
 
 
      physicalScreenSize = window.physicalSize / window.devicePixelRatio;

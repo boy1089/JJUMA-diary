@@ -62,7 +62,6 @@ class _YearPageScreenState extends State<YearPageScreen> {
               onWillPop: () => willPopLogic(product),
               child: GestureDetector(
                 onTapUp: (detail) {
-                  double scale_prev = product.scale;
                   double scale = product.scale * zoomInMultiple;
 
                   double x = (position.dx * -1 + detail.localPosition.dx) *
@@ -99,10 +98,10 @@ class _YearPageScreenState extends State<YearPageScreen> {
                       left: position.dx,
                       top: position.dy,
                       curve: Curves.easeInOut,
-                      duration: Duration(milliseconds: 300),
+                      duration: const Duration(milliseconds: 300),
                       child: AnimatedScale(
                           scale: product.scale,
-                          duration: Duration(milliseconds: 300),
+                          duration: const Duration(milliseconds: 300),
                           curve: Curves.easeInOut,
                           child: Stack(alignment: Alignment.center, children: [
                             CustomPaint(

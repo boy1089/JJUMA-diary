@@ -40,9 +40,7 @@ class _YearPageScreenState extends State<YearPageScreen> {
 
   double heightOfLegend = 70;
   late Offset center = Offset(-1 * (sizeOfChart.width / 2 - physicalWidth / 2),
-      -1 * (sizeOfChart.height / 2 - physicalHeight / 2) - heightOfLegend/2
-
-  );
+      -1 * (sizeOfChart.height / 2 - physicalHeight / 2) - heightOfLegend / 2);
   Offset position = Offset(0, 0);
 
   @override
@@ -51,7 +49,6 @@ class _YearPageScreenState extends State<YearPageScreen> {
     position = center;
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -59,7 +56,9 @@ class _YearPageScreenState extends State<YearPageScreen> {
         child: Stack(alignment: Alignment.topCenter, children: [
           Consumer<YearPageStateProvider>(
             builder: (context, product, child) => WillPopScope(
-              onWillPop: () async {return willPopLogic(product);},
+              onWillPop: () async {
+                return willPopLogic(product);
+              },
               child: GestureDetector(
                 onTapUp: (detail) {
                   double scale = product.scale * zoomInMultiple;
@@ -77,11 +76,13 @@ class _YearPageScreenState extends State<YearPageScreen> {
 
                   product.setScale(scale);
                   setState(() {
-                    position = Offset(x, y) - center *zoomInMultiple - Offset(physicalWidth/2, heightOfLegend*2.5);
+                    position = Offset(x, y) -
+                        center * zoomInMultiple -
+                        Offset(physicalWidth / 2, heightOfLegend * 2.5);
                   });
                 },
                 onPanUpdate: (detail) {
-                  if(product.scale ==1) return;
+                  if (product.scale == 1) return;
                   setState(() {
                     position = position + detail.delta;
                   });
@@ -138,23 +139,26 @@ class _YearPageScreenState extends State<YearPageScreen> {
       ),
       // floatingActionButton: FloatingActionButton(
       //   onPressed: () async {
-      //     // generateJumadeung();
-      //
       //     DataManagerInterface dataManager = DataManagerInterface(global.kOs);
-      //     print(dataManager.infoFromFiles);
+      //     dataManager.infoFromFiles.forEach((key, value) {
+      //       print(value);
+      //     });
       //
+      //     var a = Map.fromEntries(dataManager.infoFromFiles.entries.toList()
+      //       ..sort(
+      //           (e1, e2) => e1.value.datetime!.compareTo(e2.value.datetime!)));
+      //     generateJumadeung(a.keys.toList().sublist(0, 100));
       //   },
       // ),
     );
   }
 
 //TODO : make
-  generateJumadeung() async {
-    List listOfFavoriteImages = getFavoriteImagePaths();
-
+  generateJumadeung(List listOfImages) async {
     final image.JpegDecoder decoder = image.JpegDecoder();
     final List<image.Image> images = [];
-    for (var imagePath in listOfFavoriteImages) {
+    for (int i = 0; i < listOfImages.length; i++) {
+      String imagePath = listOfImages.elementAt(i);
       print("genering Jumadeung... add ${imagePath}");
       if (imagePath == null) continue;
       image.Image pngResized = await readImageWithDownsampling(imagePath, 500);
@@ -196,20 +200,20 @@ class _YearPageScreenState extends State<YearPageScreen> {
         : image.copyCrop(png, 0, (lengthOfBoundingBox / 8).floor(),
             lengthOfBoundingBox, lengthOfBoundingBox);
 
-    image.Image pngResized = image.copyResize(png!, width: 1000);
+    image.Image pngResized = image.copyResize(png!, width: 500);
     return pngResized;
   }
 
   List<int>? generateGIFFromImages(Iterable<image.Image> images) {
     final image.Animation animation = image.Animation();
     for (image.Image image2 in images) {
-      animation.addFrame(image2);
+      animation.addFrame(image2..duration = 350);
     }
-    return image.encodeGifAnimation(animation);
+    return image.encodeGifAnimation(animation, samplingFactor: 5);
   }
 
   //
-   bool willPopLogic(YearPageStateProvider product)  {
+  bool willPopLogic(YearPageStateProvider product) {
     {
       if ((product.highlightedYear == null) &&
           (product.expandedYear == null) &&
@@ -277,7 +281,7 @@ class _YearPageScreenState extends State<YearPageScreen> {
         style: ElevatedButton.styleFrom(
             side: const BorderSide(width: 1, color: Color(0xff808080)),
             backgroundColor: Colors.transparent,
-            fixedSize: Size(70.0, 70.0),
+            fixedSize: Size(70.0, 70.0) * MediaQuery.of(context).textScaleFactor,
             shape: const CircleBorder()),
         child: Text(
           product.expandedYear == null

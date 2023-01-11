@@ -303,7 +303,7 @@ class _PhotoCardState extends State<PhotoCard> {
   dateText() {
     return Container(
         width: physicalWidth,
-        height: 20,
+        height: 20 * MediaQuery.of(context).textScaleFactor,
         margin: const EdgeInsets.symmetric(vertical: 8.0),
         child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),

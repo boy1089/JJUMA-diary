@@ -35,30 +35,22 @@ class _YearPageScreenState extends State<YearPageScreen> {
   late PhotoViewController controller;
 
   var key2 = GlobalKey();
-  double scaleCopy = 0.0;
-  double minScale = 1;
 
-  late TestWidget testWidget;
-  bool testFlag = false;
+  double zoomInMultiple = 4.0;
 
-  Offset position = Offset(-sizeOfChart.width/4, -sizeOfChart.height/8);
+  double heightOfLegend = 70;
+  late Offset center = Offset(-1 * (sizeOfChart.width / 2 - physicalWidth / 2),
+      -1 * (sizeOfChart.height / 2 - physicalHeight / 2) - heightOfLegend/2
 
-  Offset center = Offset(-sizeOfChart.width/4, -sizeOfChart.height/32);
-
+  );
+  Offset position = Offset(0, 0);
 
   @override
   void initState() {
     super.initState();
-    controller = PhotoViewController()..outputStateStream.listen(listener);
-    testWidget = TestWidget(testFlag);
     position = center;
   }
 
-  void listener(PhotoViewControllerValue value) {
-    setState(() {
-      scaleCopy = value.scale ?? 1;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -70,73 +62,63 @@ class _YearPageScreenState extends State<YearPageScreen> {
               onWillPop: () => willPopLogic(product),
               child: GestureDetector(
                 onTapUp: (detail) {
-
                   double scale_prev = product.scale;
-                  double scale = product.scale * 2;
+                  double scale = product.scale * zoomInMultiple;
 
-                  // double x = -(detail.localPosition.dx - physicalWidth/2) *scale + position.dx * scale;
-                  // double y = -(detail.localPosition.dy - physicalHeight/2) * scale + position.dy * scale;
-
-
-                  double x = -(detail.localPosition.dx - physicalWidth/2 ) *2 + position.dx * 2;
-                  double y = -(detail.localPosition.dy - physicalHeight/2 ) * 2 + position.dy * 2;
+                  double x = (position.dx * -1 + detail.localPosition.dx) *
+                          zoomInMultiple -
+                      physicalWidth / 2 * zoomInMultiple;
+                  double y = (position.dy * -1 + detail.localPosition.dy) *
+                          zoomInMultiple -
+                      physicalHeight / 2 * zoomInMultiple;
+                  x = -1 * x;
+                  y = -1 * y;
 
                   print("${detail.localPosition}, $x, $y");
 
                   product.setScale(scale);
-                  //
-                  //
-                  // product.setPosition(Offset( x, y));
-                  setState((){
-                    position = Offset(x, y) - center - Offset(0, 50);
+                  setState(() {
+                    position = Offset(x, y) - center *zoomInMultiple - Offset(physicalWidth/2, heightOfLegend*2.5);
                   });
                 },
-                onPanUpdate: (detail){
-                  setState((){position = position + detail.delta;
+                onPanUpdate: (detail) {
+                  setState(() {
+                    position = position + detail.delta;
                   });
-                  // product.setPosition(Offset(product.position!.dx + detail.delta.dx, product.position!.dy + detail.delta.dy));
                 },
-
-
-                onDoubleTap: (){
-                  position =  center;
-
+                onDoubleTap: () {
+                  position = center;
+                  product.setScale(1.0);
                 },
-
-
                 child: Container(
                   color: Colors.transparent,
-                  child: Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        AnimatedPositioned(
-                          width : sizeOfChart.width,
-                          height : sizeOfChart.width,
-                          // left : product.position!.dx,
-                          // top : product.position!.dy,
-                          left : position.dx,
-                          top : position.dy,
-                          curve : Curves.easeInOut,
+                  child: Stack(alignment: Alignment.center, children: [
+                    AnimatedPositioned(
+                      width: sizeOfChart.width,
+                      height: sizeOfChart.width,
+                      left: position.dx,
+                      top: position.dy,
+                      curve: Curves.easeInOut,
+                      duration: Duration(milliseconds: 300),
+                      child: AnimatedScale(
+                          scale: product.scale,
                           duration: Duration(milliseconds: 300),
-                          child: AnimatedScale(
-                            scale : product.scale,
-                            duration : Duration(milliseconds: 300),
-                            curve : Curves.easeInOut,
-                            child : Stack(
-                              alignment: Alignment.center,
-                              children : [
-                                CustomPaint(size: const Size(0, 0), painter: OpenPainter()),
-                                ...List.generate(product.listOfYears.length, (index) {
-                                  int year = product.listOfYears.elementAt(index);
-                                  return YearChart(
-                                      year: year, radius: 1 - index * 0.1, product: product);
-                                }),
-                                // ...testWidget.listOfWidget,
-                                yearButton(product),]
-                            )
-                          ),
-                        )
-
+                          curve: Curves.easeInOut,
+                          child: Stack(alignment: Alignment.center, children: [
+                            CustomPaint(
+                                size: const Size(0, 0), painter: OpenPainter()),
+                            ...List.generate(product.listOfYears.length,
+                                (index) {
+                              int year = product.listOfYears.elementAt(index);
+                              return YearChart(
+                                  year: year,
+                                  radius: 1 - index * 0.1,
+                                  product: product);
+                            }),
+                            // ...testWidget.listOfWidget,
+                            yearButton(product),
+                          ])),
+                    )
                   ]),
                 ),
               ),
@@ -144,7 +126,7 @@ class _YearPageScreenState extends State<YearPageScreen> {
           ),
           Positioned(bottom: 30, child: LegendOfYearChart()),
           SizedBox(
-            height: 70,
+            height: heightOfLegend,
             child: AppBar(
               backgroundColor: Colors.transparent,
               excludeHeaderSemantics: true,
@@ -237,7 +219,8 @@ class _YearPageScreenState extends State<YearPageScreen> {
 
       if (product.scale != 1) {
         product.setScale(1.0);
-        product.setPosition(Offset(-sizeOfChart.width/4, -sizeOfChart.height/8));
+        product.setPosition(
+            Offset(-sizeOfChart.width / 4, -sizeOfChart.height / 8));
         // position = Offset(-sizeOfChart.width/4, -sizeOfChart.height/8);
         position = center;
         return false;

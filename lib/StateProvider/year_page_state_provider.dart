@@ -400,11 +400,10 @@ class YearPageStateProvider with ChangeNotifier {
         yLocationExpanded * physicalWidth / 2 + sizeOfChart / 2 - size / 2;
 
     double leftNotExpanded =
-        (1 - i * 0.1) *xLocationNotExpanded * (physicalWidth) / 2 + sizeOfChart / 2 - size / 2;
+        (1 - i * gapBetweenYearChart) * xLocationNotExpanded * (physicalWidth) / 2 + sizeOfChart / 2 - size / 2;
     double topNotExpanded =
-        (1 - i * 0.1) * yLocationNotExpanded * physicalWidth / 2 + sizeOfChart / 2 - size / 2;
+        (1 - i * gapBetweenYearChart) * yLocationNotExpanded * physicalWidth / 2 + sizeOfChart / 2 - size / 2;
 
-    print("i for debug : ${i}, $physicalWidth");
     double leftExpandedExtra =
         xLocationNotExpanded * (1.7 - gapBetweenYearChart * i) * (physicalWidth) / 2 +
             sizeOfChart / 2 -

@@ -59,7 +59,7 @@ class _YearPageScreenState extends State<YearPageScreen> {
         child: Stack(alignment: Alignment.topCenter, children: [
           Consumer<YearPageStateProvider>(
             builder: (context, product, child) => WillPopScope(
-              onWillPop: () => willPopLogic(product),
+              onWillPop: () async {return willPopLogic(product);},
               child: GestureDetector(
                 onTapUp: (detail) {
                   double scale = product.scale * zoomInMultiple;
@@ -81,6 +81,7 @@ class _YearPageScreenState extends State<YearPageScreen> {
                   });
                 },
                 onPanUpdate: (detail) {
+                  if(product.scale ==1) return;
                   setState(() {
                     position = position + detail.delta;
                   });
@@ -208,25 +209,25 @@ class _YearPageScreenState extends State<YearPageScreen> {
   }
 
   //
-  willPopLogic(product) async {
+   bool willPopLogic(YearPageStateProvider product)  {
     {
-      if ((product.highlightedYear == null) &
-          (product.expandedYear == null) &
-          (product.scale == 1)) return true;
-
+      if ((product.highlightedYear == null) &&
+          (product.expandedYear == null) &&
+          (product.scale == 1.0)) {
+        return true;
+      }
       product.setHighlightedYear(null);
 
-      if (product.scale != 1) {
+      if ((product.scale != 1) || (position != center)) {
         product.setScale(1.0);
-        product.setPosition(
-            Offset(-sizeOfChart.width / 4, -sizeOfChart.height / 8));
-        // position = Offset(-sizeOfChart.width/4, -sizeOfChart.height/8);
         position = center;
         return false;
       }
 
       if (product.expandedYear != null) {
         product.setExpandedYear(null);
+        product.setScale(1.0);
+        position = center;
       }
 
       return false;

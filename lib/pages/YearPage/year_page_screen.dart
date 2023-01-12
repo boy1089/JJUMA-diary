@@ -265,43 +265,50 @@ class _YearPageScreenState extends State<YearPageScreen> {
 
   yearButton(YearPageStateProvider product) {
     return ElevatedButton(
-        onPressed: () {
-          if(product.scale !=1) willPopLogic(product);
+        onPressed: () async {
+          if(product.scale !=1) {
+            willPopLogic(product);
+            await Future.delayed(Duration(milliseconds: 200));
+          }
           showGeneralDialog(
               barrierDismissible: true,
               barrierLabel: "yearButton",
               barrierColor: Colors.transparent,
               context: context,
               pageBuilder: (context, animation, animation2) => SafeArea(
-                    child: Center(
-                      child: Container(
-                        width: 500,
-                        height: 430,
-                        child: Stack(
-                            alignment: Alignment.center,
-                            children: List<Widget>.generate(
-                                product.listOfYears.length,
-                                (i) => Align(
-                                    alignment: Alignment(
-                                        cos(2 *
-                                                    pi /
-                                                    product.listOfYears.length *
-                                                    i +
-                                                0.02 * pi) *
-                                            0.6,
-                                        sin(2 *
-                                                    pi /
-                                                    product.listOfYears.length *
-                                                    i +
-                                                0.02 * pi) *
-                                            0.6),
-                                    child: yearButton2(
-                                        product,
-                                        product.listOfYears
-                                            .elementAt(i)
-                                            .toString())))),
-                      ),
-                    ),
+                  child: Stack(
+                    alignment: Alignment.topCenter,
+                    children: [Positioned(
+                      top : center.dy,
+                      child: SizedBox(
+                          width: sizeOfChart.width,
+                          height: sizeOfChart.height ,
+                          child: Stack(
+                              alignment: Alignment.center,
+                              children: List<Widget>.generate(
+                                  product.listOfYears.length,
+                                  (i) => Align(
+                                      alignment: Alignment(
+                                          cos(2 *
+                                                      pi /
+                                                      product.listOfYears.length *
+                                                      i +
+                                                  0.02 * pi) *
+                                              0.4,
+                                          sin(2 *
+                                                      pi /
+                                                      product.listOfYears.length *
+                                                      i +
+                                                  0.02 * pi) *
+                                              0.4),
+                                      child: yearButton2(
+                                          product,
+                                          product.listOfYears
+                                              .elementAt(i)
+                                              .toString())))),
+                        ),
+                    ),]
+                  ),
                   ));
         },
         style: ElevatedButton.styleFrom(

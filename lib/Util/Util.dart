@@ -188,20 +188,18 @@ Future<List> openFile(filePath) async {
 }
 
 Future getExifInfoOfFile(String file) async {
-  // var bytes = await File(file).readAsBytes();
   var byte2 = await File(file).open(mode: FileMode.read);
-  // print("byte : ${bytes}");
-  // var data = await readExifFromBytes(bytes.sublist(0, 2000));
   var data = await readExifFromBytes(await byte2.read(2000));
   byte2.close();
 
-  // print("data : $data");
+  print("data : $data");
 
   String? dateInExif = null;
   List<String> keys = data.keys.toList();
   List<String> keysOfDateTime = keys.where((element) {
     return (element.contains("DateTime"));
   }).toList();
+
 
   for (int i = 0; i < keysOfDateTime.length; i++) {
     String key = keysOfDateTime.elementAt(i);
@@ -210,7 +208,6 @@ Future getExifInfoOfFile(String file) async {
       dateInExif = data[key].toString().replaceAll(":", "");
       break;
     }
-    // print("step4 ${stopwatch.elapsed}");
   }
 
 
@@ -219,13 +216,14 @@ Future getExifInfoOfFile(String file) async {
       convertTagToValue(data['GPS GPSLongitude']));
   if (coordinate.latitude == null) coordinate = null;
 
-  if(coordinate == null) return coordinate;
+  if(coordinate == null) return [dateInExif, coordinate];
   int latRef = convertGPSRefToInt(data['GPS GPSLatitudeRef']?.printable);
   int longRef = convertGPSRefToInt(data['GPS GPSLongitudeRef']?.printable);
 
   coordinate!.setLatRef(latRef);
   coordinate!.setLongRef(longRef);
 
+  print([dateInExif, coordinate]);
   return [dateInExif, coordinate];
 }
 

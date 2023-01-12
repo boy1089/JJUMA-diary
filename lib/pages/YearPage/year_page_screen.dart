@@ -52,6 +52,7 @@ class _YearPageScreenState extends State<YearPageScreen> {
     super.initState();
     position = center;
   }
+
   var a;
   var b;
 
@@ -266,7 +267,7 @@ class _YearPageScreenState extends State<YearPageScreen> {
   yearButton(YearPageStateProvider product) {
     return ElevatedButton(
         onPressed: () async {
-          if(product.scale !=1) {
+          if (product.scale != 1) {
             willPopLogic(product);
             await Future.delayed(Duration(milliseconds: 200));
           }
@@ -276,13 +277,12 @@ class _YearPageScreenState extends State<YearPageScreen> {
               barrierColor: Colors.transparent,
               context: context,
               pageBuilder: (context, animation, animation2) => SafeArea(
-                  child: Stack(
-                    alignment: Alignment.topCenter,
-                    children: [Positioned(
-                      top : center.dy,
-                      child: SizedBox(
+                    child: Stack(alignment: Alignment.topCenter, children: [
+                      Positioned(
+                        top: center.dy,
+                        child: SizedBox(
                           width: sizeOfChart.width,
-                          height: sizeOfChart.height ,
+                          height: sizeOfChart.height,
                           child: Stack(
                               alignment: Alignment.center,
                               children: List<Widget>.generate(
@@ -291,13 +291,15 @@ class _YearPageScreenState extends State<YearPageScreen> {
                                       alignment: Alignment(
                                           cos(2 *
                                                       pi /
-                                                      product.listOfYears.length *
+                                                      product
+                                                          .listOfYears.length *
                                                       i +
                                                   0.02 * pi) *
                                               0.4,
                                           sin(2 *
                                                       pi /
-                                                      product.listOfYears.length *
+                                                      product
+                                                          .listOfYears.length *
                                                       i +
                                                   0.02 * pi) *
                                               0.4),
@@ -307,14 +309,15 @@ class _YearPageScreenState extends State<YearPageScreen> {
                                               .elementAt(i)
                                               .toString())))),
                         ),
-                    ),]
-                  ),
+                      ),
+                    ]),
                   ));
         },
         style: ElevatedButton.styleFrom(
             side: const BorderSide(width: 1, color: Color(0xff808080)),
             backgroundColor: Colors.transparent,
-            fixedSize: Size(70.0, 70.0) * MediaQuery.of(context).textScaleFactor,
+            fixedSize:
+                Size(70.0, 70.0) * MediaQuery.of(context).textScaleFactor,
             shape: const CircleBorder()),
         child: Text(
           product.expandedYear == null
@@ -333,7 +336,8 @@ class _YearPageScreenState extends State<YearPageScreen> {
         style: ElevatedButton.styleFrom(
             side: const BorderSide(width: 1, color: Color(0xff808080)),
             backgroundColor: Colors.transparent,
-            fixedSize: Size(70.0, 70.0) * MediaQuery.of(context).textScaleFactor,
+            fixedSize:
+                Size(70.0, 70.0) * MediaQuery.of(context).textScaleFactor,
             shape: const CircleBorder()),
         child: Text(
           text,
@@ -366,7 +370,6 @@ class _YearPageScreenState extends State<YearPageScreen> {
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
   }
-
 }
 
 class TestWidget {

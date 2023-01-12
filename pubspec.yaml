@@ -36,6 +36,8 @@ dependencies:
   share_plus: 6.3.0
   csv: ^5.0.1
   swipeable_page_route: ^0.2.6
+  ml_algo: 16.17.7
+  simple_cluster: 0.3.0
 
 dev_dependencies:
   flutter_test:

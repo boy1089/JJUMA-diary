@@ -21,6 +21,10 @@ import 'dart:ui' as ui;
 import 'package:share_plus/share_plus.dart';
 import 'package:jjuma.d/pages/YearPage/chart_background.dart';
 import 'package:jjuma.d/Util/global.dart' as global;
+import 'package:jjuma.d/ML/Classifier.dart';
+import 'package:ml_dataframe/ml_dataframe.dart';
+import 'package:ml_algo/ml_algo.dart';
+import 'package:simple_cluster/src/dbscan.dart';
 
 class YearPageScreen extends StatefulWidget {
   const YearPageScreen({Key? key}) : super(key: key);
@@ -48,6 +52,8 @@ class _YearPageScreenState extends State<YearPageScreen> {
     super.initState();
     position = center;
   }
+  var a;
+  var b;
 
   @override
   Widget build(BuildContext context) {
@@ -137,15 +143,38 @@ class _YearPageScreenState extends State<YearPageScreen> {
           ),
         ]),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          DataManagerInterface dataManager = DataManagerInterface(global.kOs);
-          var infoFromFiles = dataManager.infoFromFiles;
-          print(infoFromFiles);
-          print(infoFromFiles.keys.elementAt(0));
-          getExifInfoOfFile(infoFromFiles.keys.elementAt(0));
-        },
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () async {
+      //     DataManagerInterface dataManager = DataManagerInterface(global.kOs);
+      //     var infoFromFiles = dataManager.infoFromFiles;
+      //
+      //     Classifier classifier = Classifier();
+      //     List<List<double>> data = [];
+      //     int i = 0;
+      //     infoFromFiles.forEach((key, value) {
+      //       i+=1;
+      //       if(i>2000) return;
+      //       if((value.coordinate == null)) return;
+      //       if((value.coordinate!.latitude == null)) return;
+      //       data.add([value.coordinate!.latitude!, value.coordinate!.longitude!]);
+      //     });
+      //     print("executing DBSCAN");
+      //     DBSCAN dbscan = DBSCAN(
+      //       epsilon: 3,
+      //       minPoints: 2,
+      //     );
+      //     // List<List<int>> clusterOutput = dbscan.run(data);
+      //     print("DBSCAN done");
+      //     // print(clusterOutput);
+      //     // print(dbscan.label);
+      //
+      //     // a = clusterOutput;
+      //     // b = dbscan.label;
+      //     print(a);
+      //     print(b);
+      //
+      //   },
+      // ),
     );
   }
 
@@ -237,6 +266,7 @@ class _YearPageScreenState extends State<YearPageScreen> {
   yearButton(YearPageStateProvider product) {
     return ElevatedButton(
         onPressed: () {
+          if(product.scale !=1) willPopLogic(product);
           showGeneralDialog(
               barrierDismissible: true,
               barrierLabel: "yearButton",
@@ -296,7 +326,7 @@ class _YearPageScreenState extends State<YearPageScreen> {
         style: ElevatedButton.styleFrom(
             side: const BorderSide(width: 1, color: Color(0xff808080)),
             backgroundColor: Colors.transparent,
-            fixedSize: Size(70.0, 70.0),
+            fixedSize: Size(70.0, 70.0) * MediaQuery.of(context).textScaleFactor,
             shape: const CircleBorder()),
         child: Text(
           text,
@@ -330,11 +360,6 @@ class _YearPageScreenState extends State<YearPageScreen> {
     }
   }
 
-  @override
-  void dispose() {
-    controller.dispose();
-    super.dispose();
-  }
 }
 
 class TestWidget {

@@ -219,6 +219,7 @@ Future getExifInfoOfFile(String file) async {
       convertTagToValue(data['GPS GPSLongitude']));
   if (coordinate.latitude == null) coordinate = null;
 
+  if(coordinate == null) return coordinate;
   int latRef = convertGPSRefToInt(data['GPS GPSLatitudeRef']?.printable);
   int longRef = convertGPSRefToInt(data['GPS GPSLongitudeRef']?.printable);
 

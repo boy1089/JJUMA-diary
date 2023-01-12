@@ -212,11 +212,19 @@ Future getExifInfoOfFile(String file) async {
     }
     // print("step4 ${stopwatch.elapsed}");
   }
-  // print(data);
+
+
   Coordinate? coordinate = Coordinate(
-      convertTagToValue(data['GPS GPSLatitude']),
+      convertTagToValue(data['GPS GPSLatitude']) ,
       convertTagToValue(data['GPS GPSLongitude']));
   if (coordinate.latitude == null) coordinate = null;
+
+  int latRef = convertGPSRefToInt(data['GPS GPSLatitudeRef']?.printable);
+  int longRef = convertGPSRefToInt(data['GPS GPSLongitudeRef']?.printable);
+
+  coordinate!.setLatRef(latRef);
+  coordinate!.setLongRef(longRef);
+
   return [dateInExif, coordinate];
 }
 
@@ -224,8 +232,6 @@ Future getExifInfoOfFile_ios(AssetEntity assetEntity) async {
   String? dateInExif = null;
 
   dateInExif = formatDatetime(assetEntity.createDateTime);
-  // print("${assetEntity.createDateTime}, ${dateInExif}");
-
 
   Coordinate? coordinate =
       Coordinate(assetEntity.latitude, assetEntity.longitude);
@@ -236,7 +242,7 @@ Future getExifInfoOfFile_ios(AssetEntity assetEntity) async {
 
 double? convertTagToValue(tag) {
   if (tag == null) return null;
-
+  print("tag : ${tag}");
   List values = tag.printable
       .replaceAll("[", "")
       .replaceAll("]", "")
@@ -247,4 +253,11 @@ double? convertTagToValue(tag) {
       double.parse(values[1]) / 60 +
       double.parse(values[2].split('/')[0]) / 1e6 / 3600;
   return value;
+}
+
+int convertGPSRefToInt(String? ref){
+  if(ref == null) return 1;
+  if(ref == 'N') return 1;
+  if(ref == 'E')  return 1;
+  return -1;
 }

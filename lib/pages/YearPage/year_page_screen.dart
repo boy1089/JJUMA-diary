@@ -137,19 +137,15 @@ class _YearPageScreenState extends State<YearPageScreen> {
           ),
         ]),
       ),
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: () async {
-      //     DataManagerInterface dataManager = DataManagerInterface(global.kOs);
-      //     dataManager.infoFromFiles.forEach((key, value) {
-      //       print(value);
-      //     });
-      //
-      //     var a = Map.fromEntries(dataManager.infoFromFiles.entries.toList()
-      //       ..sort(
-      //           (e1, e2) => e1.value.datetime!.compareTo(e2.value.datetime!)));
-      //     generateJumadeung(a.keys.toList().sublist(0, 100));
-      //   },
-      // ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          DataManagerInterface dataManager = DataManagerInterface(global.kOs);
+          var infoFromFiles = dataManager.infoFromFiles;
+          print(infoFromFiles);
+          print(infoFromFiles.keys.elementAt(0));
+          getExifInfoOfFile(infoFromFiles.keys.elementAt(0));
+        },
+      ),
     );
   }
 

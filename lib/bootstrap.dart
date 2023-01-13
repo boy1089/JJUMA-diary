@@ -39,7 +39,7 @@ void bootstrap(int i) {
               YearPageStateProvider>(
             update: (context, dataManager, a) {
               print('YearStateProvider is under update..');
-              if(yearPageStateProvider.isUpdating) return yearPageStateProvider;
+              // if(yearPageStateProvider.isUpdating) return yearPageStateProvider;
               return yearPageStateProvider..updateProvider_compute();
             },
             create: (context) => yearPageStateProvider,

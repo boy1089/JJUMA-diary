@@ -34,9 +34,6 @@ class _YearChartState extends State<YearChart> {
 
   @override
   Widget build(BuildContext context) {
-    // print("build year chart : ${year}");
-    print("year : $year");
-    print("product : ${product.dataForChart2_modified[year]}");
     isExpanded = product.expandedYear == year;
     return Center(
       child: Stack(alignment: Alignment.center, children: [

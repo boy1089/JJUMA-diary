@@ -46,15 +46,13 @@ class _YearPageScreenState extends State<YearPageScreen> {
   late Offset center = Offset(-1 * (sizeOfChart.width / 2 - physicalWidth / 2),
       -1 * (sizeOfChart.height / 2 - physicalHeight / 2) - heightOfLegend / 2);
   Offset position = Offset(0, 0);
-
+  double textScaleFactor = 1.0;
   @override
   void initState() {
     super.initState();
     position = center;
+    textScaleFactor = MediaQuery.of(context).textScaleFactor;
   }
-
-  var a;
-  var b;
 
   @override
   Widget build(BuildContext context) {
@@ -317,7 +315,7 @@ class _YearPageScreenState extends State<YearPageScreen> {
             side: const BorderSide(width: 1, color: Color(0xff808080)),
             backgroundColor: Colors.transparent,
             fixedSize:
-                Size(70.0, 70.0) * MediaQuery.of(context).textScaleFactor,
+                Size(70.0, 70.0) * textScaleFactor,
             shape: const CircleBorder()),
         child: Text(
           product.expandedYear == null
@@ -337,7 +335,7 @@ class _YearPageScreenState extends State<YearPageScreen> {
             side: const BorderSide(width: 1, color: Color(0xff808080)),
             backgroundColor: Colors.transparent,
             fixedSize:
-                Size(70.0, 70.0) * MediaQuery.of(context).textScaleFactor,
+                Size(70.0, 70.0) * textScaleFactor,
             shape: const CircleBorder()),
         child: Text(
           text,

@@ -90,12 +90,3 @@ String? inferDatetimeFromFilename(filename) {
   return null;
 }
 
-
-Future<String?> getExifDateOfFile(String file) async {
-  var bytes = await File(file).readAsBytes();
-  var data = await readExifFromBytes(bytes);
-  // print("date of photo : ${data['Image DateTime'].toString().replaceAll(":", "")}");
-  String dateInExif = data['Image DateTime'].toString().replaceAll(":", "");
-  return dateInExif;
-}
-

@@ -38,7 +38,7 @@ class IosDataManager extends ChangeNotifier implements DataManagerInterface {
   Map<dynamic, InfoFromFile> infoFromFiles = {};
   Map<String, Event> eventList = {};
   DataRepository dataRepository = DataRepository();
-  void setNote(DateTime datetime, String note){}
+
   void setFilenameOfFavoriteImage(DateTime datetime, String? indexOfFavoriteImage){}
 
   @override
@@ -380,7 +380,12 @@ class IosDataManager extends ChangeNotifier implements DataManagerInterface {
     infoFromFiles.addAll({for (var v in files) v: InfoFromFile()});
     return files;
   }
-
+  void setNote(DateTime datetime, String note){
+    if (noteForChart2[datetime.year.toString()] == null)
+      noteForChart2[datetime.year.toString()] = {};
+    noteForChart2[datetime.year.toString()]![formatDate(datetime)] = note;
+    dataRepository.writeNote(noteForChart2);
+  }
   @override
   void addEvent(Event event) {
     this.eventList.addAll({formatDate2(event.images.values.first.datetime!):event});

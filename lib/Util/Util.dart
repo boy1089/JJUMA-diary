@@ -188,20 +188,18 @@ Future<List> openFile(filePath) async {
 }
 
 Future getExifInfoOfFile(String file) async {
-  // var bytes = await File(file).readAsBytes();
   var byte2 = await File(file).open(mode: FileMode.read);
-  // print("byte : ${bytes}");
-  // var data = await readExifFromBytes(bytes.sublist(0, 2000));
   var data = await readExifFromBytes(await byte2.read(2000));
   byte2.close();
 
-  // print("data : $data");
+  print("data : $data");
 
   String? dateInExif = null;
   List<String> keys = data.keys.toList();
   List<String> keysOfDateTime = keys.where((element) {
     return (element.contains("DateTime"));
   }).toList();
+
 
   for (int i = 0; i < keysOfDateTime.length; i++) {
     String key = keysOfDateTime.elementAt(i);
@@ -210,13 +208,22 @@ Future getExifInfoOfFile(String file) async {
       dateInExif = data[key].toString().replaceAll(":", "");
       break;
     }
-    // print("step4 ${stopwatch.elapsed}");
   }
-  // print(data);
+
+
   Coordinate? coordinate = Coordinate(
-      convertTagToValue(data['GPS GPSLatitude']),
+      convertTagToValue(data['GPS GPSLatitude']) ,
       convertTagToValue(data['GPS GPSLongitude']));
   if (coordinate.latitude == null) coordinate = null;
+
+  if(coordinate == null) return [dateInExif, coordinate];
+  int latRef = convertGPSRefToInt(data['GPS GPSLatitudeRef']?.printable);
+  int longRef = convertGPSRefToInt(data['GPS GPSLongitudeRef']?.printable);
+
+  coordinate!.setLatRef(latRef);
+  coordinate!.setLongRef(longRef);
+
+  print([dateInExif, coordinate]);
   return [dateInExif, coordinate];
 }
 
@@ -224,8 +231,6 @@ Future getExifInfoOfFile_ios(AssetEntity assetEntity) async {
   String? dateInExif = null;
 
   dateInExif = formatDatetime(assetEntity.createDateTime);
-  // print("${assetEntity.createDateTime}, ${dateInExif}");
-
 
   Coordinate? coordinate =
       Coordinate(assetEntity.latitude, assetEntity.longitude);
@@ -236,7 +241,7 @@ Future getExifInfoOfFile_ios(AssetEntity assetEntity) async {
 
 double? convertTagToValue(tag) {
   if (tag == null) return null;
-
+  print("tag : ${tag}");
   List values = tag.printable
       .replaceAll("[", "")
       .replaceAll("]", "")
@@ -247,4 +252,11 @@ double? convertTagToValue(tag) {
       double.parse(values[1]) / 60 +
       double.parse(values[2].split('/')[0]) / 1e6 / 3600;
   return value;
+}
+
+int convertGPSRefToInt(String? ref){
+  if(ref == null) return 1;
+  if(ref == 'N') return 1;
+  if(ref == 'E')  return 1;
+  return -1;
 }

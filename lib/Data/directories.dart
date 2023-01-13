@@ -14,8 +14,8 @@ class Directories {
   static List<String> selectedDirectories = [];
 
   static Future<void> init(directories) async {
+    print("directories, init");
       selectedDirectories = await getPathOfDirectory(directories);
-
     print("selectedDirectories : $selectedDirectories");
 
   }
@@ -25,6 +25,7 @@ class Directories {
 
     List<String> selectedDirectories_path = [];
     for (int i = 0; i < selectedDirectories.length; i++) {
+      print("Directories, ${selectedDirectories.elementAt(i)}}");
       String path = await ExternalPath.getExternalStoragePublicDirectory(
           selectedDirectories.elementAt(i));
       selectedDirectories_path.add(

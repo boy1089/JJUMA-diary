@@ -1,3 +1,6 @@
+// TODO Implement this library.import 'package:flutter/foundation.dart';
+import 'dart:ui';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:jjuma.d/Data/info_from_file.dart';
@@ -9,6 +12,7 @@ import '../Location/coordinate.dart';
 
 import 'package:scidart/numdart.dart';
 import 'dart:core';
+import 'package:jjuma.d/Util/global.dart' as global;
 
 enum ImportanceFilter { memorable, casual, none }
 
@@ -33,22 +37,25 @@ List positionNotExpanded = List.generate(372, (index) {
 });
 
 List<double> hueList = [215.0, 126.0, 63.0, 0.0, 281.0];
-List<Color> colorList = [
-  const Color(0xFF2A2A2A),
-  const Color(0xFF2A4D7F),
-  const Color(0xFF2A7F32),
-  const Color(0xFFffbf00),
-];
-
+//
+// List<Color> colorList2 = [
+//   const Color(0xFF2a71d5),
+//   const Color(0xFF2ad53b),
+//   const Color(0xFFffbf00),
+//   const Color(0xFFd52a2a),
+//   const Color(0xFF9f2ad5),
+//   const Color(0xFF2A2A2A),
+// ];
 List<Color> colorList2 = [
   const Color(0xFF2a71d5),
+  const Color(0xFF2ad2d5),
   const Color(0xFF2ad53b),
   const Color(0xFFffbf00),
+  const Color(0xFFd5912a),
   const Color(0xFFd52a2a),
   const Color(0xFF9f2ad5),
   const Color(0xFF2A2A2A),
 ];
-
 
 // const Color(0xFFccd52a),
 
@@ -63,18 +70,31 @@ class YearPageStateProvider with ChangeNotifier {
 
   Map dataForChart2_modified = {};
   Map<int, Map<String, List>> dataForChart2 = {};
-  Map<int, Coordinate?>? medianCoordinates = {};
+  Map<int, Coordinate?>? mostFreqCoordinates = {};
   Map<int, int> numberOfImages = {};
-  Coordinate? medianCoordinate;
+  Coordinate? mostFreqCoordinate;
 
   int? expandedYear = DateTime.now().year;
+  int maxNumOfYearChart = 20;
   int? highlightedYear;
+  List listOfYears = [];
 
   double angle = 0.0;
+  bool isUpdating = false;
+  double scale = 1.0;
+  Offset? position = Offset(-sizeOfChart.width/4, -sizeOfChart.height/8);
 
   DataManagerInterface dataManager;
   YearPageStateProvider(this.dataManager);
 
+  Map<String, bool> enabledLocations = {
+    "Most frequent": true,
+    "< 5km": true,
+    "< 20km": true,
+    "< 100km": true,
+    "< 500km": true,
+    "more": true,
+  };
 
   static Future<List> updateData_static(List input) async {
     print("static update Data For YearPage StateProvider");
@@ -127,97 +147,142 @@ class YearPageStateProvider with ChangeNotifier {
           ..sort((e1, e2) => e2.key.compareTo(e1.key)))
       ..removeWhere((key, value) => key > DateTime.now().year);
 
-    Coordinate? median = getMedianCoordinate_static(coordinates);
+    Coordinate? mostFreqCoordinate = getMostFreqCoordinate_static(coordinates);
 
-    return [dataForChart2, median, numberOfImages];
+    return [dataForChart2, mostFreqCoordinate, numberOfImages];
   }
 
   Future<void> updateProvider_compute() async {
     print("updateProvider..");
     if ((dataManager.infoFromFiles == null) |
         (dataManager.infoFromFiles.isEmpty)) {
-      print("updateProvider.. no data");
       return;
     }
 
-    var result = await compute(updateData_static, [dataManager.infoFromFiles]);
-    dataForChart2 = result[0];
-    medianCoordinate = result[1];
-    numberOfImages = result[2];
+    setIsUpdating(true);
 
-    var result2 = await compute(modifyData_static, [
-      dataForChart2,
-      medianCoordinate,
-      physicalWidth,
-      numberOfImages,
-      sizeOfChart.width
-    ]);
+    List result;
+    List result2 = [];
+
+    switch (global.kOs) {
+      case "android":
+        {
+          print('android, updatedata');
+          result =
+              await compute(updateData_static, [dataManager.infoFromFiles]);
+          dataForChart2 = result[0];
+          mostFreqCoordinate = result[1];
+          numberOfImages = result[2];
+
+          listOfYears = dataForChart2.keys.toList();
+          if (listOfYears.length > maxNumOfYearChart) {
+            listOfYears = listOfYears.sublist(0, maxNumOfYearChart);
+          }
+          print('android, modifyData');
+          result2 = await compute(modifyData_static, [
+            dataForChart2,
+            mostFreqCoordinate,
+            physicalWidth,
+            numberOfImages,
+            sizeOfChart.width,
+            enabledLocations,
+          ]);
+        }
+        break;
+
+      case "ios":
+        {
+          result = await updateData_static([dataManager.infoFromFiles]);
+          dataForChart2 = result[0];
+          mostFreqCoordinate = result[1];
+          numberOfImages = result[2];
+
+          result2 = await modifyData_static([
+            dataForChart2,
+            mostFreqCoordinate,
+            physicalWidth,
+            numberOfImages,
+            sizeOfChart.width,
+            enabledLocations,
+          ]);
+        }
+    }
+
     dataForChart2_modified = result2[0];
-
+    // await Future.delayed(Duration(seconds: 2));
+    setIsUpdating(false);
     notifyListeners();
   }
 
-  void getMedianCoordinate(List<Coordinate> coordinates) {
-    if (coordinates.isEmpty) return;
-
-    medianCoordinate = Coordinate(
-        median(Array(List<double>.generate(
-            coordinates.length,
-            (index) => double.parse(
-                coordinates[index].latitude!.toStringAsFixed(3))))),
-        median(
-          Array(List<double>.generate(
-              coordinates.length,
-              (index) => double.parse(
-                  coordinates[index].longitude!.toStringAsFixed(3)))),
-        ));
-  }
-
-  static Coordinate? getMedianCoordinate_static(List<Coordinate> coordinates) {
+  static Coordinate? getMostFreqCoordinate_static(
+      List<Coordinate> coordinates) {
     if (coordinates.isEmpty) return Coordinate(37.55, 127.0);
 
-    Coordinate medianCoordinate = Coordinate(
-        median(Array(List<double>.generate(
-            coordinates.length,
-            (index) => double.parse(
-                coordinates[index].latitude!.toStringAsFixed(3))))),
-        median(
-          Array(List<double>.generate(
-              coordinates.length,
-              (index) => double.parse(
-                  coordinates[index].longitude!.toStringAsFixed(3)))),
-        ));
-    return medianCoordinate;
+    List<Coordinate> coordinatesFloor = List<Coordinate>.generate(
+        coordinates.length,
+        (index) => Coordinate(
+              double.parse(coordinates[index].latitude!.toStringAsFixed(2)),
+              double.parse(coordinates[index].longitude!.toStringAsFixed(2)),
+            ));
+
+    Map<dynamic, int> countOfLocations = {};
+
+    for (int i = 0; i < coordinatesFloor.length; i++) {
+      var element = coordinatesFloor.elementAt(i);
+      int index = -1;
+      if (countOfLocations.isNotEmpty) {
+        index = countOfLocations.keys.toList().lastIndexOf(element);
+      }
+      if (index == -1) {
+        countOfLocations[element] = 1;
+      } else {
+        countOfLocations[element] =
+            countOfLocations.values.elementAt(index) + 1;
+      }
+    }
+
+    countOfLocations = Map.fromEntries(countOfLocations.entries.toList()
+      ..sort((e1, e2) => e1.value.compareTo(e2.value)));
+    countOfLocations.forEach((key, value) {
+      print("$key, $value");
+    });
+
+    Coordinate mostFrequentCoordinate = countOfLocations.keys.last;
+
+    return mostFrequentCoordinate;
   }
 
   static Future<List> modifyData_static(List input) async {
     print("static modify data of yearStateProvider");
 
     Map dataForChart2 = input[0];
-    Coordinate? medianCoordinate = input[1];
+    Coordinate? mostFreqCoordinate = input[1];
     double physicalWidth = input[2];
     Map<int, int> numberOfImages = input[3];
     double sizeOfChart = input[4];
-    Map dataForChart2_modified = {};
+    Map<String, bool> enabledLocations = input[5];
+    Map<int, List> dataForChart2_modified = {};
+    int numberOfYears = dataForChart2_modified.length;
+    double gapBetweenYearChart = numberOfYears<10? 0.05: 0.05 / numberOfYears * 10;
+
     if (dataForChart2 == {}) return [{}];
 
     //get proper reference of number of image
     int maximumNumberOfImagesInYear = numberOfImages.values.reduce(max);
     int indexOfMaximumNumberOfImages =
         numberOfImages.values.toList().indexOf(maximumNumberOfImagesInYear);
-    numberOfImages.forEach((key, value) {
-      print("$key, $value}");
-    });
+    // numberOfImages.forEach((key, value) {
+    //   print("$key, $value}");
+    // });
     int year = dataForChart2.keys.elementAt(indexOfMaximumNumberOfImages);
     var data = dataForChart2[year];
     print("max : $year");
 
-    print(List<int>.generate(
-        data.length, (index) => data.values.elementAt(index)[0].length));
+    // print(List<int>.generate(
+    //     data.length, (index) => data.values.elementAt(index)[0].length));
     int maximumNumberOfImages = List<int>.generate(
             data.length, (index) => data.values.elementAt(index)[0].length)
         .reduce(max);
-    print("max : ${maximumNumberOfImages}");
 
     for (int i = 0; i < dataForChart2.length; i++) {
       int year = dataForChart2.keys.elementAt(i);
@@ -231,76 +296,44 @@ class YearPageStateProvider with ChangeNotifier {
             DateTime(year).weekday -
             1;
 
-        double xLocationExpanded = positionExpanded[indexOfDate][0];
-        double yLocationExpanded = positionExpanded[indexOfDate][1];
-        xLocationExpanded = (1.0) * xLocationExpanded;
-        yLocationExpanded = (1.0) * yLocationExpanded;
-
-        yLocationExpanded = yLocationExpanded;
-
-        double xLocationNotExpanded = positionNotExpanded[indexOfDate][0];
-        double yLocationNotExpanded = positionNotExpanded[indexOfDate][1];
-
-        xLocationNotExpanded = (1 - i * 0.1) * xLocationNotExpanded;
-        yLocationNotExpanded = (1 - i * 0.1) * yLocationNotExpanded;
-        yLocationNotExpanded = yLocationNotExpanded;
-
         int numberOfImages = data[date]?[0].length ?? 1;
+
         Coordinate? coordinate = data[date]!.length > 1
             ? data[date]![1]
             : Coordinate(
-                medianCoordinate!.latitude, medianCoordinate.longitude);
+                mostFreqCoordinate!.latitude, mostFreqCoordinate.longitude);
 
         double diffInCoord =
-            (coordinate!.longitude! - medianCoordinate!.longitude!).abs();
+            calculateDistance(coordinate!, mostFreqCoordinate!);
 
-        diffInCoord = diffInCoord > 215 ? 215 : diffInCoord;
+        int locationClassification = classifyCoordinate(diffInCoord);
 
-        int locationClassification = 4;
-        if (diffInCoord < 3) locationClassification = 3;
-        if (diffInCoord < 0.5) locationClassification = 2;
-        if (diffInCoord < 0.1) locationClassification = 1;
-        if (diffInCoord < 0.01) locationClassification = 0;
+        Color color = (coordinate == null) | (coordinate.longitude == null)
+            ? Colors.grey.withAlpha(100)
+            : colorList2.elementAt(locationClassification);
 
-        double hue = hueList.elementAt(locationClassification);
-
-        // Color color = (coordinate == null) | (coordinate.longitude == null)
-        //     ? Colors.grey.withAlpha(100)
-        //     : HSLColor.fromAHSL(0.5, hue, 67 / 100, 50 / 100).toColor();
-        Color color =  (coordinate == null) | (coordinate.longitude == null)? Colors.grey.withAlpha(100): colorList2.elementAt(locationClassification);
-        // double size = numberOfImages / 5.toDouble();
-        double size = numberOfImages / maximumNumberOfImages * (maximumSizeOfScatter + 5);
+        double size =
+            numberOfImages / maximumNumberOfImages * (maximumSizeOfScatter + 5);
         size = size < maximumSizeOfScatter ? size : maximumSizeOfScatter;
         size = size > minimumSizeOfScatter ? size : minimumSizeOfScatter;
 
         List entries = data[date]![0];
 
-        double leftExpanded = xLocationExpanded * (physicalWidth) / 2 +
-            sizeOfChart / 2 -
-            size / 2;
-        double topExpanded =
-            yLocationExpanded * physicalWidth / 2 + sizeOfChart / 2 - size / 2;
+        List locationOfScatter = convertLocationOfScatterFromWeekdayToLeftTop(
+            positionExpanded[indexOfDate],
+            positionNotExpanded[indexOfDate],
+            i,
+            sizeOfChart,
+            size,
+            physicalWidth,gapBetweenYearChart
+            );
 
-        double leftNotExpanded = xLocationNotExpanded * (physicalWidth) / 2 +
-            sizeOfChart / 2 -
-            size / 2;
-        double topNotExpanded = yLocationNotExpanded * physicalWidth / 2 +
-            sizeOfChart / 2 -
-            size / 2;
-
-        double leftExpandedExtra = positionNotExpanded[indexOfDate][0] *
-                (1.7 - 0.05 * i) *
-                (physicalWidth) /
-                2 +
-            sizeOfChart / 2 -
-            size / 2;
-
-        double topExpandedExtra = positionNotExpanded[indexOfDate][1] *
-                (1.7 - 0.05 * i) *
-                physicalWidth /
-                2 +
-            sizeOfChart / 2 -
-            size / 2;
+        double leftExpanded = locationOfScatter[0];
+        double topExpanded = locationOfScatter[1];
+        double leftNotExpanded = locationOfScatter[2];
+        double topNotExpanded = locationOfScatter[3];
+        double leftExpandedExtra = locationOfScatter[4];
+        double topExpandedExtra = locationOfScatter[5];
 
         return [
           leftExpanded,
@@ -312,14 +345,91 @@ class YearPageStateProvider with ChangeNotifier {
           size,
           color,
           entries,
-          date
+          date,
+          locationClassification
         ];
       });
+
+      dataForChart2_modified[year]!.removeWhere((element) =>
+          !enabledLocations.values.elementAt(element.elementAt(10)));
+      print("dataForChart2 : $dataForChart2_modified");
     }
 
     return [dataForChart2_modified];
   }
 
+  static int classifyCoordinate(diffInCoord) {
+    int locationClassification = 5;
+
+    if (diffInCoord < 500) {
+      locationClassification = 4;
+    }
+    if (diffInCoord < 100) {
+      locationClassification = 3;
+    }
+    if (diffInCoord < 20) {
+      locationClassification = 2;
+    }
+    if (diffInCoord < 5) {
+      locationClassification = 1;
+    }
+    if (diffInCoord < 0.5) {
+      locationClassification = 0;
+    }
+
+    return locationClassification;
+  }
+
+  static List convertLocationOfScatterFromWeekdayToLeftTop(
+      positionExpandedOfDate,
+      positionNotExpandedOfDate,
+      int i,
+      sizeOfChart,
+      size,
+      physicalWidth, gapBetweenYearChart) {
+    double xLocationExpanded = positionExpandedOfDate[0];
+    double yLocationExpanded = positionExpandedOfDate[1];
+    double xLocationNotExpanded = positionNotExpandedOfDate[0];
+    double yLocationNotExpanded = positionNotExpandedOfDate[1];
+
+    // xLocationNotExpanded = (1 - i * 0.1) * xLocationNotExpanded;
+    // yLocationNotExpanded = (1 - i * 0.1) * yLocationNotExpanded;
+
+    double leftExpanded =
+        xLocationExpanded * (physicalWidth) / 2 + sizeOfChart / 2 - size / 2;
+    double topExpanded =
+        yLocationExpanded * physicalWidth / 2 + sizeOfChart / 2 - size / 2;
+
+    double leftNotExpanded =
+        (1 - i * gapBetweenYearChart) * xLocationNotExpanded * (physicalWidth) / 2 + sizeOfChart / 2 - size / 2;
+    double topNotExpanded =
+        (1 - i * gapBetweenYearChart) * yLocationNotExpanded * physicalWidth / 2 + sizeOfChart / 2 - size / 2;
+
+    double leftExpandedExtra =
+        xLocationNotExpanded * (1.7 - gapBetweenYearChart * i) * (physicalWidth) / 2 +
+            sizeOfChart / 2 -
+            size / 2;
+
+    double topExpandedExtra =
+        yLocationNotExpanded * (1.7 - gapBetweenYearChart * i) * physicalWidth / 2 +
+            sizeOfChart / 2 -
+            size / 2;
+
+    return [
+      leftExpanded,
+      topExpanded,
+      leftNotExpanded,
+      topNotExpanded,
+      leftExpandedExtra,
+      topExpandedExtra
+    ];
+  }
+
+  void setEnabledLocation(String text) {
+    enabledLocations[text] = !enabledLocations[text]!;
+    updateProvider_compute();
+    notifyListeners();
+  }
 
   void setHighlightedYear(int? year) {
     highlightedYear = year;
@@ -337,8 +447,40 @@ class YearPageStateProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void setAngle(double angle){
+  void setExpandedYearByButton() {
+    int last = listOfYears.last;
+    int indexOfCurrentYear = listOfYears.indexOf(expandedYear);
+    print("indexOfcurentYear : $indexOfCurrentYear");
+    if (expandedYear == null) {
+      setExpandedYear(listOfYears.elementAt(0));
+      return;
+    }
+    if (expandedYear == last) {
+      setExpandedYear(null);
+      return;
+    }
+
+    setExpandedYear(listOfYears.elementAt(indexOfCurrentYear+1));
+  }
+
+  void setAngle(double angle) {
     this.angle = angle;
+    notifyListeners();
+  }
+
+  void setIsUpdating(bool isUpdating) {
+    this.isUpdating = isUpdating;
+    print("isUpdating : $isUpdating}");
+    notifyListeners();
+  }
+
+  void setScale(double scale){
+    this.scale = scale;
+    notifyListeners();
+  }
+
+  void setPosition(Offset? position){
+    this.position = position;
     notifyListeners();
   }
 

@@ -1,11 +1,15 @@
 import 'dart:io';
 import 'dart:math';
-import 'dart:ui';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:intl/intl.dart' as intl;
+import 'package:go_router/go_router.dart';
+import 'package:image/image.dart' as image;
+import 'package:jjuma.d/Data/android_data_manager.dart';
+import 'package:jjuma.d/Data/data_manager_interface.dart';
 import 'package:jjuma.d/Util/DateHandler.dart';
+import 'package:jjuma.d/pages/YearPage/legend.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:provider/provider.dart';
@@ -15,6 +19,12 @@ import 'year_chart.dart';
 import 'drop_down_button_2.dart';
 import 'dart:ui' as ui;
 import 'package:share_plus/share_plus.dart';
+import 'package:jjuma.d/pages/YearPage/chart_background.dart';
+import 'package:jjuma.d/Util/global.dart' as global;
+import 'package:jjuma.d/ML/Classifier.dart';
+import 'package:ml_dataframe/ml_dataframe.dart';
+import 'package:ml_algo/ml_algo.dart';
+import 'package:simple_cluster/src/dbscan.dart';
 
 class YearPageScreen extends StatefulWidget {
   const YearPageScreen({Key? key}) : super(key: key);
@@ -28,104 +38,309 @@ class _YearPageScreenState extends State<YearPageScreen> {
       PhotoViewScaleStateController();
   late PhotoViewController controller;
 
-  int maxNumOfYearChart = 9;
-
   var key2 = GlobalKey();
-  double scaleCopy = 0.0;
-  double minScale = 0.6;
 
+  double zoomInMultiple = 4.0;
+
+  double heightOfLegend = 70;
+  late Offset center = Offset(-1 * (sizeOfChart.width / 2 - physicalWidth / 2),
+      -1 * (sizeOfChart.height / 2 - physicalHeight / 2) - heightOfLegend / 2);
+  Offset position = Offset(0, 0);
+  double textScaleFactor = 1.0;
   @override
   void initState() {
     super.initState();
-    controller = PhotoViewController()..outputStateStream.listen(listener);
-  }
-
-  @override
-  void dispose() {
-    controller.dispose();
-    super.dispose();
-  }
-
-  void listener(PhotoViewControllerValue value) {
-    setState(() {
-      scaleCopy = value.scale ?? 1;
-    });
+    position = center;
+    textScaleFactor = MediaQuery.of(context).textScaleFactor;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(children: [
-        Consumer<YearPageStateProvider>(
-          builder: (context, product, child) => WillPopScope(
-            onWillPop: () async {
-              if ((product.highlightedYear == null) &
-                  (product.expandedYear == null) &
-                  (controller.scale == 1)) return true;
+      body: SafeArea(
+        child: Stack(alignment: Alignment.topCenter, children: [
+          Consumer<YearPageStateProvider>(
+            builder: (context, product, child) => WillPopScope(
+              onWillPop: () async {
+                return willPopLogic(product);
+              },
+              child: GestureDetector(
+                onTapUp: (detail) {
+                  double scale = product.scale * zoomInMultiple;
 
-              product.setHighlightedYear(null);
+                  double x = (position.dx * -1 + detail.localPosition.dx) *
+                          zoomInMultiple -
+                      physicalWidth / 2 * zoomInMultiple;
+                  double y = (position.dy * -1 + detail.localPosition.dy) *
+                          zoomInMultiple -
+                      physicalHeight / 2 * zoomInMultiple;
+                  x = -1 * x;
+                  y = -1 * y;
 
-              if(controller.scale != 1) {
-                controller.scale = 1;
-                return false;
-              }
+                  print("${detail.localPosition}, $x, $y");
 
-              if (product.expandedYear != null) {
-                product.setExpandedYear(null);
-              }
-
-              return false;
-            },
-            child: RepaintBoundary(
-              key: key2,
-              child: PhotoView.customChild(
-                backgroundDecoration: const BoxDecoration(color: Colors.black12),
-                customSize: sizeOfChart,
-                minScale: minScale,
-                controller: controller,
-                onScaleEnd: (context, value, a) {
-                  controller.scale = a.scale?? minScale;
-                  if (controller.scale! < minScale) {
-                    controller.scale = minScale;
-                    // product.setExpandedYear(null);
-                  }
+                  product.setScale(scale);
+                  setState(() {
+                    position = Offset(x, y) -
+                        center * zoomInMultiple -
+                        Offset(physicalWidth / 2, heightOfLegend * 2.5);
+                  });
                 },
-                onTapUp: (context, detail, value){
-                  // controller.scale = 2;
-                  // controller.position = detail.localPosition;
-                  // controller.position = detail.globalPosition;
-                  // controller.position = Offset(-200, 0);
-                  print(controller.position);
+                onPanUpdate: (detail) {
+                  if (product.scale == 1) return;
+                  setState(() {
+                    position = position + detail.delta;
+                  });
                 },
-                child: Stack(alignment: Alignment.center, children: [
-                  CustomPaint(size: const Size(0, 0), painter: OpenPainter()),
-                  ...List.generate(
-                      product.dataForChart2_modified.length > maxNumOfYearChart
-                          ? maxNumOfYearChart
-                          : product.dataForChart2_modified.length, (index) {
-                    int year =
-                        product.dataForChart2_modified.keys.elementAt(index);
-
-                    return YearChart(
-                        year: year, radius: 1 - index * 0.1, product: product);
-                  }),
-                ]),
+                onDoubleTap: () {
+                  position = center;
+                  product.setScale(1.0);
+                },
+                child: Container(
+                  color: Colors.transparent,
+                  child: Stack(alignment: Alignment.center, children: [
+                    AnimatedPositioned(
+                      width: sizeOfChart.width,
+                      height: sizeOfChart.width,
+                      left: position.dx,
+                      top: position.dy,
+                      curve: Curves.easeInOut,
+                      duration: const Duration(milliseconds: 300),
+                      child: AnimatedScale(
+                          scale: product.scale,
+                          duration: const Duration(milliseconds: 300),
+                          curve: Curves.easeInOut,
+                          child: Stack(alignment: Alignment.center, children: [
+                            CustomPaint(
+                                size: const Size(0, 0), painter: OpenPainter()),
+                            ...List.generate(product.listOfYears.length,
+                                (index) {
+                              int year = product.listOfYears.elementAt(index);
+                              return YearChart(
+                                  year: year,
+                                  radius: 1 - index * 0.1,
+                                  product: product);
+                            }),
+                            // ...testWidget.listOfWidget,
+                            yearButton(product),
+                          ])),
+                    )
+                  ]),
+                ),
               ),
             ),
           ),
-        ),
-        SizedBox(
-          height: 70,
-          child: AppBar(
-            backgroundColor: Colors.transparent,
-            excludeHeaderSemantics: true,
-            elevation: 0.0,
-            actions: [CustomButtonTest(capture)],
+          Positioned(bottom: 30, child: LegendOfYearChart()),
+          SizedBox(
+            height: heightOfLegend,
+            child: AppBar(
+              backgroundColor: Colors.transparent,
+              excludeHeaderSemantics: true,
+              elevation: 0.0,
+              actions: [CustomButtonTest(capture)],
+            ),
           ),
-        ),
-      ]),
-
+        ]),
+      ),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () async {
+      //     DataManagerInterface dataManager = DataManagerInterface(global.kOs);
+      //     var infoFromFiles = dataManager.infoFromFiles;
+      //
+      //     Classifier classifier = Classifier();
+      //     List<List<double>> data = [];
+      //     int i = 0;
+      //     infoFromFiles.forEach((key, value) {
+      //       i+=1;
+      //       if(i>2000) return;
+      //       if((value.coordinate == null)) return;
+      //       if((value.coordinate!.latitude == null)) return;
+      //       data.add([value.coordinate!.latitude!, value.coordinate!.longitude!]);
+      //     });
+      //     print("executing DBSCAN");
+      //     DBSCAN dbscan = DBSCAN(
+      //       epsilon: 3,
+      //       minPoints: 2,
+      //     );
+      //     // List<List<int>> clusterOutput = dbscan.run(data);
+      //     print("DBSCAN done");
+      //     // print(clusterOutput);
+      //     // print(dbscan.label);
+      //
+      //     // a = clusterOutput;
+      //     // b = dbscan.label;
+      //     print(a);
+      //     print(b);
+      //
+      //   },
+      // ),
     );
+  }
+
+//TODO : make
+  generateJumadeung(List listOfImages) async {
+    final image.JpegDecoder decoder = image.JpegDecoder();
+    final List<image.Image> images = [];
+    for (int i = 0; i < listOfImages.length; i++) {
+      String imagePath = listOfImages.elementAt(i);
+      print("genering Jumadeung... add ${imagePath}");
+      if (imagePath == null) continue;
+      image.Image pngResized = await readImageWithDownsampling(imagePath, 500);
+      images.add(decoder.decodeImage(image.encodeJpg(pngResized))!);
+    }
+
+    List<int>? gifData = generateGIFFromImages(images);
+    final directory = global.kOs == "android"
+        ? (await getExternalStorageDirectory())?.path
+        : (await getApplicationDocumentsDirectory())?.path;
+    File imgFile = File('$directory/jjuma.d_gif}.gif');
+    Uint8List a = Uint8List.fromList(gifData!);
+    await imgFile.writeAsBytes(a);
+    print("done!");
+  }
+
+  getFavoriteImagePaths() {
+    DataManagerInterface dataManager = DataManagerInterface(global.kOs);
+    var dicOfFavoriteImages = dataManager.filenameOfFavoriteImages;
+    List listOfFavoriteImages = [];
+    for (int i = 0; i < dicOfFavoriteImages.length; i++) {
+      String year = dicOfFavoriteImages.keys.elementAt(i);
+      listOfFavoriteImages.addAll(dicOfFavoriteImages[year]!.values);
+    }
+    return listOfFavoriteImages;
+  }
+
+  Future<image.Image> readImageWithDownsampling(imagePath, width) async {
+    Uint8List data = await File(imagePath).readAsBytes();
+    image.Image png = image.decodeJpg(data)!;
+    int width = png.width;
+    int height = png.height;
+    bool isWidthWiderThanHeight = width > height;
+    int lengthOfBoundingBox = isWidthWiderThanHeight ? height : width;
+
+    png = isWidthWiderThanHeight
+        ? image.copyCrop(png, (lengthOfBoundingBox / 8).floor(), 0,
+            lengthOfBoundingBox, lengthOfBoundingBox)
+        : image.copyCrop(png, 0, (lengthOfBoundingBox / 8).floor(),
+            lengthOfBoundingBox, lengthOfBoundingBox);
+
+    image.Image pngResized = image.copyResize(png!, width: 500);
+    return pngResized;
+  }
+
+  List<int>? generateGIFFromImages(Iterable<image.Image> images) {
+    final image.Animation animation = image.Animation();
+    for (image.Image image2 in images) {
+      animation.addFrame(image2..duration = 350);
+    }
+    return image.encodeGifAnimation(animation, samplingFactor: 5);
+  }
+
+  //
+  bool willPopLogic(YearPageStateProvider product) {
+    {
+      if ((product.highlightedYear == null) &&
+          (product.expandedYear == null) &&
+          (product.scale == 1.0)) {
+        return true;
+      }
+      product.setHighlightedYear(null);
+
+      if ((product.scale != 1) || (position != center)) {
+        product.setScale(1.0);
+        position = center;
+        return false;
+      }
+
+      if (product.expandedYear != null) {
+        product.setExpandedYear(null);
+        product.setScale(1.0);
+        position = center;
+      }
+
+      return false;
+    }
+  }
+
+  yearButton(YearPageStateProvider product) {
+    return ElevatedButton(
+        onPressed: () async {
+          if (product.scale != 1) {
+            willPopLogic(product);
+            await Future.delayed(Duration(milliseconds: 200));
+          }
+          showGeneralDialog(
+              barrierDismissible: true,
+              barrierLabel: "yearButton",
+              barrierColor: Colors.transparent,
+              context: context,
+              pageBuilder: (context, animation, animation2) => SafeArea(
+                    child: Stack(alignment: Alignment.topCenter, children: [
+                      Positioned(
+                        top: center.dy,
+                        child: SizedBox(
+                          width: sizeOfChart.width,
+                          height: sizeOfChart.height,
+                          child: Stack(
+                              alignment: Alignment.center,
+                              children: List<Widget>.generate(
+                                  product.listOfYears.length,
+                                  (i) => Align(
+                                      alignment: Alignment(
+                                          cos(2 *
+                                                      pi /
+                                                      product
+                                                          .listOfYears.length *
+                                                      i +
+                                                  0.02 * pi) *
+                                              0.4,
+                                          sin(2 *
+                                                      pi /
+                                                      product
+                                                          .listOfYears.length *
+                                                      i +
+                                                  0.02 * pi) *
+                                              0.4),
+                                      child: yearButton2(
+                                          product,
+                                          product.listOfYears
+                                              .elementAt(i)
+                                              .toString())))),
+                        ),
+                      ),
+                    ]),
+                  ));
+        },
+        style: ElevatedButton.styleFrom(
+            side: const BorderSide(width: 1, color: Color(0xff808080)),
+            backgroundColor: Colors.transparent,
+            fixedSize:
+                Size(70.0, 70.0) * textScaleFactor,
+            shape: const CircleBorder()),
+        child: Text(
+          product.expandedYear == null
+              ? "All"
+              : product.expandedYear.toString(),
+          style: const TextStyle(fontSize: 15),
+        ));
+  }
+
+  yearButton2(YearPageStateProvider product, String text) {
+    return ElevatedButton(
+        onPressed: () {
+          product.setExpandedYear(int.parse(text));
+          context.pop();
+        },
+        style: ElevatedButton.styleFrom(
+            side: const BorderSide(width: 1, color: Color(0xff808080)),
+            backgroundColor: Colors.transparent,
+            fixedSize:
+                Size(70.0, 70.0) * textScaleFactor,
+            shape: const CircleBorder()),
+        child: Text(
+          text,
+          style: const TextStyle(fontSize: 15),
+        ));
   }
 
   void capture() async {
@@ -133,7 +348,10 @@ class _YearPageScreenState extends State<YearPageScreen> {
     if (renderObject is RenderRepaintBoundary) {
       var boundary = renderObject;
       ui.Image image = await boundary.toImage(pixelRatio: 10.0);
-      final directory = (await getExternalStorageDirectory())?.path;
+
+      final directory = global.kOs == "android"
+          ? (await getExternalStorageDirectory())?.path
+          : (await getApplicationDocumentsDirectory())?.path;
       ByteData byteData =
           (await image.toByteData(format: ui.ImageByteFormat.png))!;
       Uint8List pngBytes = byteData.buffer.asUint8List();
@@ -151,84 +369,21 @@ class _YearPageScreenState extends State<YearPageScreen> {
     }
   }
 }
-var rng = Random();
-int randomNumber1 = rng.nextInt(800);
-int randomNumber2 = rng.nextInt(800);
-int randomNumber3 = rng.nextInt(800);
-int randomNumber4 = rng.nextInt(800);
-int randomNumber5 = rng.nextInt(800);
-int randomNumber6 = rng.nextInt(800);
-int randomNumber7 = rng.nextInt(800);
-List<int> randomNumber = List.generate(20, (index)=>rng.nextInt(800));
 
-class OpenPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    var paint1 = Paint()
-      ..color = const Color(0xff808080)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 0.7;
-    canvas.drawCircle(const Offset(0, 0), (physicalWidth / 2 - 3) * 0.3, paint1);
-    canvas.drawCircle(const Offset(0, 0), physicalWidth / 2 - 3, paint1);
-
-    var paint2 = Paint()
-      ..color = const Color(0xff3f3f3f)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 0.7;
-    double radius = physicalWidth / 2 * 1.2;
-    //
-    // var paint3 = Paint()..color = Colors.white;
-
-    // canvas.drawCircle(Offset(rng.nextInt(800) - 400, rng.nextInt(800) - 400), 5, paint3);
-    // for(int i = 0; i < 19; i++){
-    //   canvas.drawCircle(Offset(randomNumber.elementAt(i) - 400, randomNumber.elementAt(i+1) - 400), 1, paint3);
-    // }
-
-    const textStyle = TextStyle(
-      color: Colors.white,
-      fontSize: 16,
-    );
-
-    const textSpan = TextSpan(
-      text: 'aa',
-      style: textStyle,
-    );
-
-    final textPainter = TextPainter(
-      text: textSpan,
-      textDirection: TextDirection.ltr,
-    );
-
-    textPainter.layout(
-      minWidth: 0,
-      maxWidth: size.width,
-    );
-
-    final intl.DateFormat formatter = intl.DateFormat('MMM');
-
-    for (int i = 0; i < 12; i++) {
-      double angle = 2 * pi / 12 * i + 2 * pi / 24 * 16;
-      double xOffset = cos(angle) * radius;
-      double yOffset = sin(angle) * radius;
-      canvas.drawLine(const Offset(0, 0), Offset(xOffset, yOffset), paint2);
-
-      final textSpan = TextSpan(
-        text: '${formatter.format(DateTime(2022, i))}',
-        style: textStyle,
-      );
-
-      textPainter..text = textSpan;
-      textPainter.layout(
-        minWidth: 0,
-        maxWidth: 35,
-      );
-
-      textPainter.paint(canvas, Offset(xOffset - 14, yOffset - 7));
-    }
+class TestWidget {
+  TestWidget(this.on) {
+    updateListOfWidget();
   }
+  bool on = false;
+  List listOfWidget = [];
 
-
-
-  @override
-  bool shouldRepaint(CustomPainter oldDelegate) => true;
+  updateListOfWidget() {
+    listOfWidget = List.generate(10, (i) {
+      print('aa');
+      return AnimatedPositioned(
+          duration: Duration(seconds: 1),
+          left: on ? 400 : i * 10,
+          child: Container(width: 30, height: 40, color: Colors.blue));
+    });
+  }
 }

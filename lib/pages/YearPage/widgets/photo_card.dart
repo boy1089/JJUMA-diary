@@ -7,6 +7,7 @@ import 'package:jjuma.d/Data/info_from_file.dart';
 import 'package:jjuma.d/Util/Util.dart';
 import 'dart:io';
 import 'package:extended_image/extended_image.dart';
+import 'package:photo_manager/photo_manager.dart';
 
 import '../../../Util/DateHandler.dart';
 import 'package:jjuma.d/Util/global.dart' as global;
@@ -22,7 +23,8 @@ class PhotoCard extends StatefulWidget {
   bool isTickEnabled = false;
   String tag;
   String? filenameOfFavoriteImage;
-  PhotoCard({super.key,
+  PhotoCard({
+    super.key,
     this.isMagnified = false,
     this.height = 200,
     this.scrollIndex = 0,
@@ -44,18 +46,51 @@ class _PhotoCardState extends State<PhotoCard> {
   FixedExtentScrollController scrollController1 = FixedExtentScrollController();
   FixedExtentScrollController scrollController2 = FixedExtentScrollController();
 
-  String? filenameOfFavoriteImage;
+  dynamic? filenameOfFavoriteImage;
   int? indexOfFavoriteImage;
+  late DataManagerInterface dataManager;
 
-  late List<ExtendedImage> listOfImages;
+  late List<dynamic> listOfImages;
+  late List<dynamic> listOfImages_sub;
 
   @override
   void initState() {
     super.initState();
     dateTime = widget.event.images.entries.elementAt(0).value.datetime!;
-    var dataManager = DataManagerInterface(global.kOs);
+    dataManager = DataManagerInterface(global.kOs);
     print("numberOfImages : ${widget.event.images.length}");
 
+    loadText();
+    getFavoriteImage();
+
+    final keyList =
+        List.generate(widget.event.images.length, (index) => GlobalKey());
+
+    if (indexOfFavoriteImage != -1) {
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        await Future.delayed(const Duration(milliseconds: 2000));
+        Scrollable.ensureVisible(
+          keyList[indexOfFavoriteImage!].currentContext!,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.bounceInOut,
+        );
+      });
+    }
+
+    syncScrollControllers();
+    updateListOfImages();
+  }
+
+  void syncScrollControllers() {
+    if (filenameOfFavoriteImage != null) {
+      scrollController1 =
+          FixedExtentScrollController(initialItem: indexOfFavoriteImage!);
+      scrollController2 =
+          FixedExtentScrollController(initialItem: indexOfFavoriteImage!);
+    }
+  }
+
+  void loadText() {
     if (dataManager.noteForChart2[dateTime.year.toString()]
             ?[formatDate(dateTime)] !=
         null) {
@@ -63,61 +98,62 @@ class _PhotoCardState extends State<PhotoCard> {
               ?[formatDate(dateTime)] ??
           "";
     }
-
-    controller.text = defaultText;
-    if (dataManager.filenameOfFavoriteImages[dateTime.year.toString()]
-            ?[formatDate(dateTime)] !=
-        null)
-      filenameOfFavoriteImage =
-          dataManager.filenameOfFavoriteImages[dateTime.year.toString()]
-              ?[formatDate(dateTime)];
-
-    final keyList =
-        List.generate(widget.event.images.length, (index) => GlobalKey());
-
     filenameOfFavoriteImage = widget.filenameOfFavoriteImage;
+
     print(
         "index : ${widget.event.images.keys.toList().indexOf(filenameOfFavoriteImage)}");
     indexOfFavoriteImage =
         widget.event.images.keys.toList().indexOf(filenameOfFavoriteImage);
+  }
 
-
-    if(indexOfFavoriteImage != -1) {
-      WidgetsBinding.instance.addPostFrameCallback((_) async {
-        await Future.delayed(const Duration(milliseconds: 2000));
-        Scrollable.ensureVisible(
-          keyList[ indexOfFavoriteImage!]
-              .currentContext!,
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.bounceInOut,
-        );
-      });
+  void getFavoriteImage() {
+    if (dataManager.filenameOfFavoriteImages[dateTime.year.toString()]
+            ?[formatDate(dateTime)] !=
+        null) {
+      filenameOfFavoriteImage =
+          dataManager.filenameOfFavoriteImages[dateTime.year.toString()]
+              ?[formatDate(dateTime)];
     }
-    if (filenameOfFavoriteImage != null) {
-      scrollController1 =
-          FixedExtentScrollController(initialItem: indexOfFavoriteImage!);
-      scrollController2 =
-          FixedExtentScrollController(initialItem: indexOfFavoriteImage!);
-    }
-
-  updateListOfImages();
   }
 
   void updateListOfImages() {
     listOfImages = [];
-    List<MapEntry<dynamic, InfoFromFile>> entries = widget.event.images.entries.toList();
-    for(int i = 0; i < entries.length; i++){
-      listOfImages.add(ExtendedImage.file(
-        File(entries
-            .elementAt(i)
-            .key),
-        cacheRawData: true,
-        compressionRatio: 0.1,
-        fit: BoxFit.cover,
-        clearMemoryCacheWhenDispose: true,
-      ),);
+    listOfImages_sub = [];
+    List<MapEntry<dynamic, InfoFromFile>> entries =
+        widget.event.images.entries.toList();
+
+    switch (global.kOs) {
+      case ("android"):
+        {
+          for (int i = 0; i < entries.length; i++) {
+            var image = ExtendedImage.file(
+              File(entries.elementAt(i).key),
+              cacheRawData: true,
+              compressionRatio: 0.1,
+              fit: BoxFit.cover,
+              clearMemoryCacheWhenDispose: true,
+            );
+            listOfImages.add(image);
+            listOfImages_sub.add(image);
+          }
+        }
+        break;
+
+      case ("ios"):
+        {
+          for (int i = 0; i < entries.length; i++) {
+            var image = AssetEntityImage(
+              entries.elementAt(i).key,
+              isOriginal: false,
+              thumbnailSize : ThumbnailSize.square(1000),
+              fit: BoxFit.cover,
+            );
+            listOfImages.add(image);
+            listOfImages_sub.add(image);
+          }
+        }
+        break;
     }
-    super.didChangeDependencies();
   }
 
   @override
@@ -126,6 +162,8 @@ class _PhotoCardState extends State<PhotoCard> {
     return Hero(
       tag: widget.tag,
       child: Scaffold(
+        extendBodyBehindAppBar: true,
+        appBar: AppBar(),
         resizeToAvoidBottomInset: true,
         body: SafeArea(
           child: SingleChildScrollView(
@@ -174,7 +212,9 @@ class _PhotoCardState extends State<PhotoCard> {
                         duration: const Duration(milliseconds: 500),
                         curve: Curves.easeIn);
                     scrollIndex = index;
+                    focusNode.unfocus();
                     setState(() {});
+
                   },
                   controller: scrollController1,
                   physics: const PageScrollPhysics(),
@@ -190,20 +230,10 @@ class _PhotoCardState extends State<PhotoCard> {
                                 quarterTurns: 1,
                                 child: Stack(children: [
                                   SizedBox(
-                                    height: physicalWidth,
-                                    width: physicalWidth,
-                                    child:
-                                    listOfImages.elementAt(index)
-                                    // ExtendedImage.file(
-                                    //   File(widget.event.images.entries
-                                    //       .elementAt(index)
-                                    //       .key),
-                                    //   cacheRawData: true,
-                                    //   compressionRatio: 0.1,
-                                    //   fit: BoxFit.cover,
-                                    //   clearMemoryCacheWhenDispose: true,
-                                    // ),
-                                  ),
+                                      height: physicalWidth,
+                                      width: physicalWidth,
+                                      child: listOfImages.elementAt(index)
+                                      ),
                                   Positioned(
                                       right: 10.0,
                                       bottom: 10.0,
@@ -221,7 +251,12 @@ class _PhotoCardState extends State<PhotoCard> {
                                     left: 10.0,
                                     top: 10.0,
                                     child: Text(
-                                      DateFormat('Hm').format(widget.event.images.entries.elementAt(index).value.datetime ?? DateTime.now()),
+                                      DateFormat('Hm').format(widget
+                                              .event.images.entries
+                                              .elementAt(index)
+                                              .value
+                                              .datetime ??
+                                          DateTime.now()),
                                       style: const TextStyle(fontSize: 16.0),
                                     ),
                                   ),
@@ -250,6 +285,7 @@ class _PhotoCardState extends State<PhotoCard> {
                   scrollIndex = index;
                   setState(() {});
                   scrollController1.jumpToItem(index);
+                  focusNode.unfocus();
                 },
                 diameterRatio: 200,
                 itemExtent: 40,
@@ -258,14 +294,7 @@ class _PhotoCardState extends State<PhotoCard> {
                     (index) => Center(
                           child: RotatedBox(
                               quarterTurns: 1,
-                              child: ExtendedImage.file(
-                                File(widget.event.images.entries
-                                    .elementAt(index)
-                                    .key),
-
-                                clearMemoryCacheWhenDispose: true,
-                                compressionRatio: 0.0003,
-                              )),
+                              child: listOfImages_sub.elementAt(index)),
                         ))),
           )),
     );
@@ -274,7 +303,7 @@ class _PhotoCardState extends State<PhotoCard> {
   dateText() {
     return Container(
         width: physicalWidth,
-        height: 20,
+        height: 20 * MediaQuery.of(context).textScaleFactor,
         margin: const EdgeInsets.symmetric(vertical: 8.0),
         child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -286,26 +315,21 @@ class _PhotoCardState extends State<PhotoCard> {
   }
 
   noteView() {
-    return SizedBox(
-      height: 100,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-        child: EditableText(
-            maxLines: 5,
-            controller: controller,
-            focusNode: focusNode,
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      child : TextField(
+        controller: controller,
+        focusNode: focusNode,
+        cursorColor: Colors.white,
+        maxLines: 10,
+        decoration: InputDecoration(
+          contentPadding: EdgeInsets.all(0),
+          border : InputBorder.none,
+          hintText : "Write your note here!"
+        ),
 
-            onChanged: (a) {
-              print(controller.text);
-            },
-            style: const TextStyle(
-              // color: Colors.black,
-              fontSize: 20.0,
-            ),
-            // onChanged: (value){controller.text = value;},
-            cursorColor: Colors.white,
-            backgroundCursorColor: Colors.grey),
-      ),
+      )
+
     );
   }
 
@@ -315,7 +339,8 @@ class _PhotoCardState extends State<PhotoCard> {
     DataManagerInterface dataManager = DataManagerInterface(global.kOs);
 
     dataManager.setFilenameOfFavoriteImage(dateTime, filenameOfFavoriteImage);
-    if(controller.text != defaultText) {
+    print("dispose photocard..");
+    if (controller.text != "") {
       dataManager.setNote(dateTime, controller.text);
     }
   }

@@ -54,6 +54,12 @@ class jjumaTheme {
         behavior: SnackBarBehavior.floating,
       ),
       toggleableActiveColor: const Color(0xFF13B9FF),
+      pageTransitionsTheme: const PageTransitionsTheme(
+        builders : {
+          TargetPlatform.android: CupertinoPageTransitionsBuilder(),
+          TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+        }
+      ),
     );
   }
 }

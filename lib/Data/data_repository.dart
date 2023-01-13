@@ -44,7 +44,7 @@ class DataRepository {
       final List<AssetPathEntity> paths = await PhotoManager.getAssetPathList();
       for (var path in paths) {
         if (path.name != "Recents") continue;
-        var assets = await path.getAssetListRange(start: 0, end: 10000);
+        var assets = await path.getAssetListRange(start: 0, end: 20000);
         files.addAll([for (var asset in assets) asset]);
       }
       this.files = files;
@@ -60,17 +60,14 @@ class DataRepository {
     }
 
     files = files.where((element) => !element.contains('thumbnail')).toList();
-    // files.sort((a, b) => a.compare(b));
     files = files..sort();
     return files;
   }
 
   Future<Map<dynamic, InfoFromFile>> readInfoFromJson() async {
 
-
     final Directory directory = await getApplicationDocumentsDirectory();
     final File file = File('${directory.path}/InfoOfFiles.json');
-
 
     bool isFileExist = await file.exists();
     if (!isFileExist) return {};
@@ -134,26 +131,6 @@ class DataRepository {
     return summaryOfLocationData;
   }
 
-  Future<Map<String, Event>> readEventList() async {
-    final Directory directory = await getApplicationDocumentsDirectory();
-    final File file = File('${directory.path}/eventList.json');
-
-    bool isFileExist = await file.exists();
-    if (!isFileExist) return {};
-
-    var data = await file.readAsString();
-    Map<String, dynamic> map = jsonDecode(data);
-    map.forEach((key, value) {
-      print("$key, $value");
-    });
-    Map<String, Event> map2 = Map.fromIterables(
-        map.keys.toList(),
-        List.generate(
-            map.values.length,
-            (index) =>
-                Event.fromJson(json: map[map.keys.toList().elementAt(index)])));
-    return map2;
-  }
 
   Future<void> writeInfoAsJson(
       Map<dynamic, InfoFromFile> infoFromFiles, bool overwrite) async {

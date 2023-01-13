@@ -3,8 +3,8 @@ import 'dart:math' as Math;
 import 'package:jjuma.d/Util/global.dart' as global;
 
 class Coordinate {
-  final double? latitude;
-  final double? longitude;
+  double? latitude;
+  double? longitude;
   Coordinate(
     this.latitude,
     this.longitude,
@@ -14,6 +14,21 @@ class Coordinate {
     return "$latitude, $longitude";
     // return "latitude : $latitude, longitude : $longitude";
   }
+
+  void setLatRef(int ref){
+    latitude = ref * (latitude!.abs());
+  }
+
+  void setLongRef(int ref){
+    longitude = ref * (longitude!.abs());
+  }
+
+  bool operator ==(Object other){
+    if (other is! Coordinate) return false;
+    return (other.latitude == latitude) && (other.longitude == longitude);
+  }
+
+
 }
 
 double calculateDistance(Coordinate coordinate1, Coordinate coordinate2) {

@@ -167,6 +167,7 @@ class YearPageStateProvider with ChangeNotifier {
     switch (global.kOs) {
       case "android":
         {
+          print('android, updatedata');
           result =
               await compute(updateData_static, [dataManager.infoFromFiles]);
           dataForChart2 = result[0];
@@ -177,7 +178,7 @@ class YearPageStateProvider with ChangeNotifier {
           if (listOfYears.length > maxNumOfYearChart) {
             listOfYears = listOfYears.sublist(0, maxNumOfYearChart);
           }
-
+          print('android, modifyData');
           result2 = await compute(modifyData_static, [
             dataForChart2,
             mostFreqCoordinate,
@@ -188,6 +189,7 @@ class YearPageStateProvider with ChangeNotifier {
           ]);
         }
         break;
+
       case "ios":
         {
           result = await updateData_static([dataManager.infoFromFiles]);
@@ -207,7 +209,6 @@ class YearPageStateProvider with ChangeNotifier {
     }
 
     dataForChart2_modified = result2[0];
-
     // await Future.delayed(Duration(seconds: 2));
     setIsUpdating(false);
     notifyListeners();
